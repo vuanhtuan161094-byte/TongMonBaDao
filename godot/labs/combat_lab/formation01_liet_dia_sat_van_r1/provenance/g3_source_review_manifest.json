@@ -1,0 +1,99 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 180,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/source/formation_zone_seed_pose.png",
+      "sha256": "0b51826b33e69e9435b0a75189a197714cf1faa6eb9d57cbbec472c4d500d57e",
+      "source_px": [
+        1671,
+        941
+      ],
+      "visible_alpha_bbox": [
+        363,
+        199,
+        1284,
+        699
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "display_factor": 0.19543973941368079,
+      "preview_image_px": [
+        327,
+        184
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/source/formation_zone_active_master.png",
+      "sha256": "dbd15e311981393db0789f630996d9e0969e29ee7a391ca7899981a0881684a9",
+      "source_px": [
+        1672,
+        941
+      ],
+      "visible_alpha_bbox": [
+        89,
+        95,
+        1559,
+        797
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "display_factor": 0.12244897959183673,
+      "preview_image_px": [
+        205,
+        115
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/source/formation_zone_tick_pulse_pose.png",
+      "sha256": "7165ee44f36cefe14bab71dfd4b398fa72d9a83648e07241eee951fc585f0355",
+      "source_px": [
+        1671,
+        941
+      ],
+      "visible_alpha_bbox": [
+        57,
+        64,
+        1597,
+        815
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.11688311688311688,
+      "preview_image_px": [
+        195,
+        110
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/source/formation_zone_expiry_pose.png",
+      "sha256": "c69c8091b06e3f1d7d296a026309f18b50eb0f0f69f6363ce02183cb8031a199",
+      "source_px": [
+        1672,
+        941
+      ],
+      "visible_alpha_bbox": [
+        149,
+        108,
+        1421,
+        848
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "display_factor": 0.14150943396226415,
+      "preview_image_px": [
+        237,
+        133
+      ]
+    }
+  ]
+}

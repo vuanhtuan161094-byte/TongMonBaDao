@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 48,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png",
+      "sha256": "b1570eb7920534b7c59d5047158388f545c5333e07266c2f11c4d054982782ac",
+      "source_px": [
+        1536,
+        1024
+      ],
+      "visible_alpha_bbox": [
+        459,
+        307,
+        1160,
+        721
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.06847360912981455,
+      "preview_image_px": [
+        105,
+        70
+      ]
+    }
+  ]
+}

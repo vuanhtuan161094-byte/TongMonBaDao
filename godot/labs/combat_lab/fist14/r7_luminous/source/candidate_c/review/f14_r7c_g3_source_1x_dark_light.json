@@ -1,0 +1,145 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 96,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/fist14/r7_luminous/source/candidate_c/review_inputs/f14_r7c_01_charge.png",
+      "sha256": "5b4abb84caee0b6db1a382529d94c95c8ef61d890cfa7174f0d1fe946ade7163",
+      "source_px": [
+        272,
+        282
+      ],
+      "visible_alpha_bbox": [
+        0,
+        0,
+        272,
+        282
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.35294117647058826,
+      "preview_image_px": [
+        96,
+        100
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r7_luminous/source/candidate_c/review_inputs/f14_r7c_02_compress.png",
+      "sha256": "97faae929dcd49c1cf548566e260092cc6905b2084cc4d68338e8057094a4810",
+      "source_px": [
+        331,
+        358
+      ],
+      "visible_alpha_bbox": [
+        0,
+        0,
+        331,
+        358
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.29003021148036257,
+      "preview_image_px": [
+        96,
+        104
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r7_luminous/source/candidate_c/review_inputs/f14_r7c_03_release.png",
+      "sha256": "d6f7faa020f3907b89d76088c67f9e6a02805fde69d3df3801e1989979194c66",
+      "source_px": [
+        393,
+        405
+      ],
+      "visible_alpha_bbox": [
+        0,
+        0,
+        393,
+        405
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.24427480916030533,
+      "preview_image_px": [
+        96,
+        99
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r7_luminous/source/candidate_c/review_inputs/f14_r7c_04_contact.png",
+      "sha256": "42050ce7d34b0e7372e531b6ee0af82997a0ed69e443872b702ad01980fc5d32",
+      "source_px": [
+        388,
+        406
+      ],
+      "visible_alpha_bbox": [
+        0,
+        0,
+        388,
+        406
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.24742268041237114,
+      "preview_image_px": [
+        96,
+        100
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r7_luminous/source/candidate_c/review_inputs/f14_r7c_05_rebound.png",
+      "sha256": "229f79cc65d8a29dfd797fd1bcc156c2f7f273f2f0ffbad6b4312d007acf7a16",
+      "source_px": [
+        209,
+        231
+      ],
+      "visible_alpha_bbox": [
+        0,
+        0,
+        209,
+        231
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.45933014354066987,
+      "preview_image_px": [
+        96,
+        106
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r7_luminous/source/candidate_c/review_inputs/f14_r7c_06_mark.png",
+      "sha256": "988d8eda96c5b4ad50cc8ce7ca43e11cde0925e546be71aba72e5cb261443e21",
+      "source_px": [
+        109,
+        185
+      ],
+      "visible_alpha_bbox": [
+        0,
+        0,
+        109,
+        185
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.8807339449541285,
+      "preview_image_px": [
+        96,
+        163
+      ]
+    }
+  ]
+}

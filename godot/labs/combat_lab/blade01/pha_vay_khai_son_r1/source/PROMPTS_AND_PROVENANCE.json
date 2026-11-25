@@ -1,0 +1,56 @@
+{
+  "project": {
+    "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+    "skill_name": "Phá Vây Khai Sơn · Nhân Giai",
+    "generation_tool": "OpenAI image_gen.imagegen",
+    "transparent_background": true,
+    "scale_reference": "1280x720, intended in-game 1x",
+    "note": "Prompts below are exact final generation prompts. Originals are preserved under source/originals; production PNGs are transparent crops that trim alpha < 2 outside alpha >= 2 bounds plus 4px. No painted pixels were retouched."
+  },
+  "phases": [
+    {
+      "phase": "flight",
+      "generation_attempt": 1,
+      "output_id": "exec-d2c875fb-70f1-40f4-b479-4c8e27df7437",
+      "original_path": "source/originals/exec-d2c875fb-70f1-40f4-b479-4c8e27df7437.png",
+      "production_path": "source/production/pha_vay_khai_son_flight_r1.png",
+      "reference_inputs": [],
+      "intended_motif_width_px_at_1280x720": 180,
+      "prompt": "Paint one isolated flight-pose visual-effects sprite for the Human skill Phá Vây Khai Sơn, a heavy single-target metal saber-cleave projectile in a first-party 2D fantasy game. In a wide transparent canvas, show exactly one asymmetric, broad crescent of living light traveling horizontally to the right: a weighty dark-crimson and old-bronze translucent body with a narrow white-hot metal edge, one clear leading tip, dense near the origin and tapering into a short broken wake. It should feel like one committed heavy Dao cut, distinct from thin sword qi, but remain luminous and soft-edged rather than a solid flat polygon or physical sword. Read at about 180px wide in a 1280x720 game. High contrast, painterly material, restrained glow, few short motes. Truly transparent RGBA. No character, no hand, no saber object, no scenery, no background or color matte, no full circle, no ring, no text, no UI, no multiple slashes, no extra hit spark, no wide area wave."
+    },
+    {
+      "phase": "charge",
+      "generation_attempt": 2,
+      "output_id": "exec-2133c732-cbc7-4670-8b32-8e5444430f25",
+      "original_path": "source/originals/exec-2133c732-cbc7-4670-8b32-8e5444430f25.png",
+      "production_path": "source/production/pha_vay_khai_son_charge_r1.png",
+      "reference_inputs": [
+        "source/production/pha_vay_khai_son_flight_r1.png"
+      ],
+      "intended_motif_width_px_at_1280x720": 85,
+      "prompt": "Create the PRE-RELEASE CHARGE frame for this heavy single-target saber qi. At game scale its silhouette should be 85px wide: a compact, compressed wedge where a thick dark-red metal crescent edge is only beginning to form around one white-hot core. Three short uneven crimson and old-bronze filaments fold inward from behind into that core. Keep the surfaces smoky and metallic, with a clear old-bronze glint and dark steel-red body; avoid a flame or comet appearance. It must feel like weight gathering before one broad Dao cut, not the full traveling slash. Painterly 2D fantasy VFX, restrained glow, forward horizontal axis, truly transparent RGBA. No full-size slash, long tail, fire, flames, physical weapon, hand, character, enemy, scenery, colored background, ring, circle, multiple attacks, impact burst, text, or UI."
+    },
+    {
+      "phase": "contact",
+      "generation_attempt": 2,
+      "output_id": "exec-d5706eb6-8658-44a3-819e-863274b96f15",
+      "original_path": "source/originals/exec-d5706eb6-8658-44a3-819e-863274b96f15.png",
+      "production_path": "source/production/pha_vay_khai_son_contact_r1.png",
+      "reference_inputs": [],
+      "intended_motif_width_px_at_1280x720": 50,
+      "prompt": "Paint one isolated hit-contact VFX sprite for a heavy crimson-bronze metal Dao attack, on a truly transparent canvas. This is only the instant of contact, not a projectile or slash: a very compact asymmetric metallic glint centered on one white-hot pinprick, with a tiny 35px hooked edge fragment and exactly three small bronze flecks flying outward. Keep the silhouette clustered inside a 50px-wide game-scale footprint. Painterly fantasy effect, dark crimson shadow and old bronze edge, restrained glow, crisp enough to read against dark and light backgrounds. No broad arc, no crescent projectile, no long trail, no shockwave, no ring, no circle, no starburst, no explosion, no sword, no hand, no character, no enemy, no scenery, no background color, no text, no UI."
+    },
+    {
+      "phase": "fade",
+      "generation_attempt": 3,
+      "output_id": "exec-03bfadbf-2d80-427f-b794-484062666119",
+      "original_path": "source/originals/exec-03bfadbf-2d80-427f-b794-484062666119.png",
+      "production_path": "source/production/pha_vay_khai_son_fade_r1.png",
+      "reference_inputs": [
+        "source/production/pha_vay_khai_son_flight_r1.png"
+      ],
+      "intended_motif_width_px_at_1280x720": 80,
+      "prompt": "Create the FINAL VANISH frame for the heavy Phá Vây Khai Sơn crimson-bronze metal qi cut. Show two separate short broken fragments, together less than 80px wide at 1280x720: one dark-crimson sliver and one bright old-bronze edge glint with a tiny pale-metal highlight, plus at most two dim motes. Leave a clear transparent gap between fragments; do not form a crescent, blade, or continuous slash. Keep it visibly fading and much smaller than the broad flight effect, but preserve enough highlight contrast to read on both dark navy and pale beige backgrounds. Painterly 2D fantasy VFX, restrained glow, true transparent RGBA. No projectile, no full slash, no impact star, no ring, no circle, no wide wave, no flame plume, no weapon, no person, no enemy, no scenery, no background color, no text, no UI."
+    }
+  ]
+}

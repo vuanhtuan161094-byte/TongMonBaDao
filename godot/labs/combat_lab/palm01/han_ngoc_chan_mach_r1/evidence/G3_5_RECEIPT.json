@@ -1,0 +1,113 @@
+{
+  "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+  "cast_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1",
+  "contract": {
+    "effect": "damage",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "gate": "OFF"
+  },
+  "actual_events": [
+    {
+      "type": "skill_cast",
+      "event_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1/skill_cast",
+      "cast_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1",
+      "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+      "target": "palm_lab_moving_monster",
+      "damage": 0.0,
+      "shape": "single_target",
+      "caster_position": [
+        0.0,
+        0.0
+      ],
+      "target_position": [
+        5.0,
+        0.0
+      ],
+      "caster_position_at_cast": [
+        0.0,
+        0.0
+      ],
+      "target_position_at_cast": [
+        5.0,
+        0.0
+      ]
+    },
+    {
+      "type": "skill_release",
+      "event_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1/skill_release",
+      "cast_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1",
+      "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+      "target": "palm_lab_moving_monster",
+      "damage": 0.0,
+      "shape": "single_target",
+      "caster_position": [
+        0.0,
+        0.0
+      ],
+      "target_position": [
+        5.55000019073486,
+        0.0
+      ],
+      "caster_position_at_cast": [
+        0.0,
+        0.0
+      ],
+      "target_position_at_cast": [
+        5.0,
+        0.0
+      ]
+    },
+    {
+      "type": "v63_skill_hit",
+      "event_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1/v63_skill_hit/palm_lab_moving_monster",
+      "cast_id": "palm01_han_ngoc_preview_only/palm_lab_caster/1",
+      "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+      "target": "palm_lab_moving_monster",
+      "damage": 40.8,
+      "shape": "single_target",
+      "caster_position": [
+        0.0,
+        0.0
+      ],
+      "target_position": [
+        5.55000019073486,
+        0.0
+      ],
+      "caster_position_at_cast": [
+        0.0,
+        0.0
+      ],
+      "target_position_at_cast": [
+        5.0,
+        0.0
+      ]
+    }
+  ],
+  "hit_target": "palm_lab_moving_monster",
+  "damage": 40.8,
+  "caster_position_at_cast": [
+    0.0,
+    0.0
+  ],
+  "target_position_at_cast": [
+    5.0,
+    0.0
+  ],
+  "release_target_position": [
+    5.55000019073486,
+    0.0
+  ],
+  "moving_target_start_screen_x": 765.0,
+  "moving_target_end_screen_x": 809.0,
+  "moving_target_release_world_position": [
+    5.55000019073486,
+    0.0
+  ],
+  "target_hp_after": 159.2,
+  "visual_rule": "contact glint only after this positive v63_skill_hit receipt",
+  "preview_only": true,
+  "save_service_used": false,
+  "pve": "OFF"
+}

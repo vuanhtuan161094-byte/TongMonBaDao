@@ -1,0 +1,145 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 96,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/fist14/r8_pressure_knot/source/poses/f14_r8_01_charge.png",
+      "sha256": "c2f32b9967e41254cb2d6b73b02a1a3f559e8f0f6296b170fb4eaef67bbab503",
+      "source_px": [
+        512,
+        512
+      ],
+      "visible_alpha_bbox": [
+        114,
+        135,
+        402,
+        397
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.3333333333333333,
+      "preview_image_px": [
+        171,
+        171
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r8_pressure_knot/source/poses/f14_r8_02_tension.png",
+      "sha256": "4db6c0831126ed8a9e0dd0c5526abfb19275104900b54c001a50da38e831796f",
+      "source_px": [
+        512,
+        512
+      ],
+      "visible_alpha_bbox": [
+        111,
+        126,
+        411,
+        406
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.32,
+      "preview_image_px": [
+        164,
+        164
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r8_pressure_knot/source/poses/f14_r8_03_peak.png",
+      "sha256": "eab5dd4bf14cc13636bfa93aab869881a54550e33825728f84f642bd527bcfc7",
+      "source_px": [
+        512,
+        512
+      ],
+      "visible_alpha_bbox": [
+        71,
+        103,
+        429,
+        428
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.2681564245810056,
+      "preview_image_px": [
+        137,
+        137
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r8_pressure_knot/source/poses/f14_r8_04_contact.png",
+      "sha256": "236bb74e619cb9f8fb6585c00c357dca6d4b55f59b1f1405bee5748fa421e2fd",
+      "source_px": [
+        512,
+        512
+      ],
+      "visible_alpha_bbox": [
+        125,
+        122,
+        439,
+        414
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.3057324840764331,
+      "preview_image_px": [
+        157,
+        157
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r8_pressure_knot/source/poses/f14_r8_05_recoil.png",
+      "sha256": "c371e9343b3ccbb33f8903a2b2834b4425f830617f70741e2bf47d72a07c7b3d",
+      "source_px": [
+        512,
+        512
+      ],
+      "visible_alpha_bbox": [
+        128,
+        148,
+        389,
+        384
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.367816091954023,
+      "preview_image_px": [
+        188,
+        188
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/fist14/r8_pressure_knot/source/poses/f14_r8_06_status_hold.png",
+      "sha256": "aa98681f30433f4fc49a680ebb90d924fd1724c069ebd201a7c88e373b507d79",
+      "source_px": [
+        512,
+        512
+      ],
+      "visible_alpha_bbox": [
+        135,
+        159,
+        382,
+        376
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.38866396761133604,
+      "preview_image_px": [
+        199,
+        199
+      ]
+    }
+  ]
+}

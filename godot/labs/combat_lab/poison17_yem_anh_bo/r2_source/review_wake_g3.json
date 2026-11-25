@@ -1,0 +1,99 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 120,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/poison17_yem_anh_bo/r2_source/frames/wake/wake_01.png",
+      "sha256": "5fb7f57f125a07ebb21e22fb33730fe580a08fd8246cc81e9112ad12410ae21d",
+      "source_px": [
+        627,
+        627
+      ],
+      "visible_alpha_bbox": [
+        145,
+        352,
+        534,
+        440
+      ],
+      "alpha_range": [
+        0,
+        252
+      ],
+      "display_factor": 0.30848329048843187,
+      "preview_image_px": [
+        193,
+        193
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/poison17_yem_anh_bo/r2_source/frames/wake/wake_02.png",
+      "sha256": "aa22b5eab9ff68c6ca3703dc79a9d1610e1bb7fa13f51509a9e31a681b1237c4",
+      "source_px": [
+        627,
+        627
+      ],
+      "visible_alpha_bbox": [
+        49,
+        264,
+        595,
+        461
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "display_factor": 0.21978021978021978,
+      "preview_image_px": [
+        138,
+        138
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/poison17_yem_anh_bo/r2_source/frames/wake/wake_03.png",
+      "sha256": "468431cff9aba3c705b006e12b29e8fdcf4cc567c503771e8ddd788e7d782655",
+      "source_px": [
+        627,
+        627
+      ],
+      "visible_alpha_bbox": [
+        25,
+        225,
+        627,
+        400
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "display_factor": 0.19933554817275748,
+      "preview_image_px": [
+        125,
+        125
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/poison17_yem_anh_bo/r2_source/frames/wake/wake_04.png",
+      "sha256": "1d84843a8cf2f6bcc15c88623927a95da83bab1d625ea784d74337ecf6e5df85",
+      "source_px": [
+        627,
+        627
+      ],
+      "visible_alpha_bbox": [
+        0,
+        282,
+        564,
+        370
+      ],
+      "alpha_range": [
+        0,
+        245
+      ],
+      "display_factor": 0.2127659574468085,
+      "preview_image_px": [
+        133,
+        133
+      ]
+    }
+  ]
+}

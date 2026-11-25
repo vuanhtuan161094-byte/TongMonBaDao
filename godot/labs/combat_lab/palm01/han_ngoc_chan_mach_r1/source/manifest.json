@@ -1,0 +1,135 @@
+{
+  "schema": "tmb.vfx_source_bundle.v1",
+  "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+  "skill_name_vi": "Hàn Ngọc Chấn Mạch",
+  "revision": "R1",
+  "contract": {
+    "effect": "damage",
+    "shape": "single_target",
+    "target_limit": 1,
+    "element": "water",
+    "cast_time_seconds": 0.55,
+    "cooldown_seconds": 9.5,
+    "range_world_units": 6,
+    "projectile_speed": 0,
+    "hit_count": 1,
+    "duration_seconds": 0,
+    "identity": "cold-pressure open-palm wave; no clenched-fist projectile"
+  },
+  "source_review": {
+    "status": "G3_SOURCE_SELF_PASS",
+    "reviewed_on": "2026-11-25",
+    "owner_art_approval": "PENDING",
+    "note": "Peak r2 replaced the rejected narrow r1 ice slash with a broad membrane and five rounded separated palm crests. Charge and peak were inspected at their explicit intended 1x motif widths on dark and light backgrounds. Contact is a brief directional glint at 40px. Helper previews are evidence only and do not score or approve art.",
+    "scale_previews": [
+      {
+        "path": "../review/G3_CHARGE_64PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_CHARGE_64PX_NOT_APPROVAL.json",
+        "display_width_px": 64,
+        "phase": "charge",
+        "backgrounds": [
+          "dark",
+          "light"
+        ]
+      },
+      {
+        "path": "../review/G3_PEAK_120PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_PEAK_120PX_NOT_APPROVAL.json",
+        "display_width_px": 120,
+        "phase": "release_peak",
+        "backgrounds": [
+          "dark",
+          "light"
+        ]
+      },
+      {
+        "path": "../review/G3_CONTACT_40PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_CONTACT_40PX_NOT_APPROVAL.json",
+        "display_width_px": 40,
+        "phase": "contact",
+        "backgrounds": [
+          "dark",
+          "light"
+        ]
+      }
+    ],
+    "godot_native_review": "BLOCKED_CAPTURE_HEADLESS_DUMMY_RENDERER_AFTER_RECEIPT_PATH_PASS"
+  },
+  "files": [
+    {
+      "role": "charge",
+      "path": "charge_r2.png",
+      "sha256": "61bf937a56ff7cbcefe25b220ef831e12252b5ed8e25692a02964213edc43112",
+      "source_px": [
+        1536,
+        1024
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "alpha_zero_pct": 85.5542,
+      "alpha_1_23_pct": 1.7554,
+      "alpha_ge_24_pct": 12.6904,
+      "display_width_px": 64,
+      "generation_output_id": "exec-928b30bb-99cd-4ff7-aedf-7116544d1a73",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": "d42a2dba5c654d0a8633054fdf69b8c71f4c11bb940d121762b0e12e8c81ae3c",
+      "prompt": "Make a distinct pre-release CHARGE pose for the same Hàn Ngọc Chấn Mạch cold-pressure VFX. Use the referenced image only for icy water material, cold white-blue palette, and hand-painted surface. This is a gathering seed before the release fan: compress the shape into a small bright white-silver palm-heel knot with five very short rounded frost-water ripples just beginning to splay to the right, one slightly lower thumb-like curl and four tiny upward/forward finger-like curls. At 64 px motif width it must read as charged cold pressure waiting to release, with a compact body and no long extensions; clearly smaller and tighter than the reference. Keep translucent ice-blue water, faint restrained jade edge glints and crisp readable contour. Single isolated sprite on true transparent RGBA with ample transparent margin. No hand, character, enemy, full release wave, long streaks, sharp point, projectile, arrow, blade, ring, circle, snowflake icon, glyph, scenery, background, text, or frame."
+    },
+    {
+      "role": "release_peak",
+      "path": "peak_r2.png",
+      "sha256": "d42a2dba5c654d0a8633054fdf69b8c71f4c11bb940d121762b0e12e8c81ae3c",
+      "source_px": [
+        1774,
+        887
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "alpha_zero_pct": 51.3933,
+      "alpha_1_23_pct": 10.4131,
+      "alpha_ge_24_pct": 38.1936,
+      "display_width_px": 120,
+      "generation_output_id": "exec-463bb533-e947-47ef-aabc-9666358a43ab",
+      "generation_route": "image_gen.imagegen",
+      "prompt": "Create one refined original hand-painted 2D game VFX sprite for the release peak of Hàn Ngọc Chấn Mạch, a cold-pressure open-palm strike. The silhouette must read as a broad, short palm-pressure fan, not a narrow slash or arrow: make a substantial luminous heel of compressed water at the left, then a translucent pressure membrane that expands to the right into exactly five distinct rounded, uneven crest tips like an open hand's four fingers and shorter thumb. Keep the five crests visibly separated by wide dark gaps at 120 px; vary their length and angle so the fan splays upward and downward, with the shortest thumb spur angled slightly down. Join the crests with a soft broad body of icy water pressure, not thin parallel streaks. The whole motif should be wider than tall but compact, with no sharp spear point and no central arrowhead. Tight white-silver core, layered translucent ice-blue water, restrained jade rim light, fine frost vapor around the fan edges; hand-painted luminous detail, soft highlights and crisp readable contour. Single isolated sprite, true transparent RGBA, centered with transparent margins. No hand, character, target, scene, background, ground, ring, circle, blade, sword, fist, projectile, arrow, glyph, snowflake, text, or frame."
+    },
+    {
+      "role": "contact_glint",
+      "path": "contact_r1.png",
+      "sha256": "daa82923a4ecf45b8fdd6ef749c9ec0cdddced94128559a191bd080e749c01f6",
+      "source_px": [
+        1774,
+        887
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "alpha_zero_pct": 92.7631,
+      "alpha_1_23_pct": 2.8512,
+      "alpha_ge_24_pct": 4.3858,
+      "display_width_px": 40,
+      "generation_output_id": "exec-adc5e335-f3ec-4bfa-8ecd-073896b72706",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": "174a86074011cfdcb831656394c68a9070bbbf8c11cf959d80c2fa9f4cd0203c",
+      "activation_rule": "show only after confirmed v63_skill_hit with positive damage; never trigger a hit",
+      "prompt": "Create the distinct CONTACT point source for the same Hàn Ngọc Chấn Mạch cold-pressure palm skill. The pressure front has reached exactly one target; show a compact white-silver frozen pressure glint with three to five short uneven ice-blue water splinters moving in the same direction, resembling the compressed edge of the open-palm wave from the reference. This is a tiny momentary target-center accent, not a status icon or large explosion. Make it crisp and readable at 40 pixels on dark and light backgrounds, with tight white-hot core, translucent pale cyan body, restrained jade-silver edge, hand-painted material. Isolated true-alpha RGBA. No hand, body, target, projectile, fist, ring, circle, snowflake icon, rune, glyph, scenery, background, text, or frame. Use only when a confirmed single-target damage receipt exists."
+    }
+  ],
+  "rejected_iterations": [
+    {
+      "role": "release_peak",
+      "generation_output_id": "exec-f1d3ca0b-3a46-4595-acb0-30e365415c18",
+      "sha256": "174a86074011cfdcb831656394c68a9070bbbf8c11cf959d80c2fa9f4cd0203c",
+      "status": "REJECTED_G3_SELF_REVIEW_NARROW_SLASH_ARROW_READ",
+      "prompt": "Paint one original first-party 2D fantasy combat VFX source for the release peak of Hàn Ngọc Chấn Mạch, a Chưởng Tu cold-pressure palm strike. Show a short direct-impact wave travelling horizontally to the right, with an open-palm identity expressed only through an organic five-crest frost pressure front: four uneven long finger-like ridges and one shorter thumb spur, all flowing from one bright palm-heel core. Make it read as pressure from an open hand, not a fist, projectile, blade, star, or circular ring. Tight white-hot icy core, translucent ice-blue water body, restrained jade and silver edge light, delicate frost mist at the trailing edge. Hand-painted luminous detail, asymmetric natural curves, clear negative space between the five crests; at 1x it should remain distinct and compact, about 120 pixels wide. Single isolated sprite on truly transparent RGBA, most canvas fully transparent. No hand or character, no target, no scenery, no ground, no background, no circle/ring, no glyph, no text, no frame, no extra wave."
+    }
+  ],
+  "rights_and_input_note": "Selected phase sources were generated with image_gen.imagegen. The peak has no image reference. The charge references only the generated peak r2 for material/palette; the contact references generated peak r1 for matching material. No proprietary JX, Source A, or third-party game pixels were used as generation inputs.",
+  "cost_usd": null,
+  "pve": "HOLD_V63_OFF"
+}

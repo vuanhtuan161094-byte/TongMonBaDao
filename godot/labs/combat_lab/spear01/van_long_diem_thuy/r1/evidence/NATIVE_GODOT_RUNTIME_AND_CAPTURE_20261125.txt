@@ -1,0 +1,14 @@
+Godot v4.7.2.stable.official.ed1daf0bf
+
+Focused exact-skill receipt test:
+SPEAR_LONG_THRUST_RECEIPT_RESULT PASS checks=18 runtime=MapBattleV2 moving_targets=3 line_receipts=2 cap=2 actor=AS54_CANDIDATE source=SourceA_PLACEHOLDER pve=OFF gate=OFF
+
+Native scene runtime:
+SPEAR_LONG_THRUST_LAB_RUNTIME PASS receipts=2 target_limit=2 outside_hp=unchanged targets_moved_during_cast=true pve=OFF
+The capture harness also verified the AS54 renderer returned true and all three supported Source A monster actor draw calls returned true.
+
+Native framebuffer capture:
+SPEAR_LONG_THRUST_NATIVE_CAPTURE BLOCKED display_driver=headless_dummy framebuffer_readback=unavailable; runtime scene and target receipts passed
+Exit code: 2 by design for the unavailable visual capture. No Godot screenshot was generated and no G3.5 visual PASS is claimed.
+
+PvE/release feature gate: OFF.

@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 110,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/r3/source/formation_zone_active_candidate.png",
+      "sha256": "eac486bd7251b1004089f8127cb7cf56509f2ad91f01015f86c35d2f2f223bcf",
+      "source_px": [
+        1672,
+        941
+      ],
+      "visible_alpha_bbox": [
+        9,
+        5,
+        1662,
+        929
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "display_factor": 0.06654567453115548,
+      "preview_image_px": [
+        111,
+        63
+      ]
+    }
+  ]
+}

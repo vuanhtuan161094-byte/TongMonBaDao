@@ -1,0 +1,82 @@
+{
+  "candidate": "HF01 R6 source-only fire-dragon art candidate",
+  "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+  "generated_at_utc_date": "2026-11-25",
+  "provider": "OpenAI image generation tool (image_gen.imagegen)",
+  "generated_master_path": "godot/labs/combat_lab/talisman06/r6_source_candidate/hf01_r6_fire_dragon_generated_master.png",
+  "generated_master_sha256": "8d7849df9e086bb6c27899df34b78a51d11287caaab532431d540e4842c08999",
+  "generated_master_dimensions": [
+    1254,
+    1254
+  ],
+  "generated_master_alpha_extrema": [
+    0,
+    255
+  ],
+  "prepared_crop_path": "godot/labs/combat_lab/talisman06/r6_source_candidate/hf01_r6_fire_dragon_crop.png",
+  "prepared_crop_sha256": "4c2581e096183b6605b7577960e516171b42cab81ca677e22f07e78f0ccd144e",
+  "prepared_crop_dimensions": [
+    1146,
+    280
+  ],
+  "preparation": "Threshold alpha at 8/255 only for crop bounds and set lower alpha pixels to transparent; crop bbox from thresholded alpha; no painted RGB pixels changed.",
+  "identity_reference": "The existing R5 fire talisman master was composited unchanged on the review board; R5 source/art/runtime bytes were not edited.",
+  "review_board_path": "godot/labs/combat_lab/talisman06/r6_source_candidate/hf01_r6_dark_light_1x_review.png",
+  "review_board_sha256": "d13df2a839c325243530b5cb487ac24cfa48134ef9f7735e3d733275b4bef2a5",
+  "review_board_dimensions": [
+    1024,
+    320
+  ],
+  "prompt": "Create one original transparent PNG sprite master for a Chinese fantasy fire-talisman 2D action game. SQUARE 1:1 canvas. In the middle band only, paint one compact, wide horizontal fire-dragon spirit flying to the right: clearly readable horned dragon head facing right, open jaw, long continuous flowing flame body and tapered tail trailing left. The complete creature must fit inside a central horizontal rectangle, leaving generous empty transparent space above and below, and at least 14 percent transparent margin from every canvas edge. Keep the full silhouette away from all four edges; absolutely nothing cropped or touching an edge. Use red vermilion, deep crimson, orange, and a clean ivory-gold hot core with layered hand-painted flame brushwork and deliberate negative spaces. Make it refined, vivid and recognizable after downscaling to about 200x120 pixels. Center it vertically and keep its flame flow shallow, no long tongues extending up or down. Transparent alpha background only. No background, no ground, no shadow, no detached embers, no extra dragons, no ring, no circular flame, no explosion ball, no text, no logo, no watermark, no UI, no blur-only soft shape.",
+  "status": "ART_CANDIDATE_SOURCE_ONLY; not in a Godot scene, atlas, workflow, game runtime, or PvE; owner review pending; V6.3 OFF; PvE HOLD.",
+  "generation_cost": "unknown; the image-generation tool returned no cost value",
+  "pipeline_milestones": {
+    "image_created": true,
+    "file_exported": true,
+    "asset_qc_pass": false,
+    "integrated_in_game": false,
+    "owner_visual": "OWNER_VISUAL_PENDING",
+    "live_status": "PVE_INTEGRATION_HOLD / V63_OFF"
+  },
+  "static_1x_review": {
+    "reviewed_file": "hf01_r6_dark_light_1x_review.png",
+    "silhouette_score_0_to_5": 4,
+    "material_score_0_to_5": 4,
+    "light_background_note": "Dragon silhouette remains readable; ivory-gold core loses some contrast on pale matte.",
+    "not_evaluated": [
+      "choreography",
+      "contact",
+      "fade",
+      "crowd readability",
+      "Godot import/render",
+      "device performance"
+    ],
+    "decision": "Promising isolated source candidate only; insufficient evidence for full art approval."
+  },
+  "frozen_r5_baseline_review": {
+    "tested_source_sha": "7deae99b43aec996ec1730df05336954d08c1a73",
+    "workflow_run_id": "43699507936",
+    "artifact_id": "14155672997",
+    "artifact_zip_sha256": "ab5e149c693d5cda956a2690c60becf785c12393001333efeeda526a0d6c2530",
+    "native_mp4_sha256": "f546f05651145c68c5ba653535b8347ec6c41f7bde08cdd0f804918ecf910ead",
+    "manually_viewed_native_frames_seconds": [
+      0.43,
+      0.88,
+      1.49,
+      1.62,
+      2.2,
+      2.75
+    ],
+    "self_review_0_to_5": {
+      "1x_silhouette": 3,
+      "luminous_material": 3,
+      "choreography": 3,
+      "composition": 3,
+      "contact": 2,
+      "fade": 4
+    },
+    "decision": "ART_REWORK_REQUIRED; R5 bytes frozen; OWNER_VISUAL_PENDING; native technical PASS does not approve art."
+  },
+  "tested_current_revision": "cde55abb138d150d39e0eadce7a487c68e841fb7",
+  "tested_current_revision_note": "The successful R5 workflow artifact is for 7deae99b43aec996ec1730df05336954d08c1a73, not this later checkout."
+}

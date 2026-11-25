@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 64,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/dual_blade01/song_nhan_doat_anh_r1/source/charge_r3.png",
+      "sha256": "cc5e08fc67af151844e08ef1cd772174c6d7bb7879f373a272f661a0a17640a9",
+      "source_px": [
+        1774,
+        887
+      ],
+      "visible_alpha_bbox": [
+        268,
+        171,
+        1534,
+        742
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "display_factor": 0.05055292259083728,
+      "preview_image_px": [
+        90,
+        45
+      ]
+    }
+  ]
+}

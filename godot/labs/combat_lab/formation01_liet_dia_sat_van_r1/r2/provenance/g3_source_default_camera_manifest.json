@@ -1,0 +1,76 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 60,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/r2/source/formation_zone_seed_pose.png",
+      "sha256": "ae2ebee8e4f066e1f7d1f35d108579c0b94615b88ba00d32de70d8d6b9fb0660",
+      "source_px": [
+        1269,
+        1240
+      ],
+      "visible_alpha_bbox": [
+        116,
+        392,
+        1010,
+        1088
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "display_factor": 0.06711409395973154,
+      "preview_image_px": [
+        85,
+        83
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/r2/source/formation_zone_active_master.png",
+      "sha256": "98b56c783eef3555fbf1377bfdb001572a14f5286f2bde925090487fe3664319",
+      "source_px": [
+        1269,
+        1240
+      ],
+      "visible_alpha_bbox": [
+        50,
+        65,
+        1211,
+        1177
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "display_factor": 0.05167958656330749,
+      "preview_image_px": [
+        66,
+        64
+      ]
+    },
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/r2/source/formation_zone_expiry_pose.png",
+      "sha256": "0c45e7d3ff84ca02fbbd26a17223e18193615dbc90f2ba6dd32c6275450b902d",
+      "source_px": [
+        1272,
+        1236
+      ],
+      "visible_alpha_bbox": [
+        156,
+        248,
+        1033,
+        1117
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "display_factor": 0.06841505131128849,
+      "preview_image_px": [
+        87,
+        85
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "schema": "tmb.vfx_source_bundle.v1",
+  "skill_id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+  "skill_name_vi": "Song Nhận Đoạt Ảnh",
+  "revision": "R1",
+  "contract": {
+    "effect": "damage",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "damage_ratio": 1.25,
+    "range_world_units": 2.6,
+    "cast_time_seconds": 0.4,
+    "cooldown_seconds": 12,
+    "projectile_speed": 0,
+    "duration_seconds": 0,
+    "element": "metal",
+    "source_element_status": "CANDIDATE_METAL_PENDING_AUTHENTIC_CODEX",
+    "release_gate": "OFF",
+    "candidate_status": "CANDIDATE_GATED_SOURCE_PENDING"
+  },
+  "visual_contract": {
+    "identity": "pair of twin-blade afterimages, two visual beats in one cast, one shared focal contact",
+    "palette": [
+      "cold silver",
+      "cinnabar red",
+      "jade-cyan"
+    ],
+    "one_hit_rule": "Show two coordinated afterimages but one shared contact core only. Never imply two gameplay hit settlements, two target marks, or an added projectile.",
+    "no_projectile": "Direct cast; projectile_speed=0 and no travel event is invented."
+  },
+  "source_review": {
+    "status": "G3_SOURCE_SELF_PASS",
+    "reviewed_on": "2026-11-25",
+    "owner_art_approval": "PENDING",
+    "review_note": "At 64px the charge is visibly two separate leaf-shaped afterimages. At 120px the release is a distinct pair of medium-width crossed arcs with one shared center, not thin Sword qi or one heavy Blade crescent. At 40px contact is one core with two attached traces, not two flashes. These are source-only scale judgments, not Godot/motion/owner approval.",
+    "scale_previews": [
+      {
+        "path": "../review/G3_CHARGE_64PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_CHARGE_64PX_NOT_APPROVAL.json",
+        "display_width_px": 64,
+        "phase": "windup_pair",
+        "backgrounds": [
+          "dark",
+          "light"
+        ]
+      },
+      {
+        "path": "../review/G3_RELEASE_120PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_RELEASE_120PX_NOT_APPROVAL.json",
+        "display_width_px": 120,
+        "phase": "release_pair",
+        "backgrounds": [
+          "dark",
+          "light"
+        ]
+      },
+      {
+        "path": "../review/G3_CONTACT_40PX_NOT_APPROVAL.png",
+        "manifest": "../review/G3_CONTACT_40PX_NOT_APPROVAL.json",
+        "display_width_px": 40,
+        "phase": "single_contact",
+        "backgrounds": [
+          "dark",
+          "light"
+        ]
+      }
+    ],
+    "native_scene_status": "NOT_ATTEMPTED_ACTOR_SOCKET_UNVERIFIED"
+  },
+  "files": [
+    {
+      "role": "windup_pair",
+      "path": "charge_r3.png",
+      "sha256": "cc5e08fc67af151844e08ef1cd772174c6d7bb7879f373a272f661a0a17640a9",
+      "source_px": [
+        1774,
+        887
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "alpha_zero_pct": 90.1263,
+      "alpha_1_23_pct": 3.7977,
+      "alpha_ge_24_pct": 6.076,
+      "display_width_px": 64,
+      "generation_output_id": "exec-41a607bd-778c-43f6-9c2b-7d647014a307",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": null,
+      "prompt": "Original isolated true-alpha WINDUP source for Song Nhận Đoạt Ảnh. Paint exactly two separate compact metallic afterimage leaves, each with a broad filled body rather than a narrow stroke: one small curved silver-red leaf in the upper-left and one small curved silver-jade leaf in the lower-right, each about 25 px long and 8 px thick when the total pair is scaled to 64 px wide. Keep visible transparent space between the two leaves; they do not touch or cross. Their silhouettes should have rounded thick middles and tapered ends, like the soft echoes of two short saber sweeps just starting, not a long slash or an actual weapon. Brushed white-silver interior, modest cinnabar edge on one, modest jade-cyan edge on the other; low-glow windup material with clear silhouette at 1x on dark and light. Compact isolated motif on true transparent RGBA. No character, hand, real blade, handle, target, enemy, impact core, sparkle, damage mark, line, arrow, single feather, projectile, circle, ring, star, scenery, background, text, or frame."
+    },
+    {
+      "role": "release_pair",
+      "path": "release_r1.png",
+      "sha256": "fec3a37cc7019046ffd34f7db0d00b89a070914280a0adb2144a66102ff2c352",
+      "source_px": [
+        1536,
+        1024
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "alpha_zero_pct": 68.8339,
+      "alpha_1_23_pct": 14.7207,
+      "alpha_ge_24_pct": 16.4455,
+      "display_width_px": 120,
+      "generation_output_id": "exec-8b936356-3003-468b-bb82-3687d322c824",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": null,
+      "prompt": "Create an original isolated true-alpha 2D fantasy VFX source for the RELEASE peak of Song Nhận Đoạt Ảnh, a human dual-blade candidate with exactly one committed damage hit. Show exactly two distinct painterly blade-afterimage ribbons sweeping across each other once: one shorter upper-to-lower diagonal behind, one longer lower-to-upper diagonal in front. Both are curved, asymmetric, medium-width leaf-like afterimages with a visible brushed metal body and soft translucent wake, never thin qi lines and never one heavy single crescent. Give the rear echo a restrained cinnabar-red edge and cold silver body; give the leading echo a restrained jade-cyan rim and cold silver body. Let their paths converge at one shared crossing point with a single restrained white-silver contact glint, so the pair reads as one coordinated twin-blade motion with one focal contact, not two impacts. Keep negative space between the outer ends and make both afterimage shapes distinguishable at a 120 px motif width. Isolated transparent RGBA, ample margin. No people, hands, weapons or handles, enemies, separate target marks, damage numbers, repeated impact sparks, projectile, sword beam, thin laser line, single oversized blade crescent, ring, circle, starburst, scenery, background, text, or frame."
+    },
+    {
+      "role": "single_contact",
+      "path": "contact_r1.png",
+      "sha256": "1f5d35d17d1437b2113e97672bd7bcd0e91dd99e86ad36834020ca3dc19772f2",
+      "source_px": [
+        1536,
+        1024
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "alpha_zero_pct": 96.6943,
+      "alpha_1_23_pct": 1.6261,
+      "alpha_ge_24_pct": 1.6796,
+      "display_width_px": 40,
+      "generation_output_id": "exec-eecce97e-b381-48bb-bd97-c008f835232b",
+      "generation_route": "image_gen.imagegen",
+      "reference_sha256": null,
+      "activation_rule": "Only after one positive v63_dual_blade_hit receipt for this skill.",
+      "prompt": "Create an original isolated true-alpha CONTACT glint for Song Nhận Đoạt Ảnh. The paired blade afterimages converge on exactly one target and make exactly one gameplay hit. Show one compact white-silver contact core with two very short opposed curved metal glints curling past the same center, one restrained cinnabar fleck and one restrained jade-cyan fleck. Keep both tiny traces attached to the single core so the silhouette reads as one shared contact, never two flashes. Hand-painted, sharp and luminous, pale metal texture, no large glow cloud; readable as one event at 40 px motif width. Isolated transparent RGBA with most canvas clear. No person, hand, weapon, handle, target, second core, duplicate spark, repeated slash marks, damage numbers, projectile, star, snowflake, ring, circle, scenery, background, text, or frame."
+    }
+  ],
+  "rejected_attempts": [
+    {
+      "role": "windup_pair",
+      "generation_output_id": "exec-534f9b7e-3ff5-4bdc-ab5a-2dc490b4f552",
+      "sha256": "fa91eb68b4ed87e41d74230fd4e7b12d55b0ac63747b1afe12544725c852a603",
+      "reason": "At 64px the two trails merged into one feather-like diagonal, not a legible pair.",
+      "prompt": "Create an original isolated true-alpha 2D fantasy VFX sprite for the WINDUP phase of Song Nhận Đoạt Ảnh, a human dual-blade skill. The motif is a pair of short, translucent blade-afterimage ribbons beginning to cross around one quiet center: two asymmetrical curved leaf-shaped echoes, one slightly higher and fainter, one slightly lower and sharper, with their inner ends close together and their outer ends diverging. Give each echo a substantial painted body so both remain separate at a 64 px motif width; they must not be hair-thin qi lines. Cold silver-white inner edge, restrained cinnabar-red tint on one trailing edge, restrained jade-cyan tint on the other, softly brushed metal shimmer. This is only a gathering windup image, so the center is dim and there is no impact flash. Isolated transparent RGBA with ample margins. No person, body, hand, real weapon, blade handle, target, enemy, hit mark, damage number, projectile, single crescent, ring, circle, starburst, scenery, background, text, or frame. It must read as two coordinated afterimages in one cast, not two completed hits."
+    },
+    {
+      "role": "windup_pair",
+      "generation_output_id": "exec-7487d55d-894e-4601-817b-7995f5f40db5",
+      "sha256": "06f82e1c1e509250573641ca191825cd85d85337808c339e521e24e6ab154b2c",
+      "reason": "Two traces separated at 64px but too thin; reads like narrow qi rather than two blade-afterimage leaves.",
+      "prompt": "Create an isolated true-alpha WINDUP source for Song Nhận Đoạt Ảnh, a human dual-blade skill. The image must show TWO SEPARATE afterimage slivers with visible transparent space between them, not one merged stroke: a short curved silver saber-echo floating in the upper-left, and a second short curved silver saber-echo floating in the lower-right. Keep the two leaf-shaped afterimages opposed but parallel, each with both ends visible; they do not touch, cross, or share a center. Each has a broad painterly blade-like body, softly brushed metal edge, one restrained cinnabar-red trailing tint and one restrained jade-cyan leading tint. At 64 px motif width, viewers must be able to count two individual afterimages at a glance. This is a quiet charge pose with a dim sheen only, no contact flash. Single compact motif, transparent RGBA margins. No figure, hand, literal blade or handle, target, enemy, impact, spark, shared core, connected line, arrow, single feather, projectile, ring, circle, scenery, background, text, or frame."
+    }
+  ],
+  "rights_and_input_note": "Selected and rejected phase sources were generated with image_gen.imagegen using text prompts only. No actor/weapon image, proprietary JX, Source A, or third-party game pixels were generation inputs.",
+  "cost_usd": null,
+  "pve": "HOLD_V63_OFF"
+}

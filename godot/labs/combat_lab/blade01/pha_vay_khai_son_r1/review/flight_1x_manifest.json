@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 180,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
+      "sha256": "1d0d653bb3be20ea2f6dae4b6cca01f055365e473f4660ddae6ea53b13d15a9a",
+      "source_px": [
+        1685,
+        539
+      ],
+      "visible_alpha_bbox": [
+        37,
+        18,
+        1663,
+        531
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.11070110701107011,
+      "preview_image_px": [
+        187,
+        60
+      ]
+    }
+  ]
+}

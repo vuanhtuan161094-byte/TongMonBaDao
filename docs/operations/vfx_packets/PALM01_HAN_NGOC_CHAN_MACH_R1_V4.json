@@ -1,0 +1,140 @@
+{
+  "schema": "tmb-vfx-production-system-v4.1",
+  "packet_id": "PALM01_HAN_NGOC_CHAN_MACH_R1_ART_FIRST_NATIVE",
+  "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+  "school": "palm",
+  "revision": "PALM01_R1_G3_SOURCE_SELF_PASS_NATIVE_REVIEW_PENDING",
+  "catalogue_path": "godot/data/combat/v63_palm_combat_catalog.json",
+  "scene_path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/lab/han_ngoc_chan_mach_lab.tscn",
+  "lab_script": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/lab/han_ngoc_chan_mach_lab.gd",
+  "focused_test": "godot/tests/labs/combat_lab/vfx_palm01_han_ngoc_receipt_test.gd",
+  "declared_contract": {
+    "effect": "damage",
+    "element": "water",
+    "shape": "single_target",
+    "target_limit": 1,
+    "hit_count": 1,
+    "range": 6.0,
+    "radius": 0.0,
+    "cast_time": 0.55,
+    "cooldown": 9.5,
+    "projectile_speed": 0.0,
+    "duration": 0.0
+  },
+  "provenance": {
+    "source_class": "FIRST_PARTY_IMAGEGEN_ORIGINAL_RGBA",
+    "master_quality_status": "MANUAL_ART_REVIEW_REQUIRED",
+    "rights_note": "Charge, release peak, and contact masters are preserved original ImageGen RGBA outputs. Their prompts, output IDs, hashes, and alpha metadata are in the Palm source manifest. The repository G3 helper reproduces only the 1x dark/light review sheets, not the original painted masters.",
+    "generators": [
+      "tools/vfx/prepare_g3_source_review.py"
+    ],
+    "master_files": [
+      {
+        "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/charge_r2.png",
+        "encoding": "png",
+        "role": "compact cold-pressure charge seed"
+      },
+      {
+        "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/peak_r2.png",
+        "encoding": "png",
+        "role": "broad five-crest open-palm pressure wave"
+      },
+      {
+        "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/contact_r1.png",
+        "encoding": "png",
+        "role": "receipt-gated single-target contact glint"
+      }
+    ]
+  },
+  "atlases": [
+    {
+      "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/charge_r2.png",
+      "width": 1536,
+      "height": 1024,
+      "cell_width": 1536,
+      "cell_height": 1024,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored charge pose; no repeated frame"
+    },
+    {
+      "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/peak_r2.png",
+      "width": 1774,
+      "height": 887,
+      "cell_width": 1774,
+      "cell_height": 887,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored release peak pose; no repeated frame"
+    },
+    {
+      "path": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/contact_r1.png",
+      "width": 1774,
+      "height": 887,
+      "cell_width": 1774,
+      "cell_height": 887,
+      "frames": 1,
+      "columns": 1,
+      "layer": "one authored contact pose; receipt gated"
+    }
+  ],
+  "time_contract": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.55,
+    "declared_status_duration_seconds": 0.0,
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "vfx_clock": "LAB_ONLY",
+    "simulated_hit_seconds": 0.55,
+    "visual_fade_end_seconds": 1.4,
+    "demo_loop_seconds": 1.5,
+    "demo_clock_warning": "This isolated candidate preview calls the existing Human skill and MapBattleV2 release path on an in-memory fixture while V6.3/PvE remain OFF. The contact accent is enabled only after one positive v63_skill_hit. This is not live gameplay integration, SaveService use, or physical device QA.",
+    "key_pose_budget_note": "Three independent transparent phase masters; transitions are preview choreography, not additional hits.",
+    "phases": [
+      {
+        "id": "charge",
+        "at_seconds": 0.05,
+        "file": "v4-charge.png",
+        "expected_phase": "compact cold-pressure seed at AS60 candidate palm"
+      },
+      {
+        "id": "peak",
+        "at_seconds": 0.62,
+        "file": "v4-peak.png",
+        "expected_phase": "broad open-palm wave after the cast receipt"
+      },
+      {
+        "id": "contact",
+        "at_seconds": 0.82,
+        "file": "v4-contact.png",
+        "expected_phase": "one compact target-center glint after a positive hit receipt"
+      }
+    ]
+  },
+  "moving_target": {
+    "actor_animation": "AS60 candidate cast_right then attack_right; actual V5 Source A monster actor plays WALK during the 0.55 s windup.",
+    "locked_demo_target_index": 0,
+    "movement_from_seconds": 0.05,
+    "movement_to_seconds": 0.82,
+    "minimum_displacement_px": 39,
+    "contact_anchor": "positive single-target hit receipt target center; contact source is only shown after the receipt",
+    "tracking_rule": "The local MapBattleV2 target moves from world x=5.0 to x=5.55 during the canonical 0.55 s cast; only its positive v63_skill_hit triggers the contact glint.",
+    "receipt_claim": "SIMULATED_VISUAL_ONLY"
+  },
+  "gate_status": {
+    "g3_5_capture": "BLOCKED_LOCALLY_UNTIL_XVFB_RUN",
+    "technical": "FOCUSED_RECEIPT_PASS_NATIVE_VISUAL_PENDING",
+    "art": "MANUAL_ART_REVIEW_REQUIRED",
+    "owner": "OWNER_VISUAL_PENDING",
+    "live": "PVE_INTEGRATION_HOLD",
+    "device": "PHYSICAL_QA_PENDING",
+    "g3_6": "NOT_EXECUTED",
+    "g3_7": "NOT_EXECUTED",
+    "g5": "NOT_EXECUTED"
+  },
+  "proof_contract": {
+    "focused_marker": "PALM01_RECEIPT_TEST_RESULT PASS",
+    "native_marker": "PALM_G35_RECEIPT_PASS",
+    "video_filename": "han-ngoc-chan-mach-r1-g35.mp4",
+    "source": "Use the existing .github/workflows/vfx-shared-skill.yml on the exact Draft PR SHA. Native Xvfb/ffmpeg review is required; headless dummy framebuffer capture is known to fail."
+  }
+}

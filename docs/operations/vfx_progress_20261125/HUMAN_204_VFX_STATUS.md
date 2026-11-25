@@ -6,9 +6,9 @@ Scene presence, source approval, technical status, owner review, and live integr
 - Skill IDs: **2196 unique**
 - Skill families: **420**
 - Human cast masters: **204**
-- Human families with at least one bound LAB scene: **67**
-- Human cast families with at least one bound LAB scene: **64**
-- Distinct Human LAB scene revisions: **89**
+- Human families with at least one bound LAB scene: **69**
+- Human cast families with at least one bound LAB scene: **66**
+- Distinct Human LAB scene revisions: **91**
 - Every ledger row retains its declared `live_integration` value. PvE status is not inferred from scenes.
 
 ## Per-school coverage
@@ -22,8 +22,8 @@ Scene presence, source approval, technical status, owner review, and live integr
 | fist | 183 | 35 | 17 | 15 | 15 | 22 | 22 | 0 | 0 | 17 | 0 | 31 | 39 | 96 |
 | blade | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 68 | 2 | 96 |
 | dual_blade | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
-| spear | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
-| palm | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 55 | 15 | 96 |
+| spear | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
+| palm | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 55 | 15 | 96 |
 | curse | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | formation | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | summon | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
@@ -157,7 +157,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | spear | ho_quan_thuong | `tmb.skill.spear.ho_quan_thuong.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | spear | ho_quan_thuong | `tmb.skill.spear.ho_quan_thuong.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | spear | ho_quan_thuong | `tmb.skill.spear.ho_quan_thuong.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| spear | long_thuong | `tmb.skill.spear.long_thuong.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| spear | long_thuong | `tmb.skill.spear.long_thuong.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/van_long_diem_thuy_preview.tscn |
 | spear | long_thuong | `tmb.skill.spear.long_thuong.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | spear | long_thuong | `tmb.skill.spear.long_thuong.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | spear | long_thuong | `tmb.skill.spear.long_thuong.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
@@ -169,7 +169,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | spear | pha_tran_thuong | `tmb.skill.spear.pha_tran_thuong.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | spear | pha_tran_thuong | `tmb.skill.spear.pha_tran_thuong.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | palm | shared | `tmb.skill.palm.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| palm | han_ngoc_chuong | `tmb.skill.palm.han_ngoc_chuong.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| palm | han_ngoc_chuong | `tmb.skill.palm.han_ngoc_chuong.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/lab/han_ngoc_chan_mach_lab.tscn |
 | palm | han_ngoc_chuong | `tmb.skill.palm.han_ngoc_chuong.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | palm | han_ngoc_chuong | `tmb.skill.palm.han_ngoc_chuong.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | palm | han_ngoc_chuong | `tmb.skill.palm.han_ngoc_chuong.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |

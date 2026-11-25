@@ -1,0 +1,227 @@
+{
+  "schema": "tmb.vfx.ai_source_provenance.v1",
+  "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+  "skill_name": "Liệt Địa Sát Văn",
+  "created_on": "2026-11-25",
+  "repository_baseline": "cde55abb138d150d39e0eadce7a487c68e841fb7",
+  "tool": "ImageGen via tools.image_gen__imagegen",
+  "source_disposition": "RECREATED; all listed revisions failed the final 1x G3 source review and are not accepted game assets.",
+  "rights_note": "No commercial game assets, copied glyphs, or external reference images were supplied to the generator. No claim of final commercial-rights clearance is made by this source manifest.",
+  "items": [
+    {
+      "revision": "R1",
+      "path": "source/formation_zone_active_master.png",
+      "imagegen_output_id": "exec-3daba177-402f-4880-9d7f-e9a3d7632c3f",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "dbd15e311981393db0789f630996d9e0969e29ee7a391ca7899981a0881684a9",
+      "size_bytes": 1296394,
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Fresh generation; three asymmetrical broken earth-vein anchors; no circle; master field.",
+      "prompt": "Create one ORIGINAL production-quality 2D game VFX sprite master for a Vietnamese fantasy cultivation game's HUMAN Formation art Liệt Địa Sát Văn. Transparent true alpha background. A roughly 3:4 top-down ground-field view, one irregular restrained circle of earth-element formation light, sized for a small 1.2-world-unit gameplay zone. The motif is a hand-painted ancient nine-court path: nine unevenly spaced small jade-stone anchor blooms joined by short, curved, imperfect pathways over faint cracked-earth wisps; no mathematically perfect concentric circles or radial star, no UI icon look. Give three small opposing path segments a subtle pinched/downward pull to suggest a finite slow debuff, never stun, trap, damage, or explosion. Layer a compact ivory-white hot spark at a few joints, translucent amber/jade earth energy body, soft low-alpha edges, subdued pebble and dust accents with generous negative space. The center stays mostly transparent and clean, so real characters and monsters remain fully visible. Rich illustrated painterly alpha texture, graceful energetic brush transitions, natural asymmetry, premium classic wuxia mobile game visual language, readable when reduced to 160x160 pixels. Entire effect isolated on transparent background; no ground plate, scene, character, hands, creatures, weapons, labels, numbers, legible writing, logos, borders or text. No vector/neon line geometry, no poster/composition.",
+      "referenced_image_output_ids": null
+    },
+    {
+      "revision": "R1",
+      "path": "source/formation_zone_seed_pose.png",
+      "imagegen_output_id": "exec-7580ec91-a39e-45c0-9c39-b44f9cedfcef",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "0b51826b33e69e9435b0a75189a197714cf1faa6eb9d57cbbec472c4d500d57e",
+      "size_bytes": 238398,
+      "dimensions_px": [
+        1671,
+        941
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Edited from R1 active; earlier field seed with fewer/shorter links.",
+      "prompt": "Create the WINDUP / gathering key pose for the same original earth-formation VFX master, as an actual transparent RGBA gameplay sprite. Keep the exact same visual language and materials from the reference. This is earlier in time: the field is NOT formed yet. Show only three small, separate slate fragments at an asymmetric triangle, just beginning to lift and crack; two short root-vein lines start to grow between them, with their near-white tips still close to the stones. Much of the eventual field remains fully transparent; there must be no closed ring or active zone. Keep the central playable space transparent. The palette remains subdued tarnished gold + translucent jade/blue-green, vivid tiny ivory cores, low-alpha soft light. No character, environment, floor fill, text, regular geometry, additional damage projectile or explosion. Preserve clear transparent pixels around and between forms. Do not duplicate the original finished formation: this is a genuine early stage with fewer stones, shorter broken veins, and less energy.",
+      "referenced_image_output_ids": "exec-3daba177-402f-4880-9d7f-e9a3d7632c3f"
+    },
+    {
+      "revision": "R1",
+      "path": "source/formation_zone_tick_pulse_pose.png",
+      "imagegen_output_id": "exec-0a2ac5eb-073b-4aa2-9143-78ce3b3f0752",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "7165ee44f36cefe14bab71dfd4b398fa72d9a83648e07241eee951fc585f0355",
+      "size_bytes": 881804,
+      "dimensions_px": [
+        1671,
+        941
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Edited from R1 active; localized tick-pulse study; no target included.",
+      "prompt": "Create one original tick-pulse key pose for the SAME Liệt Địa Sát Văn formation-zone sprite language, as an isolated transparent RGBA VFX layer. Preserve the three asymmetrical slate anchors and loose root-vein paths from the reference composition. This is ONE localized pulse at ONE genuine zone damage tick: only a single chosen stone joint gets a compact bright ivory-white jade flash and a short downward earth ripple; the other two anchors remain subdued. Energy briefly travels along one short path and settles; no travelling projectile, no damage slash, no explosion, no fake multiple hits, no targeting reticle, no text. Preserve the central open space, authentic alpha transparency, soft low-alpha jade/blue-green field, hand-painted stone fractures and restrained tarnished-gold accents. Make the pulse silhouette visibly different from the sustained-field pose but still small and readable when reduced. This art cue should only be shown when a real v63_formation_zone_tick receipt authorizes that target; it contains no target or actor.",
+      "referenced_image_output_ids": "exec-3daba177-402f-4880-9d7f-e9a3d7632c3f"
+    },
+    {
+      "revision": "R1",
+      "path": "source/formation_zone_expiry_pose.png",
+      "imagegen_output_id": "exec-cac097ce-5236-4479-8857-60fdf3669e42",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "c69c8091b06e3f1d7d296a026309f18b50eb0f0f69f6363ce02183cb8031a199",
+      "size_bytes": 691311,
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Edited from R1 active; sparse expiry fragments.",
+      "prompt": "Create the final EXPIRY / FADE key pose for the same Liệt Địa Sát Văn earth-formation field, as isolated true transparent PNG source. This occurs only when the real finite Combat V2 zone expires; retain the same asymmetrical three tiny jade mineral nodes and broken earth-vein identity, with no enclosing ring. Most of the luminous connecting cracks have already gone dark and eroded into sparse downward-drifting dusty fragments; keep just one or two very faint short vein remnants and a few warm-gold/ivory specks. The center and most of the original footprint must be nearly transparent so the field visually settles back into the terrain. Make the silhouette strongly more fragmented and dimmer than the active pose, natural, gentle, short-lived, not an explosion and not a reverse projectile. No character, ground/background, text, UI, border, reticle, or added status. Preserve original soft painterly mineral texture and muted translucent jade/earth palette.",
+      "referenced_image_output_ids": "exec-3daba177-402f-4880-9d7f-e9a3d7632c3f"
+    },
+    {
+      "revision": "R2",
+      "path": "r2/source/formation_zone_active_master.png",
+      "imagegen_output_id": "exec-04c27922-48d9-439b-9b03-392a7899589d",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "98b56c783eef3555fbf1377bfdb001572a14f5286f2bde925090487fe3664319",
+      "size_bytes": 825791,
+      "dimensions_px": [
+        1269,
+        1240
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Fresh generation; more visible jade branch body; no circle; master field.",
+      "prompt": "Original isolated, high quality 2D game VFX sprite master, true transparent alpha, for a Vietnamese wuxia fantasy game's Human Formation art Liệt Địa Sát Văn (earth formation field). Make a mostly top-down view of a small circular ground zone, no characters or environment. Read as a living battle formation in 3 uneven ground anchors, not a clean UI circle: three distinct cracked slate-earth outcrops arranged asymmetrically, tied by curving root-like veins and one broken, partial boundary of mineral light; each path has natural hand-painted brush texture, multiple small side branches and gaps, with a faint fourth off-axis light connection so the field feels authored rather than a 3-point diagram. Leave the center open and preserve plenty of transparent negative space; only a few restrained debris motes. Each outcrop has a tiny near-white core, translucent jade / muted blue-green earth energy underneath tarnished warm-gold stone. Soft atmospheric feathering but visible fine painted detail. The art must remain legible when reduced to about 190 pixels across and should not blanket the character or ground. Mysterious tactical zone, quiet gathering field rather than explosion, flame, sword, projectile, damage slash, status icon, or shield. No text, letters, runes, labels, numbers, people, monsters, border, perfect concentric circles, radial star, straight neon geometry, thick opaque ring, poster layout, background.",
+      "referenced_image_output_ids": null
+    },
+    {
+      "revision": "R2",
+      "path": "r2/source/formation_zone_seed_pose.png",
+      "imagegen_output_id": "exec-37dfb5d9-6d0d-4829-a7a5-a42e2a715ec1",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "ae2ebee8e4f066e1f7d1f35d108579c0b94615b88ba00d32de70d8d6b9fb0660",
+      "size_bytes": 222929,
+      "dimensions_px": [
+        1269,
+        1240
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Edited from R2 active; earlier field seed.",
+      "prompt": "Create an earlier GATHER pose for this exact Liệt Địa Sát Văn sprite family. Keep the same color language, translucent jade painterly energy and tiny warm mineral crystals, transparent background and top-down isolated effect. Show the field assembling at a very early instant: just three small separated root-node blossoms, placed unevenly; each has only one short curved jade stroke pointing toward the center, and most later connecting paths are absent. Make the empty middle obvious and avoid any complete circle or joined boundary. Much less luminous area than the active reference so it reads as early gathering. It should remain visible at 180px wide, but tiny white cores must stay compact. No actors, environment, background, text, poster, projectile or impact.",
+      "referenced_image_output_ids": "exec-04c27922-48d9-439b-9b03-392a7899589d"
+    },
+    {
+      "revision": "R2",
+      "path": "r2/source/formation_zone_tick_contact_pose.png",
+      "imagegen_output_id": "exec-72c7e207-c5ac-4e3a-97d8-d05b39f3e7a9",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "6e411b4bb0ce82b0275d065e39f1ecb0c5878d04ebf57a4d2ee64c4b6809d055",
+      "size_bytes": 869981,
+      "dimensions_px": [
+        1536,
+        1024
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Edited from R2 active; isolated tick accent candidate for real receipt only.",
+      "prompt": "From this exact Liệt Địa Sát Văn art, extract and redraw ONLY one localized tick-contact accent as a separate isolated transparent game sprite. Do not include the full field pattern. Show a small single jagged jade earth fissure, no more than one-sixth of the full zone's width, with one compact near-white core, a brief low arc of fractured earth-light, and a few warm mineral grains. Its silhouette should be a tight short downward pulse, not a projectile, slash, explosion, ground circle, status icon or target reticle. Preserve the same hand-painted semi-transparent jade / muted gold material, crisp bright core, soft controlled edge, high contrast at its local 40px intended size. Plenty of transparent pixels around the compact shape. No characters/monsters, environment, text, UI, entire field, repeated marks or background. This asset is only a source candidate for a visual cue after a real `v63_formation_zone_tick` receipt lists a victim.",
+      "referenced_image_output_ids": "exec-04c27922-48d9-439b-9b03-392a7899589d"
+    },
+    {
+      "revision": "R2",
+      "path": "r2/source/formation_zone_expiry_pose.png",
+      "imagegen_output_id": "exec-14cc9327-d657-4cef-865d-60a89dee08bd",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "0c45e7d3ff84ca02fbbd26a17223e18193615dbc90f2ba6dd32c6275450b902d",
+      "size_bytes": 197681,
+      "dimensions_px": [
+        1272,
+        1236
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Edited from R2 active; sparse expiry pose.",
+      "prompt": "Create the genuine EXPIRY pose for the same Liệt Địa Sát Văn earth formation. Keep its three unequal jade-root anchors, transparent background and painterly mobile VFX style. The finite field is ending now: all long energy paths are broken into only a few very short fragments; two of the three anchor crystals have fully gone dark and mostly sunk away, and the remaining one is a weak narrow ivory/jade ember that is losing light. A few tiny gold mineral specks drift down. Broad empty center remains transparent; no circle edge or complete geometry. Silhouette should be noticeably smaller, sparser and much dimmer than the active field. No projectile, explosion, enemy, character, text, UI, ground or background. This transition corresponds only to true encounter-zone expiry, not a gameplay damage cue.",
+      "referenced_image_output_ids": "exec-04c27922-48d9-439b-9b03-392a7899589d"
+    },
+    {
+      "revision": "R3",
+      "path": "r3/source/formation_zone_active_candidate.png",
+      "imagegen_output_id": "exec-0c61dc76-adb8-4ea3-97aa-9d0702b16933",
+      "route": "tools.image_gen__imagegen",
+      "source_class": "RECREATED",
+      "source_sha256": "eac486bd7251b1004089f8127cb7cf56509f2ad91f01015f86c35d2f2f223bcf",
+      "size_bytes": 1122367,
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "external_reference_used": false,
+      "rights_status": "No commercial/external image imported; generated-source route recorded, not a separate license opinion.",
+      "review_status": "G3_ART_REWORK_REQUIRED",
+      "description": "Fresh generation; stronger jade energy; source review still failed at 1x.",
+      "prompt": "Paint an original 2D transparent-background gameplay VFX sprite, in hand-illustrated mobile wuxia style, for Liệt Địa Sát Văn, a sustained Human earth formation field. This must be a readable functional battle field when reduced to 180px wide, not a poster. Top-down ground plane, but show no actual ground or environment. Its footprint is broadly circular yet has NO drawn circle: three unequal branching earth fissures occupy different parts of the footprint, one long curved path on the left, a shorter fork at upper right, and a broken lower spur. Their irregular paths converge near but do not cover the open center. Make the energy body a textured, semi-transparent saturated jade/teal brush stroke about 7–10 display pixels wide with a thin near-white core; feathered soft halo stays low-opacity. A few tiny warm-gold mineral flakes embed in the fissures and three distinct small ground seals anchor the field. This should feel like a tactical formation conducting earth currents, not elemental explosion or UI. Real painterly variation, substantial value contrast so it reads on both near-black and beige ground, but retain transparency so actors remain visible beneath it. A little earth/crystal texture is okay, but NO broad opaque rock plates or opaque grey fog. No closed loop, ring, concentric circles, star, grid, regular geometry, runes/text, labels, characters, creatures, damage slashes, projectile, flames, giant glow or background.",
+      "referenced_image_output_ids": null
+    }
+  ],
+  "review": {
+    "scripts": [
+      "tools/vfx/prepare_g3_source_review.py"
+    ],
+    "projected_preview": "r2/review/g3_projected_default_camera_1x.png",
+    "projected_scale": "radius 1.1 cells -> estimated 43x22 screen px at camera zoom 0.55, derived from SectIsometricWorldV1 HALF_W=25 HALF_H=13",
+    "result": "G3_ART_REWORK_REQUIRED; no Godot preview, CI, or gameplay test was run."
+  }
+}

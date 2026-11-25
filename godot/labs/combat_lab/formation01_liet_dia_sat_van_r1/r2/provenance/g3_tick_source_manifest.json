@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 48,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/formation01_liet_dia_sat_van_r1/r2/source/formation_zone_tick_contact_pose.png",
+      "sha256": "6e411b4bb0ce82b0275d065e39f1ecb0c5878d04ebf57a4d2ee64c4b6809d055",
+      "source_px": [
+        1536,
+        1024
+      ],
+      "visible_alpha_bbox": [
+        585,
+        241,
+        949,
+        749
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.13186813186813187,
+      "preview_image_px": [
+        203,
+        135
+      ]
+    }
+  ]
+}

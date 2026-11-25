@@ -1,0 +1,126 @@
+[
+  {
+    "phase": "flight",
+    "intended_motif_width_px_at_1280x720": 180,
+    "original_generated_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/originals/exec-d2c875fb-70f1-40f4-b479-4c8e27df7437.png",
+    "original_sha256": "b4b1cb5a33f4deaa236e7db747010b68cdcf28d7315964ab3b46ccee6b04353f",
+    "original_dimensions_px": [
+      1927,
+      816
+    ],
+    "original_alpha_extrema": [
+      0,
+      254
+    ],
+    "production_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
+    "production_sha256": "1d0d653bb3be20ea2f6dae4b6cca01f055365e473f4660ddae6ea53b13d15a9a",
+    "production_dimensions_px": [
+      1685,
+      539
+    ],
+    "crop_box_xyxy": [
+      125,
+      127,
+      1810,
+      666
+    ],
+    "crop_rule": "Crop to alpha >= 2 bounding box plus 4px transparent margin; pixels inside crop copied without retouching. Alpha < 2 outside this box was trimmed for source framing.",
+    "production_alpha_extrema": [
+      0,
+      254
+    ]
+  },
+  {
+    "phase": "charge",
+    "intended_motif_width_px_at_1280x720": 85,
+    "original_generated_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/originals/exec-2133c732-cbc7-4670-8b32-8e5444430f25.png",
+    "original_sha256": "a7dc299bc4e4b8c296bcf6a08e325719ce100ee6269b50183020dadc29594546",
+    "original_dimensions_px": [
+      1774,
+      887
+    ],
+    "original_alpha_extrema": [
+      0,
+      254
+    ],
+    "production_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
+    "production_sha256": "7f237c7c51d9ea4dc6d79c883cb028478f2603b643e9d89833e4c1d7b734d03f",
+    "production_dimensions_px": [
+      856,
+      415
+    ],
+    "crop_box_xyxy": [
+      442,
+      212,
+      1298,
+      627
+    ],
+    "crop_rule": "Crop to alpha >= 2 bounding box plus 4px transparent margin; pixels inside crop copied without retouching. Alpha < 2 outside this box was trimmed for source framing.",
+    "production_alpha_extrema": [
+      0,
+      254
+    ]
+  },
+  {
+    "phase": "contact",
+    "intended_motif_width_px_at_1280x720": 50,
+    "original_generated_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/originals/exec-d5706eb6-8658-44a3-819e-863274b96f15.png",
+    "original_sha256": "72b99219140e561a162b32ea935558383c18ab72e82c0836f50f64df7f593fde",
+    "original_dimensions_px": [
+      1536,
+      1024
+    ],
+    "original_alpha_extrema": [
+      0,
+      254
+    ],
+    "production_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png",
+    "production_sha256": "e42596325f74561c2419c9891672e2a4d58558bbed90d2abc2a1dd0f248b2525",
+    "production_dimensions_px": [
+      533,
+      402
+    ],
+    "crop_box_xyxy": [
+      497,
+      295,
+      1030,
+      697
+    ],
+    "crop_rule": "Crop to alpha >= 2 bounding box plus 4px transparent margin; pixels inside crop copied without retouching. Alpha < 2 outside this box was trimmed for source framing.",
+    "production_alpha_extrema": [
+      0,
+      254
+    ]
+  },
+  {
+    "phase": "fade",
+    "intended_motif_width_px_at_1280x720": 80,
+    "original_generated_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/originals/exec-03bfadbf-2d80-427f-b794-484062666119.png",
+    "original_sha256": "5664bb9ed7bdb5660b72cf4567a6d728ca46ca5532725125c650e9cf86045e48",
+    "original_dimensions_px": [
+      1672,
+      941
+    ],
+    "original_alpha_extrema": [
+      0,
+      251
+    ],
+    "production_path": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png",
+    "production_sha256": "11b58b97c7583f26232a680c4be799fcd767314b02b48cdee0c34948eb9f2e0b",
+    "production_dimensions_px": [
+      284,
+      110
+    ],
+    "crop_box_xyxy": [
+      692,
+      427,
+      976,
+      537
+    ],
+    "crop_rule": "Crop to alpha >= 2 bounding box plus 4px transparent margin; pixels inside crop copied without retouching. Alpha < 2 outside this box was trimmed for source framing.",
+    "production_alpha_extrema": [
+      0,
+      251
+    ]
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 64,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/charge_r2.png",
+      "sha256": "61bf937a56ff7cbcefe25b220ef831e12252b5ed8e25692a02964213edc43112",
+      "source_px": [
+        1536,
+        1024
+      ],
+      "visible_alpha_bbox": [
+        467,
+        248,
+        1085,
+        763
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.10355987055016182,
+      "preview_image_px": [
+        159,
+        106
+      ]
+    }
+  ]
+}

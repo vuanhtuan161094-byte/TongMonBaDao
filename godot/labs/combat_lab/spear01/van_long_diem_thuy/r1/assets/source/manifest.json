@@ -1,0 +1,178 @@
+{
+  "schema": "tmb.vfx.source_art_manifest.v1",
+  "skill_id": "tmb.skill.spear.long_thuong.active_01.human",
+  "family_id": "tmb.skill.spear.long_thuong.active_01",
+  "skill_name_vi": "Vân Long Điểm Thủy",
+  "school": "spear",
+  "branch": "long_thuong",
+  "tier": "human",
+  "revision": "R1",
+  "canonical_contract": {
+    "effect": "damage",
+    "shape": "line",
+    "target_limit": 2,
+    "range": 6.2,
+    "cast_time": 0.38,
+    "cooldown": 10.0,
+    "projectile_speed": 0.0,
+    "element": "metal",
+    "hit_count": 1
+  },
+  "motion_truth": "The combat catalog declares projectile_speed=0. The art is a one-axis thrust trace attached to the caster weapon movement; it is not a free-flight projectile and cannot add a hit. Contact art is emitted only from a matching v63_spear_line_hit receipt, once per actual target.",
+  "source_route": {
+    "provider": "OpenAI image generation",
+    "tool": "image_gen.imagegen",
+    "model": "not surfaced by tool",
+    "cost_usd": "unknown; provider returned no cost",
+    "original_files_preserved": true,
+    "external_reference_art": "none; all poses are independently generated or edited from this candidate set",
+    "redistribution_rights": "No proprietary JX/Source artwork was used. External commercial redistribution terms were not independently audited."
+  },
+  "pose_sources": [
+    {
+      "phase": "charge",
+      "path": "assets/source/charge_r1.png",
+      "reference": "assets/source/peak_r2.png",
+      "reference_sha256": "ab47f16ecdfa5c968ecc97c90c993e7726509f33026dc0e80fa442a9f7ec3998",
+      "prompt": "Create the CHARGE pose for the same Vân Long Điểm Thủy light-spear effect shown in the reference, before the thrust is released. Maintain its silver-blue/cyan metal-light materials and one subtle cloud-dragon ribbon language. This pre-release pose is compact, around 48 pixels wide at game scale: a short bright silver-white hot point at the caster's spear tip with two translucent uneven energy curls briefly gathering behind it. The curls are partial and open, not a circle; no long forward thrust yet. It must remain crisp and visibly different from the reference's long peak pose, with clear light volume at 1x. Hand-painted first-party VFX, soft restrained edge falloff, transparent RGBA. No caster, hand, physical weapon, full-length spear, full projectile, scenery, floor, background, text, glyph, decorative ring, or explosion.",
+      "sha256": "b1570eb7920534b7c59d5047158388f545c5333e07266c2f11c4d054982782ac",
+      "bytes": 1061723,
+      "source_px": [
+        1536,
+        1024
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_transparency_pct": 85.06,
+      "visible_alpha_bbox_threshold_24": [
+        459,
+        307,
+        1160,
+        721
+      ],
+      "displayed_motif_width_px_at_1x": 48,
+      "provider_original_file": "/workspace/generated_images/exec-035eecce-e1c1-4346-a379-2a36b3b673a3.png",
+      "source_state": "RECREATED_AI_ORIGINAL"
+    },
+    {
+      "phase": "peak_release",
+      "path": "assets/source/peak_r2.png",
+      "reference": "assets/source/peak_r1_rejected.png",
+      "reference_sha256": "b7ab7f21374f312ccc3e7542843dade0d9cc467be6b0ba9e19ebabb64474c41f",
+      "prompt": "Repaint the reference as a stronger, more readable peak pose for Vân Long Điểm Thủy at 1x. Preserve one horizontal linear thrust to the right and its clean silver-white/cyan metal-light palette, but make the hero silhouette clearly legible: a compact pointed luminous spear-shaped energy head at front, a translucent cyan-silver ribbon body around a narrow white-hot continuous core, and one uneven cloud-dragon trace coiling once around the middle before streaming left. At 150 pixels wide on screen the body should vary from 5 to 16 pixels tall with a strong sharp tip, visible soft volume and a few crisp edges; it must not reduce to a hairline or a flat logo. Hand-painted original game VFX, translucent luminous material, restrained halo, asymmetrical motion direction. One isolated true transparent RGBA sprite. No physical metal spear, no guard or hilt, no creature anatomy, no circle, no extra copies, no background, no UI or text.",
+      "sha256": "ab47f16ecdfa5c968ecc97c90c993e7726509f33026dc0e80fa442a9f7ec3998",
+      "bytes": 757413,
+      "source_px": [
+        2172,
+        724
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_transparency_pct": 71.18,
+      "visible_alpha_bbox_threshold_24": [
+        53,
+        171,
+        2110,
+        537
+      ],
+      "displayed_motif_width_px_at_1x": 150,
+      "provider_original_file": "/workspace/generated_images/exec-8181d721-3832-414c-825f-53ee76a53eec.png",
+      "source_state": "RECREATED_AI_ORIGINAL",
+      "reference_status": "REJECTED_PREVIOUS_REVISION; retained as edit provenance"
+    },
+    {
+      "phase": "confirmed_contact",
+      "path": "assets/source/contact_r1.png",
+      "reference": "assets/source/peak_r2.png",
+      "reference_sha256": "ab47f16ecdfa5c968ecc97c90c993e7726509f33026dc0e80fa442a9f7ec3998",
+      "prompt": "Create one CONTACT peak source pose for the same Vân Long Điểm Thủy metal-light thrust, occurring only when an actual hit receipt confirms that target. At 1x it should read at about 42 pixels wide: one compact white-hot spear-tip glint pointed to the right, a translucent silver-cyan body, and three uneven short cloud-feather splinters peeling backward from the exact contact point. Keep it crisp, directional and localized, with a small soft halo, visibly part of the reference's cloud-wrapped spear-trace identity. True transparent RGBA. No target, actor, blood, extra strike, long projectile, circle, ring, generic starburst, glyph, scenery, floor or background.",
+      "sha256": "5ca6ecf790750f74586545dc61c89511d305c6f9550acb4a55f9792f2f469aa6",
+      "bytes": 278371,
+      "source_px": [
+        1866,
+        843
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "opaque_transparency_pct": 92.75,
+      "visible_alpha_bbox_threshold_24": [
+        736,
+        232,
+        1315,
+        533
+      ],
+      "displayed_motif_width_px_at_1x": 42,
+      "provider_original_file": "/workspace/generated_images/exec-9e3c0d83-1ea8-4af8-ad92-41f95181ef5e.png",
+      "source_state": "RECREATED_AI_ORIGINAL"
+    },
+    {
+      "phase": "dissolve",
+      "path": "assets/source/fade_r1.png",
+      "reference": "assets/source/peak_r2.png",
+      "reference_sha256": "ab47f16ecdfa5c968ecc97c90c993e7726509f33026dc0e80fa442a9f7ec3998",
+      "prompt": "Create the FADE / DISSOLVE source pose for the same Vân Long Điểm Thủy silver-blue metal-light thrust in the reference. This occurs after the confirmed line impact; energy is thinning and dispersing, not causing another strike. Preserve its cloud-jade curl identity but break it into two unequal short translucent feather wisps and a few tiny pale motes, no long central spear stroke; compressed about 58 pixels wide at native game scale. Keep the residual light visible at 1x on dark and light backgrounds, softly trailing to transparent, with crisp edge fragments near the former white core. Original hand-painted FX, true RGBA transparency. No actor, no target, no weapon, no extra attack, no rings, no glyph, no scenery, no floor, no background, no text.",
+      "sha256": "5615db468e42b93e3080eda60a6ff0dee15ef8f343aa166f78ca68c4dfb0cb71",
+      "bytes": 403279,
+      "source_px": [
+        1744,
+        901
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "opaque_transparency_pct": 87.63,
+      "visible_alpha_bbox_threshold_24": [
+        505,
+        252,
+        1272,
+        580
+      ],
+      "displayed_motif_width_px_at_1x": 58,
+      "provider_original_file": "/workspace/generated_images/exec-09864132-2880-4865-9bad-c5a5a7166c2a.png",
+      "source_state": "RECREATED_AI_ORIGINAL"
+    }
+  ],
+  "source_qc": {
+    "g3_source_review_script": "tools/vfx/prepare_g3_source_review.py",
+    "review_evidence": [
+      "evidence/g3_review_charge_r1_motif48.png",
+      "evidence/g3_review_peak_r2_motif150.png",
+      "evidence/g3_review_contact_r1_motif42.png",
+      "evidence/g3_review_fade_r1_motif58.png"
+    ],
+    "review_scale": "charge 48px; peak 150px; contact 42px; fade 58px intended motif width at 1x",
+    "dark_and_light_backgrounds": "human visually inspected source-only helper outputs for all four RGBA masters",
+    "g3_status": "G3_SOURCE_SELF_PASS; G3.5 blocked because the available Godot headless dummy display has no framebuffer readback; manual owner review pending",
+    "source_review_is_not_godot_or_owner_approval": true,
+    "g3_5_status": "BLOCKED_NATIVE_FRAMEBUFFER_READBACK_UNAVAILABLE"
+  },
+  "integration": {
+    "atlas_status": "separate authored RGBA masters; no atlas yet",
+    "scene_status": "isolated preview-only scene and native runtime created; live MapBattleV2 two-target receipt path passes; screenshot blocked under headless dummy renderer; G3.5 pending",
+    "in_game_asset_qc_pass": false,
+    "runtime_evidence": {
+      "scene": "van_long_diem_thuy_preview.tscn",
+      "runtime_test": "vfx_spear_long_thrust_receipt_test.gd",
+      "runtime_result": "PASS: exact skill ID, moving MonsterCatalogueV2 actors, two real v63_spear_line_hit receipts, target_limit=2, outside target unchanged",
+      "native_framebuffer_capture": "BLOCKED: DisplayServer headless dummy exposes no framebuffer readback; no screenshot generated"
+    }
+  },
+  "discarded_reference_sources": [
+    {
+      "phase": "peak_release",
+      "path": "assets/source/peak_r1_rejected.png",
+      "sha256": "b7ab7f21374f312ccc3e7542843dade0d9cc467be6b0ba9e19ebabb64474c41f",
+      "provider_original_file": "/workspace/generated_images/exec-3ae10753-ecdb-4f13-8606-9ccb55f38e73.png",
+      "route": "OpenAI image_gen.imagegen",
+      "status": "retained only as the image-edit reference for peak_r2; rejected as the final peak master; no in-game use",
+      "prompt_record": "not recovered from tool history; the selected peak_r2 prompt is recorded verbatim in pose_sources"
+    }
+  ]
+}

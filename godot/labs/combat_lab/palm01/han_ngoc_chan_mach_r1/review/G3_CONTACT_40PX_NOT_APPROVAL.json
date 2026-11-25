@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 40,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/palm01/han_ngoc_chan_mach_r1/source/contact_r1.png",
+      "sha256": "daa82923a4ecf45b8fdd6ef749c9ec0cdddced94128559a191bd080e749c01f6",
+      "source_px": [
+        1774,
+        887
+      ],
+      "visible_alpha_bbox": [
+        638,
+        258,
+        1134,
+        611
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.08064516129032258,
+      "preview_image_px": [
+        143,
+        72
+      ]
+    }
+  ]
+}

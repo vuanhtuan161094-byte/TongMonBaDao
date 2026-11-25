@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 85,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
+      "sha256": "7f237c7c51d9ea4dc6d79c883cb028478f2603b643e9d89833e4c1d7b734d03f",
+      "source_px": [
+        856,
+        415
+      ],
+      "visible_alpha_bbox": [
+        7,
+        7,
+        850,
+        408
+      ],
+      "alpha_range": [
+        0,
+        254
+      ],
+      "display_factor": 0.10083036773428232,
+      "preview_image_px": [
+        86,
+        42
+      ]
+    }
+  ]
+}

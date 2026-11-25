@@ -1,0 +1,30 @@
+{
+  "type": "G3_SOURCE_ONLY_NO_GODOT_NO_ART_APPROVAL",
+  "motif_width_px_at_intended_1x": 58,
+  "warning": "Preview scale MUST match intended Godot scale. Human reviews art/motion.",
+  "sources": [
+    {
+      "source": "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/fade_r1.png",
+      "sha256": "5615db468e42b93e3080eda60a6ff0dee15ef8f343aa166f78ca68c4dfb0cb71",
+      "source_px": [
+        1744,
+        901
+      ],
+      "visible_alpha_bbox": [
+        505,
+        252,
+        1272,
+        580
+      ],
+      "alpha_range": [
+        0,
+        253
+      ],
+      "display_factor": 0.07561929595827901,
+      "preview_image_px": [
+        132,
+        68
+      ]
+    }
+  ]
+}
