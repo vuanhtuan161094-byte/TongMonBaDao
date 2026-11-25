@@ -1488,7 +1488,8 @@
         "labs/combat_lab/talisman01/assets/thunder_talisman_atlas.webp",
         "labs/combat_lab/talisman01/assets/thunder_impact_burst.png"
       ],
-      "review_note": "Factory uses the existing first-party R4 lightning talisman atlas and impact texture. Projectile motion follows real MapBattle cast/release timing; contact requires the exact positive talisman hit receipt. Twelve source poses do not establish continuous-motion approval. Owner pending; PvE HOLD."
+      "review_note": "Factory uses the existing first-party R4 lightning talisman atlas and impact texture. Projectile motion follows real MapBattle cast/release timing; contact requires the exact positive talisman hit receipt. Twelve source poses do not establish continuous-motion approval. Owner pending; PvE HOLD.",
+      "review_stages": "Native 1280×720/20 fps H.264 TECH PASS · real cast/release/hit receipts · 12 source poses; continuous motion review pending · owner pending · PvE HOLD"
     },
     {
       "id": "tmb.skill.talisman.hoa_phu.active_01.human",
@@ -1513,7 +1514,8 @@
         "labs/combat_lab/talisman06/assets/tal06_impact_atlas.webp",
         "labs/combat_lab/talisman06/assets/tal06_foot_ember.webp"
       ],
-      "review_note": "Factory selects existing fire seal, comet, impact, and ember phases from TAL06. Canonical 8.5 projectile speed and one-target cap remain catalog-owned; exact hit receipt gates contact. Owner and full motion review pending; PvE HOLD."
+      "review_note": "Factory selects existing fire seal, comet, impact, and ember phases from TAL06. Canonical 8.5 projectile speed and one-target cap remain catalog-owned; exact hit receipt gates contact. Owner and full motion review pending; PvE HOLD.",
+      "review_stages": "Native 1280×720/20 fps H.264 TECH PASS · real cast/release/hit receipts · source frame review pending · owner pending · PvE HOLD"
     },
     {
       "id": "tmb.skill.talisman.phong_an_phu.active_01.human",
@@ -1534,7 +1536,8 @@
         "labs/combat_lab/vfx_factory/registry.json",
         "labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp"
       ],
-      "review_note": "Uses only the existing 180×216 first-party PAF01 crop as a small target mark; the missing TAL11 charge/stream/contact atlas is not invented. Start, six-second sustain, and end are gated to the real owner-scoped v63_talisman_mark_applied receipt and its until time. Low-resolution static source; owner review pending; PvE HOLD."
+      "review_note": "Uses only the existing 180×216 first-party PAF01 crop as a small target mark; the missing TAL11 charge/stream/contact atlas is not invented. Start, six-second sustain, and end are gated to the real owner-scoped v63_talisman_mark_applied receipt and its until time. Low-resolution static source; owner review pending; PvE HOLD.",
+      "review_stages": "Native 1280×720/20 fps H.264 TECH PASS · actual owner mark receipt and duration · one 180×216 static crop · owner pending · PvE HOLD"
     },
     {
       "id": "tmb.skill.talisman.phong_an_phu.active_02.human",
@@ -1557,7 +1560,7 @@
         "labs/combat_lab/talisman12/art_sources/paf02_r2_impact_paint.webp"
       ],
       "review_note": "The shared renderer spans the existing PAF02 jade wind-line art from hand socket to the selected third target during real MapBattleV2 cast/release. Current fixture emits no v63_talisman_mark_applied event, so no mark contact or sustain is shown. Canonical line shape and three-target cap remain data-owned; status/power are not fabricated. Static source art and owner review pending; PvE HOLD.",
-      "review_stages": "Godot Factory cast/release native capture · no owner mark receipt was emitted · contact and sustain remain hidden · owner review pending · PvE HOLD"
+      "review_stages": "Native 1280×720/20 fps H.264 TECH PASS · real cast/release only · no owner mark receipt; contact/sustain hidden · owner pending · PvE HOLD"
     }
   ],
   "updated_at": "2026-11-25"

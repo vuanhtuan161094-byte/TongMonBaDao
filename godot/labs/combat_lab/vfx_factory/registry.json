@@ -8180,7 +8180,7 @@
         "release": "flight"
       },
       "source_g3": "EXISTING_FIRST_PARTY_R4_RGBA_ATLAS; 12 POSES; FACTORY_ART_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "12_SOURCE_POSES_SHARED_FACTORY_ADAPTER; CONTINUOUS_MOTION_REVIEW_PENDING",
@@ -8372,7 +8372,8 @@
         "labs/combat_lab/talisman01/assets/thunder_impact_burst.png"
       ],
       "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
-      "review_note": "Factory uses the existing first-party R4 lightning talisman atlas and impact texture. Projectile motion follows real MapBattle cast/release timing; contact requires the exact positive talisman hit receipt. Twelve source poses do not establish continuous-motion approval. Owner pending; PvE HOLD."
+      "review_note": "Factory uses the existing first-party R4 lightning talisman atlas and impact texture. Projectile motion follows real MapBattle cast/release timing; contact requires the exact positive talisman hit receipt. Twelve source poses do not establish continuous-motion approval. Owner pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_SKILL_CAST_RELEASE_AND_EXACT_POSITIVE_TALISMAN_HIT; SYNTHETIC=0"
     },
     {
       "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
@@ -8449,7 +8450,7 @@
         "release": "flight"
       },
       "source_g3": "EXISTING_FIRST_PARTY_RGBA_FIRE_TALISMAN_ATLASES; FRAME_REVIEW_PENDING",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "EXISTING_FIRE_SEAL_AND_COMET_FLIPBOOKS; FACTORY_MOTION_REVIEW_PENDING",
@@ -8805,7 +8806,8 @@
         "labs/combat_lab/talisman06/assets/tal06_foot_ember.webp"
       ],
       "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
-      "review_note": "Factory selects existing fire seal, comet, impact, and ember phases from TAL06. Canonical 8.5 projectile speed and one-target cap remain catalog-owned; exact hit receipt gates contact. Owner and full motion review pending; PvE HOLD."
+      "review_note": "Factory selects existing fire seal, comet, impact, and ember phases from TAL06. Canonical 8.5 projectile speed and one-target cap remain catalog-owned; exact hit receipt gates contact. Owner and full motion review pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_SKILL_CAST_RELEASE_AND_EXACT_POSITIVE_TALISMAN_HIT; SYNTHETIC=0"
     },
     {
       "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
@@ -8881,7 +8883,7 @@
       "draw_layer": "BEHIND",
       "phase_aliases": {},
       "source_g3": "EXISTING_FIRST_PARTY_PAF01_R6_180x216_CROPPED_SOURCE; LOW_RES_STATIC_STILL",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "STATIC_SOURCE_STILL; START_SUSTAIN_END_CLOCKED_BY_REAL_MARK_DURATION",
@@ -8951,7 +8953,8 @@
         "godot/labs/combat_lab/talisman11/art_sources/paf01_r6_illustrated_source.webp"
       ],
       "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch4_20261125/manifest.json",
-      "review_note": "Uses only the existing 180×216 first-party PAF01 crop as a small target mark; the missing TAL11 charge/stream/contact atlas is not invented. Start, six-second sustain, and end are gated to the real owner-scoped v63_talisman_mark_applied receipt and its until time. Low-resolution static source; owner review pending; PvE HOLD."
+      "review_note": "Uses only the existing 180×216 first-party PAF01 crop as a small target mark; the missing TAL11 charge/stream/contact atlas is not invented. Start, six-second sustain, and end are gated to the real owner-scoped v63_talisman_mark_applied receipt and its until time. Low-resolution static source; owner review pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_SKILL_CAST_AND_OWNER_SCOPED_MARK_APPLIED; SIX_SECOND_MARK_UNTIL; NO_DAMAGE; SYNTHETIC=0"
     },
     {
       "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
@@ -9063,7 +9066,7 @@
       "draw_layer": "BEHIND",
       "phase_aliases": {},
       "source_g3": "EXISTING_FIRST_PARTY_PAF02_R2_LINE_AND_IMPACT_PAINT; TWO_STATIC_PHASE_STILLS",
-      "native_status": "NATIVE_CAPTURE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
       "native_ready": false,
       "motion_status": "TWO_SOURCE_STILLS; MARK_START_SUSTAIN_END_RECEIPT_GATED",
@@ -9147,7 +9150,8 @@
           "to_actor_id": "talisman_factory_target_active_02_03",
           "angle_offset_radians": 0.0
         }
-      }
+      },
+      "native_event_status": "REAL_MAPBATTLE_SKILL_CAST_AND_RELEASE; NO_V63_TALISMAN_MARK_APPLIED_EVENT; MARK_CONTACT_AND_SUSTAIN_HIDDEN; SYNTHETIC=0"
     }
   ],
   "batch_status": {
@@ -9173,12 +9177,12 @@
     },
     "talisman": {
       "expected_count": 14,
-      "technical_status": "NATIVE_CAPTURE_PENDING",
-      "last_capture_index": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
-      "video": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
-      "contact_sheet": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
-      "receipt_status": "FOUR_NEW_CANDIDATES_PENDING_NATIVE_CAPTURE; EXISTING_10_RECEIPT_RESULTS_PRESERVED; PvE=HOLD",
-      "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+      "last_capture_index": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_batch4_capture_index.json",
+      "video": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_factory_batch4_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/talisman_factory_batch4_20261125/review/native/talisman_factory_batch4_contact_sheet_1x.png",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURES_14_SKILLS; CONFIGURED_EVENT_COUNTS_IN_CAPTURE_INDEX; PAF02_CAST_RELEASE_ONLY_NO_MARK; SYNTHETIC=0",
+      "visual_review_status": "NATIVE_1X_CHARGE_RELEASE_CONTACT_OR_STATE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_AND_OWNER_REVIEW_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"
     },
