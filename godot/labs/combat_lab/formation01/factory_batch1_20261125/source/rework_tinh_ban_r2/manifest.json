@@ -1,0 +1,59 @@
+{
+  "schema": "tmb.vfx_art_rework.v1",
+  "batch_id": "formation_tinh_ban_ho_tam_r2_20261125",
+  "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+  "name_vi": "Tinh Bàn Hộ Tâm",
+  "revision": "R2_DAMAGE_SEMANTIC_16_POSE_SOURCE_CANDIDATE",
+  "source_class": "FIRST_PARTY_CODE_PAINTED_PIL_RGBA_NO_EXTERNAL_PIXELS",
+  "generator": "tools/vfx/formation_tinh_ban_rework_r2.py",
+  "supersedes": null,
+  "preserved_source": "The five original RGBA atlases, masters, original manifest and 17-skill capture remain unchanged. This isolated revision applies only to Tinh Bàn Hộ Tâm.",
+  "canonical": {
+    "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+    "effect": "damage",
+    "shape": "circle",
+    "target_limit": 3,
+    "cast_time": 0.45,
+    "radius": 1.2
+  },
+  "atlas": {
+    "path": "tinh_ban_ho_tam_r2_16pose_rgba.png",
+    "encoding": "PNG RGBA8",
+    "sha256": "8b903fe04c646f6e806cb3e80150de618850285658cbecd87e380e8bee84522e",
+    "dimensions_px": [1024, 1024],
+    "cell_px": [256, 256],
+    "grid": [4, 4],
+    "poses": 16,
+    "phase_order": ["charge", "release", "contact", "fade"],
+    "poses_per_phase": 4
+  },
+  "source_review": {
+    "alpha": "SELF_PASS_TRUE_RGBA_ALPHA_EXTREMA_0_255",
+    "1x_contrast_dark": "SELF_REVIEW_DAMAGE_BURST_READS_AS_ATTACK",
+    "1x_contrast_light": "VISIBLE_WITH_REDUCED_SOFT_GLOW_CONTRAST",
+    "continuous_motion": "FOUR_AUTHORED_POSES_PER_PHASE; NATIVE_CADENCE_REVIEW_PENDING",
+    "art_quality": "CODE_PAINTED_CANDIDATE; PREMIUM_STYLE_AND_OWNER_REVIEW_PENDING"
+  },
+  "review_sheets": [
+    {
+      "path": "tinh_ban_ho_tam_r2_contact_sheet_1x_dark.png",
+      "sha256": "7fe3ef1bb6eb04c8e9adfdbd5e3ef92ad9c63a2433d7dea4e81b284edd828fa1"
+    },
+    {
+      "path": "tinh_ban_ho_tam_r2_contact_sheet_1x_light.png",
+      "sha256": "dd4110461f8adca42ccc7a9f81534c0be61f643e8e054205d93fb1c505ab8694"
+    }
+  ],
+  "gates": {
+    "native_tech": "PENDING",
+    "native_art_self_review": "PENDING",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  },
+  "integrity": {
+    "gameplay_events_created": false,
+    "damage_or_status_simulated": false,
+    "rigged": false,
+    "old_rgba_sources_modified": false
+  }
+}
