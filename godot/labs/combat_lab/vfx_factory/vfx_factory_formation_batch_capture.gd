@@ -309,8 +309,7 @@ func _feed_receipt(event: Dictionary) -> void:
 	var trace_target_id := str(event.get("target_id", event.get("target", "")))
 	if not trace_target_id.is_empty() and not trace_target_ids.has(trace_target_id):
 		trace_target_ids.append(trace_target_id)
-	var event_trace: Array = _records[record_index].get("event_trace", [])
-	event_trace.append({
+	var trace_row := {
 		"event_type":str(event.get("type", "")),
 		"event_id":str(event.get("event_id", "")),
 		"capture_frame_seconds":_movie_seconds(),
@@ -321,7 +320,16 @@ func _feed_receipt(event: Dictionary) -> void:
 		"accepted":bool(result.get("ok", false)),
 		"reason":str(result.get("reason", "")),
 		"contact_receipt_target_count":int(review_state.get("contact_receipt_target_count", 0))
-	})
+	}
+	for end_key in ["until", "expires_at", "evasion_until"]:
+		var end_value: Variant = event.get(end_key, null)
+		if end_value is float or end_value is int:
+			var event_time := float(event.get("time", -1.0))
+			trace_row["event_expiry_seconds"] = float(end_value)
+			trace_row["event_state_duration_seconds"] = maxf(0.0, float(end_value) - event_time)
+			break
+	var event_trace: Array = _records[record_index].get("event_trace", [])
+	event_trace.append(trace_row)
 	_records[record_index]["event_trace"] = event_trace
 	if bool(result.get("ok", false)):
 		_records[record_index]["receipt_feed"] = "REAL_MAPBATTLE_RECEIPT_ACCEPTED"

@@ -9229,7 +9229,7 @@
       "preview_targets": [
         {
           "id": "paf05_factory_target_01",
-          "label": "PAF05 TARGET 01 · MOVING",
+          "label": "T1 · MOVING",
           "screen_position": [
             690.0,
             492.0
@@ -9245,7 +9245,7 @@
         },
         {
           "id": "paf05_factory_target_02",
-          "label": "PAF05 TARGET 02 · MOVING",
+          "label": "T2 · MOVING",
           "screen_position": [
             820.0,
             492.0
@@ -9261,7 +9261,7 @@
         },
         {
           "id": "paf05_factory_target_03",
-          "label": "PAF05 TARGET 03 · MOVING",
+          "label": "T3 · MOVING",
           "screen_position": [
             950.0,
             492.0
