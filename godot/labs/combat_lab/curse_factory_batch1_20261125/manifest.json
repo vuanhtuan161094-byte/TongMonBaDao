@@ -1,0 +1,63 @@
+{
+  "schema": "tmb.vfx_factory_source_batch.v1",
+  "batch": "curse_factory_batch1_20261125",
+  "status": "SOURCE_CANDIDATE_MECHANIC_REVIEWED_NATIVE_QA_PENDING",
+  "scope": "One source-backed candidate for the Curse basic; remaining 16 Human cast masters still need mapped art sources.",
+  "production_route": "OpenAI ImageGen first-party original RGBA atlas. Original output preserved at /workspace/generated_images/exec-6cc21469-82be-4e1c-9e0c-7b402332f4fc.png.",
+  "assets": [
+    {
+      "skill_id": "tmb.skill.curse.basic.human",
+      "path": "res://labs/combat_lab/curse_factory_batch1_20261125/source/curse_basic_echo_dart_4x4.png",
+      "sha256": "059e5ceb39317649fb945093c766652e0d01fd6f02464dec0c4349c6dce8d56e",
+      "bytes": 1554250,
+      "format": "PNG RGBA",
+      "dimensions_px": [
+        1261,
+        1247
+      ],
+      "generator": "OpenAI ImageGen",
+      "generator_output_id": "exec-6cc21469-82be-4e1c-9e0c-7b402332f4fc.png",
+      "layout": "4x4 fractional equal-cell divisions; per-frame regions stored in Factory registry",
+      "frame_signature_test": "16/16 distinct normalized 32px frame signatures",
+      "alpha_channel": "PASS",
+      "prompt": "Production-ready original 2D wuxia combat VFX sprite atlas for “Chú Âm Phá Vọng” (curse-school basic single-target projectile), on a transparent RGBA background. Exactly a 4-column by 4-row sheet of 16 separate sequential animation frames, equal square cells, consistent scale and pivot, no borders or labels, no text, no watermark. Unique silhouette: a slim hand-painted ink-wisp talisman folded into a small crescent-shaped echo dart, warm ivory paper flecks, deep plum-black brush edges, one restrained jade-white luminous core, tiny antique-gold seal strokes. The animation reads left-to-right and tells: sealed paper mote gathers beside a caster; a narrow ink stroke forms; the crescent echo dart releases with two uneven translucent brush tails; it travels as a focused projectile; at the destination it makes one compact silent ink-splash / paper flick impact; then separated wisps and paper dust fade naturally. Keep all 16 poses clearly different, cleanly centered within each cell with transparent margins. Classic JX / Võ Lâm / Kiếm Thế painterly sprite art, semi-transparent light, refined brush texture, crisp and legible at small game scale. Do not include character, background, floor, circle, neon geometry, skulls, gore, generic energy orb, or oversized glow."
+    }
+  ],
+  "authoritative_mechanic_review": {
+    "catalog": "res://data/combat/v63_curse_combat_catalog.json",
+    "skill_id": "tmb.skill.curse.basic.human",
+    "effect": "damage",
+    "shape": "single_target",
+    "target_limit": 1,
+    "projectile_speed": 0,
+    "detail_vi": "Đòn trực tiếp một lần; không thêm trạng thái.",
+    "decision": "Do not render the generated travel frames. Factory candidate selects only the seal gather, compact local contact and fade frames; no flight path and no fake contact receipt."
+  },
+  "source_review": {
+    "inspected": "Atlas viewed as 4x4 frame sheet and at ~120px/frame game scale.",
+    "selected_frames_0_based": [
+      0,
+      1,
+      2,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "excluded_frames_0_based": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "review_status": "Source atlas alpha and 16/16 unique frame signatures pass. The current Factory mapping is a partial candidate: travel frames are excluded to match projectile_speed=0, no contact receipt is configured, and owner approval is pending.",
+    "prompt_mechanic_note": "The original image prompt describes a travel projectile. Canonical curse catalog has projectile_speed=0, so the travel poses are explicitly excluded from the Factory candidate and no projectile path is rendered."
+  },
+  "owner_approval": "PENDING",
+  "pve": "HOLD"
+}
