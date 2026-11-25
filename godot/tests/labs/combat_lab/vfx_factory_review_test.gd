@@ -1,6 +1,7 @@
 extends SceneTree
 
 const FACTORY_SCENE := preload("res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn")
+const FACTORY_SCRIPT := preload("res://labs/combat_lab/vfx_factory/vfx_factory_review.gd")
 const ASCHAR := preload("res://src/presentation/p3/pve_aschar_frame_renderer_v1.gd")
 const REGISTRY_PATH := "res://labs/combat_lab/vfx_factory/registry.json"
 const FORMATION_MANIFEST_PATH := "res://labs/combat_lab/formation01/factory_batch1_20261125/manifest.json"
@@ -81,6 +82,8 @@ func _run() -> void:
 			_check(str(entry.get("draw_layer", "")) == "BEHIND"
 				and bool(entry.get("preview_attachment_override", {}).get("suppress_attachments", false)),
 				"ground formation art is behind AS68 and has no invented weapon " + skill_id)
+			_check(FACTORY_SCRIPT.phase_draws_front(entry, "contact") == entry.has("phase_layers"),
+				"receipt contact uses its configured front/ground layer " + skill_id)
 			if skill_id == "tmb.skill.formation.tu_linh_tran.active_02.human":
 				_check(str(state.get("source_g3", "")).begins_with("ART_SEMANTIC_REVIEW_REQUIRED"),
 					"damage-versus-shield visual mismatch remains flagged")

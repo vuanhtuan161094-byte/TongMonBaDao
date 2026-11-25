@@ -208,7 +208,9 @@ func _feed_receipt(event: Dictionary) -> void:
 		_records[record_index]["receipt_feed"] = "REAL_MAPBATTLE_RECEIPT_ACCEPTED"
 		if str(event.get("type", "")) in ["v63_skill_hit", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied", "v63_mobility"] or is_basic_hit:
 			if float(_records[record_index].get("contact_frame_seconds", -1.0)) < 0.0:
-				_records[record_index]["contact_frame_seconds"] = _global_elapsed + 0.10
+				# Keep the contact sheet close to the first receipt frame so the
+				# phase's authored peak is not captured halfway through its fade.
+				_records[record_index]["contact_frame_seconds"] = _global_elapsed + 0.02
 	else:
 		push_error("VFX_FACTORY_BATCH_EVENT_REJECTED skill=" + skill_id + " event=" + str(event.get("type", "")) + " reason=" + str(result.get("reason", "")))
 

@@ -433,22 +433,23 @@ func _draw() -> void:
 
 func _draw_phase_art(anchors: Dictionary, actor_foot: Vector2,
 		target_foot: Vector2, front_layer: bool) -> void:
-	var expected_front := str(_config.get("draw_layer", "FRONT")) != "BEHIND"
-	if front_layer != expected_front:
-		return
 	var timeline: Dictionary = _config.get("review_timeline", {})
 	var persistent_phase := _persistent_phase_at_time(timeline)
 	if not persistent_phase.is_empty():
-		_draw_bound_phase(persistent_phase, _persistent_target_ids, _persistent_phase_age(persistent_phase, timeline),
-			_persistent_duration, front_layer)
+		if phase_draws_front(_config, persistent_phase) == front_layer:
+			_draw_bound_phase(persistent_phase, _persistent_target_ids, _persistent_phase_age(persistent_phase, timeline),
+				_persistent_duration, front_layer)
 	var contact_phase := _contact_phase_at_time(timeline)
 	if not contact_phase.is_empty():
-		_draw_bound_phase(contact_phase, _contact_target_ids,
-			maxf(0.0, _elapsed - _contact_local_time), 0.0, front_layer)
+		if phase_draws_front(_config, contact_phase) == front_layer:
+			_draw_bound_phase(contact_phase, _contact_target_ids,
+				maxf(0.0, _elapsed - _contact_local_time), 0.0, front_layer)
 	if not persistent_phase.is_empty() or not contact_phase.is_empty():
 		return
 	var phase := _phase_at_time(timeline)
 	if phase in ["waiting", ""]:
+		return
+	if phase_draws_front(_config, phase) != front_layer:
 		return
 	var phase_anchors: Dictionary = _config.get("phase_anchors", {})
 	var anchor_name := str(phase_anchors.get(phase, _config.get("source_anchor", "review_stage")))
@@ -465,6 +466,11 @@ func _draw_phase_art(anchors: Dictionary, actor_foot: Vector2,
 	if phase == "travel":
 		source_key = "flight" if _config.get("phase_sources", {}).has("flight") else "release"
 	_draw_texture_phase(source_key, center, front_layer)
+
+static func phase_draws_front(configuration: Dictionary, phase: String) -> bool:
+	var phase_layers: Dictionary = configuration.get("phase_layers", {})
+	var layer := str(phase_layers.get(phase, configuration.get("draw_layer", "FRONT"))).to_upper()
+	return layer == "FRONT"
 
 func _draw_bound_phase(phase: String, target_ids: Array[String], phase_age: float,
 		duration: float, front_layer: bool) -> void:
