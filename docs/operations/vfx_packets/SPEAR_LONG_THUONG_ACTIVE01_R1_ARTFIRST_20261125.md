@@ -1,6 +1,6 @@
 # Vân Long Điểm Thủy — Spear VFX Art-First packet, R1
 
-**Status:** preview-only candidate. G3 source review is a self-pass. G3.5 Godot visual capture is blocked by the available headless dummy display. Actor and weapon art owner review is pending. PvE and production gates remain OFF.
+**Status:** preview-only candidate. G3 source review is a self-pass. G3.5 native technical capture and visual self-review passed on exact packet SHA `979604473787d224080eebd3a2d7965588ba877b`. Actor and weapon art owner review is pending. PvE and production gates remain OFF.
 
 ## G0 — exact identity and runtime contract
 
@@ -39,7 +39,7 @@ XDG_DATA_HOME=/tmp/tmb_spear_godot_data XDG_CACHE_HOME=/tmp/tmb_spear_godot_cach
   --script res://labs/combat_lab/spear01/van_long_diem_thuy/r1/vfx_spear_long_thrust_receipt_test.gd
 ```
 
-Result: `SPEAR_LONG_THRUST_RECEIPT_RESULT PASS checks=18 runtime=MapBattleV2 moving_targets=3 line_receipts=2 cap=2 actor=AS54_CANDIDATE source=SourceA_PLACEHOLDER pve=OFF gate=OFF`.
+Result: `SPEAR_LONG_THRUST_RECEIPT_RESULT PASS checks=20 runtime=MapBattleV2 moving_targets=3 line_receipts=2 cap=2 actor=AS54_CANDIDATE source=SourceA_PLACEHOLDER pve=OFF gate=OFF`.
 
 Godot native scene runtime:
 
@@ -52,13 +52,14 @@ XDG_DATA_HOME=/tmp/tmb_spear_godot_data XDG_CACHE_HOME=/tmp/tmb_spear_godot_cach
 
 Result: scene runtime reached `CONFIRMED_TWO_TARGET_RELEASE`; 2 line receipts, cap 2, outside HP unchanged. Project import completed with exit code 0; Godot printed editor-config write errors because `/home/agent/.config/godot` is unavailable, but import and native runtime completed.
 
-**G3.5 is blocked:** this workspace has only `DisplayServer=headless` with the dummy renderer. The native capture script verifies runtime receipts and successful AS54/monster draw-adapter calls, then reports `framebuffer_readback=unavailable`; the dummy viewport has no readable framebuffer, so no Godot screenshot is claimed. The exact runtime and capture output is saved at `godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/evidence/NATIVE_GODOT_RUNTIME_AND_CAPTURE_20261125.txt`. Accordingly there is no Godot visual QA PASS, G3.5 PASS, or owner art approval in this packet. A display-backed capture and owner review remain required before treating this as integrated art.
+The first local framebuffer attempt was blocked because this workspace exposes only the headless dummy display; it produced no screenshot. A display-backed run then passed using Godot 4.7.2 Xvfb/ffmpeg: [exact-SHA run #45579114495](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/45579114495). Its three 1280×720 phase frames and 1.23-second MP4 are archived in [`native_g35_20261125_run45579114495/`](../../../godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/evidence/native_g35_20261125_run45579114495/); the receipt and status are in [`G3_5_STATUS.md`](../../../godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/evidence/G3_5_STATUS.md). Visual self-review confirms readable AS54 scale beside the monsters and a visible existing spear prop pointing with the rightward thrust. This is a native preview technical pass, not owner art approval: actor, weapon, sockets, and source art remain pending; the Source A species mapping is unverified; PvE and physical-device QA remain on hold.
 
 ## Files
 
 - Sources and source manifest: `godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/`
 - Source-only 1x reviews: `godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/evidence/g3_review_*`; native runtime and capture boundary: `godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/evidence/NATIVE_GODOT_RUNTIME_AND_CAPTURE_20261125.txt`
+- Native phase evidence and visual status: `godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/evidence/native_g35_20261125_run45579114495/`, `G3_5_STATUS.md`
 - Isolated preview: `godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/van_long_diem_thuy_preview.tscn`, `vfx_spear_long_thrust_lab.gd`
 - Native scripts: `vfx_spear_long_thrust_receipt_test.gd`, `vfx_spear_long_thrust_native_capture.gd`
 
-The preview is isolated to this Spear batch. No shared catalog, workflow, ledger, inventory report, Combat V2, SaveService, or PvE configuration was edited. Nothing was committed or pushed.
+The preview is isolated to this Spear batch. No shared catalog, workflow, ledger, inventory report, Combat V2, SaveService, or PvE configuration was edited. Follow-up changes and proof are on the existing Draft PR #72 branch; no merge or PvE enable was made.

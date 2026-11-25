@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SPEAR_LONG_THRUST_RECEIPT_RESULT PASS checks=20 runtime=MapBattleV2 moving_targets=3 line_receipts=2 cap=2 actor=AS54_CANDIDATE source=SourceA_PLACEHOLDER pve=OFF gate=OFF
+GODOT_STRICT_PASS exit=0 log=/home/runner/work/_temp/tmb_godot_strict/godot.zWTp7zFB.log

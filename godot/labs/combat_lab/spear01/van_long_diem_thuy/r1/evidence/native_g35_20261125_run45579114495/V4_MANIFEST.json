@@ -1,0 +1,158 @@
+{
+  "atlas_integrity": {
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "b1570eb7920534b7c59d5047158388f545c5333e07266c2f11c4d054982782ac",
+      "size_px": [
+        1536,
+        1024
+      ]
+    },
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/contact_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "5ca6ecf790750f74586545dc61c89511d305c6f9550acb4a55f9792f2f469aa6",
+      "size_px": [
+        1866,
+        843
+      ]
+    },
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/fade_r1.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "5615db468e42b93e3080eda60a6ff0dee15ef8f343aa166f78ca68c4dfb0cb71",
+      "size_px": [
+        1744,
+        901
+      ]
+    },
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/peak_r2.png": {
+      "byte_unique_only_not_motion_approved": true,
+      "frames": 1,
+      "sha256_file": "ab47f16ecdfa5c968ecc97c90c993e7726509f33026dc0e80fa442a9f7ec3998",
+      "size_px": [
+        2172,
+        724
+      ]
+    }
+  },
+  "canonical_skill": "tmb.skill.spear.long_thuong.active_01.human",
+  "native_visual_evidence": {
+    "actual_moving_target_checked_by_focused_Godot_contract": true,
+    "focused_test": "godot-focused.log",
+    "frames": {
+      "charge": {
+        "at_seconds": 0.05,
+        "file": "v4-charge.png",
+        "sha256": "885fb258600774246cb031944fab068867bd5a6fc4922c5bb35af83f45261527",
+        "size_px": [
+          1280,
+          720
+        ]
+      },
+      "contact": {
+        "at_seconds": 0.72,
+        "file": "v4-contact.png",
+        "sha256": "328dad19ad1d80e918c4286cf9a4732946b427dc2621cd17252002b0637c8553",
+        "size_px": [
+          1280,
+          720
+        ]
+      },
+      "peak": {
+        "at_seconds": 0.55,
+        "file": "v4-peak.png",
+        "sha256": "a4a8e61f01d83e7279af34d7349e0f38c19ee2588c4dffbd8ae6674515849b06",
+        "size_px": [
+          1280,
+          720
+        ]
+      }
+    },
+    "human_art_review": "REQUIRED_NOT_AUTOMATED",
+    "motion_pixel_difference_only_not_art_approval": true,
+    "native_log": "godot-preflight.log",
+    "native_video": {
+      "duration": 1.233333,
+      "file": "van-long-diem-thuy-r1-g35.mp4",
+      "height": 720,
+      "sha256": "d2aed88c22658c253e7cd9c03e006ce3b7c21880a956559b85c4cc2860e47cc4",
+      "width": 1280
+    }
+  },
+  "no_runtime_receipt": true,
+  "packet_file_sha256": "a1bf773fb45e54bf4f40a91e255b1e8f4a4dfdb35e5e3e8717803672414067eb",
+  "source_commit_sha": "979604473787d224080eebd3a2d7965588ba877b",
+  "source_masters": {
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/charge_r1.png": {
+      "sha256_decoded": "b1570eb7920534b7c59d5047158388f545c5333e07266c2f11c4d054982782ac",
+      "size_px": [
+        1536,
+        1024
+      ]
+    },
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/contact_r1.png": {
+      "sha256_decoded": "5ca6ecf790750f74586545dc61c89511d305c6f9550acb4a55f9792f2f469aa6",
+      "size_px": [
+        1866,
+        843
+      ]
+    },
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/fade_r1.png": {
+      "sha256_decoded": "5615db468e42b93e3080eda60a6ff0dee15ef8f343aa166f78ca68c4dfb0cb71",
+      "size_px": [
+        1744,
+        901
+      ]
+    },
+    "godot/labs/combat_lab/spear01/van_long_diem_thuy/r1/assets/source/peak_r2.png": {
+      "sha256_decoded": "ab47f16ecdfa5c968ecc97c90c993e7726509f33026dc0e80fa442a9f7ec3998",
+      "size_px": [
+        2172,
+        724
+      ]
+    }
+  },
+  "status": {
+    "human_art_review": "NOT_APPROVED_BY_AUTOMATION",
+    "owner_visual": "OWNER_VISUAL_PENDING",
+    "physical_device": "PENDING",
+    "pve_integration": "HOLD",
+    "runtime_hit_receipt": "RUNTIME_MAPPING_PENDING",
+    "source_fidelity": "MANUAL_ART_REVIEW_REQUIRED",
+    "v4_preflight_technical": "PASS"
+  },
+  "timing": {
+    "combat_clock": "CATALOGUE_GATED_NOT_LIVE",
+    "declared_cast_end_seconds": 0.38,
+    "declared_status_duration_seconds": 0.0,
+    "demo_clock_warning": "The focused test exercises real MapBattleV2 line settlement with candidate flags enabled only on isolated actors while the Spear/V6.3 release gate remains OFF. Two actual line receipts are expected from a single cast; there is no additional hit or projectile. This is not live PvE integration or device QA.",
+    "demo_loop_seconds": 1.6,
+    "key_pose_budget_note": "Four separate phase RGBA masters; the skill is direct line damage with projectile_speed=0, so the art is anchored to the attack and confirmed target hits rather than a free-flight projectile.",
+    "phases": [
+      {
+        "at_seconds": 0.05,
+        "expected_phase": "compact energy gathers at the AS54 candidate spear tip",
+        "file": "v4-charge.png",
+        "id": "charge"
+      },
+      {
+        "at_seconds": 0.55,
+        "expected_phase": "one-axis pressure trace after the 0.38 s cast",
+        "file": "v4-peak.png",
+        "id": "peak"
+      },
+      {
+        "at_seconds": 0.72,
+        "expected_phase": "localized accents on the two confirmed line-hit targets during fade",
+        "file": "v4-contact.png",
+        "id": "contact"
+      }
+    ],
+    "runtime_receipt_timestamp": "RUNTIME_MAPPING_PENDING",
+    "simulated_hit_seconds": 0.38,
+    "vfx_clock": "LAB_ONLY",
+    "visual_fade_end_seconds": 1.53
+  }
+}
