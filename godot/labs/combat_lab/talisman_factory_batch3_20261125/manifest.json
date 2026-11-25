@@ -1,0 +1,53 @@
+{
+  "schema": "tmb.vfx_factory_source_batch.v1",
+  "batch": "talisman_factory_batch3_20261125",
+  "status": "SOURCE_ATLASES_CAPTURED_NATIVE_QA_PENDING",
+  "scope": "Talisman common Human basic projectile and mobility cast cues; Factory candidate only",
+  "production_route": "Original per-skill RGBA art generated for this project with OpenAI ImageGen; no JX/Source A commercial pixels intentionally copied. ImageGen outputs preserved under /workspace/generated_images; checked copies committed here.",
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "assets": [
+    {
+      "skill_id": "tmb.skill.talisman.basic.human",
+      "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+      "sha256": "220d506226b442ef70baaa4312af321173a3da445657d3fc48d6ff7dda20cc92",
+      "bytes": 2521329,
+      "format": "PNG RGBA",
+      "generator": "OpenAI ImageGen",
+      "generator_output_id": "exec-76604a7d-aaed-4b98-8c02-902f3be003d1.png",
+      "layout": "4x4 frame atlas; frame regions recorded in Factory registry after QA",
+      "prompt": "Production-ready 2D VFX sprite atlas, transparent RGBA background, exactly 1024×1024. Strict 4 columns by 4 rows of equal 256px square cells, no gutters, no grid lines, no text, no watermark. Each cell shows one distinct sequential frame, same scale and common center pivot. Original classic Chinese wuxia game look: a small elegant ivory parchment talisman with fine charcoal brush sigils (abstract, not readable language) and subtle gilt corners. Animation story: quiet folded paper seal; pale jade-white wind gathers as delicate curved brush strokes; the talisman opens and shines; a narrow focused wind filament launches horizontally left-to-right; one compact target-local flash and a few flying paper flecks; then translucent silk wisps and tiny motes fade. Painterly hand-inked edges, finely painted light, crisp at actual game scale. No characters, no environment, no floor, no large ring, no neon geometry. Keep every frame isolated with empty transparent margins, no shapes touching panel boundaries.",
+      "checks": {
+        "alpha_channel": "PASS",
+        "distinct_32px_frame_signatures": "16/16 PASS",
+        "native_scale": "PENDING",
+        "native_motion_review": "PENDING"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.talisman.mobility.human",
+      "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+      "sha256": "888f7975102e3db38d1f520abac54f5aabed253c677e6f2bd4889892da374a3b",
+      "bytes": 2827073,
+      "format": "PNG RGBA",
+      "generator": "OpenAI ImageGen",
+      "generator_output_id": "exec-a6db0588-7279-4335-a8d6-7a213e755921.png",
+      "layout": "4x4 frame atlas; frame regions recorded in Factory registry after QA",
+      "prompt": "Production-ready 2D game VFX sprite atlas on transparent RGBA. 4×4 equal-cell sequential animation sheet, no borders, no labels, no text, no watermark, consistent pivot and scale. Original Wuxia JX martial arts effect for a talisman-based short reposition: a narrow indigo-jade wind seam edged with antique silver and small ivory paper fragments, like a brush-written line folding in space. Across 16 distinct frames: a single folded talisman with calm ink seal; wind coils inward; paper folds into a fine diagonal brush stroke; a slim translucent gust shears forward and briefly leaves a soft empty-space tear; the talisman and gust reform slightly offset as a readable arrival cue; the torn line softens; paper flecks and silk-like wisps fade. No character, no ground, no scenery, no damage burst, no flame, no lightning, no large circular ring, no neon geometry. Painterly transparent energy, beautiful subtle brush texture, compact silhouette readable at 1x game scale. Every cell visually differs and is separated only by transparent space.",
+      "checks": {
+        "alpha_channel": "PASS",
+        "distinct_32px_frame_signatures": "16/16 PASS",
+        "native_scale": "PENDING",
+        "native_motion_review": "PENDING"
+      }
+    }
+  ],
+  "source_review": {
+    "alpha": "Both files contain RGBA alpha; source-level alpha inspection passed.",
+    "unique_frames": "Each 4x4 atlas has 16 distinct normalized 32px frame signatures.",
+    "visual_identity": "Basic: ivory-and-gilt paper talisman releasing pale jade wind projectile. Mobility: indigo-jade spatial seam and paper fragments; no hit/damage burst.",
+    "review_status": "Source atlas visually inspected; native game-scale review and motion review pending."
+  },
+  "owner_approval_state": "PENDING",
+  "pve_gate": "HOLD"
+}
