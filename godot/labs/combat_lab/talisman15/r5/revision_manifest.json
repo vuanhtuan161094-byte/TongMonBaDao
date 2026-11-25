@@ -1,0 +1,65 @@
+{
+  "schema": "tmb.vfx_source_candidate.v1",
+  "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+  "revision": "PAF05_R5_BASE_SOURCE_DEPENDENCY_FOR_R5F_LAB",
+  "status": "RESTORED_FROM_EXACT_GITHUB_ACTIONS_ARTIFACT",
+  "source_commit": "87afe14aa7888cf086409a34b4f65dccd9345d10",
+  "actions_run": {
+    "id": 44069358237,
+    "url": "https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/44069358237",
+    "artifact": "vfx-paf05-r5-native-87afe14aa7888cf086409a34b4f65dccd9345d10"
+  },
+  "provenance": "Historical R5 painted atlas required by the isolated R5F inheritance contract. This is not the owner-provisional R5E source and is not promoted as current art. R5E remains separately restored and unchanged.",
+  "source_artifacts": [
+    {
+      "path": "r5/art_sources/paf05_r5_art_manifest.json",
+      "sha256": "46fdb112d556b5855e6727af5772ffd285f12fcd1fb25b24b332d6fdf19ed9ae",
+      "bytes": 933
+    },
+    {
+      "path": "r5/art_sources/paf05_r5_mark_keyposes.png",
+      "sha256": "ce8a3c8f26c6da9ee58ae6ff7c78bf682da568344ecbe7669d2b698cb55558be",
+      "bytes": 315493,
+      "dimensions_px": [
+        1280,
+        640
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "r5/art_sources/paf05_r5_phong_linh_trien_master.png",
+      "sha256": "2a03f832f2eb6c8b5be05ebbbc9c52f6fad6c22b0223ba0992130d7f688a6108",
+      "bytes": 54003,
+      "dimensions_px": [
+        320,
+        320
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "r5/assets/paf05_r5_contact.webp",
+      "sha256": "0fee447af5cf4dac3691bd89b503cdca392788da196c8dbf5475e55479c55a3a",
+      "bytes": 263164,
+      "dimensions_px": [
+        1280,
+        960
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "r5/assets/paf05_r5_mark.webp",
+      "sha256": "1c33979c589403b9d2d4d7e6e642490af55b23f72906657b21a2528271c61dcb",
+      "bytes": 198804,
+      "dimensions_px": [
+        1280,
+        960
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "gates": {
+    "owner": "NOT_INFERRED_FROM_ACTIONS",
+    "native": "HISTORICAL_R5_RUN_ONLY",
+    "pve": "HOLD"
+  }
+}
