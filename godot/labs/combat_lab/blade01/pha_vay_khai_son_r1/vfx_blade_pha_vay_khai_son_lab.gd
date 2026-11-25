@@ -24,6 +24,7 @@ const CHARGE_DISPLAY_FACTOR := 0.10083036773428232
 const FLIGHT_DISPLAY_FACTOR := 0.11070110701107011
 const CONTACT_DISPLAY_FACTOR := 0.0998003992015968
 const FADE_DISPLAY_FACTOR := 0.3448275862068966
+const CHARGE_LEAD_PIXELS := 34.0
 const CASTER_ID := "blade_lab_caster"
 const TARGET_ID := "blade_lab_target_01"
 const OUTSIDE_ID := "blade_lab_outside"
@@ -303,7 +304,8 @@ func _draw_skill_art(caster_foot: Vector2, target_foot: Vector2, direction: Vect
 		var release_tip := _dao_tip_screen(ATTACK_ACTION_SECONDS)
 		if cast_elapsed < CAST_TIME:
 			var pulse := 0.76 + 0.24 * sin(clampf(cast_elapsed / CAST_TIME, 0.0, 1.0) * PI)
-			_draw_source_art(charge_texture, release_tip - direction * 17.0, CHARGE_DISPLAY_FACTOR, direction.angle(), pulse)
+			_draw_source_art(charge_texture, release_tip + direction * CHARGE_LEAD_PIXELS,
+				CHARGE_DISPLAY_FACTOR, direction.angle(), pulse)
 		else:
 			var progress := clampf((cast_elapsed - CAST_TIME) / maxf(0.001, impact_time - CAST_TIME), 0.0, 1.0)
 			var from := release_tip + direction * 12.0
