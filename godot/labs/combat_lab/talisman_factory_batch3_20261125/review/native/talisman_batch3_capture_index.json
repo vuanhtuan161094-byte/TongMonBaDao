@@ -1,0 +1,549 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 GL Compatibility / Mesa llvmpipe; shared VFX Factory, existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "talisman",
+  "skills": [
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_00",
+      "event_count": 2,
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Thiên Lôi Dẫn Nét",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 1.07166666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+      "video_duration_seconds": 1.8,
+      "video_start_seconds": 0.0,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 0.08,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 1.072,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "flight",
+          "video_time_seconds": 1.152,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "flight tail",
+          "video_time_seconds": 1.392,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 1.76,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "contact_frame_seconds": 2.49166666666667,
+      "encounter_id": "vfx_factory_talisman_capture_01",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_mark_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Lôi Văn Truy Ấn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 2.48166666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+      "video_duration_seconds": 6.98,
+      "video_start_seconds": 1.84166666666667,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 2.272,
+          "event_truth": "REAL_MARK_RECEIPT; SUSTAIN_DURATION_FROM_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 2.432,
+          "event_truth": "REAL_MARK_RECEIPT; SUSTAIN_DURATION_FROM_RECEIPT"
+        },
+        {
+          "phase": "mark receipt",
+          "video_time_seconds": 2.512,
+          "event_truth": "REAL_MARK_RECEIPT; SUSTAIN_DURATION_FROM_RECEIPT"
+        },
+        {
+          "phase": "mark sustain",
+          "video_time_seconds": 5.492,
+          "event_truth": "REAL_MARK_RECEIPT; SUSTAIN_DURATION_FROM_RECEIPT"
+        },
+        {
+          "phase": "mark end",
+          "video_time_seconds": 8.192,
+          "event_truth": "REAL_MARK_RECEIPT; SUSTAIN_DURATION_FROM_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_02",
+      "event_count": 2,
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Tiêu Phá Vân",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 9.82166666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+      "video_duration_seconds": 1.68,
+      "video_start_seconds": 8.84166666666666,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 8.922,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 9.822,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "flight",
+          "video_time_seconds": 9.902,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "flight tail",
+          "video_time_seconds": 10.142,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 10.482,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 2,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_03",
+      "event_count": 2,
+      "event_types": [
+        "skill_cast",
+        "skill_release"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Cửu Thiên Vạn Lôi Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 12.0216666666667,
+      "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+      "video_duration_seconds": 2.23,
+      "video_start_seconds": 10.5416666666667,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 10.622,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 12.022,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "flight",
+          "video_time_seconds": 12.102,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "flight tail",
+          "video_time_seconds": 12.342,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 12.732,
+          "event_truth": "REAL_CAST_RELEASE; NO_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 13.4616666666667,
+      "encounter_id": "vfx_factory_talisman_capture_04",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Liên Diệm Phần Giới",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 13.5616666666667,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 12.7916666666667,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 13.242,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 13.402,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "receipt contact",
+          "video_time_seconds": 13.482,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "impact afterglow",
+          "video_time_seconds": 13.582,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 13.762,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 15.0616666666667,
+      "encounter_id": "vfx_factory_talisman_capture_05",
+      "event_count": 3,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Hỏa Tâm Ngưng Phù",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 15.4316666666667,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+      "video_duration_seconds": 1.93333333333333,
+      "video_start_seconds": 14.1916666666667,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 14.842,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 15.002,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "receipt contact",
+          "video_time_seconds": 15.082,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "impact afterglow",
+          "video_time_seconds": 15.182,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 15.362,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 16.7116666666668,
+      "encounter_id": "vfx_factory_talisman_capture_06",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Chu Tước Hồi Hoàn",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 16.8116666666668,
+      "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 16.1416666666668,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 16.492,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 16.652,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "receipt contact",
+          "video_time_seconds": 16.732,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "impact afterglow",
+          "video_time_seconds": 16.832,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 17.012,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "contact_frame_seconds": 18.6116666666668,
+      "encounter_id": "vfx_factory_talisman_capture_07",
+      "event_count": 5,
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_talisman_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Vạn Phù Phần Thiên",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 18.7416666666668,
+      "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+      "video_duration_seconds": 1.67,
+      "video_start_seconds": 17.5416666666668,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "Real MapBattleV2 fixture events; configured binding only; no synthetic events",
+      "native_phase_samples": [
+        {
+          "phase": "charge",
+          "video_time_seconds": 18.392,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "release sample",
+          "video_time_seconds": 18.552,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "receipt contact",
+          "video_time_seconds": 18.632,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "impact afterglow",
+          "video_time_seconds": 18.732,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        },
+        {
+          "phase": "fade",
+          "video_time_seconds": 18.912,
+          "event_truth": "REAL_CONFIGURED_CONTACT_RECEIPT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "hit"
+      ],
+      "contact_frame_seconds": 19.3116666666668,
+      "encounter_id": "vfx_factory_talisman_capture_08",
+      "event_count": 1,
+      "event_types": [
+        "hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "name_vi": "Phù Tâm Dẫn Khí",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.talisman.basic.human",
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 19.2416666666668,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "MapBattleV2 hit kind=basic bound only to exact actor v63_basic_skill_id; no fabricated projectile or hit",
+      "native_phase_samples": [
+        {
+          "phase": "pre-hit sample",
+          "video_time_seconds": 19.262,
+          "event_truth": "PRE_HIT_STORYBOARD; CONTACT=REAL_BASIC_HIT"
+        },
+        {
+          "phase": "pre-hit sample",
+          "video_time_seconds": 19.287,
+          "event_truth": "PRE_HIT_STORYBOARD; CONTACT=REAL_BASIC_HIT"
+        },
+        {
+          "phase": "MapBattle hit",
+          "video_time_seconds": 19.332,
+          "event_truth": "PRE_HIT_STORYBOARD; CONTACT=REAL_BASIC_HIT"
+        },
+        {
+          "phase": "post-hit",
+          "video_time_seconds": 19.412,
+          "event_truth": "PRE_HIT_STORYBOARD; CONTACT=REAL_BASIC_HIT"
+        },
+        {
+          "phase": "tail",
+          "video_time_seconds": 19.632,
+          "event_truth": "PRE_HIT_STORYBOARD; CONTACT=REAL_BASIC_HIT"
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "v63_mobility"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_talisman_capture_09",
+      "event_count": 1,
+      "event_types": [
+        "v63_mobility"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "mobility_frame_seconds": 20.7116666666668,
+      "name_vi": "Phi Phù Hoán Vị",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "skill_id": "tmb.skill.talisman.mobility.human",
+      "start_frame_seconds": 20.7116666666668,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 20.6416666666668,
+      "native_status": "NATIVE_TECH_PASS",
+      "synthetic_events": 0,
+      "native_receipt_truth": "v63_mobility only; self-reposition start/sustain/end; no damage contact",
+      "native_phase_samples": [
+        {
+          "phase": "approach",
+          "video_time_seconds": 20.682,
+          "event_truth": "REAL_V63_MOBILITY; NO_HIT"
+        },
+        {
+          "phase": "v63_mobility",
+          "video_time_seconds": 20.712,
+          "event_truth": "REAL_V63_MOBILITY; NO_HIT"
+        },
+        {
+          "phase": "start",
+          "video_time_seconds": 20.762,
+          "event_truth": "REAL_V63_MOBILITY; NO_HIT"
+        },
+        {
+          "phase": "sustain",
+          "video_time_seconds": 20.862,
+          "event_truth": "REAL_V63_MOBILITY; NO_HIT"
+        },
+        {
+          "phase": "end",
+          "video_time_seconds": 21.062,
+          "event_truth": "REAL_V63_MOBILITY; NO_HIT"
+        }
+      ]
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "fps": 20,
+  "frame_count": 441,
+  "duration_seconds": 22.05,
+  "video": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+  "video_sha256": "bf7bf3fefc2b6ac0e2bdd59ccdf7d9a77ab1a8d8a9328e53ee34ee3f7d9801bb",
+  "video_validation": "ffprobe H.264 1280x720 20/1 fps 441 frames 22.05 seconds; full ffmpeg decode PASS",
+  "contact_sheet": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+  "contact_sheet_sha256": "c1b492bd4f8f38c0d593aaa5a3171c542dbe5f4cd2ad26f567ff092ded856191",
+  "receipt_summary": {
+    "skills_with_bound_receipts": "10/10",
+    "synthetic_events": 0,
+    "fixture_scope": "MapBattleV2 test fixtures; no gameplay mutation"
+  },
+  "native_phase_sample_review": "REVIEWED_AT_1X_FOR_ALL_10_ROWS; FULL_CONTINUOUS_MOTION_REVIEW_PENDING",
+  "visual_review_limit": "All ten rows reviewed from native 1x phase samples; labels distinguish real MapBattle receipts from pre-hit/storyboard samples. Full continuous motion review remains pending."
+}

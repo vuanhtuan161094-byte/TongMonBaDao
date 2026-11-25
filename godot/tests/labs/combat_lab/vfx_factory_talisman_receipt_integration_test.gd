@@ -7,6 +7,7 @@ const HSC := preload("res://src/simulation/combat/v63_human_skill_combat_system.
 const MAP_BATTLE := preload("res://src/simulation/combat/map_battle_v2.gd")
 const REGISTRY_PATH := "res://labs/combat_lab/vfx_factory/registry.json"
 const SKILL_IDS := [
+	"tmb.skill.talisman.basic.human",
 	"tmb.skill.talisman.loi_phu.active_02.human",
 	"tmb.skill.talisman.loi_phu.active_03.human",
 	"tmb.skill.talisman.loi_phu.active_04.human",
@@ -14,7 +15,8 @@ const SKILL_IDS := [
 	"tmb.skill.talisman.hoa_phu.active_02.human",
 	"tmb.skill.talisman.hoa_phu.active_03.human",
 	"tmb.skill.talisman.hoa_phu.active_04.human",
-	"tmb.skill.talisman.hoa_phu.ultimate.human"
+	"tmb.skill.talisman.hoa_phu.ultimate.human",
+	"tmb.skill.talisman.mobility.human"
 ]
 const CAST_FOOT := Vector2(300.0, 492.0)
 const TARGET_FOOT := Vector2(690.0, 492.0)
@@ -56,6 +58,7 @@ func _exercise(skill_id: String, config: Dictionary, fixture_index: int) -> bool
 	battle.active = true
 	battle.outcome = "fighting"
 	var caster := _actor("talisman_caster_%02d" % fixture_index, "disciple", Vector2(2.0, 3.0))
+	var caster_origin: Vector2 = caster.get("position", Vector2(2.0, 3.0))
 	caster["v63_combat_enabled"] = true
 	caster["v63_talisman_combat_enabled"] = true
 	caster["v63_skill_loadout"] = [skill_id]
@@ -65,13 +68,32 @@ func _exercise(skill_id: String, config: Dictionary, fixture_index: int) -> bool
 		foes.append(foe)
 		battle.actors[str(foe.id)] = foe
 	battle.actors[str(caster.id)] = caster
-	_check(HSC.try_cast(battle, caster, foes[0]), "Combat V2 accepts candidate fixture cast " + skill_id)
-	var pending: Dictionary = caster.get("v63_pending_cast", {})
-	_check(not pending.is_empty(), "real pending cast exists " + skill_id)
-	if pending.is_empty():
+	var is_basic := skill_id == "tmb.skill.talisman.basic.human"
+	var is_mobility := skill_id == "tmb.skill.talisman.mobility.human"
+	var cast_started := false
+	if is_basic:
+		var basic_definition: Dictionary = HSC.skill_definition(skill_id)
+		caster["v63_basic_skill_id"] = skill_id
+		caster["basic_ratio"] = float(basic_definition.get("damage_ratio", 0.0))
+		caster["basic_element"] = str(basic_definition.get("element", "wind"))
+		caster["range"] = float(basic_definition.get("range", 1.8))
+		caster["basic_range"] = float(basic_definition.get("range", 1.8))
+		battle.step()
+		cast_started = true
+	else:
+		cast_started = HSC.try_cast(battle, caster, foes[0])
+	_check(cast_started, "Combat V2 accepts candidate fixture cast " + skill_id)
+	if not cast_started:
 		return false
-	battle.now = float(pending.get("ready", battle.now))
-	battle._release_casts()
+	if is_basic or is_mobility:
+		_check(not battle.events.is_empty(), "immediate basic/mobility receipt exists " + skill_id)
+	else:
+		var pending: Dictionary = caster.get("v63_pending_cast", {})
+		_check(not pending.is_empty(), "real pending cast exists " + skill_id)
+		if pending.is_empty():
+			return false
+		battle.now = float(pending.get("ready", battle.now))
+		battle._release_casts()
 
 	var lab := FACTORY_SCENE.instantiate() as Node2D
 	lab.call("review_set_skill_id", skill_id)
@@ -92,8 +114,19 @@ func _exercise(skill_id: String, config: Dictionary, fixture_index: int) -> bool
 		if not (raw_event is Dictionary):
 			continue
 		var event: Dictionary = raw_event
-		if str(event.get("skill_id", "")) != skill_id or not allowed_types.has(str(event.get("type", ""))):
+		var is_basic_hit := is_basic and str(event.get("type", "")) == "hit" \
+			and str(event.get("kind", "")) == "basic" \
+			and str(event.get("attacker", "")) == str(caster.id) \
+			and str(caster.get("v63_basic_skill_id", "")) == skill_id
+		if not (str(event.get("skill_id", "")) == skill_id or is_basic_hit) \
+			or not allowed_types.has(str(event.get("type", ""))):
 			continue
+		if is_mobility and str(event.get("type", "")) == "v63_mobility":
+			var destination: Variant = event.get("position", caster.get("position", caster_origin))
+			if destination is Vector2:
+				var destination_screen := _world_to_screen(destination)
+				lab.call("review_set_caster_screen_position", destination_screen)
+				lab.call("review_record_actor_screen_position", str(caster.id), destination_screen)
 		var target_id := str(event.get("target_id", event.get("target", "")))
 		if not target_id.is_empty():
 			for foe in foes:
@@ -101,21 +134,44 @@ func _exercise(skill_id: String, config: Dictionary, fixture_index: int) -> bool
 					var pos: Vector2 = foe.get("position", Vector2.ZERO)
 					lab.call("review_record_actor_screen_position", target_id,
 						TARGET_FOOT + Vector2((pos.x - 5.0) * 20.0, 0.0))
-		var result: Dictionary = lab.call("review_feed_authoritative_event", event)
+		var result: Dictionary
+		if is_basic_hit:
+			result = lab.call("review_feed_authoritative_basic_hit", event, skill_id, str(caster.id))
+		else:
+			result = lab.call("review_feed_authoritative_event", event)
 		if bool(result.get("ok", false)):
 			accepted += 1
 	var state: Dictionary = lab.call("review_state")
-	_check(opened and accepted >= 2, "actual cast and release events bind " + skill_id)
+	var required_receipts := 1 if is_basic or is_mobility else 2
+	_check(opened and accepted >= required_receipts, "actual exact-skill receipts bind " + skill_id)
 	if str(HSC.skill_definition(skill_id).get("effect", "")) == "mark":
 		_check(int(state.get("persistent_receipt_target_count", 0)) == 1
 			and is_equal_approx(float(state.get("receipt_duration", 0.0)), 6.0),
 			"actual owner-scoped mark receipt controls full six-second sustain and end " + skill_id)
 		_check(int(state.get("contact_receipt_target_count", 0)) == 0,
 			"mark art is not relabelled as damage contact " + skill_id)
+	elif is_mobility:
+		var mobility_events := 0
+		for event in battle.events:
+			if str(event.get("type", "")) == "v63_mobility" and str(event.get("skill_id", "")) == skill_id:
+				mobility_events += 1
+		_check(mobility_events == 1 and (caster.get("position", caster_origin) as Vector2).distance_to(caster_origin) > 0.1,
+			"exact mobility receipt follows the real caster destination " + skill_id)
+		_check(int(state.get("persistent_receipt_target_count", 0)) == 1
+			and is_equal_approx(float(state.get("receipt_duration", 0.0)), 0.25),
+			"mobility start/sustain/end is bound to v63_mobility.evasion_until " + skill_id)
+		_check(int(state.get("contact_receipt_target_count", 0)) == 0,
+			"mobility cue never becomes a damage contact " + skill_id)
 	else:
 		var actual_hit_targets: Array[String] = []
 		for event in battle.events:
-			if str(event.get("type", "")) == "v63_talisman_hit" and str(event.get("skill_id", "")) == skill_id:
+			var is_damage_receipt := str(event.get("skill_id", "")) == skill_id \
+				and str(event.get("type", "")) == "v63_talisman_hit"
+			if is_basic:
+				is_damage_receipt = str(event.get("type", "")) == "hit" \
+					and str(event.get("kind", "")) == "basic" \
+					and str(event.get("attacker", "")) == str(caster.id)
+			if is_damage_receipt:
 				var raw_target_ids: Variant = event.get("target_ids", [])
 				if raw_target_ids is Array and not raw_target_ids.is_empty():
 					for raw_target_id in raw_target_ids:
@@ -130,7 +186,11 @@ func _exercise(skill_id: String, config: Dictionary, fixture_index: int) -> bool
 			"damage contact count equals unique targets in exact real hit receipts, with no fabricated contacts " + skill_id)
 	lab.queue_free()
 	await process_frame
-	return opened and accepted >= 2
+	return opened and accepted >= required_receipts
+
+func _world_to_screen(world_position: Vector2) -> Vector2:
+	return Vector2(CAST_FOOT.x + (world_position.x - 2.0) * 130.0,
+		CAST_FOOT.y + (world_position.y - 3.0) * 48.0)
 
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 	var resistances := {"metal":0.0,"wood":0.0,"water":0.0,"fire":0.0,"earth":0.0,
@@ -146,5 +206,5 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 
 func _finish() -> void:
 	print("VFX_FACTORY_TALISMAN_RECEIPT_RESULT=" + ("PASS" if _failures == 0 else "FAIL")
-		+ " skills=8 checks=" + str(_checks) + " synthetic_events=0 failures=" + str(_failures))
+		+ " skills=10 checks=" + str(_checks) + " synthetic_events=0 failures=" + str(_failures))
 	quit(0 if _failures == 0 else 1)

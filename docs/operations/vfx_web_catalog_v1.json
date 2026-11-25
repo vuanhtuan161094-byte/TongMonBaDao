@@ -1284,6 +1284,78 @@
         "labs/combat_lab/talisman_factory_batch2_20261125/review/native/talisman_factory_native_1280x720.mp4"
       ],
       "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native capture and H.264 decode PASS at 1280x720/20fps; 3 exact-skill real v63_talisman_hit event(s); no synthetic contact. Native contact sample readability self-review PASS; full continuous-motion review pending. Owner visual approval pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.talisman.basic.human",
+      "name_vi": "Phù Tâm Dẫn Khí",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Phù Tâm Dẫn Khí",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_RGBA_ALPHA_16_POSES_PASS; NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "OPENAI_IMAGEGEN_FIRST_PARTY_RGBA_ATLAS",
+      "review_stages": "RGBA alpha + 16 distinct source frames PASS · Godot 4.7.2 1280×720 H.264 full decode PASS · 1× native phase samples reviewed · continuous motion review pending · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd",
+        "labs/combat_lab/talisman_factory_batch3_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+        "labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+        "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+        "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json"
+      ],
+      "review_note": "Native Godot capture H.264 1280×720/20fps full decode PASS; 1× contact sample reviewed. The exact MapBattleV2 kind=basic hit is the only contact receipt; no fake damage. Continuous motion and owner review pending; PvE HOLD.",
+      "native_video": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+      "native_contact_sheet": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+      "native_capture_index": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
+      "art_self_review": "PARTIAL_NATIVE_1X_PHASE_SAMPLES_REVIEWED_CONTINUOUS_MOTION_PENDING"
+    },
+    {
+      "id": "tmb.skill.talisman.mobility.human",
+      "name_vi": "Phi Phù Hoán Vị",
+      "school_vi": "Phù Tu",
+      "branch_vi": "Phù Dịch Chuyển",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "SOURCE_RGBA_ALPHA_16_POSES_PASS; NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "OPENAI_IMAGEGEN_FIRST_PARTY_RGBA_ATLAS",
+      "review_stages": "RGBA alpha + 16 distinct source frames PASS · Godot 4.7.2 1280×720 H.264 full decode PASS · 1× native phase samples reviewed · continuous motion review pending · owner approval pending · PvE HOLD",
+      "source_paths": [
+        "data/combat/v63_talisman_combat_catalog.json",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_factory_review_test.gd",
+        "tests/labs/combat_lab/vfx_factory_talisman_receipt_integration_test.gd",
+        "labs/combat_lab/talisman_factory_batch3_20261125/manifest.json",
+        "labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+        "labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+        "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+        "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+        "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json"
+      ],
+      "review_note": "Native Godot capture H.264 1280×720/20fps full decode PASS; 1× mobility samples reviewed. Only the exact v63_mobility destination/evasion_until drives start/sustain/end; no hit/status contact. Continuous motion and owner review pending; PvE HOLD.",
+      "native_video": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+      "native_contact_sheet": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+      "native_capture_index": "labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
+      "art_self_review": "PARTIAL_NATIVE_1X_PHASE_SAMPLES_REVIEWED_CONTINUOUS_MOTION_PENDING"
     }
   ],
   "updated_at": "2026-11-25"

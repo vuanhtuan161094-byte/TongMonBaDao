@@ -6,8 +6,8 @@ Scene presence, source approval, technical status, owner review, and live integr
 - Skill IDs: **2196 unique**
 - Skill families: **420**
 - Human cast masters: **204**
-- Human families with at least one bound LAB scene: **89**
-- Human cast families with at least one bound LAB scene: **86**
+- Human families with at least one bound LAB scene: **91**
+- Human cast families with at least one bound LAB scene: **88**
 - Distinct Human LAB scene revisions: **93**
 - Every ledger row retains its declared `live_integration` value. PvE status is not inferred from scenes.
 
@@ -16,7 +16,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | School | IDs | Families | Human cast | Human families with scene | Cast families with scene | All scene revisions | Cast scene revisions | Owner approved | Provisional | Pending | Ledger/effective status conflicts | Tier fallback pending | Tier fallback incompatible | Passive/event receipt gated |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | poison | 183 | 35 | 17 | 17 | 17 | 28 | 28 | 7 | 6 | 4 | 0 | 51 | 19 | 96 |
-| talisman | 183 | 35 | 17 | 18 | 15 | 23 | 17 | 2 | 0 | 15 | 0 | 53 | 17 | 96 |
+| talisman | 183 | 35 | 17 | 20 | 17 | 23 | 17 | 2 | 0 | 15 | 0 | 53 | 17 | 96 |
 | sword | 183 | 35 | 17 | 17 | 17 | 17 | 17 | 0 | 17 | 0 | 17 | 70 | 0 | 96 |
 | bow | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 49 | 21 | 96 |
 | fist | 183 | 35 | 17 | 15 | 15 | 22 | 22 | 0 | 0 | 17 | 0 | 31 | 39 | 96 |
@@ -49,7 +49,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | poison | duoc_doc | `tmb.skill.poison.duoc_doc.active_04.human` | OWNER_VISUAL_APPROVED_R1B | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | LEDGER_OWNER_GATE | GODOT_V4_G35_TECH_PASS_R1B_OWNER_ART_APPROVED | godot/labs/combat_lab/poison15_hoa_doc_tan/r1/hoa_doc_tan.tscn |
 | poison | duoc_doc | `tmb.skill.poison.duoc_doc.ultimate.human` | OWNER_PROVISIONAL_ACCEPTED_R2D_POLISH_BACKLOG | OWNER_PROVISIONAL | OWNER_PROVISIONAL | LEDGER_OWNER_GATE | GODOT_V4_G35_G36_TECH_PASS_R2D_PROVISIONAL_KEEP | godot/labs/combat_lab/poison16_van_linh_giai_ach/r1/van_linh_giai_ach.tscn; godot/labs/combat_lab/poison16_van_linh_giai_ach/r2/van_linh_giai_ach_semantic.tscn |
 | poison | shared | `tmb.skill.poison.mobility.human` | OWNER_VISUAL_PENDING_R1_G37_SEMANTIC | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | GODOT_V4_G35_G36_TECH_PASS_POI17_R1_MOVING_SHADOW_STEP | godot/labs/combat_lab/poison17_yem_anh_bo/r1/yem_anh_bo.tscn |
-| talisman | shared | `tmb.skill.talisman.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| talisman | shared | `tmb.skill.talisman.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | talisman | hoa_phu | `tmb.skill.talisman.hoa_phu.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman06/xich_diem_khai_van.tscn |
 | talisman | hoa_phu | `tmb.skill.talisman.hoa_phu.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman07/lien_diem_phan_gioi.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | talisman | hoa_phu | `tmb.skill.talisman.hoa_phu.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman08/hoa_tam_ngung_phu.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
@@ -60,7 +60,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_03.human` | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | OWNER_VISUAL_APPROVED | LEDGER_OWNER_GATE | ART_APPROVED | godot/labs/combat_lab/talisman03/loi_van_truy_an.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | talisman | loi_phu | `tmb.skill.talisman.loi_phu.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman04/cuu_tieu_pha_van.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | talisman | loi_phu | `tmb.skill.talisman.loi_phu.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman05/cuu_thien_van_loi_phu.tscn; godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
-| talisman | shared | `tmb.skill.talisman.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| talisman | shared | `tmb.skill.talisman.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | talisman | phong_an_phu | `tmb.skill.talisman.phong_an_phu.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman11/phong_gioi_truy_dau.tscn |
 | talisman | phong_an_phu | `tmb.skill.talisman.phong_an_phu.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman12/thai_huyen_khep_an.tscn |
 | talisman | phong_an_phu | `tmb.skill.talisman.phong_an_phu.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/talisman13/tay_tran_giai_phu.tscn |

@@ -6879,6 +6879,546 @@
       "native_batch": "talisman",
       "review_note": "Vạn Phù Phần Thiên: first-party painted RGBA source atlases with unique frame checks; one 1x source-sheet review. circle/3 canonical damage only. Contact is gated by an exact-skill MapBattleV2 v63_talisman_hit; no synthetic damage, status, or hit. Full native phase review and owner visual approval pending; PvE HOLD. Native Godot 4.7.2 capture and full H.264 decode pass at 1280x720/20fps. Five-phase contact sheet reviewed; native contact samples visually spot-checked. Full continuous motion review pending. Contact shown only for accepted exact-skill real MapBattleV2 v63_talisman_hit receipts; no synthetic hits. Owner visual review pending; PvE HOLD.",
       "native_event_status": "REAL_MAPBATTLE_HIT_RECEIPTS_3_TARGETS"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.basic.human",
+      "school": "talisman",
+      "branch": "shared",
+      "name_vi": "Phù Tâm Dẫn Khí",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "mechanic_templates": [
+        "projectile"
+      ],
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "release": "hand_r",
+        "flight": "hand_r",
+        "contact": "target_foot",
+        "fade": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_16_UNIQUE_POSES_PASS_NATIVE_REVIEW_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "flight",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                0,
+                0,
+                314,
+                314
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                314,
+                0,
+                313,
+                314
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                627,
+                0,
+                313,
+                314
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                940,
+                0,
+                314,
+                314
+              ]
+            }
+          ],
+          "display_width_px": 138,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.2
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                0,
+                314,
+                314,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                314,
+                314,
+                313,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                627,
+                314,
+                313,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                940,
+                314,
+                314,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                0,
+                627,
+                314,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                314,
+                627,
+                313,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                627,
+                627,
+                313,
+                313
+              ]
+            }
+          ],
+          "display_width_px": 210,
+          "fps": 22,
+          "loop": false,
+          "fade_seconds": 0.2
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                627,
+                627,
+                313,
+                313
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                940,
+                627,
+                314,
+                313
+              ]
+            }
+          ],
+          "display_width_px": 124,
+          "fps": 18,
+          "loop": false,
+          "fade_seconds": 0.2
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                0,
+                940,
+                314,
+                314
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                314,
+                940,
+                313,
+                314
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                627,
+                940,
+                313,
+                314
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_basic_wind_4x4.png",
+              "region": [
+                940,
+                940,
+                314,
+                314
+              ]
+            }
+          ],
+          "display_width_px": 160,
+          "fps": 12,
+          "loop": false,
+          "fade_seconds": 0.2
+        }
+      },
+      "phase_aliases": {
+        "release": "flight"
+      },
+      "review_timeline": {
+        "release_at": 0.14,
+        "flight_at": 0.14,
+        "contact_at": 0.62,
+        "fade_at": 0.86,
+        "loop_seconds": 1.35,
+        "contact_window_seconds": 0.18,
+        "fade_window_seconds": 0.22,
+        "actor_action_seconds": 0.3,
+        "clock": "REAL_MAPBATTLE_BASIC_HIT_RECEIPT_FOR_CONTACT",
+        "charge_window_seconds": 0.14,
+        "release_window_seconds": 0.48
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.basic.human",
+        "bindings": [
+          {
+            "event_type": "hit",
+            "caster_slot": "hand_r",
+            "target_slot": "foot",
+            "actor_clip": "cast",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch3_20261125/manifest.json",
+      "contact_source_note": "The basic cue is mapped to the exact MapBattleV2 kind=basic hit only when the caster v63_basic_skill_id equals this skill. No damage, projectile, or contact event is generated by the renderer.",
+      "review_note": "Native Godot capture and 1x phase samples reviewed. Real MapBattle kind=basic hit is the only contact receipt; source art remains owner-pending and continuous motion review is pending. No damage or projectile event is created by the renderer. PvE HOLD.",
+      "native_event_status": "MAPBATTLE_BASIC_HIT_RECEIPT_PASS",
+      "art_self_status": "ART_SELF_REVIEW_PARTIAL_CONTINUOUS_MOTION_PENDING"
+    },
+    {
+      "skill_id": "tmb.skill.talisman.mobility.human",
+      "school": "talisman",
+      "branch": "shared",
+      "name_vi": "Phi Phù Hoán Vị",
+      "catalog_path": "res://data/combat/v63_talisman_combat_catalog.json",
+      "effect": "mobility",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "mobility",
+      "mechanic_templates": [
+        "mobility"
+      ],
+      "target_mode": "self_reposition",
+      "preview_target_kind": "monster",
+      "target_actor_id": "review_target",
+      "outside_actor_id": "review_outside",
+      "actor_sex": "male",
+      "actor_asset_id": 64,
+      "actor_action": "cast",
+      "facing_vector": [
+        1.0,
+        0.0
+      ],
+      "preview_attachment_override": {
+        "suppress_attachments": true
+      },
+      "source_anchor": "hand_r",
+      "phase_anchors": {
+        "charge": "hand_r",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "draw_layer": "BEHIND",
+      "source_g3": "SOURCE_ALPHA_AND_16_UNIQUE_POSES_PASS_NATIVE_REVIEW_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+      "showcase_moving_target": false,
+      "delivery_phase": "release",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                0,
+                0,
+                320,
+                308
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                320,
+                0,
+                319,
+                308
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                639,
+                0,
+                319,
+                308
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                958,
+                0,
+                320,
+                308
+              ]
+            }
+          ],
+          "display_width_px": 144,
+          "fps": 14,
+          "loop": false,
+          "fade_seconds": 0.2
+        },
+        "start": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                0,
+                308,
+                320,
+                307
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                320,
+                308,
+                319,
+                307
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                639,
+                308,
+                319,
+                307
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                958,
+                308,
+                320,
+                307
+              ]
+            }
+          ],
+          "display_width_px": 180,
+          "fps": 20,
+          "loop": false,
+          "fade_seconds": 0.2
+        },
+        "sustain": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                0,
+                615,
+                320,
+                307
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                320,
+                615,
+                319,
+                307
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                639,
+                615,
+                319,
+                307
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                958,
+                615,
+                320,
+                307
+              ]
+            }
+          ],
+          "display_width_px": 196,
+          "fps": 16,
+          "loop": true,
+          "fade_seconds": 0.2
+        },
+        "end": {
+          "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                0,
+                922,
+                320,
+                308
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                320,
+                922,
+                319,
+                308
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                639,
+                922,
+                319,
+                308
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/talisman_factory_batch3_20261125/source/talisman_mobility_spaceseam_4x4.png",
+              "region": [
+                958,
+                922,
+                320,
+                308
+              ]
+            }
+          ],
+          "display_width_px": 160,
+          "fps": 18,
+          "loop": false,
+          "fade_seconds": 0.2
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.12,
+        "flight_at": 0.12,
+        "contact_at": 0.25,
+        "fade_at": 0.5,
+        "loop_seconds": 1.2,
+        "start_window_seconds": 0.08,
+        "end_window_seconds": 0.16,
+        "actor_action_seconds": 0.12,
+        "clock": "REAL_MAPBATTLE_V63_MOBILITY_RECEIPT_EVASION_UNTIL",
+        "charge_window_seconds": 0.12,
+        "release_window_seconds": 0.12
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.talisman.mobility.human",
+        "bindings": [
+          {
+            "event_type": "v63_mobility",
+            "caster_slot": "hand_r",
+            "target_slot": "foot",
+            "actor_clip": "cast",
+            "visual_phase": "start"
+          }
+        ]
+      },
+      "native_batch": "talisman",
+      "source_batch_manifest": "res://labs/combat_lab/talisman_factory_batch3_20261125/manifest.json",
+      "contact_source_note": "Start, sustain, and end are driven only by the exact self-mobility event, its actual destination, and evasion_until receipt duration. This is a reposition cue, never a hit or damage contact.",
+      "review_note": "Native Godot capture and 1x phase samples reviewed. Start/sustain/end follow only the exact v63_mobility destination and evasion_until; no hit/status contact is invented. Continuous motion review and owner approval pending. PvE HOLD.",
+      "native_event_status": "REAL_V63_MOBILITY_RECEIPT_PASS_NO_HIT",
+      "art_self_status": "ART_SELF_REVIEW_PARTIAL_CONTINUOUS_MOTION_PENDING"
     }
   ],
   "batch_status": {
@@ -6903,11 +7443,13 @@
       "pve": "HOLD"
     },
     "talisman": {
-      "expected_count": 8,
-      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_FULL_DECODE",
-      "last_capture_index": "res://labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_capture_index.json",
-      "video": "res://labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_native_1280x720.mp4",
-      "contact_sheet": "res://labs/combat_lab/talisman_factory_batch1_20261125/review/native/talisman_batch1_contact_sheet_1280x720.png",
+      "expected_count": 10,
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
+      "last_capture_index": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
+      "video": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_RECEIPTS_10_OF_10; SYNTHETIC_EVENTS=0",
+      "visual_review_status": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"
     }

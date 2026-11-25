@@ -39,7 +39,7 @@ func _run() -> void:
 	for row in talisman_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
-	_check(cases.size() == 27, "shared registry retains 2 existing cues, 17 Formation and 8 Talisman candidates")
+	_check(cases.size() == 29, "shared registry retains 2 existing cues, 17 Formation and 10 Talisman candidates")
 	_check(formation_by_id.size() == 17, "all 17 source atlas records remain available")
 	for entry in cases:
 		var skill_id := str(entry.get("skill_id", ""))
@@ -117,6 +117,14 @@ func _run() -> void:
 				_check(binding_types.has("v63_talisman_mark_applied")
 					and not binding_types.has("v63_talisman_hit"),
 					"mark only appears after the authoritative owner-scoped mark receipt " + skill_id)
+			elif str(canonical.get("effect", "")) == "mobility":
+				_check(binding_types.has("v63_mobility")
+					and not binding_types.has("v63_talisman_hit"),
+					"mobility start/end cue follows only the authoritative movement receipt " + skill_id)
+			elif str(canonical.get("slot", "")) == "basic":
+				_check(binding_types.has("hit")
+					and not binding_types.has("v63_talisman_hit"),
+					"basic contact uses exact MapBattle basic-hit receipt and actor loadout " + skill_id)
 			else:
 				_check(binding_types.has("v63_talisman_hit"),
 					"damage contact remains bound to a real exact-skill hit " + skill_id)
@@ -133,6 +141,6 @@ func _run() -> void:
 
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
-		+ " cases=" + str(checked) + " skills=" + str(27)
+		+ " cases=" + str(checked) + " skills=" + str(29)
 		+ " formation=17 AS68=resolved contact_fixture=NONE failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

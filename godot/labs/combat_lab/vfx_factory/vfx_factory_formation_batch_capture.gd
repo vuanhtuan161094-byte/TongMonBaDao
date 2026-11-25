@@ -82,14 +82,15 @@ func _activate_skill(next_index: int) -> void:
 	_lab.call("review_set_batch_capture_mode", true)
 	add_child(_lab)
 	var started_position: Vector2 = _battle.actors.get(_caster_id, {}).get("position", Vector2(2.0, 3.0))
-	_lab.call("review_set_caster_screen_position", _world_to_screen(started_position))
+	var capture_start_position: Vector2 = fixture.get("caster_start_position", started_position)
+	_lab.call("review_set_caster_screen_position", _world_to_screen(capture_start_position))
 	var target_id := str(fixture.get("target_id", ""))
 	var target_data: Dictionary = _battle.actors.get(target_id, {})
 	if not target_data.is_empty():
 		var target_position: Vector2 = target_data.get("position", Vector2(5.0, 3.0))
 		_lab.call("review_set_target_screen_position", _world_to_screen(target_position))
 		_lab.call("review_record_actor_screen_position", target_id, _world_to_screen(target_position))
-	_lab.call("review_record_actor_screen_position", _caster_id, _world_to_screen(started_position))
+	_lab.call("review_record_actor_screen_position", _caster_id, _world_to_screen(capture_start_position))
 	var ally_id := str(fixture.get("ally_id", ""))
 	if _battle.actors.has(ally_id):
 		var ally_position: Vector2 = _battle.actors[ally_id].get("position", Vector2(4.0, 3.0))
@@ -112,7 +113,8 @@ func _activate_skill(next_index: int) -> void:
 		if not (raw_event is Dictionary):
 			continue
 		var event: Dictionary = raw_event
-		var is_basic_hit := skill_id == "tmb.skill.formation.basic.human" \
+		var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]
+		var is_basic_hit := is_factory_basic_skill \
 			and str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "basic" \
 			and str(event.get("attacker", "")) == _caster_id \
 			and str(_battle.actors.get(_caster_id, {}).get("v63_basic_skill_id", "")) == skill_id
@@ -177,7 +179,10 @@ func _process(delta: float) -> void:
 		call_deferred("_activate_skill", _index + 1)
 
 func _feed_receipt(event: Dictionary) -> void:
-	var is_basic_hit := str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "basic"
+	var skill_id := str(_entries[_index].get("skill_id", ""))
+	var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]
+	var is_basic_hit := is_factory_basic_skill and str(event.get("type", "")) == "hit" \
+		and str(event.get("kind", "")) == "basic"
 	var actor_id := str(event.get("actor_id", event.get("caster", event.get("owner_id",
 			event.get("attacker", "") if is_basic_hit else ""))))
 	var caster: Dictionary = _battle.actors.get(actor_id, {})
@@ -214,7 +219,6 @@ func _feed_receipt(event: Dictionary) -> void:
 		_lab.call("review_record_actor_screen_position", target_id, screen_position)
 	if str(event.get("type", "")) in ["skill_cast", "v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "status_applied", "v63_formation_slow_applied", "v63_mobility"]:
 		_lab.call("review_set_target_screen_position", screen_position)
-	var skill_id := str(_entries[_index].get("skill_id", ""))
 	var result: Dictionary
 	if is_basic_hit and actor_id == _caster_id:
 		result = _lab.call("review_feed_authoritative_basic_hit", event,
@@ -225,7 +229,10 @@ func _feed_receipt(event: Dictionary) -> void:
 	if bool(result.get("ok", false)):
 		_records[record_index]["receipt_feed"] = "REAL_MAPBATTLE_RECEIPT_ACCEPTED"
 		_records[record_index]["accepted_event_count"] = int(_records[record_index].get("accepted_event_count", 0)) + 1
-		if str(event.get("type", "")) in ["v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied", "v63_mobility"] or is_basic_hit:
+		if str(event.get("type", "")) == "v63_mobility":
+			_records[record_index]["mobility_frame_seconds"] = _global_elapsed + 0.02
+			_records[record_index]["start_frame_seconds"] = _global_elapsed + 0.02
+		elif str(event.get("type", "")) in ["v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "v63_formation_slow_applied", "v63_formation_zone_tick", "status_applied"] or is_basic_hit:
 			if float(_records[record_index].get("contact_frame_seconds", -1.0)) < 0.0:
 				# Keep the contact sheet close to the first receipt frame so the
 				# phase's authored peak is not captured halfway through its fade.
@@ -254,6 +261,7 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 	battle.active = true
 	battle.outcome = "fighting"
 	var caster := _actor("caster_%02d" % fixture_index, "disciple", Vector2(2.0, 3.0))
+	var caster_origin_position: Vector2 = caster.get("position", Vector2(2.0, 3.0))
 	caster["party_id"] = "vfx_factory_%s_party" % _school
 	caster["v63_combat_enabled"] = true
 	caster["v63_skill_loadout"] = [skill_id]
@@ -279,19 +287,22 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 	for line_foe in line_targets:
 		battle.actors[str(line_foe.get("id", ""))] = line_foe
 	var started := false
-	if _school == "formation" and skill_id == "tmb.skill.formation.basic.human":
+	if skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human"]:
 		var basic_definition: Dictionary = HSC.skill_definition(skill_id)
 		caster["v63_basic_skill_id"] = skill_id
 		caster["basic_ratio"] = float(basic_definition.get("damage_ratio", 0.0))
 		caster["basic_element"] = str(basic_definition.get("element", "earth"))
 		caster["range"] = float(basic_definition.get("range", 2.1))
+		caster["basic_range"] = float(basic_definition.get("range", 2.1))
 		battle.step()
 		started = true
 	else:
 		started = HSC.try_cast(battle, caster, foe)
 	if not started:
 		return {"battle":null,"caster_id":str(caster.id),"target_id":str(foe.id),"ally_id":str(ally.id)}
-	if not (_school == "formation" and skill_id in ["tmb.skill.formation.mobility.human", "tmb.skill.formation.basic.human"]):
+	var immediate_factory_skill := skill_id in ["tmb.skill.formation.mobility.human", "tmb.skill.formation.basic.human",
+		"tmb.skill.talisman.basic.human", "tmb.skill.talisman.mobility.human"]
+	if not immediate_factory_skill:
 		var pending: Dictionary = caster.get("v63_pending_cast", {})
 		if pending.is_empty():
 			return {"battle":null,"caster_id":str(caster.id),"target_id":str(foe.id),"ally_id":str(ally.id)}
@@ -305,7 +316,8 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			battle.now = float(zones[0].get("expires_at", battle.now + 2.0))
 			FORMATION.process_zones(battle)
 	var target_id := str(ally.id) if str(HSC.skill_definition(skill_id).get("effect", "")) == "guard" else str(foe.id)
-	return {"battle":battle,"caster_id":str(caster.id),"target_id":target_id,"ally_id":str(ally.id)}
+	return {"battle":battle,"caster_id":str(caster.id),"target_id":target_id,"ally_id":str(ally.id),
+		"caster_start_position":caster_origin_position}
 
 func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 	var resistances := {"metal":0.0,"wood":0.0,"water":0.0,"fire":0.0,"earth":0.0,

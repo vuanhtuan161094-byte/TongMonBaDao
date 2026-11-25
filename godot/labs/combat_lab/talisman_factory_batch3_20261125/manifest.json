@@ -1,7 +1,7 @@
 {
   "schema": "tmb.vfx_factory_source_batch.v1",
   "batch": "talisman_factory_batch3_20261125",
-  "status": "SOURCE_ATLASES_CAPTURED_NATIVE_QA_PENDING",
+  "status": "NATIVE_TECH_PASS_CANDIDATE_OWNER_APPROVAL_PENDING",
   "scope": "Talisman common Human basic projectile and mobility cast cues; Factory candidate only",
   "production_route": "Original per-skill RGBA art generated for this project with OpenAI ImageGen; no JX/Source A commercial pixels intentionally copied. ImageGen outputs preserved under /workspace/generated_images; checked copies committed here.",
   "owner_approval": "PENDING",
@@ -15,14 +15,18 @@
       "format": "PNG RGBA",
       "generator": "OpenAI ImageGen",
       "generator_output_id": "exec-76604a7d-aaed-4b98-8c02-902f3be003d1.png",
-      "layout": "4x4 frame atlas; frame regions recorded in Factory registry after QA",
+      "layout": "4x4 fractional equal-cell divisions; frame regions recorded explicitly in Factory registry after QA",
       "prompt": "Production-ready 2D VFX sprite atlas, transparent RGBA background, exactly 1024×1024. Strict 4 columns by 4 rows of equal 256px square cells, no gutters, no grid lines, no text, no watermark. Each cell shows one distinct sequential frame, same scale and common center pivot. Original classic Chinese wuxia game look: a small elegant ivory parchment talisman with fine charcoal brush sigils (abstract, not readable language) and subtle gilt corners. Animation story: quiet folded paper seal; pale jade-white wind gathers as delicate curved brush strokes; the talisman opens and shines; a narrow focused wind filament launches horizontally left-to-right; one compact target-local flash and a few flying paper flecks; then translucent silk wisps and tiny motes fade. Painterly hand-inked edges, finely painted light, crisp at actual game scale. No characters, no environment, no floor, no large ring, no neon geometry. Keep every frame isolated with empty transparent margins, no shapes touching panel boundaries.",
       "checks": {
         "alpha_channel": "PASS",
         "distinct_32px_frame_signatures": "16/16 PASS",
-        "native_scale": "PENDING",
-        "native_motion_review": "PENDING"
-      }
+        "native_scale": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+        "native_motion_review": "PENDING_CONTINUOUS_REVIEW"
+      },
+      "dimensions_px": [
+        1254,
+        1254
+      ]
     },
     {
       "skill_id": "tmb.skill.talisman.mobility.human",
@@ -32,22 +36,62 @@
       "format": "PNG RGBA",
       "generator": "OpenAI ImageGen",
       "generator_output_id": "exec-a6db0588-7279-4335-a8d6-7a213e755921.png",
-      "layout": "4x4 frame atlas; frame regions recorded in Factory registry after QA",
+      "layout": "4x4 fractional equal-cell divisions; frame regions recorded explicitly in Factory registry after QA",
       "prompt": "Production-ready 2D game VFX sprite atlas on transparent RGBA. 4×4 equal-cell sequential animation sheet, no borders, no labels, no text, no watermark, consistent pivot and scale. Original Wuxia JX martial arts effect for a talisman-based short reposition: a narrow indigo-jade wind seam edged with antique silver and small ivory paper fragments, like a brush-written line folding in space. Across 16 distinct frames: a single folded talisman with calm ink seal; wind coils inward; paper folds into a fine diagonal brush stroke; a slim translucent gust shears forward and briefly leaves a soft empty-space tear; the talisman and gust reform slightly offset as a readable arrival cue; the torn line softens; paper flecks and silk-like wisps fade. No character, no ground, no scenery, no damage burst, no flame, no lightning, no large circular ring, no neon geometry. Painterly transparent energy, beautiful subtle brush texture, compact silhouette readable at 1x game scale. Every cell visually differs and is separated only by transparent space.",
       "checks": {
         "alpha_channel": "PASS",
         "distinct_32px_frame_signatures": "16/16 PASS",
-        "native_scale": "PENDING",
-        "native_motion_review": "PENDING"
-      }
+        "native_scale": "NATIVE_1X_PHASE_SAMPLES_REVIEWED; CONTINUOUS_MOTION_REVIEW_PENDING",
+        "native_motion_review": "PENDING_CONTINUOUS_REVIEW"
+      },
+      "dimensions_px": [
+        1278,
+        1230
+      ]
     }
   ],
   "source_review": {
     "alpha": "Both files contain RGBA alpha; source-level alpha inspection passed.",
     "unique_frames": "Each 4x4 atlas has 16 distinct normalized 32px frame signatures.",
     "visual_identity": "Basic: ivory-and-gilt paper talisman releasing pale jade wind projectile. Mobility: indigo-jade spatial seam and paper fragments; no hit/damage burst.",
-    "review_status": "Source atlas visually inspected; native game-scale review and motion review pending."
+    "review_status": "RGBA alpha and 16 distinct source frame signatures passed; native 1x phase samples reviewed; continuous motion review pending; owner approval pending."
   },
   "owner_approval_state": "PENDING",
-  "pve_gate": "HOLD"
+  "pve_gate": "HOLD",
+  "factory_integration": {
+    "renderer": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+    "registry": "res://labs/combat_lab/vfx_factory/registry.json",
+    "native_runner": "res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn",
+    "skills": [
+      "tmb.skill.talisman.basic.human",
+      "tmb.skill.talisman.mobility.human"
+    ],
+    "mechanics": {
+      "tmb.skill.talisman.basic.human": "projectile; exact MapBattleV2 basic hit only",
+      "tmb.skill.talisman.mobility.human": "mobility; exact v63_mobility destination and evasion_until only"
+    },
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  },
+  "native_capture": {
+    "engine": "Godot 4.7.2 GL Compatibility / Mesa llvmpipe",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "fps": 20,
+    "frame_count": 441,
+    "duration_seconds": 22.05,
+    "video": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_native_1280x720.mp4",
+    "contact_sheet": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_factory_batch3_contact_sheet_1280x720.png",
+    "capture_index": "res://labs/combat_lab/talisman_factory_batch3_20261125/review/native/talisman_batch3_capture_index.json",
+    "receipt_summary": "10/10 skills; real MapBattleV2 fixture receipts accepted; synthetic_events=0",
+    "visual_review": "Native 1x phase samples viewed; continuous motion review pending",
+    "owner_approval": "PENDING",
+    "pve": "HOLD",
+    "video_sha256": "bf7bf3fefc2b6ac0e2bdd59ccdf7d9a77ab1a8d8a9328e53ee34ee3f7d9801bb",
+    "contact_sheet_sha256": "c1b492bd4f8f38c0d593aaa5a3171c542dbe5f4cd2ad26f567ff092ded856191",
+    "capture_index_sha256": "f71e10d240b56d21d7e1abab20bd9c65479fc351da42315a6fbec73650eee84b",
+    "validation": "H.264 1280x720 20/1 fps 441 frames 22.05s; full decode PASS"
+  }
 }
