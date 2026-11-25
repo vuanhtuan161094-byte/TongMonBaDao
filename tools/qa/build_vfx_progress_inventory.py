@@ -1,141 +1,483 @@
 #!/usr/bin/env python3
-"""Evidence-scoped VFX status from 12 canonical 183-ID school ledgers.
+"""Build an evidence-scoped inventory from the 12 canonical VFX ledgers.
 
-Do NOT infer VFX approval from catalogue/CI/schematic preview. Status records
-are scoped to Human cast masters and exact owner art decisions. Immortal/divine
-art and passive/event VFX are separate unapproved deliverables.
+Scene presence is discovered from actual LAB scenes and their bound scripts.
+It does not imply technical approval, owner approval, or live PvE integration.
 """
-import csv
-from pathlib import Path
-from collections import Counter
+
 import argparse
+import csv
+import re
+from collections import defaultdict
+from datetime import date
+from pathlib import Path
 
-ROOT=Path(__file__).resolve().parents[2]
-LEDGERS=ROOT/"docs/operations/vfx_school_ledgers"
-SCHOOL_FILES=[
- "01_poison_183.csv","02_talisman_183.csv","03_sword_183.csv",
- "04_bow_183.csv","05_fist_183.csv","06_blade_183.csv",
- "07_dual_blade_183.csv","08_spear_183.csv","09_palm_183.csv",
- "10_curse_183.csv","11_formation_183.csv","12_summon_183.csv"]
 
-# Explicitly linked to actual dedicated game-engine LAB scenes in PR #72.
-LABS={
- "tmb.skill.poison.co_doc.active_01":"godot/labs/combat_lab/poison03/fu_cot_co.tscn",
- "tmb.skill.poison.co_doc.active_02":"godot/labs/combat_lab/poison02/xa_anh_source_vl_remake.tscn",
- "tmb.skill.poison.co_doc.active_03":"godot/labs/combat_lab/poison04/co_vu_me_tung.tscn",
- "tmb.skill.poison.co_doc.active_04":"godot/labs/combat_lab/poison05/tan_co_dien_nhiem.tscn",
- "tmb.skill.poison.co_doc.ultimate":"godot/labs/combat_lab/poison06/van_co_phe_gioi.tscn",
- "tmb.skill.poison.doc_cham.active_01":"godot/labs/combat_lab/poison07/xuyen_cot_doc_cham.tscn",
- "tmb.skill.poison.doc_cham.active_02":"godot/labs/combat_lab/poison08/phe_mach_doc_thich.tscn",
- "tmb.skill.poison.doc_cham.active_03":"godot/labs/combat_lab/poison09/r1_painted/bach_doc_tan_cham_r1.tscn",
- "tmb.skill.poison.doc_cham.active_04":"godot/labs/combat_lab/poison10/r1_painted/doc_khi_phe_tam_r1.tscn",
- "tmb.skill.talisman.loi_phu.active_01":"godot/labs/combat_lab/talisman01/dien_quang_khai_phu.tscn",
- "tmb.skill.talisman.loi_phu.active_02":"godot/labs/combat_lab/talisman02/thien_loi_dan_net.tscn",
- "tmb.skill.talisman.loi_phu.active_03":"godot/labs/combat_lab/talisman03/loi_van_truy_an.tscn",
- "tmb.skill.talisman.loi_phu.active_04":"godot/labs/combat_lab/talisman04/cuu_tieu_pha_van.tscn",
- "tmb.skill.talisman.loi_phu.ultimate":"godot/labs/combat_lab/talisman05/cuu_thien_van_loi_phu.tscn",
- "tmb.skill.talisman.hoa_phu.active_01":"godot/labs/combat_lab/talisman06/xich_diem_khai_van.tscn",
- "tmb.skill.talisman.hoa_phu.active_02":"godot/labs/combat_lab/talisman07/lien_diem_phan_gioi.tscn",
- "tmb.skill.talisman.hoa_phu.active_03":"godot/labs/combat_lab/talisman08/hoa_tam_ngung_phu.tscn",
- "tmb.skill.talisman.hoa_phu.active_04":"godot/labs/combat_lab/talisman09/chu_tuoc_hoi_hoan.tscn",
- "tmb.skill.talisman.hoa_phu.ultimate":"godot/labs/combat_lab/talisman10/van_phu_phan_thien.tscn",
- "tmb.skill.talisman.phong_an_phu.active_01":"godot/labs/combat_lab/talisman11/phong_gioi_truy_dau.tscn",
- "tmb.skill.fist.ba_quyen.active_01":"godot/labs/combat_lab/fist01/khai_son_trong_quyen.tscn",
- "tmb.skill.fist.ba_quyen.active_02":"godot/labs/combat_lab/fist02/phi_than_lien_cuoc.tscn",
- "tmb.skill.fist.ba_quyen.active_03":"godot/labs/combat_lab/fist04/lei_dinh_chan_quyen.tscn",
- "tmb.skill.fist.ba_quyen.active_04":"godot/labs/combat_lab/fist05/dia_mach_lien_chan.tscn",
- "tmb.skill.fist.kim_cang.active_01":"godot/labs/combat_lab/fist06/tran_dia_quyen.tscn",
- "tmb.skill.fist.kim_cang.active_02":"godot/labs/combat_lab/fist07/kim_cang_ho_the.tscn",
-}
-# Only human-LAB art approvals explicitly known; not gameplay acceptance.
-APPROVED={
- "tmb.skill.poison.co_doc.active_01":"THREE_OWNER_APPROVED_POISON_LABS",
- "tmb.skill.poison.co_doc.active_02":"THREE_OWNER_APPROVED_POISON_LABS",
- "tmb.skill.poison.co_doc.active_03":"THREE_OWNER_APPROVED_POISON_LABS",
- "tmb.skill.talisman.loi_phu.active_02":"OWNER_EXPLICIT_TAL02_R6_APPROVAL",
- "tmb.skill.talisman.loi_phu.active_03":"OWNER_EXPLICIT_TAL03_R4_APPROVAL",
- "tmb.skill.talisman.hoa_phu.active_02":"HF02_R6_OWNER_APPROVAL_20261116",
- "tmb.skill.talisman.hoa_phu.active_03":"HF03_R2_OWNER_APPROVAL_20261116",
-}
-PREVIEW_ONLY={"tmb.skill.poison.co_doc.ultimate":"POI06_R11_OWNER_PREVIEW_ACCEPTED_NATIVE_QA_PASS"}
-IN_PROGRESS={"tmb.skill.talisman.hoa_phu.active_04":"HF04_R3_OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED",
- "tmb.skill.talisman.hoa_phu.ultimate":"HF05_R7_OWNER_PROVISIONAL_USE_NOT_FINAL_ART_APPROVAL",
- "tmb.skill.talisman.phong_an_phu.active_01":"PAF01_R3_NATIVE_480FRAMES_TECH_PASS_OWNER_PENDING"}
+ROOT = Path(__file__).resolve().parents[2]
+GODOT_ROOT = ROOT / "godot"
+LEDGERS = ROOT / "docs/operations/vfx_school_ledgers"
+SCHOOL_FILES = [
+    "01_poison_183.csv",
+    "02_talisman_183.csv",
+    "03_sword_183.csv",
+    "04_bow_183.csv",
+    "05_fist_183.csv",
+    "06_blade_183.csv",
+    "07_dual_blade_183.csv",
+    "08_spear_183.csv",
+    "09_palm_183.csv",
+    "10_curse_183.csv",
+    "11_formation_183.csv",
+    "12_summon_183.csv",
+]
+CONTRACT_FIELDS = (
+    "effect_declared",
+    "shape_declared",
+    "target_limit_declared",
+    "visual_work_class",
+)
+SWORD_PROVISIONAL_OWNER_EVIDENCE = (
+    "OWNER_PROMPT_2026-11-25_SWORD_17_OF_17_PROVISIONAL"
+)
+SKILL_ID_RE = re.compile(r"tmb\.skill\.[A-Za-z0-9_.-]+")
+SCRIPT_PATH_RE = re.compile(r'path="res://([^" ]+\.gd)"')
+GODOT_ROOT_RE = re.compile(
+    r"(?m)^\s*const\s+[A-Za-z_]\w*\s*(?::[^=]+)?\s*:?=\s*"
+    r"[\"']res://([^\"']+)[\"']"
+)
+JSON_NAME_RE = re.compile(r"[\"']([^\"']+\.json)[\"']")
+INDEX_EXPRESSION_RE = re.compile(
+    r"(?:\b[A-Z][A-Z0-9_]*\s*|\[\s*[\"']skills[\"']\s*\]\s*)"
+    r"\[\s*([A-Za-z_]\w*)\s*\]"
+)
+
+
+def load_ledgers():
+    records = []
+    for filename in SCHOOL_FILES:
+        path = LEDGERS / filename
+        with path.open(encoding="utf-8-sig", newline="") as ledger_file:
+            rows = list(csv.DictReader(ledger_file))
+        if len(rows) != 183:
+            raise ValueError(f"{filename}: expected 183 rows, found {len(rows)}")
+        records.extend(rows)
+
+    skill_ids = [row["skill_id"] for row in records]
+    if len(records) != 2196 or len(set(skill_ids)) != 2196:
+        raise ValueError("The source ledgers must contain 2,196 unique skill IDs")
+    if len({row["family_id"] for row in records}) != 420:
+        raise ValueError("The source ledgers must contain 420 skill families")
+
+    human_rows = [row for row in records if row["tier"] == "human"]
+    human_by_family = defaultdict(list)
+    for row in human_rows:
+        human_by_family[row["family_id"]].append(row)
+    if len(human_rows) != 420 or any(len(rows) != 1 for rows in human_by_family.values()):
+        raise ValueError("Each of the 420 skill families must have one Human row")
+    human_cast_masters = [
+        row for row in human_rows if row["visual_work_class"] == "CAST_MASTER"
+    ]
+    if len(human_cast_masters) != 204:
+        raise ValueError("The source ledgers must contain 204 Human cast masters")
+
+    family_rows = defaultdict(list)
+    for row in records:
+        family_rows[row["family_id"]].append(row)
+    missing_human_families = set(family_rows) - set(human_by_family)
+    if missing_human_families:
+        raise ValueError(
+            "Families without a Human cast master: "
+            + ", ".join(sorted(missing_human_families)[:8])
+        )
+    return records, human_rows, human_cast_masters, human_by_family
+
+
+def read_scene_script_ids(script_path, human_ids):
+    """Read skill IDs from a scene's referenced script and its named manifests."""
+    try:
+        script_text = script_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return []
+
+    ids = list(dict.fromkeys(
+        skill_id
+        for skill_id in SKILL_ID_RE.findall(script_text)
+        if skill_id in human_ids
+    ))
+
+    manifest_paths = set()
+    roots = [GODOT_ROOT / relative for relative in GODOT_ROOT_RE.findall(script_text)]
+    for name in JSON_NAME_RE.findall(script_text):
+        candidate = Path(name)
+        if name.startswith("res://"):
+            manifest_paths.add(GODOT_ROOT / name.removeprefix("res://"))
+        else:
+            manifest_paths.add(script_path.parent / candidate)
+            manifest_paths.update(root / candidate for root in roots)
+
+    for manifest_path in manifest_paths:
+        if not manifest_path.is_file():
+            continue
+        try:
+            manifest_text = manifest_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            continue
+        ids.extend(
+            skill_id
+            for skill_id in SKILL_ID_RE.findall(manifest_text)
+            if skill_id in human_ids and skill_id not in ids
+        )
+    return ids
+
+
+def scene_slot(scene_text, script_text):
+    indexed_variables = INDEX_EXPRESSION_RE.findall(script_text)
+    for variable in indexed_variables:
+        scene_value = re.search(
+            rf"(?m)^\s*{re.escape(variable)}\s*=\s*(-?\d+)\s*$", scene_text
+        )
+        if scene_value:
+            return int(scene_value.group(1))
+        script_default = re.search(
+            rf"(?m)^\s*var\s+{re.escape(variable)}\s*:\s*int\s*=\s*(-?\d+)",
+            script_text,
+        )
+        if script_default:
+            return int(script_default.group(1))
+    return None
+
+
+def discover_human_lab_scenes(human_by_family):
+    human_id_to_family = {
+        rows[0]["skill_id"]: family_id
+        for family_id, rows in human_by_family.items()
+    }
+    human_ids = set(human_id_to_family)
+    family_scenes = defaultdict(set)
+
+    lab_roots = [
+        GODOT_ROOT / "labs/combat_lab",
+        GODOT_ROOT / "labs/visual_bridge_v1",
+    ]
+    for lab_root in lab_roots:
+        if not lab_root.is_dir():
+            continue
+        for scene_path in sorted(lab_root.rglob("*.tscn")):
+            relative_scene = scene_path.relative_to(ROOT)
+            if lab_root.name == "combat_lab" and scene_path.parent == lab_root:
+                continue
+            if lab_root.name == "visual_bridge_v1" and not scene_path.name.endswith("_lab.tscn"):
+                continue
+            if scene_path.name == "vfx_web_review_hub.tscn":
+                continue
+            try:
+                scene_text = scene_path.read_text(encoding="utf-8")
+            except (OSError, UnicodeError):
+                continue
+
+            scene_ids = [
+                skill_id
+                for skill_id in SKILL_ID_RE.findall(scene_text)
+                if skill_id in human_ids
+            ]
+            bound_ids = list(dict.fromkeys(scene_ids))
+
+            for relative_script in SCRIPT_PATH_RE.findall(scene_text):
+                script_path = GODOT_ROOT / relative_script.removeprefix("res://")
+                if not script_path.is_file():
+                    continue
+                try:
+                    script_text = script_path.read_text(encoding="utf-8")
+                except (OSError, UnicodeError):
+                    continue
+                script_ids = read_scene_script_ids(script_path, human_ids)
+                if not script_ids:
+                    continue
+
+                if len(script_ids) == 1:
+                    selected_ids = script_ids
+                else:
+                    families = {human_id_to_family[skill_id] for skill_id in script_ids}
+                    if len(families) == 1:
+                        selected_ids = script_ids
+                    else:
+                        slot = scene_slot(scene_text, script_text)
+                        selected_ids = (
+                            [script_ids[slot]] if slot is not None and 0 <= slot < len(script_ids) else []
+                        )
+                for skill_id in selected_ids:
+                    if skill_id not in bound_ids:
+                        bound_ids.append(skill_id)
+
+            for skill_id in bound_ids:
+                family_scenes[human_id_to_family[skill_id]].add(relative_scene.as_posix())
+
+    return family_scenes
+
+
+def owner_status(owner_gate):
+    status = owner_gate.strip().upper()
+    if "PROVISIONAL" in status:
+        return "OWNER_PROVISIONAL"
+    if "PENDING" in status:
+        return "OWNER_VISUAL_PENDING"
+    if "APPROVED" in status:
+        return "OWNER_VISUAL_APPROVED"
+    return "OWNER_GATE_UNCLASSIFIED"
+
+
+def annotate_records(records, human_by_family, family_scenes):
+    annotated = []
+    for source_row in records:
+        row = dict(source_row)
+        family_id = row["family_id"]
+        human = human_by_family[family_id][0]
+        scenes = sorted(family_scenes.get(family_id, set()))
+        mismatches = [
+            field
+            for field in CONTRACT_FIELDS
+            if row[field].strip() != human[field].strip()
+        ]
+
+        row["source_owner_gate"] = row["owner_gate"]
+        row["owner_status_derived"] = owner_status(row["owner_gate"])
+        row["owner_status_effective"] = row["owner_status_derived"]
+        row["owner_decision_evidence"] = "LEDGER_OWNER_GATE"
+        if (
+            row["school"] == "sword"
+            and row["tier"] == "human"
+            and row["visual_work_class"] == "CAST_MASTER"
+        ):
+            row["owner_status_effective"] = "OWNER_PROVISIONAL"
+            row["owner_decision_evidence"] = SWORD_PROVISIONAL_OWNER_EVIDENCE
+        row["human_reference_skill_id"] = human["skill_id"]
+        row["human_fallback_mismatch_fields"] = ";".join(mismatches)
+        row["dedicated_human_lab_scene_count"] = str(len(scenes))
+        row["dedicated_human_lab_scenes"] = ";".join(scenes)
+
+        if row["tier"] == "human":
+            row["human_fallback_compatibility"] = "HUMAN_CANONICAL"
+        elif mismatches:
+            row["human_fallback_compatibility"] = "FALLBACK_INCOMPATIBLE"
+        else:
+            row["human_fallback_compatibility"] = (
+                "CONTRACT_COMPATIBLE_HUMAN_FALLBACK_PENDING"
+            )
+
+        if row["visual_work_class"] != "CAST_MASTER":
+            row["vfx_inventory_status"] = "PASSIVE_EVENT_RECEIPT_GATED"
+        elif row["tier"] == "human":
+            row["vfx_inventory_status"] = row["owner_status_effective"]
+        else:
+            row["vfx_inventory_status"] = row["human_fallback_compatibility"]
+
+        annotated.append(row)
+    return annotated
+
+
+def school_summaries(records, family_scenes):
+    summaries = []
+    for filename in SCHOOL_FILES:
+        school = filename.split("_", 1)[1].removesuffix("_183.csv")
+        school_rows = [row for row in records if row["school"] == school]
+        school_human_rows = [row for row in school_rows if row["tier"] == "human"]
+        school_humans = [
+            row for row in school_human_rows if row["visual_work_class"] == "CAST_MASTER"
+        ]
+        all_human_families = {row["family_id"] for row in school_human_rows}
+        cast_families = {row["family_id"] for row in school_humans}
+        scene_families = all_human_families.intersection(family_scenes)
+        cast_scene_families = cast_families.intersection(family_scenes)
+        cast_scenes = {
+            scene
+            for family_id in cast_families
+            for scene in family_scenes.get(family_id, set())
+        }
+        all_scenes = {
+            scene
+            for family_id in all_human_families
+            for scene in family_scenes.get(family_id, set())
+        }
+        fallback_rows = [
+            row
+            for row in school_rows
+            if row["tier"] in {"immortal", "divine"}
+            and row["visual_work_class"] == "CAST_MASTER"
+        ]
+        summaries.append(
+            {
+                "school": school,
+                "skill_id_count": len(school_rows),
+                "family_count": len({row["family_id"] for row in school_rows}),
+                "human_cast_master_count": len(school_humans),
+                "human_families_with_lab_scene": len(scene_families),
+                "human_family_lab_scene_revision_count": len(all_scenes),
+                "human_cast_families_with_lab_scene": len(cast_scene_families),
+                "human_cast_lab_scene_revision_count": len(cast_scenes),
+                "human_owner_approved_count": sum(
+                    row["owner_status_effective"] == "OWNER_VISUAL_APPROVED"
+                    for row in school_humans
+                ),
+                "human_provisional_count": sum(
+                    row["owner_status_effective"] == "OWNER_PROVISIONAL"
+                    for row in school_humans
+                ),
+                "human_pending_count": sum(
+                    row["owner_status_effective"] == "OWNER_VISUAL_PENDING"
+                    for row in school_humans
+                ),
+                "human_ledger_effective_status_conflicts": sum(
+                    row["owner_status_effective"] != row["owner_status_derived"]
+                    for row in school_humans
+                ),
+                "tier_fallback_pending_rows": sum(
+                    not row["human_fallback_mismatch_fields"] for row in fallback_rows
+                ),
+                "tier_fallback_incompatible_rows": sum(
+                    bool(row["human_fallback_mismatch_fields"]) for row in fallback_rows
+                ),
+                "passive_event_receipt_gated_rows": sum(
+                    row["visual_work_class"] != "CAST_MASTER" for row in school_rows
+                ),
+            }
+        )
+    return summaries
+
+
+def write_csv(path, rows, fieldnames=None):
+    if fieldnames is None:
+        fieldnames = list(rows[0]) if rows else []
+    with path.open("w", encoding="utf-8-sig", newline="") as output_file:
+        writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def write_markdown(path, records, humans, summaries, family_scenes):
+    lines = [
+        f"# VFX production inventory — generated {date.today().isoformat()}",
+        "",
+        "Source of catalog truth is the 12 school ledgers. Scene references come from current LAB scenes and their bound scripts.",
+        "Scene presence, source approval, technical status, owner review, and live integration are recorded separately.",
+        "",
+        f"- Skill IDs: **{len(records)} unique**",
+        f"- Skill families: **{len({row['family_id'] for row in records})}**",
+        f"- Human cast masters: **{len(humans)}**",
+        f"- Human families with at least one bound LAB scene: **{sum(row['human_families_with_lab_scene'] for row in summaries)}**",
+        f"- Human cast families with at least one bound LAB scene: **{sum(row['human_cast_families_with_lab_scene'] for row in summaries)}**",
+        f"- Distinct Human LAB scene revisions: **{len({scene for scenes in family_scenes.values() for scene in scenes})}**",
+        "- Every ledger row retains its declared `live_integration` value. PvE status is not inferred from scenes.",
+        "",
+        "## Per-school coverage",
+        "",
+        "| School | IDs | Families | Human cast | Human families with scene | Cast families with scene | All scene revisions | Cast scene revisions | Owner approved | Provisional | Pending | Ledger/effective status conflicts | Tier fallback pending | Tier fallback incompatible | Passive/event receipt gated |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in summaries:
+        lines.append(
+            "| {school} | {skill_id_count} | {family_count} | {human_cast_master_count} | "
+            "{human_families_with_lab_scene} | {human_cast_families_with_lab_scene} | "
+            "{human_family_lab_scene_revision_count} | {human_cast_lab_scene_revision_count} | "
+            "{human_owner_approved_count} | {human_provisional_count} | {human_pending_count} | "
+            "{human_ledger_effective_status_conflicts} | "
+            "{tier_fallback_pending_rows} | {tier_fallback_incompatible_rows} | "
+            "{passive_event_receipt_gated_rows} |".format(**row)
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Human cast masters",
+            "",
+            "| School | Branch | Skill ID | Ledger owner gate | Ledger-derived owner status | Effective owner status | Decision evidence | Ledger technical/art status | Bound LAB scenes |",
+            "|---|---|---|---|---|---|---|---|---|",
+        ]
+    )
+    for row in humans:
+        scenes = "; ".join(sorted(family_scenes.get(row["family_id"], set()))) or "—"
+        lines.append(
+            f"| {row['school']} | {row['branch']} | `{row['skill_id']}` | "
+            f"{row['owner_gate']} | {row['owner_status_derived']} | "
+            f"{row['owner_status_effective']} | {row['owner_decision_evidence']} | "
+            f"{row['lab_visual_status']} | {scenes} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Interpretation",
+            "",
+            "- Owner status is derived directly from each row's `owner_gate`. `lab_visual_status` remains the technical/art evidence label supplied by that ledger.",
+            "- The current owner prompt states that all 17 Sword Human cast reviews are provisionally accepted. The effective Sword status is `OWNER_PROVISIONAL`; raw ledger owner fields remain intact, and this is not final art approval.",
+            "- Immortal and Divine cast rows are compared with their Human family on effect, shape, target limit, and work class. A match is only `CONTRACT_COMPATIBLE_HUMAN_FALLBACK_PENDING`; a mismatch is `FALLBACK_INCOMPATIBLE`.",
+            "- Passive and event rows remain `PASSIVE_EVENT_RECEIPT_GATED`. This inventory does not invent `NO_VISUAL_REQUIRED`.",
+            "- Bound LAB scenes indicate discoverable scene/script references. They do not establish source-art quality, G3 completion, owner approval, or PvE integration.",
+            "",
+        ]
+    )
+    path.write_text("\n".join(lines), encoding="utf-8")
+
 
 def main():
-    p=argparse.ArgumentParser()
-    p.add_argument("--out",default="/tmp/tmb-vfx-progress")
-    args=p.parse_args()
-    out=Path(args.out);out.mkdir(parents=True,exist_ok=True)
-    records=[]
-    for filename in SCHOOL_FILES:
-        with (LEDGERS/filename).open(encoding="utf-8-sig",newline="") as file:
-            rows=list(csv.DictReader(file))
-        assert len(rows)==183,(filename,len(rows))
-        records+=rows
-    assert len(records)==2196,len(records)
-    assert len({x["skill_id"] for x in records})==2196,"Duplicate skill ids"
-    humans=[r for r in records if r["tier"]=="human" and r["visual_work_class"]=="CAST_MASTER"]
-    assert len(humans)==204,len(humans)
-    assert len({r["family_id"] for r in humans})==204,"Human cast family count inconsistent"
-    assert set(LABS)<={r["family_id"] for r in humans}, "A listed LAB is not a canonical Human cast"
-    assert all((ROOT / lab).exists() for lab in LABS.values()),"Missing actual LAB scene"
-    assert len(LABS)==26 and len(APPROVED)==7
-    for r in records:
-        is_human_cast=r["tier"]=="human" and r["visual_work_class"]=="CAST_MASTER"
-        fam=r["family_id"]
-        r["dedicated_human_lab"]=LABS.get(fam,"") if is_human_cast else ""
-        if is_human_cast:
-            if fam in APPROVED:r["vfx_actual"]="OWNER_VISUAL_APPROVED_HUMAN_LAB"
-            elif fam in PREVIEW_ONLY:r["vfx_actual"]="PREVIEW_ACCEPTED_NATIVE_QA_NOT_FINAL_OWNER"
-            elif fam in IN_PROGRESS:
-                r["vfx_actual"]=("OWNER_PROVISIONAL_USE_ART_REWORK_DEFERRED"
-                    if fam in ("tmb.skill.talisman.hoa_phu.active_04","tmb.skill.talisman.hoa_phu.ultimate")
-                    else "PAF01_R3_NATIVE_480FRAMES_TECH_PASS_OWNER_PENDING")
-            elif fam in LABS:r["vfx_actual"]="DEDICATED_LAB_OWNER_PENDING_OR_REWORK"
-            else:r["vfx_actual"]="NO_DEDICATED_HUMAN_LAB"
-        elif r["visual_work_class"]!="CAST_MASTER":
-            r["vfx_actual"]="PASSIVE_EVENT_REQUIRES_RUNTIME_RECEIPT_NOT_CAST_MASTER"
-        else:
-            r["vfx_actual"]="IMMORTAL_DIVINE_VARIANT_NOT_ART_APPROVED"
-        r["owner_art_source_note"]=(APPROVED.get(fam) or PREVIEW_ONLY.get(fam) or IN_PROGRESS.get(fam) or "") if is_human_cast else ""
-    columns=list(records[0])  # fields include the three just-added status columns
-    with (out/"ALL_2196_VFX_STATUS.csv").open("w",encoding="utf-8-sig",newline="") as file:
-        w=csv.DictWriter(file,fieldnames=columns);w.writeheader();w.writerows(records)
-    with (out/"HUMAN_204_VFX_STATUS.csv").open("w",encoding="utf-8-sig",newline="") as file:
-        w=csv.DictWriter(file,fieldnames=columns);w.writeheader();w.writerows(humans)
-    school_rows=[]
-    for filename in SCHOOL_FILES:
-        school_name=filename.split("_",1)[1].replace("_183.csv","")
-        r=[h for h in humans if h["school"]==school_name]
-        assert len(r)==17,(school_name,len(r))
-        school_rows.append([school_name,17,sum(bool(h["dedicated_human_lab"]) for h in r),
-            sum(h["vfx_actual"]=="OWNER_VISUAL_APPROVED_HUMAN_LAB" for h in r)])
-    lines=["# VFX production inventory — 16 Nov 2026 / PR #72",
-      "", "This is a reproducible **source-catalogue + dedicated-LAB / owner decision** audit, NOT a release completeness claim.",
-      "12 schools × 183 IDs = **2,196 IDs**, 420 families; **204 Human CAST_MASTER**",
-      "(12 × 17), with other tiers/lineages and passive/event categories requiring separate art/event work.",
-      "**26/204** distinct Human cast masters have dedicated isolated Godot LAB scenes, **7/204** have explicit owner-art approval as understood at this checkpoint. **178/204** do not have a dedicated Human cast LAB yet.",
-      "Technical CI/illustrative previews do **not** count as owner approval or live PvE integration.",
-      "HF02 R6 approved 10/10, exact art SHA b5a29f1504078a0e66acc9c79306dc86f5f28463. POI06 R11 accepted *preview* only. HF03 R2 owner visual approved on 16 Nov 2026; exact native art SHA ac3b02b1aa6c0d7e0c5dd7e418c59c4dc52a0bb4. HF04 R3 owner authorized TEMPORARY use only and criticized phoenix art/smoothness; not owner-final approved. HF05 R7 owner permitted provisional use only; not final art PASS. PAF01 Phong Giới Truy Dấu R3 fully rendered as original source-painted, six-second wind mark on one real moving WALK monster: V4 G3.5 + 480-frame native Godot QA technical PASS, exact source SHA 02ab55a3e5bffb368e402e91a5206f385ac27dc8; owner art remains pending.",
-      "", "| School | Human cast | Dedicated LAB | Explicit owner approved | Not yet dedicated |",
-      "|---|---:|---:|---:|---:|"]
-    for name,allnum,labs,approved in school_rows:
-        lines.append(f"| {name} | {allnum} | {labs} | {approved} | {allnum-labs} |")
-    lines+=["", "## Every Human cast master (204 rows)", "", "| School / branch | Skill | Current VFX reality | LAB path |",
-       "|---|---|---|---|"]
-    for r in humans:
-        lines.append(f"| {r['school']} / {r['branch']} | {r['name_vi']} | {r['vfx_actual']} | {r['dedicated_human_lab'] or '—'} |")
-    lines+=["", "## Gate caveats", "",
-       "- The published source ledgers have older `lab_visual_status` values; this inventory adds a separate evidence-scoped `vfx_actual` overlay without changing the catalogue or erasing previous historical fields.",
-       "- Other-tier variants are **not** automatically VFX-complete just because their family has an approved Human LAB.",
-       "- Prototype/batch auto-generated 201 previews and extra noncanonical experiments are **not** included in the 23 individually staged Human cast scenes.",
-       "- All approved art remains `PVE_INTEGRATION_HOLD`, actual Combat V2 receipt mapping and real device QA separate.",
-       "- Status overlay must be revised after each exact owner decision and actual Godot technical evidence; this report is a dated snapshot.", ""]
-    (out/"HUMAN_204_VFX_STATUS.md").write_text("\n".join(lines),encoding="utf-8")
-    sums=Counter(r["vfx_actual"] for r in humans)
-    print("VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=26 OWNER_APPROVED=7 NO_DEDICATED_LABS=178")
-    print("VFX_INVENTORY_HUMAN_BUCKETS",dict(sums))
-    for name,_,labs,approved in school_rows:
-        print("VFX_SCHOOL",name,"LAB",labs,"APPROVED",approved)
-if __name__=="__main__":main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", default="/tmp/tmb-vfx-progress")
+    args = parser.parse_args()
+    output_dir = Path(args.out)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    records, human_rows, humans, human_by_family = load_ledgers()
+    if sum(
+        row["school"] == "sword"
+        and row["tier"] == "human"
+        and row["visual_work_class"] == "CAST_MASTER"
+        for row in records
+    ) != 17:
+        raise ValueError("The Sword owner override requires exactly 17 Human cast masters")
+    family_scenes = discover_human_lab_scenes(human_by_family)
+    annotated = annotate_records(records, human_by_family, family_scenes)
+    annotated_humans = [
+        row
+        for row in annotated
+        if row["tier"] == "human" and row["visual_work_class"] == "CAST_MASTER"
+    ]
+    summaries = school_summaries(annotated, family_scenes)
+
+    write_csv(output_dir / "ALL_2196_VFX_STATUS.csv", annotated)
+    write_csv(output_dir / "HUMAN_204_VFX_STATUS.csv", annotated_humans)
+    write_csv(output_dir / "SCHOOL_SUMMARY.csv", summaries)
+    write_markdown(
+        output_dir / "HUMAN_204_VFX_STATUS.md",
+        records,
+        annotated_humans,
+        summaries,
+        family_scenes,
+    )
+
+    scene_count = sum(len(scenes) for scenes in family_scenes.values())
+    print(
+        "VFX_INVENTORY_PASS "
+        f"skill_ids={len(records)} unique_ids={len({row['skill_id'] for row in records})} "
+        f"families={len({row['family_id'] for row in records})} "
+        f"human_cast_masters={len(humans)} "
+        f"human_families_with_lab_scene={len(family_scenes)} "
+        f"family_scene_bindings={scene_count}"
+    )
+    for summary in summaries:
+        print(
+            "VFX_SCHOOL "
+            f"school={summary['school']} ids={summary['skill_id_count']} "
+            f"families={summary['family_count']} "
+            f"human_families_with_lab_scene={summary['human_families_with_lab_scene']} "
+            f"human_cast_lab_families={summary['human_cast_families_with_lab_scene']} "
+            f"approved={summary['human_owner_approved_count']} "
+            f"provisional={summary['human_provisional_count']} "
+            f"pending={summary['human_pending_count']} "
+            f"owner_status_conflicts={summary['human_ledger_effective_status_conflicts']} "
+            f"fallback_pending={summary['tier_fallback_pending_rows']} "
+            f"fallback_incompatible={summary['tier_fallback_incompatible_rows']} "
+            f"receipt_gated={summary['passive_event_receipt_gated_rows']}"
+        )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,13 @@
+﻿school,skill_id_count,family_count,human_cast_master_count,human_families_with_lab_scene,human_family_lab_scene_revision_count,human_cast_families_with_lab_scene,human_cast_lab_scene_revision_count,human_owner_approved_count,human_provisional_count,human_pending_count,human_ledger_effective_status_conflicts,tier_fallback_pending_rows,tier_fallback_incompatible_rows,passive_event_receipt_gated_rows
+poison,183,35,17,17,28,17,28,7,6,4,0,51,19,96
+talisman,183,35,17,18,22,15,16,2,0,15,0,53,17,96
+sword,183,35,17,17,17,17,17,0,17,0,17,70,0,96
+bow,183,35,17,0,0,0,0,0,0,17,0,49,21,96
+fist,183,35,17,15,22,15,22,0,0,17,0,31,39,96
+blade,183,35,17,0,0,0,0,0,0,17,0,68,2,96
+dual_blade,183,35,17,0,0,0,0,0,0,17,0,70,0,96
+spear,183,35,17,0,0,0,0,0,0,17,0,70,0,96
+palm,183,35,17,0,0,0,0,0,0,17,0,55,15,96
+curse,183,35,17,0,0,0,0,0,0,17,0,70,0,96
+formation,183,35,17,0,0,0,0,0,0,17,0,70,0,96
+summon,183,35,17,0,0,0,0,0,0,17,0,70,0,96
