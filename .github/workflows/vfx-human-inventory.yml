@@ -8,6 +8,8 @@ on:
       - 'tools/qa/build_vfx_progress_inventory.py'
       - 'docs/operations/vfx_school_ledgers/**'
       - 'docs/operations/vfx_packets/HF02_R6_OWNER_APPROVAL_20261116.md'
+      - 'godot/labs/combat_lab/**'
+      - 'godot/labs/visual_bridge_v1/**'
 permissions:
   contents: read
 jobs:
@@ -18,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Check immutable 12-school ledger and produce exact-SHA status
+      - name: Check 12-school ledgers, scene bindings, and produce exact-SHA status
         shell: bash
         run: |
           set -euo pipefail
@@ -26,9 +28,49 @@ jobs:
           mkdir -p "$d"
           echo "REPO_SHA=$GITHUB_SHA" > "$d/SOURCE_SHA.txt"
           python3 tools/qa/build_vfx_progress_inventory.py --out "$d" | tee "$d/INVENTORY_CHECKS.log"
-          grep -Fq 'VFX_INVENTORY_VERIFIED_ALL_IDS=2196 HUMAN_CAST_MASTERS=204 DEDICATED_LABS=26 OWNER_APPROVED=7 NO_DEDICATED_LABS=178' "$d/INVENTORY_CHECKS.log"
-          test "$(($(wc -l < "$d/ALL_2196_VFX_STATUS.csv")-1))" -eq 2196
-          test "$(($(wc -l < "$d/HUMAN_204_VFX_STATUS.csv")-1))" -eq 204
+          python3 - "$d" <<'PY'
+          import csv
+          import sys
+          from pathlib import Path
+
+          repo = Path.cwd()
+          out = Path(sys.argv[1])
+          with (out / "ALL_2196_VFX_STATUS.csv").open(encoding="utf-8-sig", newline="") as f:
+              all_rows = list(csv.DictReader(f))
+          with (out / "HUMAN_204_VFX_STATUS.csv").open(encoding="utf-8-sig", newline="") as f:
+              human_cast = list(csv.DictReader(f))
+          with (out / "SCHOOL_SUMMARY.csv").open(encoding="utf-8-sig", newline="") as f:
+              schools = list(csv.DictReader(f))
+
+          assert len(all_rows) == 2196
+          assert len({row["skill_id"] for row in all_rows}) == 2196
+          assert len({row["family_id"] for row in all_rows}) == 420
+          assert len(human_cast) == 204
+          assert len(schools) == 12
+          assert {row["school"] for row in schools} == {
+              "poison", "talisman", "sword", "bow", "fist", "blade",
+              "dual_blade", "spear", "palm", "curse", "formation", "summon"
+          }
+          assert all(row["skill_id_count"] == "183" and row["family_count"] == "35" for row in schools)
+          assert all(row["live_integration"] == "HOLD_V63_OFF" for row in all_rows)
+          assert sum(row["vfx_inventory_status"] == "PASSIVE_EVENT_RECEIPT_GATED" for row in all_rows) == 1152
+          assert sum(row["vfx_inventory_status"] == "OWNER_VISUAL_APPROVED" for row in human_cast) == 9
+          assert sum(row["vfx_inventory_status"] == "OWNER_PROVISIONAL" for row in human_cast) == 23
+          assert sum(row["vfx_inventory_status"] == "OWNER_VISUAL_PENDING" for row in human_cast) == 172
+
+          sword = [row for row in human_cast if row["school"] == "sword"]
+          assert len(sword) == 17
+          assert all(row["owner_status_derived"] == "OWNER_VISUAL_PENDING" for row in sword)
+          assert all(row["owner_status_effective"] == "OWNER_PROVISIONAL" for row in sword)
+          assert all(row["owner_decision_evidence"] == "OWNER_PROMPT_2026-11-25_SWORD_17_OF_17_PROVISIONAL" for row in sword)
+          assert sum(row["owner_status_effective"] != row["owner_status_derived"] for row in sword) == 17
+
+          for row in all_rows:
+              for scene_path in row["dedicated_human_lab_scenes"].split(";"):
+                  if scene_path:
+                      assert (repo / scene_path).is_file(), scene_path
+          print("VFX_INVENTORY_CSV_CHECK_PASS ids=2196 families=420 human_cast=204 schools=12 receipt_gated=1152 sword_provisional=17 live_integration=HOLD_V63_OFF")
+          PY
           sha256sum "$d/"*.csv "$d/"*.md > "$d/STATUS_SHA256SUMS.txt"
       - uses: actions/upload-artifact@v4
         if: always()
