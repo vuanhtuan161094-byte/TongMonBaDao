@@ -1,0 +1,18 @@
+name: VFX Blade | Phá Vây Khai Sơn R1 native
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'docs/operations/vfx_packets/BLADE01_PHA_VAY_KHAI_SON_R1_V4.json'
+      - 'godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/*.gd'
+      - 'godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/*.tscn'
+      - 'godot/labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/*.png'
+      - 'godot/src/presentation/p3/pve_aschar_frame_renderer_v1.gd'
+      - '.github/workflows/vfx-blade-pha-vay-khai-son-r1.yml'
+jobs:
+  native-g35:
+    uses: ./.github/workflows/vfx-shared-skill.yml
+    with:
+      packet: docs/operations/vfx_packets/BLADE01_PHA_VAY_KHAI_SON_R1_V4.json
+      mode: g35
+      duration_seconds: 0

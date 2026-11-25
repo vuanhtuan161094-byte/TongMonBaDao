@@ -215,12 +215,24 @@ static func _draw_props(canvas: CanvasItem,manifest: Dictionary,row: Dictionary,
         var at := foot+(Vector2(float(anchor[0]),float(anchor[1]))-center)*scale
         var rotation_deg := float(grip.get("rotation_deg",0.0))
         if asset_id == str(preview_attachment_override.get("asset_id","")):
-            var direction_slot := str(preview_attachment_override.get("align_tip_to_slot",""))
-            var direction_grip: Dictionary = grips.get(direction_slot,{})
-            var direction_anchor: Array = direction_grip.get("body_grip_px",[])
             var asset_tip: Array = info.get("tip_px",[])
-            rotation_deg = aligned_weapon_rotation_deg(anchor,direction_anchor,weapon_grip,asset_tip,
-                rotation_deg,float(preview_attachment_override.get("rotation_offset_deg",0.0)))
+            var rotation_offset := float(preview_attachment_override.get("rotation_offset_deg",0.0))
+            var direction_value: Variant = preview_attachment_override.get("align_tip_to_direction",[])
+            var world_direction := Vector2.ZERO
+            if direction_value is Vector2:
+                world_direction = direction_value
+            elif direction_value is Array and direction_value.size() == 2:
+                world_direction = Vector2(float(direction_value[0]),float(direction_value[1]))
+            if world_direction.length_squared() > 0.001:
+                rotation_deg = aligned_weapon_rotation_deg([0.0,0.0],
+                    [world_direction.x,world_direction.y],weapon_grip,asset_tip,
+                    rotation_deg,rotation_offset)
+            else:
+                var direction_slot := str(preview_attachment_override.get("align_tip_to_slot",""))
+                var direction_grip: Dictionary = grips.get(direction_slot,{})
+                var direction_anchor: Array = direction_grip.get("body_grip_px",[])
+                rotation_deg = aligned_weapon_rotation_deg(anchor,direction_anchor,weapon_grip,asset_tip,
+                    rotation_deg,rotation_offset)
         canvas.draw_set_transform(at,deg_to_rad(rotation_deg),
             Vector2.ONE*scale*maxf(weapon_scale,0.01))
         canvas.draw_texture(tex,-Vector2(float(weapon_grip[0]),float(weapon_grip[1])))
