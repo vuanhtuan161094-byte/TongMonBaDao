@@ -1,0 +1,1411 @@
+{
+  "schema": "tmb.vfx_art_batch.v1",
+  "batch_id": "formation_human_cast_batch1_20261125",
+  "school": "formation",
+  "asset_source": "FIRST_PARTY_CODEX_IMAGEGEN_RGBA",
+  "externally_sourced_art": false,
+  "review_status": {
+    "source_alpha": "SELF_PASS",
+    "1x_contact_sheet_light": "SELF_PASS",
+    "1x_contact_sheet_dark": "SELF_PASS",
+    "native_import_and_capture": "PENDING",
+    "owner_approval": "PENDING",
+    "pve_gate": "HOLD"
+  },
+  "motion_status": "FOUR_FRAME_PHASE_SEQUENCE_SOURCE",
+  "phase_order": [
+    "charge",
+    "release",
+    "contact_art",
+    "fade"
+  ],
+  "contact_phase_note": "Contact art is authored source only. In Combat Lab it remains hidden until a matching exact-skill MapBattleV2 receipt and target screen position arrive.",
+  "atlases": [
+    {
+      "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+      "source_master": "source/original_masters/formation_set1_pale_bg_master.png",
+      "sha256": "61d5eb8711b5f2d506b8f5fb00c7a53cb110c00eb039093bea5b5caab72ed8fa",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "fully_transparent_fraction": 0.462244,
+      "crop_rule": "equal cells; pixel edges are round(cell_index * atlas_dimension / grid_dimension)"
+    },
+    {
+      "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+      "source_master": "source/original_masters/formation_set2_pale_bg_master.png",
+      "sha256": "51205069a167c1e0870ab3e16f78ab2808d520de9ff4616d280ce08c63bdeb59",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "fully_transparent_fraction": 0.310022,
+      "crop_rule": "equal cells; pixel edges are round(cell_index * atlas_dimension / grid_dimension)"
+    },
+    {
+      "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+      "source_master": "source/original_masters/formation_set3_pale_bg_master.png",
+      "sha256": "85ab5594fccce88a48e098dd362ff2c8609b1d5c5c8b81f8c2b9fca7a0ac6102",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "fully_transparent_fraction": 0.399909,
+      "crop_rule": "equal cells; pixel edges are round(cell_index * atlas_dimension / grid_dimension)"
+    },
+    {
+      "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+      "source_master": "source/original_masters/formation_set4_pale_bg_master.png",
+      "sha256": "c76176c1b6da6a7b144981799a70819e6d56d9ce3dcd807d227e11c0966d8d77",
+      "size_px": [
+        1254,
+        1254
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "fully_transparent_fraction": 0.541822,
+      "crop_rule": "equal cells; pixel edges are round(cell_index * atlas_dimension / grid_dimension)"
+    },
+    {
+      "path": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+      "source_master": "source/original_masters/formation_set5_pale_bg_master.png",
+      "sha256": "bcceafa2217b3e537e06d5c294c621b2539c21cc6eb2731a7c8762343c2acc7a",
+      "size_px": [
+        2172,
+        724
+      ],
+      "grid": [
+        4,
+        1
+      ],
+      "fully_transparent_fraction": 0.649944,
+      "crop_rule": "equal cells; pixel edges are round(cell_index * atlas_dimension / grid_dimension)"
+    }
+  ],
+  "skills": [
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+      "name_vi": "Cửu Cung Tỏa Lộ",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 0,
+      "grid_row": 0,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "slow",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.5,
+        "duration": 2.5,
+        "range": 7,
+        "radius": 1.2,
+        "school": "formation",
+        "branch": "phong_toa_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+      "name_vi": "Bát Môn Phong Hành",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 0,
+      "grid_row": 1,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "slow",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.65,
+        "duration": 2.1,
+        "range": 7.5,
+        "radius": 1.6,
+        "school": "formation",
+        "branch": "phong_toa_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+      "name_vi": "Huyền Thạch Trấn Vị",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 0,
+      "grid_row": 2,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "slow",
+        "shape": "single_target",
+        "target_limit": 1,
+        "cast_time": 0.55,
+        "duration": 2.8,
+        "range": 8,
+        "radius": 0,
+        "school": "formation",
+        "branch": "phong_toa_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+      "name_vi": "Tứ Tượng Hãm Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 0,
+      "grid_row": 3,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "slow",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.75,
+        "duration": 2.4,
+        "range": 7,
+        "radius": 1.4,
+        "school": "formation",
+        "branch": "phong_toa_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+      "name_vi": "Cửu Cung Phong Tuyệt Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 1,
+      "grid_row": 0,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "slow",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 1.1,
+        "duration": 3.2,
+        "range": 8,
+        "radius": 2,
+        "school": "formation",
+        "branch": "phong_toa_tran",
+        "slot": "ultimate"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+      "name_vi": "Liệt Địa Sát Văn",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 1,
+      "grid_row": 1,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "formation_zone",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.6,
+        "duration": 3.2,
+        "range": 7,
+        "radius": 1.1,
+        "school": "formation",
+        "branch": "sat_phat_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+      "name_vi": "Thiên La Địa Võng",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 1,
+      "grid_row": 2,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "formation_zone",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.8,
+        "duration": 4.2,
+        "range": 7,
+        "radius": 1.5,
+        "school": "formation",
+        "branch": "sat_phat_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+      "name_vi": "Thất Tinh Đoạt Mạch",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 1,
+      "grid_row": 3,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "damage",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.5,
+        "duration": 0,
+        "range": 7,
+        "radius": 1.1,
+        "school": "formation",
+        "branch": "sat_phat_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+      "name_vi": "Địa Hỏa Phục Sát",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 2,
+      "grid_row": 0,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "formation_zone",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.9,
+        "duration": 3,
+        "range": 7.5,
+        "radius": 1.25,
+        "school": "formation",
+        "branch": "sat_phat_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+      "name_vi": "Vạn Tượng Tru Tiên Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 2,
+      "grid_row": 1,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "formation_zone",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 1.2,
+        "duration": 4.2,
+        "range": 8,
+        "radius": 1.9,
+        "school": "formation",
+        "branch": "sat_phat_tran",
+        "slot": "ultimate"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+      "name_vi": "Thổ Mạch Dẫn Khí",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 2,
+      "grid_row": 2,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "guard",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.45,
+        "duration": 3,
+        "range": 6,
+        "radius": 1.6,
+        "school": "formation",
+        "branch": "tu_linh_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+      "name_vi": "Tinh Bàn Hộ Tâm",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 2,
+      "grid_row": 3,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "damage",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.45,
+        "duration": 0,
+        "range": 6.5,
+        "radius": 1.2,
+        "school": "formation",
+        "branch": "tu_linh_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.basic.human",
+      "name_vi": "Định Tinh Hạ Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 3,
+      "grid_row": 0,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            0,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            0,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "damage",
+        "shape": "single_target",
+        "target_limit": 1,
+        "cast_time": 0,
+        "duration": 0,
+        "range": 2.1,
+        "radius": 0,
+        "school": "formation",
+        "branch": "",
+        "slot": "basic"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.mobility.human",
+      "name_vi": "Cửu Cung Du Bộ",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 3,
+      "grid_row": 1,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            314,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            314,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "mobility",
+        "shape": "single_target",
+        "target_limit": 1,
+        "cast_time": 0.3,
+        "duration": 0.35,
+        "range": 9,
+        "radius": 0,
+        "school": "formation",
+        "branch": "",
+        "slot": "mobility"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+      "name_vi": "Địa Tàng Liên Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 3,
+      "grid_row": 2,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            627,
+            313,
+            313
+          ],
+          "pivot_px": [
+            156.5,
+            156.5
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            627,
+            314,
+            313
+          ],
+          "pivot_px": [
+            157.0,
+            156.5
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "guard",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.55,
+        "duration": 2.6,
+        "range": 6,
+        "radius": 1.9,
+        "school": "formation",
+        "branch": "tu_linh_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+      "name_vi": "Thái Sơ Tĩnh Vực",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 3,
+      "grid_row": 3,
+      "display_grid": {
+        "columns": 4,
+        "rows": 4
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            314,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            627,
+            940,
+            313,
+            314
+          ],
+          "pivot_px": [
+            156.5,
+            157.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            940,
+            940,
+            314,
+            314
+          ],
+          "pivot_px": [
+            157.0,
+            157.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "damage",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 0.7,
+        "duration": 0,
+        "range": 7,
+        "radius": 1.5,
+        "school": "formation",
+        "branch": "tu_linh_tran",
+        "slot": "active"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+      "name_vi": "Thái Sơ Vạn Linh Trận",
+      "catalog_path": "res://data/combat/v63_formation_combat_catalog.json",
+      "atlas_index": 4,
+      "grid_row": 0,
+      "display_grid": {
+        "columns": 4,
+        "rows": 1
+      },
+      "frames": [
+        {
+          "phase": "charge",
+          "region": [
+            0,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ]
+        },
+        {
+          "phase": "release",
+          "region": [
+            543,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ]
+        },
+        {
+          "phase": "contact",
+          "region": [
+            1086,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ]
+        },
+        {
+          "phase": "fade",
+          "region": [
+            1629,
+            0,
+            543,
+            724
+          ],
+          "pivot_px": [
+            271.5,
+            362.0
+          ]
+        }
+      ],
+      "canonical": {
+        "effect": "guard",
+        "shape": "circle",
+        "target_limit": 3,
+        "cast_time": 1,
+        "duration": 4.2,
+        "range": 6.5,
+        "radius": 2.2,
+        "school": "formation",
+        "branch": "tu_linh_tran",
+        "slot": "ultimate"
+      }
+    }
+  ]
+}
