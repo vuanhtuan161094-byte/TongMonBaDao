@@ -194,7 +194,11 @@ def discover_human_lab_scenes(human_by_family):
                 if not script_ids:
                     continue
 
-                if len(script_ids) == 1:
+                if scene_path.name == "vfx_factory_review.tscn":
+                    # This single shared scene selects every candidate by ID
+                    # from its external registry; it is not an index-based batch.
+                    selected_ids = script_ids
+                elif len(script_ids) == 1:
                     selected_ids = script_ids
                 else:
                     families = {human_id_to_family[skill_id] for skill_id in script_ids}

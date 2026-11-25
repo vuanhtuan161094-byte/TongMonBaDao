@@ -6,9 +6,9 @@ Scene presence, source approval, technical status, owner review, and live integr
 - Skill IDs: **2196 unique**
 - Skill families: **420**
 - Human cast masters: **204**
-- Human families with at least one bound LAB scene: **70**
-- Human cast families with at least one bound LAB scene: **67**
-- Distinct Human LAB scene revisions: **92**
+- Human families with at least one bound LAB scene: **89**
+- Human cast families with at least one bound LAB scene: **86**
+- Distinct Human LAB scene revisions: **93**
 - Every ledger row retains its declared `live_integration` value. PvE status is not inferred from scenes.
 
 ## Per-school coverage
@@ -18,14 +18,14 @@ Scene presence, source approval, technical status, owner review, and live integr
 | poison | 183 | 35 | 17 | 17 | 17 | 28 | 28 | 7 | 6 | 4 | 0 | 51 | 19 | 96 |
 | talisman | 183 | 35 | 17 | 18 | 15 | 22 | 16 | 2 | 0 | 15 | 0 | 53 | 17 | 96 |
 | sword | 183 | 35 | 17 | 17 | 17 | 17 | 17 | 0 | 17 | 0 | 17 | 70 | 0 | 96 |
-| bow | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 49 | 21 | 96 |
+| bow | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 49 | 21 | 96 |
 | fist | 183 | 35 | 17 | 15 | 15 | 22 | 22 | 0 | 0 | 17 | 0 | 31 | 39 | 96 |
 | blade | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 68 | 2 | 96 |
-| dual_blade | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
+| dual_blade | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | spear | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | palm | 183 | 35 | 17 | 1 | 1 | 1 | 1 | 0 | 0 | 17 | 0 | 55 | 15 | 96 |
 | curse | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
-| formation | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
+| formation | 183 | 35 | 17 | 17 | 17 | 1 | 1 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 | summon | 183 | 35 | 17 | 0 | 0 | 0 | 0 | 0 | 0 | 17 | 0 | 70 | 0 | 96 |
 
 ## Human cast masters
@@ -84,7 +84,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | sword | sat_kiem | `tmb.skill.sword.sat_kiem.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_PROVISIONAL | OWNER_PROMPT_2026-11-25_SWORD_17_OF_17_PROVISIONAL | NOT_ART_APPROVED | godot/labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn |
 | sword | sat_kiem | `tmb.skill.sword.sat_kiem.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_PROVISIONAL | OWNER_PROMPT_2026-11-25_SWORD_17_OF_17_PROVISIONAL | NOT_ART_APPROVED | godot/labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn |
 | bow | shared | `tmb.skill.bow.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| bow | liep_anh | `tmb.skill.bow.liep_anh.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| bow | liep_anh | `tmb.skill.bow.liep_anh.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | bow | liep_anh | `tmb.skill.bow.liep_anh.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | bow | liep_anh | `tmb.skill.bow.liep_anh.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | bow | liep_anh | `tmb.skill.bow.liep_anh.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
@@ -135,7 +135,7 @@ Scene presence, source approval, technical status, owner review, and live integr
 | blade | tran_dao | `tmb.skill.blade.tran_dao.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | blade | tran_dao | `tmb.skill.blade.tran_dao.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | dual_blade | anh_nhan | `tmb.skill.dual_blade.anh_nhan.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| dual_blade | anh_nhan | `tmb.skill.dual_blade.anh_nhan.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| dual_blade | anh_nhan | `tmb.skill.dual_blade.anh_nhan.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | dual_blade | anh_nhan | `tmb.skill.dual_blade.anh_nhan.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | dual_blade | anh_nhan | `tmb.skill.dual_blade.anh_nhan.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | dual_blade | anh_nhan | `tmb.skill.dual_blade.anh_nhan.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
@@ -202,23 +202,23 @@ Scene presence, source approval, technical status, owner review, and live integr
 | curse | tran_hon_chu | `tmb.skill.curse.tran_hon_chu.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | curse | tran_hon_chu | `tmb.skill.curse.tran_hon_chu.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | curse | tran_hon_chu | `tmb.skill.curse.tran_hon_chu.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | shared | `tmb.skill.formation.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | shared | `tmb.skill.formation.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
-| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
+| formation | shared | `tmb.skill.formation.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | shared | `tmb.skill.formation.mobility.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | phong_toa_tran | `tmb.skill.formation.phong_toa_tran.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | sat_phat_tran | `tmb.skill.formation.sat_phat_tran.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_03.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.active_04.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
+| formation | tu_linh_tran | `tmb.skill.formation.tu_linh_tran.ultimate.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | godot/labs/combat_lab/vfx_factory/vfx_factory_review.tscn |
 | summon | shared | `tmb.skill.summon.basic.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | summon | khoi_loi_ho_phap | `tmb.skill.summon.khoi_loi_ho_phap.active_01.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
 | summon | khoi_loi_ho_phap | `tmb.skill.summon.khoi_loi_ho_phap.active_02.human` | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | OWNER_VISUAL_PENDING | LEDGER_OWNER_GATE | NOT_ART_APPROVED | — |
