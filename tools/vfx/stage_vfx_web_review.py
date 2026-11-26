@@ -51,7 +51,7 @@ RES_PATH_RE = re.compile(r'path="res://([^"\s]+)"')
 FACTORY_RUNTIME_FILES = (
     "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
     "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
-    ASCHAR_BRIDGE,
+    ASCHAR_IDENTITY,
     "src/presentation/p3/combat_v5_source_a_atlas.gd",
     "src/presentation/p3/combat_v4_sprite_atlas.gd",
     "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
@@ -150,7 +150,7 @@ def factory_runtime_dependencies(root: Path) -> set[str]:
         _require_source(root, relative, "factory runtime source")
         files.add(relative)
 
-    bridge_path = _require_source(root, ASCHAR_BRIDGE, "ASCHAR identity")
+    bridge_path = _require_source(root, ASCHAR_IDENTITY, "ASCHAR identity")
     bridge_text = bridge_path.read_text(encoding="utf-8")
     socket_match = re.search(r'const SOCKET_ROOT := "res://([^"\s]+)"', bridge_text)
     if not socket_match:
