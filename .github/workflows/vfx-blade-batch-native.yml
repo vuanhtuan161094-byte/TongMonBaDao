@@ -5,6 +5,7 @@ on:
     paths:
       - 'godot/labs/combat_lab/blade04/**'
       - 'godot/labs/combat_lab/blade_factory_v5/**'
+      - 'godot/labs/combat_lab/vfx_factory/**'
       - '.github/workflows/vfx-blade-batch-native.yml'
   workflow_dispatch:
 permissions:
@@ -30,10 +31,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/blade"
           "$G" --headless --path godot --editor --import
           LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "$G" --path godot --resolution 1280x720 --audio-driver Dummy --fixed-fps 20 --write-movie "$RUNNER_TEMP/blade/capture.avi" res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn -- --tmb-vfx-school=blade --tmb-vfx-index="$RUNNER_TEMP/blade/index.json" 2>&1 | tee "$RUNNER_TEMP/blade/capture.log"
-          python3 -c 'import json,sys; x=json.load(open(sys.argv[1])); assert len(x["skills"])==6; assert all(r["accepted_event_count"]>0 and r["synthetic_events"]==0 for r in x["skills"])' "$RUNNER_TEMP/blade/index.json"
           ffmpeg -y -v error -i "$RUNNER_TEMP/blade/capture.avi" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$RUNNER_TEMP/blade/blade.mp4"
           ffmpeg -v error -i "$RUNNER_TEMP/blade/blade.mp4" -f null -
+          test -s "$RUNNER_TEMP/blade/blade.mp4"
           rm "$RUNNER_TEMP/blade/capture.avi"
+          # Preserve real visual evidence even if the receipt gate fails.
+          python3 -c 'import json,sys; x=json.load(open(sys.argv[1])); rows=x["skills"]; print([(r.get("skill_id"),r.get("accepted_event_count"),r.get("synthetic_events")) for r in rows]); assert len(rows)==6; assert all(r["accepted_event_count"]>0 and r["synthetic_events"]==0 for r in rows)' "$RUNNER_TEMP/blade/index.json"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
