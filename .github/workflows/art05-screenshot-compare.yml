@@ -102,6 +102,15 @@ jobs:
           test "$(find "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 7
           test -s "$GITHUB_WORKSPACE/eco07-virtual-gui-evidence/eco07_virtual_gui_metrics.json"
 
+      - name: Capture actual updated school screen in OneGame
+        shell: bash
+        run: |
+          set -euo pipefail
+          export LIBGL_ALWAYS_SOFTWARE=1
+          export TMB_SCHOOL_SCREEN_CAPTURE="$GITHUB_WORKSPACE/eco07-virtual-gui-evidence/08_school_skill_browser.png"
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 -s res://tests/presentation/aschar_game_school_selection_test.gd
+          test -s "$TMB_SCHOOL_SCREEN_CAPTURE"
+
       - name: ART-02 real OneGame illustrated item and progress contract
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art02_onegame_visual_contract_test.gd
 

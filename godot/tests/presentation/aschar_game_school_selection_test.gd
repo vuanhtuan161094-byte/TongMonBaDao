@@ -118,6 +118,11 @@ func _run() -> void:
     if overlay == null:
         _fail("school skill screen did not open")
         return
+    for school in SectASCharCandidateBridgeV1.SCHOOL_IDS:
+        var seal := overlay.find_child("SchoolChoice_"+school,true,false) as Button
+        if seal == null or seal.icon == null or seal.icon.get_size() != Vector2(64,64):
+            _fail("missing school seal "+school)
+            return
     var school_choice := overlay.find_child("SchoolChoice_fist",true,false) as Button
     if school_choice == null:
         _fail("missing Fist browse action")
@@ -182,6 +187,35 @@ func _run() -> void:
     if SectASCharCandidateBridgeV1.scene_for_disciple(disciple) == null:
         _fail("assigned school actor not available")
         return
+    overlay.call("refresh")
+    await process_frame
+    var other_school := overlay.find_child("SchoolChoice_sword",true,false) as Button
+    if other_school == null or other_school.disabled:
+        _fail("assigned disciple cannot browse another school")
+        return
+    other_school.pressed.emit()
+    await process_frame
+    var confirm := overlay.find_child("SchoolConfirmBranch",true,false) as Button
+    if str(overlay.get("_school")) != "sword" or confirm == null or not confirm.disabled:
+        _fail("cross-school browsing changed or unlocked affiliation")
+        return
+    if str(disciple.v63_combat_branch_id) != branch_id:
+        _fail("cross-school browse mutated branch")
+        return
+    var other_list := overlay.find_child("SchoolSkillList",true,false)
+    for row in other_list.get_children():
+        for control in row.get_children():
+            if control is Button and not control.disabled:
+                _fail("cross-school browse enabled skill actions")
+                return
+    # Optional capture from the actual game scene, never a reconstructed mockup.
+    var capture := OS.get_environment("TMB_SCHOOL_SCREEN_CAPTURE")
+    if not capture.is_empty() and DisplayServer.get_name() != "headless":
+        await RenderingServer.frame_post_draw
+        var image := root.get_texture().get_image()
+        if image == null or image.save_png(capture) != OK:
+            _fail("school screen capture failed")
+            return
     var before := disciple.v63_learned_skill_nodes.duplicate(true)
     var skill_id := "tmb.skill.fist.basic.human"
     if not V63HumanSkillCombatSystem.is_enabled(state):
