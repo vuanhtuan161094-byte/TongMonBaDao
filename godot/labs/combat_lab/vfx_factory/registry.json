@@ -28010,21 +28010,7 @@
         "skill_id": "tmb.skill.sword.basic.human",
         "bindings": [
           {
-            "event_type": "skill_cast",
-            "visual_phase": "charge",
-            "actor_clip": "attack",
-            "caster_slot": "weapon_grip",
-            "target_slot": "foot"
-          },
-          {
-            "event_type": "skill_release",
-            "visual_phase": "release",
-            "actor_clip": "attack",
-            "caster_slot": "weapon_tip",
-            "target_slot": "foot"
-          },
-          {
-            "event_type": "v63_skill_hit",
+            "event_type": "hit",
             "visual_phase": "contact",
             "actor_clip": "attack",
             "caster_slot": "weapon_tip",

@@ -42,7 +42,12 @@ def mechanic_tags(skill: dict) -> tuple[str, list[str]]:
     return "melee", ["melee"]
 
 
-def event_bindings(effect: str) -> list[dict]:
+def event_bindings(effect: str, skill_id: str) -> list[dict]:
+    if skill_id == "tmb.skill.sword.basic.human":
+        # The canonical Sword basic is a MapBattle basic hit, not a cast/release
+        # skill event. Bind only its emitted hit receipt.
+        return [{"event_type": "hit", "visual_phase": "contact", "actor_clip": "attack",
+                 "caster_slot": "weapon_tip", "target_slot": "chest"}]
     rows = [
         {"event_type": "skill_cast", "visual_phase": "charge", "actor_clip": "attack",
          "caster_slot": "weapon_grip", "target_slot": "foot"},
@@ -164,7 +169,7 @@ def main() -> None:
             "end_window_seconds": 0.24,
             "actor_action_seconds": 0.35,
         }
-        bindings = event_bindings(effect)
+        bindings = event_bindings(effect, skill_id)
         entry = {
             "skill_id": skill_id,
             "school": "sword",

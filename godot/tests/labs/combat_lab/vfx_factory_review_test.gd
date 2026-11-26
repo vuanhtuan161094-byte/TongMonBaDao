@@ -403,6 +403,19 @@ func _run() -> void:
 				and str(sword_tip.get("asset_id", "")) == "owner_liked_jian_existing"
 				and sword_tip_position.x > sword_grip_position.x,
 				"Sword release resolves the existing Jian and aims the AS48 tip toward its target " + skill_id)
+			var sword_binding_types: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				sword_binding_types.append(str(binding.get("event_type", "")))
+			if skill_id == "tmb.skill.sword.basic.human":
+				_check(sword_binding_types == ["hit"],
+					"Sword basic binds only the real MapBattle basic-hit receipt " + skill_id)
+			elif str(canonical.get("effect", "")) == "mobility":
+				_check(sword_binding_types.has("v63_mobility"),
+					"Sword mobility starts from its authoritative movement receipt " + skill_id)
+			else:
+				_check(sword_binding_types.has("skill_cast") and sword_binding_types.has("skill_release")
+					and (sword_binding_types.has("v63_skill_hit") or sword_binding_types.has("status_applied")),
+					"Sword cast, release and contact/status use canonical event bindings " + skill_id)
 			_check(str(entry.get("source_owner_gate", "")).length() > 0
 				and str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
 				and (str(entry.get("native_status", "")) == "NATIVE_PENDING"
@@ -415,6 +428,9 @@ func _run() -> void:
 			if str(canonical.get("effect", "")) == "guard":
 				_check(sword_bindings.has("status_applied") and not sword_bindings.has("v63_skill_hit"),
 					"Sword guard shows only its real status receipt " + skill_id)
+			elif skill_id == "tmb.skill.sword.basic.human":
+				_check(sword_bindings == ["hit"],
+					"Sword basic contact uses its exact MapBattle hit receipt " + skill_id)
 			elif str(canonical.get("effect", "")) == "mobility":
 				_check(sword_bindings.has("v63_mobility") and not sword_bindings.has("v63_skill_hit"),
 					"Sword mobility follows only its real movement receipt " + skill_id)

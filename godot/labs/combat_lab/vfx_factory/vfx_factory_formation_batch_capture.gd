@@ -135,7 +135,7 @@ func _activate_skill(next_index: int) -> void:
 		if not (raw_event is Dictionary):
 			continue
 		var event: Dictionary = raw_event
-		var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human"]
+		var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human", "tmb.skill.sword.basic.human"]
 		var is_basic_hit := is_factory_basic_skill \
 			and str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "basic" \
 			and str(event.get("attacker", "")) == _caster_id \
@@ -261,7 +261,7 @@ func _process(delta: float) -> void:
 
 func _feed_receipt(event: Dictionary) -> void:
 	var skill_id := str(_entries[_index].get("skill_id", ""))
-	var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human"]
+	var is_factory_basic_skill := skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human", "tmb.skill.sword.basic.human"]
 	var is_basic_hit := is_factory_basic_skill and str(event.get("type", "")) == "hit" \
 		and str(event.get("kind", "")) == "basic"
 	var actor_id := str(event.get("actor_id", event.get("caster", event.get("owner_id",
@@ -298,7 +298,7 @@ func _feed_receipt(event: Dictionary) -> void:
 			target_position = _battle.actors.get(str(event.get("target", "")), {}).get("position", Vector2(5.0, 3.0))
 		screen_position = _world_to_screen(target_position)
 		_lab.call("review_record_actor_screen_position", target_id, screen_position)
-	if str(event.get("type", "")) in ["skill_cast", "v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "status_applied", "v63_formation_slow_applied", "v63_mobility", "heal", "cleanse"]:
+	if str(event.get("type", "")) in ["skill_cast", "v63_skill_hit", "v63_talisman_hit", "v63_talisman_mark_applied", "skill_hit", "hit", "status_applied", "v63_formation_slow_applied", "v63_mobility", "heal", "cleanse"] or is_basic_hit:
 		_lab.call("review_set_target_screen_position", screen_position)
 	var render_event := event.duplicate(true)
 	var observed_poison_expiry := _poison_expiry_for_event(event)
@@ -325,7 +325,7 @@ func _feed_receipt(event: Dictionary) -> void:
 		"event_id":str(event.get("event_id", "")),
 		"capture_frame_seconds":_movie_seconds(),
 		"simulation_event_time_seconds":float(event.get("time", -1.0)),
-		"skill_id":str(event.get("skill_id", "")),
+		"skill_id":skill_id if is_basic_hit else str(event.get("skill_id", "")),
 		"caster_id":actor_id,
 		"target_ids":trace_target_ids,
 		"accepted":bool(result.get("ok", false)),
@@ -531,7 +531,7 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 	if candidate_effect in ["guard", "heal", "cleanse"]:
 		cast_target = ally_targets[0] if not ally_targets.is_empty() else ally
 	var started := false
-	if skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human"]:
+	if skill_id in ["tmb.skill.formation.basic.human", "tmb.skill.talisman.basic.human", "tmb.skill.poison.basic.human", "tmb.skill.sword.basic.human"]:
 		var basic_definition: Dictionary = HSC.skill_definition(skill_id)
 		caster["v63_basic_skill_id"] = skill_id
 		caster["basic_ratio"] = float(basic_definition.get("damage_ratio", 0.0))
@@ -544,8 +544,9 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		started = HSC.try_cast(battle, caster, cast_target)
 	if not started:
 		return {"battle":null,"caster_id":str(caster.id),"target_id":str(foe.id),"ally_id":str(ally.id)}
-	var immediate_factory_skill := skill_id in ["tmb.skill.formation.mobility.human", "tmb.skill.formation.basic.human",
+	var immediate_factory_skill := candidate_effect == "mobility" or skill_id in ["tmb.skill.formation.mobility.human", "tmb.skill.formation.basic.human",
 		"tmb.skill.talisman.basic.human", "tmb.skill.talisman.mobility.human", "tmb.skill.poison.basic.human",
+		"tmb.skill.sword.basic.human",
 		"tmb.skill.poison.mobility.human"]
 	if not immediate_factory_skill:
 		var pending: Dictionary = caster.get("v63_pending_cast", {})
