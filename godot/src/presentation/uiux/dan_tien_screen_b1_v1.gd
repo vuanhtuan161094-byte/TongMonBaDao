@@ -540,7 +540,8 @@ func _build_radar_panel() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 7)
 	card.add_child(content)
-	content.add_child(UI.section_heading("Lục Duy • Sáu chỉ số chính", "root", UI.JADE))
+	# D7 presents exactly 3 Tam Căn + 4 Tứ Tính; Tâm Tính remains informational.
+	content.add_child(UI.section_heading("Tam Căn / Tứ Tính", "root", UI.JADE))
 	var radar: Control
 	var radar_factory: Variant = _vm.get("radar_factory")
 	if radar_factory is Callable and radar_factory.is_valid():
