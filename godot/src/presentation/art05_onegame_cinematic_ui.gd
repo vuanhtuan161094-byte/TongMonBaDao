@@ -489,6 +489,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     var school_button := panel.get_node_or_null("DeepSchoolSkillsButton") as Button
     if school_button != null:
         school_button.text = "MÔN PHÁI / KỸ NĂNG"
+        # The ART05 screen has a single canonical close/back flow.
+        var old_action := Callable(self,"_open_aschar_school_screen").bind(disciple_id)
+        if school_button.pressed.is_connected(old_action):
+            school_button.pressed.disconnect(old_action)
+        school_button.pressed.connect(Callable(self,"_aschar_open_school_skills").bind(disciple_id))
         school_button.position = Vector2(414,12)
         school_button.size = Vector2(323,44)
         school_button.add_theme_font_size_override("font_size",14)
@@ -738,8 +743,30 @@ func _refresh_top_bar() -> void:
 
 func _refresh_all() -> void:
     super._refresh_all()
+    _art05_sync_map_chrome()
     if _art05_dock_panel != null:
         _art05_refresh_sect_master_dock()
+
+# CanvasItem z_index changes rendering, not Control input order. A map
+# shortcut added after the popup used to intercept real clicks on profiles.
+func _art05_sync_map_chrome() -> void:
+    var modal := _popup_is_open() or _pve_hunt_overlay_is_open()
+    for entry in MASTERPLAN_DISTRICT_TABS:
+        var tab := get_node_or_null("MasterplanDistrict_"+str(entry["key"])) as Button
+        if tab != null:
+            tab.visible = not modal
+    if modal and gp1_guide_panel != null:
+        gp1_guide_panel.visible = false
+
+func _add_dim() -> void:
+    super._add_dim()
+    if popup_layer != null and popup_layer.get_parent() == self:
+        move_child(popup_layer,get_child_count()-1)
+    _art05_sync_map_chrome()
+
+func _clear_popup() -> void:
+    super._clear_popup()
+    _art05_sync_map_chrome()
 
 # Reuse the canonical buttons, actual map camera and existing actions.
 # This is not a standalone HTML shell and introduces no duplicate controls.
@@ -1058,8 +1085,15 @@ func _art05_refresh_sect_master_dock() -> void:
                 live = raw as BuildingState
                 break
     var level := "Lv%d" % live.level if live != null else "Điểm điều phối"
+    var assigned := 0
+    if live != null:
+        for raw_disciple in state.disciples.values():
+            if raw_disciple is DiscipleState and str(raw_disciple.worksite_building_id) == str(live.id):
+                assigned += 1
     _art05_dock_status.text = "CẤP / KHU VỰC    %s\nĐỆ TỬ                 %d / %d" % [
         level,state.disciples.size(),state.sect.disciple_capacity]
+    if dest in ["mine","linh_forest","spirit_field"] and live != null:
+        _art05_dock_status.text = "%s · %d người phân công\nĐã sản xuất: %d đơn vị" % [level,assigned,maxi(0,int(live.metrics.get("units_produced",0)))]
     var description := str(ART05_SECT_DESCRIPTIONS.get(dest,
         "Chọn Quản lý để xem số liệu và điều phối thực tế."))
     if dest == "main_hall":
@@ -1068,7 +1102,7 @@ func _art05_refresh_sect_master_dock() -> void:
         description += "\nĐệ Tử Xá: %d nhà" % SectResidenceSystemV1.all_houses(state).size()
     _art05_dock_body.text = description
     _art05_refresh_district_links(dest)
-    _art05_dock_manage.text = "THẾ GIỚI" if dest == "gate" else "QUẢN LÝ"
+    _art05_dock_manage.text = str({"gate":"RA THẾ GIỚI","guidance":"CHIÊU MỘ","mine":"ĐIỀU PHỐI MỎ","linh_forest":"ĐIỀU PHỐI RỪNG","spirit_field":"ĐIỀU PHỐI RUỘNG","warehouse":"MỞ KHO","cultivation":"TU LUYỆN"}.get(dest,"QUẢN LÝ"))
     if _art05_dock_portrait != null:
         var source: Texture2D = VIS11_AB.texture_for(_art05_dock_destination,&"A")
         if source == null:
