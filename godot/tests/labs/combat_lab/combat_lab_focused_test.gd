@@ -894,6 +894,9 @@ func _prepare_action(skill: Dictionary) -> Dictionary:
     return {"ok": true, "battle": battle, "actor": actor, "target": target, "ally_id": ally_id}
 
 func _probe_action(skill: Dictionary) -> Dictionary:
+    # Mobility is synchronous even when the authored slot is active/ultimate.
+    if str(skill.get("effect","")) == "mobility":
+        return _probe_mobility(skill)
     var prepared := _prepare_action(skill)
     if not bool(prepared.get("ok", false)): return {"status": "FAIL", "reason": str(prepared.get("reason", ""))}
     var battle: MapBattleV2 = prepared.battle
@@ -931,6 +934,48 @@ func _probe_action(skill: Dictionary) -> Dictionary:
         return {"status": "FAIL", "reason": "cast_time_or_projectile_deadline_not_respected"}
     if ready_at < float(cast_event.get("cooldown_ready_at", INF)) - 0.0001:
         return {"status": "FAIL", "reason": "cooldown_schedule_not_respected"}
+    if effect == "formation_zone":
+        var zones: Array = actor.get("v63_formation_zones",[])
+        if zones.size() != 1:
+            return {"status":"FAIL","reason":"formation_zone_not_created"}
+        var zone: Dictionary = zones[0]
+        if str(zone.get("skill_id","")) != id or float(zone.get("expires_at",0.0)) <= battle.now or float(zone.get("next_tick",0.0)) >= float(zone.get("expires_at",0.0)):
+            return {"status":"FAIL","reason":"invalid_formation_zone"}
+        var hp_before_zone := float(target.hp)
+        battle.now = float(zone["next_tick"])
+        V63FormationSkillCombatSystem.process_zones(battle)
+        var tick_proven := false
+        for event in battle.events:
+            if str(event.get("type","")) == "v63_formation_zone_tick" and str(event.get("skill_id","")) == id and str(event.get("zone_id","")) == str(zone["zone_id"]) and float(event.get("damage",0.0)) > 0.0:
+                tick_proven = true
+        effect_proven = tick_proven and float(target.hp) < hp_before_zone
+        battle.now = float(zone["expires_at"])+0.01
+        V63FormationSkillCombatSystem.process_zones(battle)
+        effect_proven = effect_proven and actor.get("v63_formation_zones",[]).is_empty()
+    elif effect == "summon":
+        var summon: Dictionary = {}
+        for event in battle.events:
+            if str(event.get("type","")) == "v63_summon_created" and str(event.get("skill_id","")) == id and str(event.get("owner_id","")) == str(actor.id):
+                summon = battle.actors.get(str(event.get("summon_id","")),{})
+        if summon.is_empty() or not bool(summon.get("is_v63_summon",false)):
+            return {"status":"FAIL","reason":"summon_not_created"}
+        var summon_id := str(summon.id)
+        var hp_before_summon := float(target.hp)
+        # The fixture is close to the owner, but the normal summon spawn must
+        # still walk into range before an authoritative attack can occur.
+        for _step in range(20):
+            V63SummonSkillCombatSystem.process_summons(battle)
+            if float(target.hp) < hp_before_summon:
+                break
+            battle.now += MapBattleV2.STEP_SECONDS
+        var attack_proven := false
+        for event in battle.events:
+            if str(event.get("type","")) == "v63_summon_attack" and str(event.get("summon_id","")) == summon_id and str(event.get("skill_id","")) == id and float(event.get("damage",0.0)) > 0.0:
+                attack_proven = true
+        effect_proven = attack_proven and float(target.hp) < hp_before_summon
+        battle.now = float(summon["summon_expires_at"])+0.01
+        V63SummonSkillCombatSystem.process_summons(battle)
+        effect_proven = effect_proven and not battle.actors.has(summon_id)
     if not effect_proven: return {"status": "FAIL", "reason": "cast_release_effect_not_proven:%s" % effect}
     if effect == "poison":
         var poison_stacks: Array = target.get("status_effects", {}).get("v63_poison", [])
@@ -955,9 +1000,11 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
     actor["v63_combat_branch_id"] = branch
     actor["v63_combat_generation"] = generation
     actor["v63_combat_lineage"] = lineage
+    var school := str(skill.get("school",""))
+    if school in ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]:
+        actor["v63_%s_combat_enabled" % school] = true
     if innate:
         var expected := ""
-        var school := str(skill.get("school",""))
         if school in ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]:
             actor["v63_%s_combat_enabled" % school] = true
             # Additive school branch tables do not carry the legacy innate_node_ids fields.
@@ -986,23 +1033,28 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
     changed = changed or not is_equal_approx(float(defense_before.get("damage_reduction", 0.0)), float(defense_after.get("damage_reduction", 0.0)))
     if changed: return {"status": "PASS", "reason": "existing effective stat consumer produced expected delta"}
     var mods: Dictionary = skill.get("passive_modifiers", {})
-    if float(mods.get("heal_factor", 0.0)) > 0.0 and not innate:
-        var heal_result := _probe_heal_factor(id, float(mods.heal_factor))
+    if float(mods.get("heal_factor", 0.0)) > 0.0:
+        var heal_result := _probe_heal_factor(id, float(mods.heal_factor),innate,school)
         if str(heal_result.status) == "PASS": return heal_result
     if float(mods.get("poison_factor", 0.0)) > 0.0:
         var poison_result := _probe_poison_factor(id, float(mods.poison_factor), innate)
         if str(poison_result.status) == "PASS": return poison_result
-    if innate and float(mods.get("heal_factor", 0.0)) > 0.0:
-        return {"status": "NOT_TESTED", "reason": "heal_factor is not consumed from innate ID by current V6.3 runtime"}
+    if float(mods.get("heal_factor", 0.0)) > 0.0:
+        return {"status":"FAIL","reason":"heal_factor_not_proven_by_actual_heal"}
     if skill.has("divine_rule_status"):
         return {"status": "NOT_TESTED", "reason": "divine_rule_status has no consumer in current runtime code"}
     if mods.is_empty() or mods.values().all(func(value: Variant) -> bool: return is_zero_approx(float(value))):
         return {"status": "NOT_TESTED", "reason": "catalog modifiers are zero and no matching runtime consumer was found"}
     return {"status": "NOT_TESTED", "reason": "catalog effect has no matching generic or specialized runtime consumer"}
 
-func _probe_heal_factor(skill_id: String, factor: float) -> Dictionary:
+func _probe_heal_factor(skill_id: String, factor: float, innate: bool = false, school: String = "") -> Dictionary:
     var caster := _actor("matrix_healer", Vector2(10, 10))
-    caster["v63_passive_ids"] = [skill_id]
+    if school in ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]:
+        caster["v63_%s_combat_enabled" % school] = true
+    if innate:
+        caster["v63_innate_skill_id"] = skill_id
+    else:
+        caster["v63_passive_ids"] = [skill_id]
     var ally := _actor("matrix_wounded", Vector2(10.1, 10.0), "healer")
     ally["hp"] = 50000.0
     var battle := MapBattleV2.new(517)

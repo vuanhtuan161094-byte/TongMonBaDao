@@ -778,7 +778,8 @@ static func _best_line_target(actor: Dictionary, skill: Dictionary, candidates: 
     var best_count := -1
     var origin: Vector2 = actor.get("position",Vector2.ZERO)
     var length := maxf(0.0,float(skill.get("radius",0.0)))
-    if str(skill.get("id","")) in BOW_LINE_RANGE_SKILL_IDS or (str(skill.get("branch","")) == "loi_phu" and _is_p1_lineage_skill(skill)):
+    # A line with authored radius=0 uses its authored range, not a zero-length ray.
+    if length <= 0.0 or str(skill.get("id","")) in BOW_LINE_RANGE_SKILL_IDS or (str(skill.get("branch","")) == "loi_phu" and _is_p1_lineage_skill(skill)):
         length = maxf(length,float(skill.get("range",length)))
     var limit := mini(int(skill.get("target_limit",1)),MAX_TARGETS)
     for endpoint in candidates:
@@ -1572,7 +1573,7 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
         var direction: Vector2 = cast.get("line_direction", Vector2.ZERO).normalized()
         var length := maxf(0.0, float(cast.get("radius", 0.0)))
         var definition := skill_definition(str(cast.get("v63_skill_id", "")))
-        if BOW_LINE_RANGE_SKILL_IDS.has(str(cast.get("v63_skill_id", ""))) or (str(definition.get("branch", "")) == "loi_phu" and _is_p1_lineage_skill(definition)):
+        if length <= 0.0 or BOW_LINE_RANGE_SKILL_IDS.has(str(cast.get("v63_skill_id", ""))) or (str(definition.get("branch", "")) == "loi_phu" and _is_p1_lineage_skill(definition)):
             length = maxf(length, float(cast.get("range", length)))
         var ids: Array = battle.actors.keys()
         ids.sort()
