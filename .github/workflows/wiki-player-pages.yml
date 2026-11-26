@@ -139,6 +139,7 @@ jobs:
           # Keep the exported Godot files together, not as copy-by-commit releases.
           printf '%s\n' "Source PR #72 HEAD: $GITHUB_SHA" > _site/play/build-info.txt
           printf '%s\n' "Godot 4.7.2 / WebGL2 / single-thread" >> _site/play/build-info.txt
+          (cd _site/play && sha256sum index.html index.js index.wasm index.pck build-info.txt > SHA256SUMS.txt && sha256sum --check SHA256SUMS.txt)
           du -h _site/play/index.*
           find _site/play -maxdepth 1 -type f | sort
 

@@ -129,6 +129,13 @@ jobs:
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sect_map_d1b_layout_contract_test.gd
       - name: AS-BUILD-V3 all twelve real source-backed site sprite imports and job rules
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/as_build_v3_canonical_art_test.gd
+      - name: Record screenshot evidence source identity
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/art05-evidence"
+          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > "$RUNNER_TEMP/art05-evidence/source-sha.txt"
+
       - name: Upload screenshot comparison evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4

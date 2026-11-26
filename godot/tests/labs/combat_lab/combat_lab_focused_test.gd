@@ -343,7 +343,7 @@ func _probe_poison_support(label: String, skill_id: String, is_heal: bool) -> vo
     else:
         ally["status_effects"] = {"weaken":{"until":30.0,"factor":0.8}}
     var hp_before := float(ally.hp)
-    var expected_heal := minf(float(ally.max_hp) * clampf(float(skill.power), 0.0, 0.5), float(ally.max_hp) - hp_before) if is_heal else 0.0
+    var expected_heal := minf(minf(float(ally.max_hp) * clampf(float(skill.power), 0.0, 0.5), float(ally.max_hp) - hp_before), V63PoisonEvolutionV1.heal_capacity(ally,battle.now)) if is_heal else 0.0
     var enemy: Dictionary = prepared.target
     var cast_started := V63HumanSkillCombatSystem.try_cast(battle, caster, enemy, false)
     _check(cast_started, label + " V6.3 support AI selects a valid ally")
@@ -354,8 +354,8 @@ func _probe_poison_support(label: String, skill_id: String, is_heal: bool) -> vo
     battle._release_casts()
     if is_heal:
         var actual_heal := float(ally.hp) - hp_before
-        var ok := is_equal_approx(actual_heal, expected_heal)
-        _check(ok, "Dược Độc actual heal equals authored power × ally max HP, capped by missing HP")
+        var ok := expected_heal > 0.0 and is_equal_approx(actual_heal, expected_heal)
+        _check(ok, "Dược Độc real healing honors authored power, missing HP and recent damage allowance")
         poison_damage_rows.append({"scenario":label,"skill_id":skill_id,"name":str(skill.name),"generation":"human","lineage":"","divine_stage":"",
             "target_id":ally_id,"hp_before":str(hp_before),"hp_after":str(ally.hp),"expected_damage":str(expected_heal),
             "actual_damage":str(actual_heal),"error":str(actual_heal - expected_heal),"status":"PASS" if ok else "FAIL",
@@ -886,6 +886,14 @@ func _prepare_action(skill: Dictionary) -> Dictionary:
         return {"ok": false, "reason": "setup:" + str(setup.get("reason", ""))}
     actor = battle.actors[str(actor.id)]
     target = battle.actors[str(target.id)]
+    if not ally_id.is_empty() and effect == "heal" and school == "poison":
+        var injured_ally: Dictionary = battle.actors[ally_id]
+        # Real committed damage opens the PVB1 rolling heal allowance.
+        # Missing HP alone is intentionally not enough.
+        target["stats"]["attack"] = 100.0
+        var committed_damage := battle._deal_direct(target,injured_ally,1.0,"basic",false,"wood",false)
+        if committed_damage <= 0.0 or V63PoisonEvolutionV1.heal_capacity(injured_ally,battle.now) <= 0.001:
+            return {"ok":false,"reason":"poison_heal_damage_receipt_missing"}
     if not ally_id.is_empty() and effect == "cleanse":
         battle.actors[ally_id]["status_effects"] = {"weaken": {"until": 40.0, "factor": 0.8}}
     if effect == "consume_poison":
