@@ -196,6 +196,8 @@ func refresh_hunt_controls() -> void:
 		button.visible = p0 and authoritative_listener
 		button.disabled = not p0 or not authoritative_listener \
 			or selected_actor_ids.is_empty()
+		if p0 and authoritative_listener:
+			button.tooltip_text = "Chọn đệ tử còn sống trên bản đồ trước khi giao lệnh." if selected_actor_ids.is_empty() else ("%d đệ tử đang được chọn · %s" % [selected_actor_ids.size(),"Tự săn quanh vị trí" if button == _hunt_auto_button else "Giữ vị trí, đánh trong tầm"])
 
 func _emit_hunt_policy(policy: String) -> void:
 	if not ["auto","hold"].has(policy) or selected_actor_ids.is_empty() \
@@ -342,8 +344,9 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 	var current_disciples: Array[String] = []
 	for raw_id in battle.actors:
 		var actor: Dictionary = battle.actors[raw_id]
-		if str(actor.get("side","")) == "disciple":
+		if str(actor.get("side","")) == "disciple" and float(actor.get("hp",0.0)) > 0.0:
 			current_disciples.append(str(raw_id))
+	var had_selection := not selected_actor_ids.is_empty()
 	var kept: Array[String] = []
 	for id in selected_actor_ids:
 		if current_disciples.has(id):
@@ -351,7 +354,7 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 	# Legacy six-member pilot starts with the whole squad selected. P0
 	# independent world MUST start with no implicit selection: otherwise a
 	# single minimap click unintentionally orders every deployed hunter.
-	if kept.is_empty() and not PveDistributedWorldV1.enabled(population):
+	if kept.is_empty() and not had_selection and not PveDistributedWorldV1.enabled(population):
 		kept = current_disciples.duplicate()
 	selected_actor_ids = kept
 	refresh_hunt_controls()
