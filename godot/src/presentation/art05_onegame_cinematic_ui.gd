@@ -484,39 +484,31 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                         VIS_QUALITY.apply_name(inner as Label, entry_quality)
             else:
                 VIS_QUALITY.apply_button(entry, entry_quality)
-    # Profile is rebuilt synchronously; avoid a stale queued old panel
-    # swallowing subsequent real clicks or being returned by find_child.
+    # Reuse the canonical school action. Two overlapping school buttons previously
+    # competed with the effects control for actual mouse input.
+    var school_button := panel.get_node_or_null("DeepSchoolSkillsButton") as Button
+    if school_button != null:
+        school_button.text = "MÔN PHÁI / KỸ NĂNG"
+        school_button.position = Vector2(414,12)
+        school_button.size = Vector2(323,44)
+        school_button.add_theme_font_size_override("font_size",14)
+        school_button.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,9))
     var toggle := Button.new()
     toggle.name = "VISReducedMotionToggle"
     toggle.text = "HIỆU ỨNG: %s" % VIS_QUALITY.mode_label()
     toggle.tooltip_text = "Chỉ giảm hiệu ứng phẩm chất; không thay đổi kỹ năng, thông số hoặc Save."
-    toggle.position = Vector2(515, 15)
-    toggle.size = Vector2(205, 38)
-    toggle.add_theme_font_size_override("font_size", 12)
-    toggle.add_theme_color_override("font_color", ART05_WHITE)
-    toggle.add_theme_stylebox_override("normal", _art05_style(ART05_JADE, ART05_GOLD, 1, 9))
-    toggle.pressed.connect(Callable(self, "_vis_toggle_profile_reduced").bind(disciple_id, tab_name))
+    toggle.position = Vector2(244,12)
+    toggle.size = Vector2(158,44)
+    toggle.add_theme_font_size_override("font_size",12)
+    toggle.add_theme_color_override("font_color",ART05_WHITE)
+    toggle.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,9))
+    toggle.pressed.connect(Callable(self,"_vis_toggle_profile_reduced").bind(disciple_id,tab_name),CONNECT_DEFERRED)
     panel.add_child(toggle)
-    var school_button := Button.new()
-    school_button.name = "DeepSchoolSkillsButton"
-    school_button.text = "MÔN PHÁI / KỸ NĂNG"
-    school_button.tooltip_text = "Bái môn sau tuyển dụng; xem 36 nhánh và các chiêu thức thật."
-    school_button.position = Vector2(290,15)
-    school_button.size = Vector2(211,38)
-    school_button.add_theme_font_size_override("font_size",13)
-    school_button.add_theme_color_override("font_color",ART05_WHITE)
-    school_button.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,9))
-    school_button.pressed.connect(Callable(self,"_aschar_open_school_skills").bind(disciple_id))
-    panel.add_child(school_button)
     if tab_name == "Trang bị":
         VIS_EQUIPMENT.apply_profile(panel, state.disciples[disciple_id] as DiscipleState, state)
 
 func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
     VIS_QUALITY.cycle_mode()
-    var previous := popup_layer.find_child("DiscipleDeepScreen",true,false) as Panel
-    if previous != null and previous.get_parent() != null:
-        previous.get_parent().remove_child(previous)
-        previous.queue_free()
     _open_disciple_deep_screen(disciple_id, tab_name, true)
 
 
