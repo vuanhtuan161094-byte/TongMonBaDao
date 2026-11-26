@@ -13,6 +13,10 @@ func _run() -> void:
     if entries.size() != 58:
         _fail("unexpected binding count")
         return
+    var renderer = preload("res://src/presentation/p3/pve_factory_sprite_v1.gd")
+    if renderer.resolve_receipt_phase({"flight":{},"contact":{}},"release") != "flight" or renderer.resolve_receipt_phase({"contact":{}},"release") != "" or renderer.resolve_receipt_phase({"release":{},"flight":{}},"release") != "release":
+        _fail("release phase routing")
+        return
     var checked: Dictionary = {}
     for id in entries:
         var entry: Dictionary = entries[id]
