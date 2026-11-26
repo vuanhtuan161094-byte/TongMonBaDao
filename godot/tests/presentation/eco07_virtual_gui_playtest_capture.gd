@@ -164,6 +164,9 @@ func _capture_playbook(out: String) -> bool:
     await process_frame
     if screen.find_child("DiscipleDeepScreen",true,false) == null:
         return _fail("Playbook cultivation action did not open the real disciple profile.")
+    var technique := screen.find_child("DiscipleTabContentText",true,false) as Label
+    if str(screen.get("disciple_profile_active_tab_name")) != "Công pháp" or technique == null or technique.text == "Chưa có dữ liệu.":
+        return _fail("Playbook cultivation link must show the actual canonical technique tab.")
     if not await _capture(out.path_join("10_disciple_cultivation_1280x720.png")):
         return false
     screen.call("_bottom_action","home")

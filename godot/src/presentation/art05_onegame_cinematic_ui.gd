@@ -1267,13 +1267,18 @@ func _aschar_open_school_skills(disciple_id: StringName) -> void:
 
 func _aschar_close_school_skills(disciple_id: StringName) -> void:
     _aschar_school_screen = null
-    _open_disciple_deep_screen(disciple_id,"Công Pháp")
+    _open_disciple_deep_screen(disciple_id,"Công pháp")
 
 func _aschar_assign_branch(disciple_id: StringName, branch_id: String) -> void:
     if state == null or not state.disciples.has(disciple_id):
         return
     var disciple: DiscipleState = state.disciples[disciple_id]
-    var result := SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
+    var result := {"ok":false,"reason":"Phiên chơi chưa cho phép ghi dữ liệu"}
+    if runtime_session != null and runtime_session.owner != null and not runtime_session.owner.runtime_write_blocked:
+        if disciple.region_id == &"sect" and disciple.active_pve_encounter_id.is_empty() and disciple.injury_level == 0 and disciple.hp > 0.0:
+            result = SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
+        else:
+            result.reason = "Đệ tử phải ở tông môn và đủ sức khỏe"
     if bool(result.get("ok",false)):
         # Recreate only this presentation actor, keeping its live simulation ID,
         # route, job, inventory and position completely intact.
@@ -1289,28 +1294,9 @@ func _aschar_assign_branch(disciple_id: StringName, branch_id: String) -> void:
         _aschar_school_screen.refresh()
 
 func _aschar_skill_action(disciple_id: StringName,skill_id: String,action: String) -> void:
-    if state == null or not state.disciples.has(disciple_id):
-        return
-    var disciple: DiscipleState = state.disciples[disciple_id]
-    var result: Dictionary = {}
-    if action == "learn_basic":
-        var basic := CombatSkillSystem.new()
-        var learned := basic.learn_skill(state,disciple,StringName(skill_id))
-        result = {"ok":learned,"skill_id":skill_id,
-            "reason":"" if learned else "not_eligible_or_already_learned"}
-    elif action == "learn":
-        result = V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id)
-    elif action == "equip":
-        result = V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)
-    else:
-        result = {"ok":false,"reason":"unknown_action"}
-    if bool(result.get("ok",false)):
-        _autosave_runtime()
-    if _aschar_school_screen != null and is_instance_valid(_aschar_school_screen):
-        _aschar_school_screen.show_feedback(
-            ("Đã cập nhật kỹ năng: " if bool(result.get("ok",false)) else "Chưa thể thao tác: ")
-            + (skill_id if bool(result.get("ok",false)) else str(result.get("reason",""))))
-        _aschar_school_screen.refresh()
+    # Use the canonical profile implementation: it also handles V2 study,
+    # equip/cancel methods, legacy method upgrades and Save authority.
+    super._aschar_skill_action(disciple_id,skill_id,action)
 
 # PRODUCT-UX: a reopenable player guide, not a second simulation or fake rewards.
 # Every card invokes the existing authoritative OneGame navigation.
@@ -1410,7 +1396,7 @@ func _art05_playbook_action(action: String) -> void:
             _open_building(SectMapPresentation.DEST_MINE)
         "cultivation":
             if target_id != &"":
-                _open_disciple_deep_screen(target_id,"Công Pháp")
+                _open_disciple_deep_screen(target_id,"Công pháp")
         "hunt":
             _open_pve_party_picker()
         "craft":

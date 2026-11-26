@@ -89,7 +89,7 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
             target = owner
         var target_actor: Dictionary = battle.actors.get(target,{})
         var at: Vector2 = event.get("target_position",target_actor.get("position",actor.get("position",Vector2.ZERO)))
-        var origin: Vector2 = actor.get("position",Vector2.ZERO)
+        var origin: Vector2 = event.get("source_position",actor.get("position",Vector2.ZERO))
         var phases: Dictionary = entry.get("phases",{})
         if kind == "skill_cast":
             if str(event.get("effect","")) != str(entry["effect"]) or str(event.get("shape","")) != str(entry["shape"]) or int(event.get("target_limit",0)) != int(entry["limit"]):
@@ -127,7 +127,7 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
             var victim: Dictionary = battle.actors.get(tid,{})
             if victim.is_empty():
                 continue
-            var where: Vector2 = victim.get("position",at)
+            var where: Vector2 = event.get("target_position",victim.get("position",at)) if tid == target else victim.get("position",at)
             var source: Dictionary = phases[phase]
             var frames: Array = source.get("frames",[])
             var duration := clampf(float(frames.size())/maxf(1.0,float(source.get("fps",12))),0.14,0.85)
@@ -236,6 +236,13 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
         elif str(entry.get("shape","")) == "line" and phase == "release":
             at = origin.lerp(target,0.5)
             angle = (target-origin).angle()
+        elif phase == "contact":
+            # Keep the impact where the authoritative hit landed; moving
+            # victims must not drag the flash around after contact.
+            at = projection.call(cue["at"])
+            if str(entry.get("mechanic","")) in ["projectile","melee","line"]:
+                var from: Vector2 = projection.call(cue["origin"])
+                angle = (at-from).angle()
         if str(entry.get("mechanic","")) not in ["circle_aoe","formation"]:
             at += Vector2(0,-30)
         var width := float(source.get("width",110))

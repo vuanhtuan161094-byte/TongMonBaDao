@@ -13,6 +13,26 @@ const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.s
 const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
 const R2_COURT: Texture2D = preload("res://art/onegame_world_r2/jade_court.svg")
+# Original scenic art only: these are not resource nodes, buildings or nav cells.
+const R3_SCENERY := {
+    "pine":preload("res://art/onegame_world_r2/pine_rock_grove.svg"),
+    "garden":preload("res://art/onegame_world_r2/terraced_garden.svg"),
+    "stockyard":preload("res://art/onegame_world_r2/producer_stockyard.svg")
+}
+const R3_SCENERY_CELLS := [
+    {"cell":Vector2i(101,78),"art":"pine","scale":0.86},
+    {"cell":Vector2i(109,82),"art":"pine","scale":0.88},
+    {"cell":Vector2i(115,87),"art":"pine","scale":0.95},
+    {"cell":Vector2i(114,96),"art":"stockyard","scale":0.75},
+    {"cell":Vector2i(106,103),"art":"stockyard","scale":0.70},
+    {"cell":Vector2i(100,105),"art":"garden","scale":0.82},
+    {"cell":Vector2i(96,83),"art":"garden","scale":0.84},
+    {"cell":Vector2i(79,79),"art":"pine","scale":0.92},
+    {"cell":Vector2i(74,81),"art":"pine","scale":0.95},
+    {"cell":Vector2i(76,110),"art":"garden","scale":0.85},
+    {"cell":Vector2i(81,114),"art":"pine","scale":0.88},
+    {"cell":Vector2i(116,105),"art":"pine","scale":0.92}
+]
 const R2_PRODUCERS := {
     "mine":preload("res://art/onegame_world_r2/mine_compact.svg"),
     "linh_forest":preload("res://art/onegame_world_r2/forest_compact.svg"),
@@ -635,6 +655,32 @@ func _load_verified_source_art() -> void:
                 "texture":vegetation,
                 "scale":float(item["scale"]),
                 "cell":tile
+            })
+    if not pve_landscape and map_layout_version >= 2:
+        # Scenic clusters fill previously empty edges; avoid protected roads,
+        # building anchors, the ceremonial court and planned residence lots.
+        for row in R3_SCENERY_CELLS:
+            var tile: Vector2i = row["cell"]
+            if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile) or COURTYARD_RECT.has_point(tile):
+                continue
+            var clear := true
+            for raw_anchor in anchors_for_layout().values():
+                if (tile-Vector2i(raw_anchor)).length_squared() <= 9:
+                    clear = false
+                    break
+            for lot in SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES:
+                if Rect2i(Vector2i(lot)-Vector2i.ONE,SectResidenceSiteV1.HOUSE_FOOTPRINT+Vector2i(2,2)).has_point(tile):
+                    clear = false
+                    break
+            if not clear:
+                continue
+            var texture: Texture2D = R3_SCENERY[str(row["art"])]
+            var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
+            if not decoration_items_by_chunk.has(chunk):
+                decoration_items_by_chunk[chunk] = []
+            (decoration_items_by_chunk[chunk] as Array).append({
+                "world":project(Vector2(tile)),"texture":texture,
+                "scale":float(row["scale"]),"cell":tile
             })
     _cache_static_overlays()
     pve_static_queue_dirty = true
