@@ -12,6 +12,7 @@ on:
       - 'wiki/**'
       - 'tools/wiki/tests/**'
       - 'tools/vfx/stage_vfx_web_review.py'
+      - 'tools/vfx/build_native_video_review.py'
       - 'tools/vfx/build_sword_batch9.py'
       - 'tools/vfx/check_web_visual.cjs'
       - 'tools/vfx/check_web_sword02_r1e.cjs'
@@ -75,6 +76,13 @@ jobs:
           # ONE public play entry point; Wiki remains at its existing stable URL.
           printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=play/"><title>Tông Môn Bá Đạo — Chơi Game</title></head><body><a href="play/">Chơi Tông Môn Bá Đạo</a></body></html>' > _site/index.html
           touch _site/.nojekyll
+
+      - name: Assemble mobile native video review on same site
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/build_native_video_review.py --source godot --destination _site/vfx/videos --sha "$GITHUB_SHA"
+          test -s _site/vfx/videos/index.html
 
       - name: Cache verified Godot 4.7.2 Web no-threads template
         id: godot-template-cache
