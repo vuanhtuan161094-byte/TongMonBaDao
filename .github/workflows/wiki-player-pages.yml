@@ -77,13 +77,6 @@ jobs:
           printf '%s\n' '<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=play/"><title>Tông Môn Bá Đạo — Chơi Game</title></head><body><a href="play/">Chơi Tông Môn Bá Đạo</a></body></html>' > _site/index.html
           touch _site/.nojekyll
 
-      - name: Assemble mobile native video review on same site
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 tools/vfx/build_native_video_review.py --source godot --destination _site/vfx/videos --sha "$GITHUB_SHA"
-          test -s _site/vfx/videos/index.html
-
       - name: Cache verified Godot 4.7.2 Web no-threads template
         id: godot-template-cache
         uses: actions/cache@v4
@@ -136,8 +129,9 @@ jobs:
           GODOT="$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"
           test -s godot/export_presets.cfg
           test -s godot/scenes/p3/p3_2_landscape_sect.tscn
-          "$GODOT" --headless --path godot --editor --import
-          "$GODOT" --headless --path godot --export-release "Web" "$GITHUB_WORKSPACE/_site/play/index.html"
+          mkdir -p "$RUNNER_TEMP/one-game-export-proof"
+          "$GODOT" --headless --path godot --editor --import 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/import.log"
+          "$GODOT" --headless --path godot --export-release "Web" "$GITHUB_WORKSPACE/_site/play/index.html" 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/export.log"
           test -s _site/play/index.html
           test -s _site/play/index.js
           test -s _site/play/index.wasm
@@ -148,6 +142,15 @@ jobs:
           du -h _site/play/index.*
           find _site/play -maxdepth 1 -type f | sort
 
+      - name: Preserve main game export diagnostics even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-game-export-proof-${{ github.sha }}
+          path: ${{ runner.temp }}/one-game-export-proof/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload canonical playable Web export independently of review gate
         uses: actions/upload-artifact@v4
         with:
@@ -155,6 +158,13 @@ jobs:
           path: _site/play/
           retention-days: 14
           if-no-files-found: error
+
+      - name: Assemble mobile native video review on same site
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/vfx/build_native_video_review.py --source godot --destination _site/vfx/videos --sha "$GITHUB_SHA"
+          test -s _site/vfx/videos/index.html
 
       - name: Export isolated VFX Web review into SAME canonical Pages site
         shell: bash
