@@ -11,6 +11,9 @@ on:
       - 'godot/src/presentation/p3/pve_sect_world_view_v1.gd'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/src/presentation/p3/pve_aschar_frame_renderer_v1.gd'
+      - 'godot/src/presentation/p3/pve_v8_blade_vfx.gd'
+      - 'godot/assets/p3/vfx/blade_v8/**'
+      - 'godot/tests/presentation/v8_pve_blade_vfx_test.gd'
       - 'godot/src/presentation/p3/pve_a3_sword_vfx.gd'
       - 'godot/tests/presentation/a3_pve_sword_vfx_test.gd'
       - 'godot/assets/p3/vfx/a3_sword_batch6/**'
@@ -115,6 +118,11 @@ jobs:
 
       - name: A3 source-approved Sword VFX real event contract (default HOLD)
         run: godot --headless --path godot -s res://tests/presentation/a3_pve_sword_vfx_test.gd
+
+      - name: V8 Blade exact six candidate sources, real MapBattleV2 receipts and default HOLD
+        run: |
+          godot --headless --path godot --check-only --script res://tests/presentation/v8_pve_blade_vfx_test.gd
+          godot --headless --path godot -s res://tests/presentation/v8_pve_blade_vfx_test.gd
 
       - name: Parse P0 production code and tests
         shell: bash

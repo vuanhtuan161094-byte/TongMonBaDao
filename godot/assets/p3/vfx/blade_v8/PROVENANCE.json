@@ -1,0 +1,23 @@
+{
+  "source_status": "EXISTING_NATIVE_REVIEW_CANDIDATES_NOT_OWNER_APPROVED",
+  "source_commit": "e6c339da15d9d4f82793f18dc2dc39e5df5c9c8f",
+  "source_paths": {
+    "pha_vay_khai_son": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/",
+    "cuong_dao_pha_vay": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/",
+    "other_four": "res://labs/combat_lab/blade_factory_v5/source/"
+  },
+  "git_blobs": {
+    "pha_vay_khai_son_charge_r1.png": "709409abb2424e1906e3173971c78a163f8d7df0",
+    "pha_vay_khai_son_contact_r1.png": "4ae8dd35ca11dd1c10ef06e7084c0af38bf37328",
+    "pha_vay_khai_son_fade_r1.png": "80f482c6c9cef5935ceda9c333c4d8dd637666c2",
+    "pha_vay_khai_son_flight_r1.png": "1fbdab9881837b6598f75e87745829f8490d4d85",
+    "lien_son_tram_12cel.svg": "dc2b0a5cf7ea62b3cf7c5ad391054a1f4af37486",
+    "cuu_trung_hoi_dao_12cel.svg": "e32385fd16b834daf65928f3071224e9effd6f4f",
+    "cuu_trung_cuong_dao_12cel.svg": "1a60eda795689c797714fbb98209b7d57d37ea1f",
+    "tram_phach_nhat_tuyen_12cel.svg": "adb51793c2dfc8add366d41e91c457df827bf54a",
+    "cuong_dao_pha_vay_16cel.svg": "eb1b0e224310c909f11fb5e655615a35ccbb43b3"
+  },
+  "production_gate": "HOLD",
+  "review_setting": "runtime/v8_blade_vfx_preview",
+  "note": "Exact source blobs staged under exportable assets; no newly claimed art or gameplay source."
+}

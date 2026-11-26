@@ -146,6 +146,7 @@ const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
 const PRODUCTION_APRON_RECT := Rect2i(94,92,5,6)
 const PVE_JX_VFX_ADAPTER_SCRIPT := preload("res://src/presentation/p3/pve_jx_sword_vfx_adapter_v1.gd")
 const A3_SWORD_VFX = preload("res://src/presentation/p3/pve_a3_sword_vfx.gd")
+const V8_BLADE_VFX = preload("res://src/presentation/p3/pve_v8_blade_vfx.gd")
 
 # Signs are presentation wayfinding, not constructed buildings, loot nodes or
 # fake facilities. Coordinates follow the fixed V2 masterplan in SectResidenceSiteV1.
@@ -251,6 +252,7 @@ var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
 var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
 var pve_a3_sword_vfx = A3_SWORD_VFX.new()
+var pve_v8_blade_vfx = V8_BLADE_VFX.new()
 var pve_selected_actor_ids: Array[String] = []
 var pve_mini_texture: Texture2D
 var pve_camera_initialized := false
@@ -908,6 +910,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_actor_facings.clear()
         pve_jx_sword_vfx.observe_snapshot(null)
         pve_a3_sword_vfx.reset()
+        pve_v8_blade_vfx.reset()
         pve_damage_feedback.clear()
         queue_redraw()
         return
@@ -922,6 +925,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_actor_facings.clear()
     var new_visual_events := pve_jx_sword_vfx.observe_snapshot(snapshot)
     pve_a3_sword_vfx.observe(new_visual_events,snapshot,bool(ProjectSettings.get_setting(A3_SWORD_VFX.PREVIEW_SETTING,false)))
+    pve_v8_blade_vfx.observe(new_visual_events,snapshot,bool(ProjectSettings.get_setting(V8_BLADE_VFX.PREVIEW_SETTING,false)))
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
         var id := str(raw_id)
@@ -984,6 +988,7 @@ func _process(delta: float) -> void:
     var vfx_advance_started_usec := Time.get_ticks_usec() if pve_performance_logging_enabled else 0
     pve_jx_sword_vfx.advance(delta)
     pve_a3_sword_vfx.advance(delta)
+    pve_v8_blade_vfx.advance(delta)
     if pve_performance_logging_enabled:
         var vfx_advance_elapsed_usec := Time.get_ticks_usec()-vfx_advance_started_usec
         pve_vfx_advance_count += 1
@@ -1323,6 +1328,7 @@ func _draw() -> void:
         _ensure_pve_static_draw_queue()
         _draw_pve_actor_depth_merge()
         pve_a3_sword_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
+        pve_v8_blade_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
         _draw_pve_damage_feedback()
         return
     _draw_masterplan_lots()
