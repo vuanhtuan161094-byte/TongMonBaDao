@@ -116,6 +116,22 @@ jobs:
           xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 -s res://tests/presentation/aschar_game_school_selection_test.gd
           test -s "$TMB_SCHOOL_SCREEN_CAPTURE"
 
+      # Visual delivery must not wait for the long unrelated masterplan regression.
+      - name: Record and upload actual capture immediately after render
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p eco07-virtual-gui-evidence
+          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > eco07-virtual-gui-evidence/source-sha.txt
+      - name: Publish early real OneGame image and video evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: onegame-capture-early-${{ github.sha }}
+          path: eco07-virtual-gui-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Validate exact copied Factory atlas imports and canonical skill contracts
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/pve_factory_r2_source_contract_test.gd
 
