@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="480" viewBox="0 0 280 480">
+<defs>
+<linearGradient id="vapor" x1=".25" y1="1" x2=".70" y2="0"><stop offset="0" stop-color="#8affb0" stop-opacity="0"/><stop offset=".22" stop-color="#84f8ba" stop-opacity=".16"/><stop offset=".54" stop-color="#c6f9ca" stop-opacity=".41"/><stop offset=".77" stop-color="#897bd9" stop-opacity=".25"/><stop offset="1" stop-color="#6d468e" stop-opacity="0"/></linearGradient>
+<radialGradient id="mint"><stop stop-color="#ddffd0" stop-opacity=".53"/><stop offset=".27" stop-color="#72e7b6" stop-opacity=".29"/><stop offset="1" stop-color="#4da8a3" stop-opacity="0"/></radialGradient>
+<radialGradient id="amethyst"><stop stop-color="#d6b0ff" stop-opacity=".32"/><stop offset=".57" stop-color="#7d5bc0" stop-opacity=".15"/><stop offset="1" stop-color="#36265e" stop-opacity="0"/></radialGradient>
+</defs>
+<!-- drifting smoke ribbons, original layered soft alpha texture -->
+<ellipse cx="148" cy="358" rx="118" ry="103" fill="url(#mint)" opacity=".63"/>
+<ellipse cx="94" cy="264" rx="72" ry="123" fill="url(#amethyst)"/>
+<ellipse cx="176" cy="204" rx="97" ry="123" fill="url(#mint)" opacity=".79"/>
+<ellipse cx="104" cy="112" rx="90" ry="85" fill="url(#amethyst)" opacity=".66"/>
+<path d="M100 468Q57 407 103 347C131 311 177 310 166 265C158 220 107 231 111 183C115 151 160 131 159 86C153 50 130 38 114 22C183 43 213 98 190 141C179 166 157 184 173 208C207 251 208 299 171 341C145 372 111 389 140 432Z" fill="url(#vapor)" opacity=".73"/>
+<path d="M148 453Q187 395 155 354C135 329 93 317 100 277C106 243 144 235 151 209C171 168 119 140 126 101C135 79 161 76 184 83C160 62 110 66 95 102C83 145 126 158 111 194C93 225 62 243 73 285C78 321 128 340 115 373C97 399 93 425 112 452Z" fill="url(#vapor)" opacity=".65"/>
+<path d="M198 408C230 382 247 338 219 308C195 277 160 273 176 240C188 210 243 196 235 158C229 124 199 122 190 96C210 129 230 139 207 164C181 182 148 189 144 226C132 271 198 306 196 331C194 362 177 379 160 396Z" fill="url(#vapor)" opacity=".70"/>
+<g fill="none" stroke-linecap="round">
+<path d="M126 444C113 390 176 379 179 327C181 284 125 273 142 227C147 203 191 194 198 167" stroke="#c6ffd2" stroke-opacity=".16" stroke-width="7"/>
+<path d="M95 406C75 355 122 331 131 302C154 257 95 239 98 198" stroke="#c9b4ff" stroke-opacity=".19" stroke-width="7"/>
+<path d="M212 365C244 316 181 288 191 254C196 235 217 224 215 208" stroke="#afffbd" stroke-opacity=".12" stroke-width="9"/>
+</g>
+<ellipse cx="179" cy="226" rx="47" ry="73" fill="url(#mint)" opacity=".49"/>
+<ellipse cx="112" cy="319" rx="63" ry="88" fill="url(#amethyst)" opacity=".44"/>
+</svg>

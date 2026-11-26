@@ -65,6 +65,8 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
                 _put("zone|"+owner+"|"+zone,{"skill":id,"phase":2,"actor":"","at":event.get("center",actor.get("position",Vector2.ZERO)),"start":_clock,"end":_clock+maxf(0.10,float(event.get("expires_at",battle.now))-battle.now)})
         elif kind == "v63_formation_zone_expired":
             _cues.erase("zone|"+owner+"|"+str(event.get("zone_id","")))
+        elif effect == "mobility" and kind == "v63_mobility":
+            _put("receipt|"+receipt,{"skill":id,"phase":2,"actor":owner,"at":actor.get("position",Vector2.ZERO),"start":_clock,"end":_clock+0.28})
         elif not target_actor.is_empty():
             var valid_contact := (effect == "damage" and kind in ["v63_skill_hit","hit"] and float(event.get("damage",0.0)) > 0.0)
             valid_contact = valid_contact or (effect == "slow" and kind == "v63_formation_slow_applied")
@@ -74,8 +76,6 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
                 if effect == "guard" or effect == "slow":
                     duration = clampf(float(event.get("until",battle.now+0.32))-battle.now,0.32,8.0)
                 _put("receipt|"+receipt,{"skill":id,"phase":2,"actor":target,"at":target_actor.get("position",Vector2.ZERO),"start":_clock,"end":_clock+duration})
-        elif effect == "mobility" and kind == "v63_mobility":
-            _put("receipt|"+receipt,{"skill":id,"phase":2,"actor":owner,"at":actor.get("position",Vector2.ZERO),"start":_clock,"end":_clock+0.28})
 
 func _put(key: String,cue: Dictionary) -> void:
     if _cues.size() >= 64 and not _cues.has(key):

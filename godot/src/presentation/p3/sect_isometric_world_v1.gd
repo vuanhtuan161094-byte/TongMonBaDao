@@ -16,6 +16,7 @@ const R2_PRODUCERS := {
     "spirit_field":preload("res://art/onegame_world_r2/field_compact.svg")
 }
 const R2_FORMATION = preload("res://src/presentation/p3/pve_formation_atlas_v1.gd")
+const R2_FACTORY = preload("res://src/presentation/p3/pve_factory_sprite_v1.gd")
 const VIEW_SIZE := Vector2(1280,570)
 const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
@@ -261,6 +262,7 @@ var pve_source_atlas := CombatV5SourceAAtlas.new()
 var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
 var pve_a3_sword_vfx = A3_SWORD_VFX.new()
 var pve_r2_formation = R2_FORMATION.new()
+var pve_r2_factory = R2_FACTORY.new()
 var pve_v8_blade_vfx = V8_BLADE_VFX.new()
 var pve_v9_p2_spell_vfx = V9_P2_SPELL_VFX.new()
 var pve_selected_actor_ids: Array[String] = []
@@ -923,6 +925,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_v8_blade_vfx.reset()
         pve_v9_p2_spell_vfx.reset()
         pve_r2_formation.reset()
+        pve_r2_factory.reset()
         pve_damage_feedback.clear()
         queue_redraw()
         return
@@ -950,6 +953,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
     pve_v8_blade_vfx.observe(new_visual_events,snapshot,blade_visual)
     pve_v9_p2_spell_vfx.observe(new_visual_events,snapshot)
     pve_r2_formation.observe(new_visual_events,snapshot)
+    pve_r2_factory.observe(new_visual_events,snapshot)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
         var id := str(raw_id)
@@ -1015,6 +1019,7 @@ func _process(delta: float) -> void:
     pve_v8_blade_vfx.advance(delta)
     pve_v9_p2_spell_vfx.advance(delta)
     pve_r2_formation.advance(delta)
+    pve_r2_factory.advance(delta)
     if pve_performance_logging_enabled:
         var vfx_advance_elapsed_usec := Time.get_ticks_usec()-vfx_advance_started_usec
         pve_vfx_advance_count += 1
@@ -1372,6 +1377,7 @@ func _draw() -> void:
         pve_v8_blade_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
         pve_v9_p2_spell_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
         pve_r2_formation.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
+        pve_r2_factory.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
         _draw_pve_damage_feedback()
         return
     _draw_masterplan_lots()
