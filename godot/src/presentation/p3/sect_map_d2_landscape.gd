@@ -4,6 +4,12 @@ extends RefCounted
 # MAP-D2: presentation-only palette and scenery. No tile placement, nav,
 # worker action, resource yield or saved state is created by this helper.
 # All details are ORIGINAL UNAPPROVED CANDIDATES, never Source A masters.
+const SCENIC_SPRITES := {
+    "pond":preload("res://art/map_d2_candidate/scenery_v2/lotus_pond.svg"),
+    "reeds":preload("res://art/map_d2_candidate/scenery_v2/reeds.svg"),
+    "flowers":preload("res://art/map_d2_candidate/scenery_v2/flowers.svg"),
+    "stone":preload("res://art/map_d2_candidate/scenery_v2/moss_stones.svg")
+}
 const SCENIC_ACCENTS := [
     {"cell":Vector2i(110,108),"kind":"pond"},
     {"cell":Vector2i(105,111),"kind":"reeds"},
@@ -69,15 +75,16 @@ static func draw_scenic_accents(world: Node2D, active_chunks: Array[Vector2i], c
         var distance := (point-camera_center).abs()
         if distance.x > half_view.x or distance.y > half_view.y:
             continue
-        match str(row["kind"]):
-            "pond":
-                _draw_pond(world,point)
-            "reeds":
-                _draw_reeds(world,point)
-            "flowers":
-                _draw_flowers(world,point)
-            "stone":
-                _draw_stones(world,point)
+        var kind := str(row["kind"])
+        var texture := SCENIC_SPRITES.get(kind) as Texture2D
+        if texture == null:
+            continue
+        var size := texture.get_size()
+        # Sprite-only scenery at the original authored map positions and scale.
+        # No collision, resources, buildings or navigation changes.
+        var extent := size * (0.90 if kind == "pond" else 0.74)
+        var anchor := Vector2(extent.x*0.5,extent.y*0.72)
+        world.draw_texture_rect(texture,Rect2(point-anchor,extent),false)
 
 
 static func _draw_pond(world: Node2D, p: Vector2) -> void:

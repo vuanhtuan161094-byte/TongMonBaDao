@@ -9786,7 +9786,9 @@ func _aschar_choose_branch(disciple_id: StringName, branch_id: String) -> void:
     var disciple: DiscipleState = state.disciples.get(disciple_id) if state != null else null
     if disciple == null:
         return
-    var result := SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
+    var result := {"ok":false,"reason":"Phiên chơi chưa cho phép ghi dữ liệu"}
+    if runtime_session != null and runtime_session.owner != null and not runtime_session.owner.runtime_write_blocked:
+        result = SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
     var screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false) as SectSchoolSkillsScreenV1
     if bool(result.get("ok",false)):
         # Immediately refresh the mounted map actor; no reroll or PvE restart.
@@ -9796,9 +9798,12 @@ func _aschar_choose_branch(disciple_id: StringName, branch_id: String) -> void:
             if scene != null:
                 actor.set_baked_visual(scene)
                 actor.sync_action(disciple.current_action)
+    var feedback := "Đã bái môn: "+str(result.get("name",branch_id)) if bool(result.get("ok",false)) else "Không thể chọn nhánh: "+str(result.get("reason",""))
+    if bool(result.get("ok",false)):
+        var saved := runtime_session.save()
+        feedback += " · Đã lưu" if bool(saved.get("ok",false)) else " · Chưa xác nhận lưu"
     if screen != null:
-        screen.show_feedback("Đã bái môn: "+str(result.get("name",branch_id))
-            if bool(result.get("ok",false)) else "Không thể chọn nhánh: "+str(result.get("reason","")))
+        screen.show_feedback(feedback)
         screen.refresh()
 
 func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: String) -> void:
@@ -9807,15 +9812,28 @@ func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: Str
         return
     var ok := false
     var reason := "không đủ điều kiện"
-    if action == "learn_basic":
+    var writable := runtime_session != null and runtime_session.owner != null and not runtime_session.owner.runtime_write_blocked
+    if not writable:
+        reason = "Phiên chơi chưa cho phép ghi dữ liệu"
+    elif action == "learn_basic":
         ok = CombatSkillSystem.new().learn_skill(state,disciple,StringName(skill_id))
     elif action in ["learn","equip"] and V63HumanSkillCombatSystem.is_enabled(state):
-        var result := V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id) if action == "learn" else V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)
-        ok = bool(result.get("ok",false))
-        reason = str(result.get("reason","không đủ điều kiện"))
+        var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
+        var school := SectASCharCandidateBridgeV1.school_for_disciple(disciple)
+        var branch := str(definition.get("branch",""))
+        if school.is_empty() or str(definition.get("school","")) != school or (not branch.is_empty() and branch != str(disciple.v63_combat_branch_id)):
+            reason = "Kỹ năng không thuộc môn phái hoặc nhánh đã chọn"
+        else:
+            var result := V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id) if action == "learn" else V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)
+            ok = bool(result.get("ok",false))
+            reason = str(result.get("reason","không đủ điều kiện"))
     var screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false) as SectSchoolSkillsScreenV1
+    var feedback := "Đã cập nhật kỹ năng" if ok else "Không thể thực hiện: "+reason
+    if ok:
+        var saved := runtime_session.save()
+        feedback += " · Đã lưu" if bool(saved.get("ok",false)) else " · Chưa xác nhận lưu"
     if screen != null:
-        screen.show_feedback("Đã cập nhật kỹ năng" if ok else "Không thể thực hiện: "+reason)
+        screen.show_feedback(feedback)
         screen.refresh()
 
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tổng Quan", preserve_feedback: bool = false) -> void:
