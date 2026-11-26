@@ -33,7 +33,8 @@ func bind_view_model(view_model: Dictionary) -> void:
 	var preferred_id := str(view_model.get("selected_candidate_id", ""))
 	_candidate_index = 0
 	if not preferred_id.is_empty():
-		var pool: Array = view_model.get("candidates", [])
+		# The visible list is filtered; using raw indices here can select a different disciple after a state refresh.
+		var pool: Array = _filtered_candidates()
 		for index in range(pool.size()):
 			if str(pool[index].get("id", "")) == preferred_id:
 				_candidate_index = index
