@@ -7,6 +7,8 @@ import html
 import json
 import math
 import shutil
+import subprocess
+import re
 from pathlib import Path
 
 SCHOOLS = {
@@ -27,7 +29,7 @@ def source(root, value, suffix):
         raise ValueError(f"Invalid review media path: {value}")
     return path if path.is_file() else None
 
-def build(root, dest, sha):
+def build(root, dest, sha, gifs=False):
     root, dest = root.resolve(), dest.resolve()
     if root == dest or root in dest.parents:
         raise ValueError("Review output must be outside canonical source")
@@ -35,6 +37,9 @@ def build(root, dest, sha):
     batches = registry["native_batches"]
     dest.mkdir(parents=True, exist_ok=True)
     sections, videos, buttons = [], 0, 0
+    clips = []
+    if gifs and not shutil.which('ffmpeg'):
+        raise RuntimeError('ffmpeg required for native video GIF extraction')
     for school, name in SCHOOLS.items():
         batch = batches.get(school, {})
         video = source(root, batch.get("video"), ".mp4")
@@ -78,6 +83,26 @@ def build(root, dest, sha):
                 title = item.get("name_vi") or item.get("skill_id") or "Kỹ năng"
                 section.append(f'<button type="button" data-video="v-{school}" data-start="{start}" data-end="{start+duration}">{esc(title)}</button>')
                 buttons += 1
+                if gifs:
+                    skill_id = str(item.get("skill_id", ""))
+                    if not re.fullmatch(r"tmb\.skill\.[a-z0-9_.]+", skill_id):
+                        raise ValueError(f"Invalid canonical skill ID: {skill_id}")
+                    rel = f"gif/{skill_id}.gif"
+                    gif = dest / rel
+                    gif.parent.mkdir(parents=True, exist_ok=True)
+                    subprocess.run([
+                        "ffmpeg", "-nostdin", "-y", "-hide_banner", "-loglevel", "error",
+                        "-ss", str(start), "-i", str(video), "-t", str(duration),
+                        "-filter_complex_threads", "1",
+                        "-filter_complex", "[0:v]fps=12,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3",
+                        "-loop", "0", str(gif),
+                    ], check=True)
+                    if gif.stat().st_size < 100 or gif.read_bytes()[:6] not in (b"GIF87a", b"GIF89a"):
+                        raise ValueError(f"Invalid GIF output: {gif}")
+                    clips.append({"skill_id": skill_id, "name_vi": title, "file": rel,
+                                  "start": start, "duration": duration, "source": str(video.relative_to(root)),
+                                  "provenance": caption, "owner": "PENDING", "pve": "HOLD"})
+                    section.append(f'<a href="{esc(rel)}">GIF {esc(title)}</a>')
             section.append("</div>")
         section.append("</section>")
         sections.append("".join(section))
@@ -95,12 +120,14 @@ document.querySelectorAll('button[data-video]').forEach(b=>b.addEventListener('c
 }));
 </script></html>"""
     (dest / "index.html").write_text(page, encoding="utf-8")
-    print(f"NATIVE_VIDEO_REVIEW_BUILD videos={videos} skill_seek_buttons={buttons} owner=PENDING pve=HOLD")
+    (dest / "review-manifest.json").write_text(json.dumps({"source_sha": sha, "video_count": videos, "skill_buttons": buttons, "gif_count": len(clips), "clips": clips}, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"NATIVE_VIDEO_REVIEW_BUILD videos={videos} skill_seek_buttons={buttons} gifs={len(clips)} owner=PENDING pve=HOLD")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=Path("godot"))
     parser.add_argument("--destination", type=Path, required=True)
     parser.add_argument("--sha", required=True)
+    parser.add_argument("--gifs", action="store_true", help="Extract actual receipt-indexed native video segments as GIFs")
     args = parser.parse_args()
-    build(args.source, args.destination, args.sha)
+    build(args.source, args.destination, args.sha, args.gifs)

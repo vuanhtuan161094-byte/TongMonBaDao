@@ -1,0 +1,35 @@
+name: VFX native MP4 and individual GIF review
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/vfx/build_native_video_review.py'
+      - 'godot/labs/combat_lab/**/review/native/*.mp4'
+      - 'godot/labs/combat_lab/**/review/native/*capture_index.json'
+      - '.github/workflows/vfx-native-video-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Extract real Godot video segments (no simulated frames)
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v ffmpeg
+          python3 -m py_compile tools/vfx/build_native_video_review.py
+          python3 tools/vfx/build_native_video_review.py --source godot --destination "$RUNNER_TEMP/native-review" --sha "$GITHUB_SHA" --gifs
+          python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); assert m["gif_count"] > 0 and m["gif_count"] == len(m["clips"]); print(m["gif_count"], "real indexed GIF clips")' "$RUNNER_TEMP/native-review/review-manifest.json"
+      - name: Upload actual videos and per-skill GIFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: vfx-native-mobile-review-${{ github.sha }}
+          path: ${{ runner.temp }}/native-review/
+          retention-days: 14
+          if-no-files-found: error
