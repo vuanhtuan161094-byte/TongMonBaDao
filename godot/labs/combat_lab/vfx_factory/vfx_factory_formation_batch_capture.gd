@@ -420,6 +420,11 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			caster["v63_blade_combat_enabled"] = true
 			caster["v63_combat_branch_id"] = "cuong_dao"
 			caster["v63_combat_lineage"] = "base"
+		"sword":
+			# Fixture identity only: enable the canonical Human Sword cast path for exact MapBattle receipts.
+			caster["v63_sword_combat_enabled"] = true
+			caster["v63_combat_branch_id"] = str(entry.get("branch", ""))
+			caster["v63_combat_lineage"] = "base"
 		"fist":
 			# Fixture identity only: the canonical Human catalogue resolves the
 			# exact Fist skill; no combat-authority code or runtime state changes.
@@ -590,6 +595,7 @@ func _actor(actor_id: String, side: String, position: Vector2) -> Dictionary:
 			"crit_damage":1.5,"crit_resistance":0.0,"defense_penetration":0.0,"lifesteal":0.0,"lifesteal_reduction":0.0},
 		"resistances":resistances,"status_effects":{},"context_sources":[],"v63_combat_enabled":true,
 		"v63_formation_combat_enabled":false,"v63_talisman_combat_enabled":false,"v63_blade_combat_enabled":false,
+		"v63_sword_combat_enabled":false,
 		"v63_palm_combat_enabled":false,"v63_spear_combat_enabled":false,
 		"v63_skill_ready":{},"v63_skill_loadout":[],"v63_passive_ids":[],
 		"v63_combat_clock":-1.0,"next_skill":0.0,"next_basic":0.0,

@@ -1,0 +1,873 @@
+{
+  "schema": "tmb.vfx_factory_batch_manifest.v1",
+  "batch": "sword_human_cast_batch1_20261125",
+  "school": "sword",
+  "human_cast_masters": 17,
+  "status": "CANDIDATE; NATIVE_PENDING; OWNER_PENDING; PVE_HOLD",
+  "source_policy": "Reuse exact existing RGBA source revisions; batch9 atlases are derived from the existing painted sword_batch6 cels by the tracked deterministic builder. No new art.",
+  "external_provenance_paths": [
+    "docs/operations/vfx_school_ledgers/03_sword_183.csv",
+    "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv"
+  ],
+  "source_assets": {
+    "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png": {
+      "sha256": "fe7ff0cf27c8f75ee601d5899683fe28ccfc01de3c2b8244cf66bfe9fc010732",
+      "bytes": 857108,
+      "source_revision": "R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED",
+      "source_g3": "R2B_G3_ART_SELF_REWORK_REQUIRED; projectile still reads as an energy lance; untouched source preserved.",
+      "grid": [
+        4,
+        2
+      ]
+    },
+    "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png": {
+      "sha256": "1094c93b2a7877e1ce985d0440eff9f3a55c5e9821e1f49ed3c74fc17b4a7dfc",
+      "bytes": 3243358,
+      "source_revision": "R1E_V2_OWNER_APPROVED_SOURCE_ART",
+      "source_g3": "R1E_V2 source motion is owner-approved; Factory actor/runtime presentation remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png": {
+      "sha256": "7f88e652d84e31ce3e746a366fd564e4fcf45dbba16e228a24f66e2ce3306175",
+      "bytes": 2402704,
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png": {
+      "sha256": "86f07ed5789370dc5aacbb9d201fc1d39bbd9b3ceeb73307f1d6ee252b33e42d",
+      "bytes": 368626,
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png": {
+      "sha256": "23a5906585fdc973b35c740c4a1aa2feb339ebdb19ce871cf2d131885024ff35",
+      "bytes": 1196446,
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png": {
+      "sha256": "52cab7a39f446614eb1b297bc3a2c980905dc0c302a053214f3c424009c509f8",
+      "bytes": 343973,
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png": {
+      "sha256": "5401e9a93d2b32e910f07bd4afc5b4703c408e251e756343e2a283b6b8d672bc",
+      "bytes": 437697,
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png": {
+      "sha256": "61eeecd743ca07de7d866fe9316fb0237115951ca9e08b746951ed4a6f25bb4a",
+      "bytes": 1264100,
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png": {
+      "sha256": "5307c94c815ec12f87d561c5e949ceade0a2f03e3619d74e7a878f3ac3be9d39",
+      "bytes": 1158392,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png": {
+      "sha256": "c2f731d6d6d3c18a97e5134a2a0a2221dbdaed3f996b10e8b63780d68b4c2d2c",
+      "bytes": 1746812,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png": {
+      "sha256": "0cd04725f0e1c49bfd30ff942babfdaca92670fc02e128ac4e829fb2673b9570",
+      "bytes": 1076062,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png": {
+      "sha256": "16e1711668befe3776223ae37484f169821b02a29c3134e919f98e77dbebf647",
+      "bytes": 1066548,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png": {
+      "sha256": "feb4105d25ece913d7d8d6c9d374474f00df72c2d7de0d9dd0f0995b79994d24",
+      "bytes": 1076296,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png": {
+      "sha256": "8eea8d755d49a8629a78f6d5b1c5260fd0ea9ce29114b05787a660b5e0e55f9e",
+      "bytes": 1873612,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png": {
+      "sha256": "85674aba9f6121e4124268a88a8c3d8ed1c02df934d01db1dde384d3e3924f85",
+      "bytes": 1728938,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png": {
+      "sha256": "6208ab20f18878f8309e6675657fdc15b5fb9d51047dbcfff9bdfb3d96d541f1",
+      "bytes": 396377,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    },
+    "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png": {
+      "sha256": "fbbe955c49ff472e3e7139b1886b63d14c6c98da57cdc882bfa355b41c9112ab",
+      "bytes": 1087837,
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "grid": [
+        4,
+        6
+      ]
+    }
+  },
+  "skills": [
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+      "name_vi": "Phi Kiếm Truy Ảnh — R2B nguồn minh họa, owner tạm chấp nhận",
+      "branch": "ngu_kiem",
+      "source_revision": "R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED",
+      "source_lab_scene": "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "R2B_G3_ART_SELF_REWORK_REQUIRED; projectile still reads as an energy lance; untouched source preserved.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/README.md",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
+      "phase_count": 5,
+      "configured_frames": 8,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+      "name_vi": "Kiếm Vũ Hồi Phong — R1E V2 24f (so sánh 12f)",
+      "branch": "ngu_kiem",
+      "source_revision": "R1E_V2_OWNER_APPROVED_SOURCE_ART",
+      "source_lab_scene": "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "R1E_V2 source motion is owner-approved; Factory actor/runtime presentation remains pending.",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/KVHP_R1E_VFX_only_atlas_4x3_RGBA.png",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/R1E_SOURCE_QA.json",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_SOURCE_MANIFEST.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd",
+        "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png",
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "phase_count": 5,
+      "configured_frames": 12,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+      "name_vi": "Tứ Phương Phi Nhận — 24f AS48 Combat Lab",
+      "branch": "ngu_kiem",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "effect": "damage",
+      "shape": "line",
+      "target_limit": 3,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png",
+      "fixture_target_position": [
+        3.1,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+      "name_vi": "Kiếm Quang Hồi Chủ — 24f AS48 Combat Lab",
+      "branch": "ngu_kiem",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png",
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
+      "phase_count": 5,
+      "configured_frames": 12,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+      "name_vi": "Vạn Kiếm Quy Tông — 24f AS48 Combat Lab",
+      "branch": "ngu_kiem",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "effect": "damage",
+      "shape": "circle",
+      "target_limit": 3,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png",
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+      "name_vi": "Trảm Ảnh Nhất Tuyến — 24f AS48 Combat Lab",
+      "branch": "sat_kiem",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png",
+      "fixture_target_position": [
+        3.8,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+      "name_vi": "Phá Vân Trực Trảm — 24f AS48 Combat Lab",
+      "branch": "sat_kiem",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "effect": "damage",
+      "shape": "line",
+      "target_limit": 3,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png",
+      "fixture_target_position": [
+        3.1,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+      "name_vi": "Đoạn Thủy Kiếm Mang — 24f AS48 Combat Lab",
+      "branch": "sat_kiem",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png",
+      "fixture_target_position": [
+        3.8,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
+      "name_vi": "Tàng Phong Đột Thứ — ứng viên R2",
+      "branch": "sat_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "mobility",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png",
+      "fixture_target_position": [
+        5.6,
+        3.0
+      ],
+      "phase_count": 5,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+      "name_vi": "Nhất Kiếm Đoạn Thiên — ứng viên R2",
+      "branch": "sat_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png",
+      "fixture_target_position": [
+        4.16,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+      "name_vi": "Kiếm Bích Hộ Thân — ứng viên R2",
+      "branch": "ho_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "guard",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png",
+      "fixture_target_position": [
+        3.44,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+      "name_vi": "Hồi Kiếm Phản Thế — ứng viên R2",
+      "branch": "ho_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png",
+      "fixture_target_position": [
+        3.8,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+      "name_vi": "Liên Tâm Kiếm Thuẫn — ứng viên R2",
+      "branch": "ho_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "guard",
+      "shape": "circle",
+      "target_limit": 3,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png",
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+      "name_vi": "Thiên Cương Hộ Mệnh — ứng viên R2",
+      "branch": "ho_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "damage",
+      "shape": "line",
+      "target_limit": 2,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png",
+      "fixture_target_position": [
+        3.1,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+      "name_vi": "Thiên Cương Kiếm Giới — ứng viên R2",
+      "branch": "ho_kiem",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "guard",
+      "shape": "circle",
+      "target_limit": 3,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png",
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.basic.human",
+      "name_vi": "Tâm Kiếm Nhập Môn — ứng viên R2",
+      "branch": "",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png",
+      "fixture_target_position": [
+        3.584,
+        3.0
+      ],
+      "phase_count": 4,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.mobility.human",
+      "name_vi": "Đạp Kiếm Tầm Phong — ứng viên R2",
+      "branch": "",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "effect": "mobility",
+      "shape": "single_target",
+      "target_limit": 1,
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png",
+        "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
+        "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+      ],
+      "external_provenance_paths": [
+        "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv",
+        "docs/operations/vfx_school_ledgers/03_sword_183.csv"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png",
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
+      "phase_count": 5,
+      "configured_frames": 24,
+      "native_status": "NATIVE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    }
+  ]
+}

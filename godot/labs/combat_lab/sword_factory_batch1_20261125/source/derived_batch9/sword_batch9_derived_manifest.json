@@ -1,0 +1,78 @@
+{
+  "source_status": "DERIVED_EXISTING_PAINTED_RGBA_NOT_NEW_ART",
+  "pve": "HOLD",
+  "files": [
+    {
+      "tag": "09",
+      "id": "tmb.skill.sword.sat_kiem.active_04.human",
+      "sha256": "5307c94c815ec12f87d561c5e949ceade0a2f03e3619d74e7a878f3ac3be9d39",
+      "frames": 24,
+      "unique_frames": 20,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "10",
+      "id": "tmb.skill.sword.sat_kiem.ultimate.human",
+      "sha256": "c2f731d6d6d3c18a97e5134a2a0a2221dbdaed3f996b10e8b63780d68b4c2d2c",
+      "frames": 24,
+      "unique_frames": 20,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "11",
+      "id": "tmb.skill.sword.ho_kiem.active_01.human",
+      "sha256": "0cd04725f0e1c49bfd30ff942babfdaca92670fc02e128ac4e829fb2673b9570",
+      "frames": 24,
+      "unique_frames": 24,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "12",
+      "id": "tmb.skill.sword.ho_kiem.active_02.human",
+      "sha256": "16e1711668befe3776223ae37484f169821b02a29c3134e919f98e77dbebf647",
+      "frames": 24,
+      "unique_frames": 24,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "13",
+      "id": "tmb.skill.sword.ho_kiem.active_03.human",
+      "sha256": "feb4105d25ece913d7d8d6c9d374474f00df72c2d7de0d9dd0f0995b79994d24",
+      "frames": 24,
+      "unique_frames": 24,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "14",
+      "id": "tmb.skill.sword.ho_kiem.active_04.human",
+      "sha256": "8eea8d755d49a8629a78f6d5b1c5260fd0ea9ce29114b05787a660b5e0e55f9e",
+      "frames": 24,
+      "unique_frames": 24,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "15",
+      "id": "tmb.skill.sword.ho_kiem.ultimate.human",
+      "sha256": "85674aba9f6121e4124268a88a8c3d8ed1c02df934d01db1dde384d3e3924f85",
+      "frames": 24,
+      "unique_frames": 24,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "16",
+      "id": "tmb.skill.sword.basic.human",
+      "sha256": "6208ab20f18878f8309e6675657fdc15b5fb9d51047dbcfff9bdfb3d96d541f1",
+      "frames": 24,
+      "unique_frames": 24,
+      "approval": "PENDING"
+    },
+    {
+      "tag": "17",
+      "id": "tmb.skill.sword.mobility.human",
+      "sha256": "fbbe955c49ff472e3e7139b1886b63d14c6c98da57cdc882bfa355b41c9112ab",
+      "frames": 24,
+      "unique_frames": 20,
+      "approval": "PENDING"
+    }
+  ]
+}

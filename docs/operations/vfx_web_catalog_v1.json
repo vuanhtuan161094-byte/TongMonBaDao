@@ -8,7 +8,7 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
@@ -16,17 +16,25 @@
       "g3_art": "ORIGINAL_RGBA_SOURCE_GITHUB_OWNER_PROVISIONAL",
       "owner_art": "OWNER_PROVISIONAL_NOT_FINAL",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd",
-        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
-        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/README.md",
-        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
-        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png"
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png"
       ],
       "art_source": "FIRST_PARTY_IMAGEGEN_ORIGINAL_RGBA_8_POSES_PLUS_REAL_AS48_JIAN",
-      "review_note": "Human R2B original source committed, owner tạm được visual preference, isolated LAB synthetic one-target event; AS48 Front only; does not imply G3.5 native or CI success until exact-SHA run. PvE HOLD."
+      "review_note": "Human R2B original source committed, owner tạm được visual preference, isolated LAB synthetic one-target event; AS48 Front only; does not imply G3.5 native or CI success until exact-SHA run. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "preview_key": "sword_factory_batch1_01",
+      "school": "sword",
+      "branch": "ngu_kiem"
     },
     {
       "id": "tmb.skill.sword.ngu_kiem.active_02.human",
@@ -34,7 +42,7 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
@@ -42,16 +50,24 @@
       "g3_art": "R1E_V2_SOURCE_OWNER_ACCEPTED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_ACCEPTED_V2_SOURCE_20261124",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/KVHP_R1E_VFX_only_atlas_4x3_RGBA.png",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/R1E_SOURCE_QA.json",
-        "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png",
-        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_SOURCE_MANIFEST.json"
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_SOURCE_MANIFEST.json",
+        "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd"
       ],
       "art_source": "FIRST_PARTY_AI_DRAWN_VFX_ONLY_12_POSES_ALPHA_POSTPROCESSED",
-      "review_note": "V2 source owner approved 2026-11-24; 12 original R1E RGBA + 11 derived motion inbetweens + final alpha-fade, 25fps / 0.96s review only; runtime and Front direction require exact SHA Chromium evidence. Toggle V2/R1E side by side in same existing Web hub. PvE HOLD."
+      "review_note": "V2 source owner approved 2026-11-24; 12 original R1E RGBA + 11 derived motion inbetweens + final alpha-fade, 25fps / 0.96s review only; runtime and Front direction require exact SHA Chromium evidence. Toggle V2/R1E side by side in same existing Web hub. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision R1E_V2_OWNER_APPROVED_SOURCE_ART; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "preview_key": "sword_factory_batch1_02",
+      "school": "sword",
+      "branch": "ngu_kiem"
     },
     {
       "id": "tmb.skill.sword.ngu_kiem.active_03.human",
@@ -59,22 +75,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "OWNER_APPROVED",
       "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_APPROVED_BATCH_20261124",
-      "preview_key": "s03",
+      "preview_key": "sword_factory_batch1_03",
       "source_paths": [
-        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
-        "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
         "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png",
-        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+        "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ngu_kiem"
     },
     {
       "id": "tmb.skill.sword.ngu_kiem.active_04.human",
@@ -82,22 +105,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "OWNER_APPROVED",
       "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_APPROVED_BATCH_20261124",
-      "preview_key": "s04",
+      "preview_key": "sword_factory_batch1_04",
       "source_paths": [
-        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
-        "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
         "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png",
-        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+        "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ngu_kiem"
     },
     {
       "id": "tmb.skill.sword.ngu_kiem.ultimate.human",
@@ -105,22 +135,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Ngự Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "OWNER_APPROVED",
       "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_APPROVED_BATCH_20261124",
-      "preview_key": "s05",
+      "preview_key": "sword_factory_batch1_05",
       "source_paths": [
-        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
-        "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
         "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png",
-        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+        "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ngu_kiem"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_01.human",
@@ -128,22 +165,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Sát Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "OWNER_APPROVED",
       "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_APPROVED_BATCH_20261124",
-      "preview_key": "s06",
+      "preview_key": "sword_factory_batch1_06",
       "source_paths": [
-        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
-        "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
         "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png",
-        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+        "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "sat_kiem"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_02.human",
@@ -151,22 +195,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Sát Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "OWNER_APPROVED",
       "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_APPROVED_BATCH_20261124",
-      "preview_key": "s07",
+      "preview_key": "sword_factory_batch1_07",
       "source_paths": [
-        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
-        "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
         "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png",
-        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+        "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "sat_kiem"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_03.human",
@@ -174,22 +225,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Sát Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "OWNER_APPROVED",
       "g3_art": "SOURCE_BATCH_OWNER_APPROVED_RUNTIME_REVIEW_PENDING",
       "owner_art": "OWNER_APPROVED_BATCH_20261124",
-      "preview_key": "s08",
+      "preview_key": "sword_factory_batch1_08",
       "source_paths": [
-        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
-        "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
         "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png",
-        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json"
+        "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge."
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "sat_kiem"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.active_04.human",
@@ -197,20 +255,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Sát Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s09",
+      "preview_key": "sword_factory_batch1_09",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "sat_kiem"
     },
     {
       "id": "tmb.skill.sword.sat_kiem.ultimate.human",
@@ -218,20 +285,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Sát Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s10",
+      "preview_key": "sword_factory_batch1_10",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "sat_kiem"
     },
     {
       "id": "tmb.skill.sword.ho_kiem.active_01.human",
@@ -239,20 +315,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Hộ Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s11",
+      "preview_key": "sword_factory_batch1_11",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ho_kiem"
     },
     {
       "id": "tmb.skill.sword.ho_kiem.active_02.human",
@@ -260,20 +345,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Hộ Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s12",
+      "preview_key": "sword_factory_batch1_12",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ho_kiem"
     },
     {
       "id": "tmb.skill.sword.ho_kiem.active_03.human",
@@ -281,20 +375,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Hộ Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s13",
+      "preview_key": "sword_factory_batch1_13",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ho_kiem"
     },
     {
       "id": "tmb.skill.sword.ho_kiem.active_04.human",
@@ -302,20 +405,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Hộ Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s14",
+      "preview_key": "sword_factory_batch1_14",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ho_kiem"
     },
     {
       "id": "tmb.skill.sword.ho_kiem.ultimate.human",
@@ -323,20 +435,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Hộ Kiếm",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s15",
+      "preview_key": "sword_factory_batch1_15",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": "ho_kiem"
     },
     {
       "id": "tmb.skill.sword.basic.human",
@@ -344,20 +465,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Kỹ năng chung",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s16",
+      "preview_key": "sword_factory_batch1_16",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": ""
     },
     {
       "id": "tmb.skill.sword.mobility.human",
@@ -365,20 +495,29 @@
       "school_vi": "Kiếm Tu",
       "branch_vi": "Kỹ năng chung",
       "tier": "human",
-      "scene": "res://labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
       "directions": [
         "front"
       ],
       "vfx_status": "CANDIDATE_G3",
       "g3_art": "DERIVED_SOURCE_R2_REVIEW_PENDING",
       "owner_art": "PENDING",
-      "preview_key": "s17",
+      "preview_key": "sword_factory_batch1_17",
       "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
-        "labs/combat_lab/sword_batch9_20261124/manifest.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD."
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "school": "sword",
+      "branch": ""
     },
     {
       "id": "tmb.skill.bow.liep_anh.active_01.human",

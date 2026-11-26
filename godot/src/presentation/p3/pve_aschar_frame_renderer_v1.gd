@@ -279,7 +279,10 @@ static func resolve_preview_anchor(school: String,sex: String,action: String,
     if weapon_info.is_empty() or weapon_texture == null:
         return {"ok":false,"reason":"weapon_asset_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"asset_id":attachment_asset}
     var weapon_grip: Array = weapon_info.get("grip_px",weapon_info.get("asset_grip_px",[weapon_texture.get_width()*0.5,weapon_texture.get_height()*0.5]))
-    var weapon_tip: Array = weapon_info.get("tip_px",[])
+    # AS48's existing Weapon Library manifest keeps the original field name
+    # `asset_tip_px`; newer extracted assets use `tip_px`. Accept both so the
+    # authored tip socket resolves without copying or rewriting the source.
+    var weapon_tip: Array = weapon_info.get("tip_px",weapon_info.get("asset_tip_px",[]))
     if weapon_grip.size() != 2 or weapon_tip.size() != 2:
         return {"ok":false,"reason":"weapon_tip_or_grip_missing","slot":slot,"actor_id":actor_id,"clip":clip,"frame_index":index,"asset_id":attachment_asset}
     var weapon_scale := float(weapon_info.get("asset_scale",0.0))

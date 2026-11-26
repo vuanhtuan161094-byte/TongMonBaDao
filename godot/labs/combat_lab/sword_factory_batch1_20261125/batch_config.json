@@ -1,0 +1,2163 @@
+{
+  "schema": "tmb.vfx_factory_batch_config.v1",
+  "batch": "sword_human_cast_batch1_20261125",
+  "school": "sword",
+  "renderer": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+  "shared_actor": "AS48 male 1x with existing Weapon Library jian and authored main_hand/weapon_tip socket",
+  "preview_attachment_override": {
+    "asset_id": "owner_liked_jian_existing",
+    "anchor_slot": "main_hand",
+    "asset_scale": 0.14,
+    "align_tip_to_direction": [1.0, 0.0]
+  },
+  "capture_mode": "REAL_MAPBATTLE_EXACT_SKILL_EVENTS",
+  "source_policy": "Reuse exact existing RGBA source revisions; batch9 atlases are derived from the existing painted sword_batch6 cels by the tracked deterministic builder. No new art.",
+  "entries": [
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+      "tag": "01",
+      "branch": "ngu_kiem",
+      "name_vi": "Phi Kiếm Truy Ảnh — R2B nguồn minh họa, owner tạm chấp nhận",
+      "source_revision": "R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED",
+      "source_g3": "R2B_G3_ART_SELF_REWORK_REQUIRED; projectile still reads as an energy lance; untouched source preserved.",
+      "source_lab_scene": "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_vfx_layer.gd",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/README.md",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/original_master_imagegen_1774x887.png",
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png",
+      "grid": [
+        4,
+        2
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1
+        ],
+        "release": [
+          2
+        ],
+        "flight": [
+          3,
+          4
+        ],
+        "contact": [
+          5
+        ],
+        "fade": [
+          6,
+          7
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 190,
+        "release": 220,
+        "flight": 285,
+        "contact": 205,
+        "fade": 200
+      },
+      "phase_fps": 7.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "projectile",
+      "mechanic_templates": [
+        "projectile"
+      ],
+      "delivery_phase": "flight",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+      "tag": "02",
+      "branch": "ngu_kiem",
+      "name_vi": "Kiếm Vũ Hồi Phong — R1E V2 24f (so sánh 12f)",
+      "source_revision": "R1E_V2_OWNER_APPROVED_SOURCE_ART",
+      "source_g3": "R1E_V2 source motion is owner-approved; Factory actor/runtime presentation remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/KVHP_R1E_VFX_only_atlas_4x3_RGBA.png",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/R1E_SOURCE_QA.json",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_SOURCE_MANIFEST.json",
+        "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd"
+      ],
+      "source_atlas": "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/v2_source/R1E_V2_24_atlas_4x6_RGBA.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2
+        ],
+        "release": [
+          3
+        ],
+        "flight": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "contact": [
+          8,
+          9
+        ],
+        "fade": [
+          10,
+          11
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 174,
+        "release": 174,
+        "flight": 174,
+        "contact": 174,
+        "fade": 174
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "body_center",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [
+        {
+          "id": "sword_factory_02_target_1",
+          "label": "TARGET 01 · IN RANGE",
+          "screen_position": [
+            490,
+            470
+          ],
+          "fixture_position": [
+            3.25,
+            2.82
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_02_target_2",
+          "label": "TARGET 02 · IN RANGE",
+          "screen_position": [
+            555,
+            493
+          ],
+          "fixture_position": [
+            3.52,
+            3.08
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        },
+        {
+          "id": "sword_factory_02_target_3",
+          "label": "TARGET 03 · IN RANGE",
+          "screen_position": [
+            505,
+            520
+          ],
+          "fixture_position": [
+            3.17,
+            3.2
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        }
+      ],
+      "actor_action": "attack",
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "delivery_phase": "flight",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+      "tag": "03",
+      "branch": "ngu_kiem",
+      "name_vi": "Tứ Phương Phi Nhận — 24f AS48 Combat Lab",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_03_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "contact": [
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "fade": [
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 389,
+        "release": 389,
+        "contact": 143,
+        "fade": 220
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {
+        "release": {
+          "to_actor_id": "sword_factory_03_target_3",
+          "angle_offset_radians": 0.0
+        }
+      },
+      "fixture_target_position": [
+        3.1,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [
+        {
+          "id": "sword_factory_03_target_1",
+          "label": "TARGET 01 · IN RANGE",
+          "screen_position": [
+            470,
+            482
+          ],
+          "fixture_position": [
+            3.1,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_03_target_2",
+          "label": "TARGET 02 · IN RANGE",
+          "screen_position": [
+            552,
+            496
+          ],
+          "fixture_position": [
+            3.6500000000000004,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        },
+        {
+          "id": "sword_factory_03_target_3",
+          "label": "TARGET 03 · IN RANGE",
+          "screen_position": [
+            634,
+            510
+          ],
+          "fixture_position": [
+            4.2,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        }
+      ],
+      "actor_action": "attack",
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target"
+      ],
+      "delivery_phase": "flight",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+      "tag": "04",
+      "branch": "ngu_kiem",
+      "name_vi": "Kiếm Quang Hồi Chủ — 24f AS48 Combat Lab",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_04_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          18
+        ],
+        "flight": [
+          18
+        ],
+        "contact": [
+          17,
+          18,
+          19
+        ],
+        "fade": [
+          18
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 358,
+        "release": 358,
+        "flight": 358,
+        "contact": 143,
+        "fade": 358
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "projectile",
+      "mechanic_templates": [
+        "projectile"
+      ],
+      "delivery_phase": "flight",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+      "tag": "05",
+      "branch": "ngu_kiem",
+      "name_vi": "Vạn Kiếm Quy Tông — 24f AS48 Combat Lab",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_05_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "contact": [
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "fade": [
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 451,
+        "release": 451,
+        "contact": 143,
+        "fade": 230
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [
+        {
+          "id": "sword_factory_05_target_1",
+          "label": "TARGET 01 · IN RANGE",
+          "screen_position": [
+            490,
+            470
+          ],
+          "fixture_position": [
+            3.25,
+            2.82
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_05_target_2",
+          "label": "TARGET 02 · IN RANGE",
+          "screen_position": [
+            555,
+            493
+          ],
+          "fixture_position": [
+            3.52,
+            3.08
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        },
+        {
+          "id": "sword_factory_05_target_3",
+          "label": "TARGET 03 · IN RANGE",
+          "screen_position": [
+            505,
+            520
+          ],
+          "fixture_position": [
+            3.17,
+            3.2
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        }
+      ],
+      "actor_action": "attack",
+      "mechanic_template": "circle_aoe",
+      "mechanic_templates": [
+        "circle_aoe",
+        "multi_target"
+      ],
+      "delivery_phase": "flight",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+      "tag": "06",
+      "branch": "sat_kiem",
+      "name_vi": "Trảm Ảnh Nhất Tuyến — 24f AS48 Combat Lab",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_06_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "contact": [
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "fade": [
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 369,
+        "release": 369,
+        "contact": 143,
+        "fade": 220
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.8,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "melee",
+      "mechanic_templates": [
+        "melee"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+      "tag": "07",
+      "branch": "sat_kiem",
+      "name_vi": "Phá Vân Trực Trảm — 24f AS48 Combat Lab",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_07_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "contact": [
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "fade": [
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 410,
+        "release": 410,
+        "contact": 143,
+        "fade": 220
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {
+        "release": {
+          "to_actor_id": "sword_factory_07_target_3",
+          "angle_offset_radians": 0.0
+        }
+      },
+      "fixture_target_position": [
+        3.1,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [
+        {
+          "id": "sword_factory_07_target_1",
+          "label": "TARGET 01 · IN RANGE",
+          "screen_position": [
+            470,
+            482
+          ],
+          "fixture_position": [
+            3.1,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_07_target_2",
+          "label": "TARGET 02 · IN RANGE",
+          "screen_position": [
+            552,
+            496
+          ],
+          "fixture_position": [
+            3.6500000000000004,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        },
+        {
+          "id": "sword_factory_07_target_3",
+          "label": "TARGET 03 · IN RANGE",
+          "screen_position": [
+            634,
+            510
+          ],
+          "fixture_position": [
+            4.2,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        }
+      ],
+      "actor_action": "attack",
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+      "tag": "08",
+      "branch": "sat_kiem",
+      "name_vi": "Đoạn Thủy Kiếm Mang — 24f AS48 Combat Lab",
+      "source_revision": "BATCH6_OWNER_APPROVED_SOURCE_ATLAS",
+      "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
+      "source_lab_scene": "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch6_20261124/source/batch6_atlas_manifest.json",
+        "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png",
+        "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
+        "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+      ],
+      "source_atlas": "labs/combat_lab/sword_batch6_20261124/source/sword_08_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "contact": [
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "fade": [
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 379,
+        "release": 379,
+        "contact": 143,
+        "fade": 220
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.8,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "melee",
+      "mechanic_templates": [
+        "melee"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
+      "tag": "09",
+      "branch": "sat_kiem",
+      "name_vi": "Tàng Phong Đột Thứ — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_09_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "release": [
+          4,
+          5
+        ],
+        "start": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "sustain": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "end": [
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 220,
+        "release": 379,
+        "start": 379,
+        "sustain": 379,
+        "end": 300
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "ground",
+        "sustain": "ground",
+        "end": "ground"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        5.6,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "mobility",
+      "mechanic_templates": [
+        "mobility",
+        "dash"
+      ],
+      "delivery_phase": "start",
+      "phase_aliases": {
+        "start": "start",
+        "sustain": "sustain",
+        "end": "end"
+      },
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+      "tag": "10",
+      "branch": "sat_kiem",
+      "name_vi": "Nhất Kiếm Đoạn Thiên — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_10_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "contact": [
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "fade": [
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 200,
+        "release": 358,
+        "contact": 180,
+        "fade": 250
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        4.16,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "melee",
+      "mechanic_templates": [
+        "melee"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+      "tag": "11",
+      "branch": "ho_kiem",
+      "name_vi": "Kiếm Bích Hộ Thân — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_11_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "start": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "sustain": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "end": [
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 220,
+        "start": 220,
+        "sustain": 220,
+        "end": 220
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "body_center",
+        "release": "body_center",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.44,
+        3.0
+      ],
+      "preview_target_kind": "ally",
+      "preview_targets": [],
+      "actor_action": "cast",
+      "mechanic_template": "shield",
+      "mechanic_templates": [
+        "shield",
+        "buff",
+        "status"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {
+        "start": "start",
+        "sustain": "sustain",
+        "end": "end"
+      },
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+      "tag": "12",
+      "branch": "ho_kiem",
+      "name_vi": "Hồi Kiếm Phản Thế — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_12_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "contact": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "fade": [
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 200,
+        "release": 292,
+        "contact": 220,
+        "fade": 240
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.8,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "melee",
+      "mechanic_templates": [
+        "melee"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+      "tag": "13",
+      "branch": "ho_kiem",
+      "name_vi": "Liên Tâm Kiếm Thuẫn — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_13_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "start": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "sustain": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "end": [
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 220,
+        "start": 220,
+        "sustain": 220,
+        "end": 220
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "body_center",
+        "release": "body_center",
+        "flight": "weapon_tip",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "preview_target_kind": "ally",
+      "preview_targets": [
+        {
+          "id": "ally_12",
+          "label": "TARGET 01 · ALLY",
+          "screen_position": [
+            490,
+            470
+          ],
+          "fixture_position": [
+            3.25,
+            2.82
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_13_target_2",
+          "label": "TARGET 02 · ALLY",
+          "screen_position": [
+            555,
+            493
+          ],
+          "fixture_position": [
+            3.52,
+            3.08
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        },
+        {
+          "id": "sword_factory_13_target_3",
+          "label": "TARGET 03 · ALLY",
+          "screen_position": [
+            505,
+            520
+          ],
+          "fixture_position": [
+            3.17,
+            3.2
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        }
+      ],
+      "actor_action": "cast",
+      "mechanic_template": "shield",
+      "mechanic_templates": [
+        "shield",
+        "buff",
+        "status"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {
+        "start": "start",
+        "sustain": "sustain",
+        "end": "end"
+      },
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+      "tag": "14",
+      "branch": "ho_kiem",
+      "name_vi": "Thiên Cương Hộ Mệnh — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_14_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "release": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "contact": [
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "fade": [
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 190,
+        "release": 292,
+        "contact": 220,
+        "fade": 230
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {
+        "release": {
+          "to_actor_id": "sword_factory_14_target_2",
+          "angle_offset_radians": 0.0
+        }
+      },
+      "fixture_target_position": [
+        3.1,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [
+        {
+          "id": "sword_factory_14_target_1",
+          "label": "TARGET 01 · IN RANGE",
+          "screen_position": [
+            470,
+            482
+          ],
+          "fixture_position": [
+            3.1,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_14_target_2",
+          "label": "TARGET 02 · IN RANGE",
+          "screen_position": [
+            552,
+            496
+          ],
+          "fixture_position": [
+            3.6500000000000004,
+            3.0
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        }
+      ],
+      "actor_action": "attack",
+      "mechanic_template": "line",
+      "mechanic_templates": [
+        "line",
+        "multi_target"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+      "tag": "15",
+      "branch": "ho_kiem",
+      "name_vi": "Thiên Cương Kiếm Giới — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_15_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "start": [
+          6,
+          7,
+          8
+        ],
+        "sustain": [
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "end": [
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 210,
+        "start": 271,
+        "sustain": 271,
+        "end": 271
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "body_center",
+        "release": "body_center",
+        "flight": "weapon_tip",
+        "contact": "target_foot",
+        "fade": "target_foot",
+        "start": "target_foot",
+        "sustain": "target_foot",
+        "end": "target_foot"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.25,
+        2.82
+      ],
+      "preview_target_kind": "ally",
+      "preview_targets": [
+        {
+          "id": "ally_14",
+          "label": "TARGET 01 · ALLY",
+          "screen_position": [
+            490,
+            470
+          ],
+          "fixture_position": [
+            3.25,
+            2.82
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        },
+        {
+          "id": "sword_factory_15_target_2",
+          "label": "TARGET 02 · ALLY",
+          "screen_position": [
+            555,
+            493
+          ],
+          "fixture_position": [
+            3.52,
+            3.08
+          ],
+          "fixture_motion_delta": [
+            -0.04,
+            0.025
+          ]
+        },
+        {
+          "id": "sword_factory_15_target_3",
+          "label": "TARGET 03 · ALLY",
+          "screen_position": [
+            505,
+            520
+          ],
+          "fixture_position": [
+            3.17,
+            3.2
+          ],
+          "fixture_motion_delta": [
+            0.04,
+            -0.025
+          ]
+        }
+      ],
+      "actor_action": "cast",
+      "mechanic_template": "shield",
+      "mechanic_templates": [
+        "shield",
+        "buff",
+        "status"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {
+        "start": "start",
+        "sustain": "sustain",
+        "end": "end"
+      },
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.basic.human",
+      "tag": "16",
+      "branch": "",
+      "name_vi": "Tâm Kiếm Nhập Môn — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_16_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "release": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "contact": [
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "fade": [
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 150,
+        "release": 241,
+        "contact": 190,
+        "fade": 180
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "target_chest",
+        "sustain": "target_chest",
+        "end": "target_chest"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        3.584,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "melee",
+      "mechanic_templates": [
+        "melee"
+      ],
+      "delivery_phase": "release",
+      "phase_aliases": {},
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    },
+    {
+      "skill_id": "tmb.skill.sword.mobility.human",
+      "tag": "17",
+      "branch": "",
+      "name_vi": "Đạp Kiếm Tầm Phong — ứng viên R2",
+      "source_revision": "BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS",
+      "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
+      "source_lab_scene": "labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_lab_visual_status": "NOT_ART_APPROVED",
+      "source_paths": [
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
+        "assets/p3/baked_candidates/weapon_library_v1/candidate/actor_sockets/AS48_weapon_sockets_v9_3_candidate.json",
+        "data/combat/v63_sword_combat_catalog.json",
+        "labs/combat_lab/sword_batch9_20261124/manifest.json",
+        "labs/combat_lab/sword_batch9_20261124/sword_17_lab.tscn",
+        "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
+        "labs/combat_lab/sword_factory_batch1_20261125/README.md",
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png"
+      ],
+      "source_atlas": "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png",
+      "grid": [
+        4,
+        6
+      ],
+      "phase_frames": {
+        "charge": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "release": [
+          4,
+          5
+        ],
+        "start": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "sustain": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "end": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      },
+      "phase_display_width_px": {
+        "charge": 180,
+        "release": 240,
+        "start": 379,
+        "sustain": 379,
+        "end": 300
+      },
+      "phase_fps": 25.0,
+      "phase_anchors": {
+        "charge": "weapon_grip",
+        "release": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_foot",
+        "start": "ground",
+        "sustain": "ground",
+        "end": "ground"
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "phase_spans": {},
+      "fixture_target_position": [
+        6.0,
+        3.0
+      ],
+      "preview_target_kind": "monster",
+      "preview_targets": [],
+      "actor_action": "attack",
+      "mechanic_template": "mobility",
+      "mechanic_templates": [
+        "mobility",
+        "dash"
+      ],
+      "delivery_phase": "start",
+      "phase_aliases": {
+        "start": "start",
+        "sustain": "sustain",
+        "end": "end"
+      },
+      "preview_attachment_override": {},
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "pve": "HOLD"
+    }
+  ],
+  "external_provenance_paths": [
+    "docs/operations/vfx_school_ledgers/03_sword_183.csv",
+    "docs/operations/vfx_progress_20261125/HUMAN_204_VFX_STATUS.csv"
+  ]
+}

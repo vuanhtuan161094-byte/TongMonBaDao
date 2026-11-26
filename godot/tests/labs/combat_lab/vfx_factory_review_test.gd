@@ -13,6 +13,8 @@ const SPEAR_CATALOG_PATH := "res://data/combat/v63_spear_combat_catalog.json"
 const BLADE_CATALOG_PATH := "res://data/combat/v63_blade_combat_catalog.json"
 const HUMAN_CATALOG_PATH := "res://data/combat/v63_human_combat_catalog.json"
 const FIST_BATCH_MANIFEST_PATH := "res://labs/combat_lab/fist_factory_batch1_20261125/manifest.json"
+const SWORD_CATALOG_PATH := "res://data/combat/v63_sword_combat_catalog.json"
+const SWORD_BATCH_MANIFEST_PATH := "res://labs/combat_lab/sword_factory_batch1_20261125/manifest.json"
 
 var failures := 0
 var checked := 0
@@ -38,13 +40,15 @@ func _run() -> void:
 	var blade_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(BLADE_CATALOG_PATH))
 	var human_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(HUMAN_CATALOG_PATH))
 	var fist_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(FIST_BATCH_MANIFEST_PATH))
+	var sword_catalog: Variant = JSON.parse_string(FileAccess.get_file_as_string(SWORD_CATALOG_PATH))
+	var sword_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(SWORD_BATCH_MANIFEST_PATH))
 	_check(registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
 		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary
-		and human_catalog is Dictionary and fist_manifest is Dictionary,
+		and human_catalog is Dictionary and fist_manifest is Dictionary and sword_catalog is Dictionary and sword_manifest is Dictionary,
 		"all source registries parse")
 	if not (registry is Dictionary and manifest is Dictionary and catalog is Dictionary and talisman_catalog is Dictionary
 		and curse_catalog is Dictionary and palm_catalog is Dictionary and spear_catalog is Dictionary and blade_catalog is Dictionary
-		and human_catalog is Dictionary and fist_manifest is Dictionary):
+		and human_catalog is Dictionary and fist_manifest is Dictionary and sword_catalog is Dictionary and sword_manifest is Dictionary):
 		_finish()
 		return
 	var formation_by_id: Dictionary = {}
@@ -65,9 +69,11 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	for row in human_catalog.get("skills", []):
 		canonical_by_id[str(row.get("id", ""))] = row
+	for row in sword_catalog.get("skills", []):
+		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
 	skill_count = cases.size()
-	_check(cases.size() == 65, "shared registry retains existing cues plus 17 Formation, 15 Talisman, 16 Poison, 11 source-backed Fist and other school candidates")
+	_check(cases.size() == 82, "shared registry retains 17 Formation, 15 Talisman, 16 Poison, 11 Fist, 17 Sword and other school candidates")
 	var fist_capture: Dictionary = fist_manifest.get("native_capture", {})
 	var fist_batch_status := str(fist_manifest.get("status", ""))
 	var fist_native_status := str(fist_capture.get("technical_status", ""))
@@ -77,6 +83,15 @@ func _run() -> void:
 		and str(fist_capture.get("owner_approval", "")) == "PENDING"
 		and str(fist_capture.get("pve", "")) == "HOLD",
 		"Fist source/native technical state remains separate from owner approval and PvE")
+	var sword_capture: Dictionary = sword_manifest.get("native_capture", {})
+	var sword_batch_status := str(sword_manifest.get("status", ""))
+	var sword_native_status := str(sword_capture.get("technical_status", ""))
+	_check(sword_manifest.get("skills", []).size() == 17
+		and (sword_batch_status.begins_with("CANDIDATE; NATIVE_PENDING")
+			or sword_native_status.begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"))
+		and str(sword_capture.get("owner_approval", "PENDING")) == "PENDING"
+		and str(sword_capture.get("pve", "HOLD")) == "HOLD",
+		"Sword Factory batch contains 17 Human cast masters with separate native, owner and PvE states")
 	var ground_scale := FACTORY_SCRIPT.phase_texture_scale(Vector2(512.0, 512.0),
 		{"display_width_px":488.0,"display_height_px":238.0})
 	_check(absf(ground_scale.x - 488.0 / 512.0) < 0.0001
@@ -92,6 +107,7 @@ func _run() -> void:
 		var is_blade := skill_id == "tmb.skill.blade.cuong_dao.active_01.human"
 		var is_palm := skill_id == "tmb.skill.palm.han_ngoc_chuong.active_01.human"
 		var is_spear := skill_id == "tmb.skill.spear.long_thuong.active_01.human"
+		var is_sword: bool = skill_id.begins_with("tmb.skill.sword.") and entry.get("native_batch", "") == "sword"
 		var is_poison := skill_id.begins_with("tmb.skill.poison.")
 		var is_fist: bool = skill_id.begins_with("tmb.skill.fist.") and entry.get("native_batch", "") == "fist"
 		var lab := FACTORY_SCENE.instantiate() as Node2D
@@ -351,6 +367,69 @@ func _run() -> void:
 			_check(str(contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
 				and int(contact_wait.get("contact_receipt_target_count", -1)) == 0,
 				"contact remains hidden until the native runner supplies a real skill hit " + skill_id)
+		elif is_sword:
+			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
+			_check(not canonical.is_empty(), "Sword Human catalogue joins " + skill_id)
+			_check(str(state.get("canonical_effect", "")) == str(canonical.get("effect", ""))
+				and str(state.get("canonical_shape", "")) == str(canonical.get("shape", ""))
+				and int(state.get("canonical_target_limit", 0)) == int(canonical.get("target_limit", 0)),
+				"Sword effect, shape and target cap remain canonical-data-owned " + skill_id)
+			_check(int(state.get("actor_asset_id", -1)) == 48,
+				"Sword resolves the existing AS48 actor through the school bridge " + skill_id)
+			var phase_rows: Dictionary = entry.get("phase_sources", {})
+			var expected_frames := 0
+			for phase_name in phase_rows:
+				expected_frames += phase_rows[phase_name].get("frames", []).size()
+			_check(int(state.get("phase_sources_loaded", 0)) == phase_rows.size()
+				and int(state.get("frame_count", 0)) == expected_frames and expected_frames > 0,
+				"Sword source frames load through the shared renderer " + skill_id)
+			var sword_fixture_position: Array = entry.get("fixture_target_position", [])
+			var sword_fixture_distance := INF
+			if sword_fixture_position.size() == 2:
+				sword_fixture_distance = Vector2(2.0, 3.0).distance_to(
+					Vector2(float(sword_fixture_position[0]), float(sword_fixture_position[1])))
+			_check(sword_fixture_position.size() == 2 and sword_fixture_distance > 0.0
+				and sword_fixture_distance < float(canonical.get("range", 0.0)),
+				"Sword exact-skill fixture target stays inside canonical range " + skill_id)
+			var sword_override: Dictionary = entry.get("preview_attachment_override", {})
+			var sword_anchors: Dictionary = ASCHAR.resolve_preview_anchors("sword", "male", "attack",
+				Vector2.DOWN, 0.2, Vector2(300.0, 492.0), ASCHAR.game_view_scale(), 0.35, sword_override)
+			var sword_slots: Dictionary = sword_anchors.get("slots", {})
+			var sword_grip: Dictionary = sword_slots.get("weapon_grip", {})
+			var sword_tip: Dictionary = sword_slots.get("weapon_tip", {})
+			var sword_grip_position: Vector2 = sword_grip.get("grip_position", Vector2.ZERO)
+			var sword_tip_position: Vector2 = sword_tip.get("tip_position", Vector2.ZERO)
+			_check(sword_tip.has("asset_id")
+				and str(sword_tip.get("asset_id", "")) == "owner_liked_jian_existing"
+				and sword_tip_position.x > sword_grip_position.x,
+				"Sword release resolves the existing Jian and aims the AS48 tip toward its target " + skill_id)
+			_check(str(entry.get("source_owner_gate", "")).length() > 0
+				and str(entry.get("owner_status", "")) == "OWNER_VISUAL_PENDING"
+				and (str(entry.get("native_status", "")) == "NATIVE_PENDING"
+					or str(entry.get("native_status", "")).begins_with("NATIVE_TECH_PASS_"))
+				and not bool(entry.get("native_ready", true)),
+				"Sword source gate, native result and owner review remain separate " + skill_id)
+			var sword_bindings: Array[String] = []
+			for binding in entry.get("receipt_manifest", {}).get("bindings", []):
+				sword_bindings.append(str(binding.get("event_type", "")))
+			if str(canonical.get("effect", "")) == "guard":
+				_check(sword_bindings.has("status_applied") and not sword_bindings.has("v63_skill_hit"),
+					"Sword guard shows only its real status receipt " + skill_id)
+			elif str(canonical.get("effect", "")) == "mobility":
+				_check(sword_bindings.has("v63_mobility") and not sword_bindings.has("v63_skill_hit"),
+					"Sword mobility follows only its real movement receipt " + skill_id)
+			else:
+				_check(sword_bindings.has("skill_cast") and sword_bindings.has("skill_release")
+					and sword_bindings.has("v63_skill_hit"),
+					"Sword damage contact uses exact MapBattle hit receipt " + skill_id)
+				if int(canonical.get("target_limit", 1)) > 1:
+					_check(entry.get("preview_targets", []).size() == int(canonical.get("target_limit", 1)),
+						"Sword multi-target fixture matches canonical target cap " + skill_id)
+				lab.call("review_seek_phase", "contact")
+				var sword_contact_wait: Dictionary = lab.call("review_state")
+				_check(str(sword_contact_wait.get("receipt_state", "")) == "WAITING_FOR_REAL_RECEIPT"
+					and int(sword_contact_wait.get("contact_receipt_target_count", -1)) == 0,
+					"Sword contact remains hidden without a real receipt " + skill_id)
 		elif is_fist:
 			var canonical: Dictionary = canonical_by_id.get(skill_id, {})
 			_check(not canonical.is_empty(), "Fist Human catalogue joins " + skill_id)
