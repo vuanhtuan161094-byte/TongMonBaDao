@@ -29,8 +29,7 @@ SOURCE_FILES = (
     # Shared factory runtime. These are presentation/resource readers only;
     # the canonical skill JSON is staged per catalog entry below.
     "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
-    "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd",
-    "src/presentation/p3/sect_aschar_candidate_sprite_v1.gd",
+    "src/presentation/p3/aschar_visual_identity_v1.gd",
     "src/presentation/p3/combat_v5_source_a_atlas.gd",
     "src/presentation/p3/combat_v4_sprite_atlas.gd",
     "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
@@ -44,8 +43,8 @@ SOURCE_FILES = (
     "assets/actors/v5_sa_monster_1113031_1/atlas_002.webp",
 )
 
-ASCHAR_FACTORY_ACTOR_IDS = (50, 52, 54, 56, 60, 62, 64, 66, 68)  # Existing shared Factory actor sources.
-ASCHAR_BRIDGE = "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
+ASCHAR_FACTORY_ACTOR_IDS = (48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68)  # Existing shared Factory actor sources.
+ASCHAR_IDENTITY = "src/presentation/p3/aschar_visual_identity_v1.gd"
 SOURCE_A_MANIFEST = "assets/combat_v5_source_a/visual_manifest.json"
 FACTORY_MONSTER_KEY = "monster_1113031_1"
 RES_PATH_RE = re.compile(r'path="res://([^"\s]+)"')
@@ -53,7 +52,6 @@ FACTORY_RUNTIME_FILES = (
     "labs/visual_bridge_v1/asset_vfx_readonly_bridge_v1.gd",
     "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
     ASCHAR_BRIDGE,
-    "src/presentation/p3/sect_aschar_candidate_sprite_v1.gd",
     "src/presentation/p3/combat_v5_source_a_atlas.gd",
     "src/presentation/p3/combat_v4_sprite_atlas.gd",
     "assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json",
@@ -152,18 +150,18 @@ def factory_runtime_dependencies(root: Path) -> set[str]:
         _require_source(root, relative, "factory runtime source")
         files.add(relative)
 
-    bridge_path = _require_source(root, ASCHAR_BRIDGE, "ASCHAR bridge")
+    bridge_path = _require_source(root, ASCHAR_BRIDGE, "ASCHAR identity")
     bridge_text = bridge_path.read_text(encoding="utf-8")
     socket_match = re.search(r'const SOCKET_ROOT := "res://([^"\s]+)"', bridge_text)
     if not socket_match:
-        raise SystemExit("ASCHAR bridge has no readable SOCKET_ROOT")
+        raise SystemExit("ASCHAR identity has no readable SOCKET_ROOT")
     socket_root = socket_match.group(1).rstrip("/")
 
     for actor_id in ASCHAR_FACTORY_ACTOR_IDS:
         source_match = re.search(
             rf'(?m)^\s*{actor_id}:"res://([^"\s]+)"', bridge_text)
         if not source_match:
-            raise SystemExit(f"ASCHAR bridge has no SOURCE_PATHS entry for AS{actor_id}")
+            raise SystemExit(f"ASCHAR identity has no SOURCE_PATHS entry for AS{actor_id}")
         tres_path = source_match.group(1)
         _collect_tres_resources(root, tres_path, files, f"AS{actor_id} SpriteFrames")
 

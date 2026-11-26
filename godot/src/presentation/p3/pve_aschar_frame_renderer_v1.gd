@@ -2,7 +2,7 @@ class_name PveASCharFrameRendererV1
 extends RefCounted
 ## Presentation-only adapter: existing AS-CHAR SpriteFrames and per-frame weapon
 ## sockets. No rig, generation, Combat/Save authority or unlocked V6.3 skills.
-const BRIDGE = preload("res://src/presentation/p3/sect_aschar_candidate_bridge_v1.gd")
+const BRIDGE = preload("res://src/presentation/p3/aschar_visual_identity_v1.gd")
 const WEAPON_LIBRARY := "res://assets/p3/baked_candidates/weapon_library_v1/candidate/ASCHAR_24_ACTOR_WEAPON_BINDINGS_V9_3_CANDIDATE.json"
 static var _frames: Dictionary = {}
 static var _sockets: Dictionary = {}
