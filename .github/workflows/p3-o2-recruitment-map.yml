@@ -169,7 +169,22 @@ jobs:
           set -euo pipefail
           command -v xvfb-run
           mkdir -p godot/outputs/tri02_source_a_live
-          timeout --signal=TERM --kill-after=10s 180s xvfb-run -a -s "-screen 0 1280x720x24" godot --path godot --rendering-method gl_compatibility --script res://tests/presentation/tri_facility_b1_live_capture.gd -- "$PWD/godot/outputs/tri02_source_a_live"
+          sudo apt-get install -y ffmpeg
+          timeout --signal=TERM --kill-after=10s 180s xvfb-run -a -s "-screen 0 1280x720x24" bash -c '
+            set -uo pipefail
+            out="$1"
+            ffmpeg -nostdin -hide_banner -loglevel warning -y -f x11grab -framerate 20 -video_size 1280x720 -i "$DISPLAY" -c:v libx264 -preset ultrafast -pix_fmt yuv420p -movflags +frag_keyframe+empty_moov "$out/one-game-b1-recruitment.mp4" >"$out/movie.log" 2>&1 &
+            recorder=$!
+            finish() { kill -INT "$recorder" 2>/dev/null || true; wait "$recorder" || true; }
+            trap finish EXIT
+            godot --path godot --resolution 1280x720 --rendering-method gl_compatibility --audio-driver Dummy --script res://tests/presentation/tri_facility_b1_live_capture.gd -- "$out" 2>&1 | tee "$out/capture.log"
+            result=${PIPESTATUS[0]}
+            finish
+            trap - EXIT
+            if [ "$result" -ne 0 ]; then exit "$result"; fi
+            ffmpeg -v error -i "$out/one-game-b1-recruitment.mp4" -f null -
+            test -s "$out/one-game-b1-recruitment.mp4"
+          ' _ "$PWD/godot/outputs/tri02_source_a_live"
 
       - name: Run GP-01, GP-02A, O5 and O6 owner P0 regressions on this exact source
         shell: bash
@@ -204,7 +219,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tri02-source-a-p32-live-${{ github.sha }}
-          path: godot/outputs/tri02_source_a_live/*.png
+          path: |
+            godot/outputs/tri02_source_a_live/*.png
+            godot/outputs/tri02_source_a_live/*.mp4
+            godot/outputs/tri02_source_a_live/*.log
           if-no-files-found: warn
 
       - name: Upload TRI-03 placement, recruited HS-09 and assignment frames
