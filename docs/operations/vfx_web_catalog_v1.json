@@ -2859,6 +2859,98 @@
         "data/combat/v63_blade_combat_catalog.json"
       ],
       "review_note": "Original authored vector cel candidate, 4 charge + 4 projectile + 4 contact + 4 dissipation. Not ImageGen or painted RGBA master. Godot raster import; canonical combat receipt gating. Owner review and PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.blade.cuong_dao.active_02.human",
+      "name_vi": "Liên Sơn Trảm · Nhân Giai — V5 R1",
+      "school_vi": "Đao Tu",
+      "branch_vi": "Cuồng Đao",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "ORIGINAL_VECTOR_12CEL_ATLAS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/blade_factory_v5/source/lien_son_tram_12cel.svg",
+        "data/combat/v63_blade_combat_catalog.json"
+      ],
+      "review_note": "New 12-cel vector illustration candidate, original distinct silhouette drawings for each phase. Not painted RGBA. Exact canonical damage/shape/target-limit, receipt-gated contact. Owner and PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.blade.cuong_dao.active_03.human",
+      "name_vi": "Cửu Trùng Hồi Đao · Nhân Giai — V5 R1",
+      "school_vi": "Đao Tu",
+      "branch_vi": "Cuồng Đao",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "ORIGINAL_VECTOR_12CEL_ATLAS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/blade_factory_v5/source/cuu_trung_hoi_dao_12cel.svg",
+        "data/combat/v63_blade_combat_catalog.json"
+      ],
+      "review_note": "New 12-cel vector illustration candidate, original distinct silhouette drawings for each phase. Not painted RGBA. Exact canonical damage/shape/target-limit, receipt-gated contact. Owner and PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.blade.cuong_dao.ultimate.human",
+      "name_vi": "Cửu Trùng Cuồng Đao — V5 R1",
+      "school_vi": "Đao Tu",
+      "branch_vi": "Cuồng Đao",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "ORIGINAL_VECTOR_12CEL_ATLAS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/blade_factory_v5/source/cuu_trung_cuong_dao_12cel.svg",
+        "data/combat/v63_blade_combat_catalog.json"
+      ],
+      "review_note": "New 12-cel vector illustration candidate, original distinct silhouette drawings for each phase. Not painted RGBA. Exact canonical damage/shape/target-limit, receipt-gated contact. Owner and PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.blade.tram_phach_dao.active_01.human",
+      "name_vi": "Trảm Phách Nhất Tuyến · Nhân Giai — V5 R1",
+      "school_vi": "Đao Tu",
+      "branch_vi": "Trảm Phách Đao",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "ORIGINAL_VECTOR_12CEL_ATLAS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/blade_factory_v5/source/tram_phach_nhat_tuyen_12cel.svg",
+        "data/combat/v63_blade_combat_catalog.json"
+      ],
+      "review_note": "New 12-cel vector illustration candidate, original distinct silhouette drawings for each phase. Not painted RGBA. Exact canonical damage/shape/target-limit, receipt-gated contact. Owner and PvE HOLD."
     }
   ],
   "updated_at": "2026-11-26"

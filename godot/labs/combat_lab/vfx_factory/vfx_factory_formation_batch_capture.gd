@@ -418,7 +418,7 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 		"talisman": caster["v63_talisman_combat_enabled"] = true
 		"blade":
 			caster["v63_blade_combat_enabled"] = true
-			caster["v63_combat_branch_id"] = "cuong_dao"
+			caster["v63_combat_branch_id"] = str(entry.get("branch", "cuong_dao"))
 			caster["v63_combat_lineage"] = "base"
 		"sword":
 			# Fixture identity only: enable the canonical Human Sword cast path for exact MapBattle receipts.
