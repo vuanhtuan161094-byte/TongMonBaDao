@@ -182,7 +182,7 @@ jobs:
             finish
             trap - EXIT
             if [ "$result" -ne 0 ]; then exit "$result"; fi
-            ffmpeg -v error -i "$out/one-game-b1-recruitment.mp4" -f null -
+            ffmpeg -v error -i "$out/one-game-b1-recruitment.mp4" -f null - || exit 1
             test -s "$out/one-game-b1-recruitment.mp4"
           ' _ "$PWD/godot/outputs/tri02_source_a_live"
 
