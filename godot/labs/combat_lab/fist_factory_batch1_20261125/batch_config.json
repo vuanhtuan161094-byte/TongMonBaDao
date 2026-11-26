@@ -2,21 +2,44 @@
   "schema": "tmb.vfx_factory_batch_config.v1",
   "school": "fist",
   "batch": "fist_human_cast_batch1_20261125",
-  "expected_count": 11,
+  "expected_count": 15,
   "entries": [
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_01.human",
       "lab_scene": "labs/combat_lab/fist01/khai_son_trong_quyen.tscn",
       "lab_script": "labs/combat_lab/fist01/khai_son_trong_quyen.gd",
       "source_revision": "FIST01_FIRST_PARTY_24_SVG_FRAMES",
-      "provenance_paths": ["labs/combat_lab/fist01/assets/PROVENANCE.md"],
+      "provenance_paths": [
+        "labs/combat_lab/fist01/assets/PROVENANCE.md"
+      ],
       "phase_sources": {
-        "charge": {"frames_glob": "labs/combat_lab/fist01/assets/qi_charge_*.svg", "display_width_px": 68, "fps": 12},
-        "flight": {"frames_glob": "labs/combat_lab/fist01/assets/qi_flight_*.svg", "display_width_px": 96, "fps": 12},
-        "contact": {"frames_glob": "labs/combat_lab/fist01/assets/qi_impact_*.svg", "display_width_px": 102, "fps": 14},
-        "fade": {"frames_glob": "labs/combat_lab/fist01/assets/qi_ground_*.svg", "display_width_px": 122, "fps": 12}
+        "charge": {
+          "frames_glob": "labs/combat_lab/fist01/assets/qi_charge_*.svg",
+          "display_width_px": 68,
+          "fps": 12
+        },
+        "flight": {
+          "frames_glob": "labs/combat_lab/fist01/assets/qi_flight_*.svg",
+          "display_width_px": 96,
+          "fps": 12
+        },
+        "contact": {
+          "frames_glob": "labs/combat_lab/fist01/assets/qi_impact_*.svg",
+          "display_width_px": 102,
+          "fps": 14
+        },
+        "fade": {
+          "frames_glob": "labs/combat_lab/fist01/assets/qi_ground_*.svg",
+          "display_width_px": 122,
+          "fps": 12
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "flight": "FRONT", "contact": "FRONT", "fade": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
@@ -25,12 +48,29 @@
       "source_revision": "FIST02_V4_GUARDIAN_SPIRIT_MASTER",
       "provenance_paths": [],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp", "display_width_px": 104},
-        "start": {"source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp", "display_width_px": 120},
-        "sustain": {"source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp", "display_width_px": 120},
-        "end": {"source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp", "display_width_px": 120}
+        "charge": {
+          "source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp",
+          "display_width_px": 104
+        },
+        "start": {
+          "source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp",
+          "display_width_px": 120
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp",
+          "display_width_px": 120
+        },
+        "end": {
+          "source": "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp",
+          "display_width_px": 120
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "start": "BEHIND", "sustain": "BEHIND", "end": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
@@ -40,13 +80,34 @@
       "provenance_paths": [],
       "circle_targets": true,
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist03/assets/godfist_master.webp", "display_width_px": 74},
-        "release": {"source": "labs/combat_lab/fist03/assets/godfist_master.webp", "display_width_px": 114},
-        "flight": {"source": "labs/combat_lab/fist03/assets/godfist_master.webp", "display_width_px": 114},
-        "contact": {"source": "labs/combat_lab/fist03/assets/impact_master.webp", "display_width_px": 134},
-        "fade": {"source": "labs/combat_lab/fist03/assets/impact_master.webp", "display_width_px": 134}
+        "charge": {
+          "source": "labs/combat_lab/fist03/assets/godfist_master.webp",
+          "display_width_px": 74
+        },
+        "release": {
+          "source": "labs/combat_lab/fist03/assets/godfist_master.webp",
+          "display_width_px": 114
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist03/assets/godfist_master.webp",
+          "display_width_px": 114
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist03/assets/impact_master.webp",
+          "display_width_px": 134
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist03/assets/impact_master.webp",
+          "display_width_px": 134
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "release": "FRONT", "flight": "FRONT", "contact": "FRONT", "fade": "FRONT"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "FRONT"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
@@ -56,13 +117,34 @@
       "provenance_paths": [],
       "circle_targets": true,
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist04/assets/thunder_ghost_master.webp", "display_width_px": 74},
-        "release": {"source": "labs/combat_lab/fist04/assets/thunder_ghost_master.webp", "display_width_px": 148},
-        "flight": {"source": "labs/combat_lab/fist04/assets/thunder_ghost_master.webp", "display_width_px": 148},
-        "contact": {"source": "labs/combat_lab/fist04/assets/threefold_impact_master.webp", "display_width_px": 154},
-        "fade": {"source": "labs/combat_lab/fist04/assets/threefold_impact_master.webp", "display_width_px": 154}
+        "charge": {
+          "source": "labs/combat_lab/fist04/assets/thunder_ghost_master.webp",
+          "display_width_px": 74
+        },
+        "release": {
+          "source": "labs/combat_lab/fist04/assets/thunder_ghost_master.webp",
+          "display_width_px": 148
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist04/assets/thunder_ghost_master.webp",
+          "display_width_px": 148
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist04/assets/threefold_impact_master.webp",
+          "display_width_px": 154
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist04/assets/threefold_impact_master.webp",
+          "display_width_px": 154
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "release": "FRONT", "flight": "FRONT", "contact": "FRONT", "fade": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
@@ -72,13 +154,34 @@
       "provenance_paths": [],
       "circle_targets": true,
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist05/assets/molten_shard_master.webp", "display_width_px": 82},
-        "release": {"source": "labs/combat_lab/fist05/assets/seismic_ground_master.webp", "display_width_px": 172},
-        "flight": {"source": "labs/combat_lab/fist05/assets/seismic_ground_master.webp", "display_width_px": 172},
-        "contact": {"source": "labs/combat_lab/fist05/assets/spires_master.webp", "display_width_px": 142},
-        "fade": {"source": "labs/combat_lab/fist05/assets/seismic_ground_master.webp", "display_width_px": 172}
+        "charge": {
+          "source": "labs/combat_lab/fist05/assets/molten_shard_master.webp",
+          "display_width_px": 82
+        },
+        "release": {
+          "source": "labs/combat_lab/fist05/assets/seismic_ground_master.webp",
+          "display_width_px": 172
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist05/assets/seismic_ground_master.webp",
+          "display_width_px": 172
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist05/assets/spires_master.webp",
+          "display_width_px": 142
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist05/assets/seismic_ground_master.webp",
+          "display_width_px": 172
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "release": "BEHIND", "flight": "BEHIND", "contact": "BEHIND", "fade": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "flight": "BEHIND",
+        "contact": "BEHIND",
+        "fade": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
@@ -87,12 +190,29 @@
       "source_revision": "FIST07_R5_KIM_CANG_GUARDIAN_MASTER",
       "provenance_paths": [],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp", "display_width_px": 114},
-        "start": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp", "display_width_px": 132},
-        "sustain": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp", "display_width_px": 132},
-        "end": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp", "display_width_px": 132}
+        "charge": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp",
+          "display_width_px": 114
+        },
+        "start": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp",
+          "display_width_px": 132
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp",
+          "display_width_px": 132
+        },
+        "end": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp",
+          "display_width_px": 132
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "start": "BEHIND", "sustain": "BEHIND", "end": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
@@ -101,12 +221,29 @@
       "source_revision": "FIST08_ORIGINAL_COUNTERFORCE_GUARD_ATLAS",
       "provenance_paths": [],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png", "display_width_px": 110},
-        "start": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png", "display_width_px": 126},
-        "sustain": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png", "display_width_px": 126},
-        "end": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png", "display_width_px": 126}
+        "charge": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png",
+          "display_width_px": 110
+        },
+        "start": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png",
+          "display_width_px": 126
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png",
+          "display_width_px": 126
+        },
+        "end": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png",
+          "display_width_px": 126
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "start": "BEHIND", "sustain": "BEHIND", "end": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
@@ -115,12 +252,29 @@
       "source_revision": "FIST10_R2_ILLUSTRATED_BELL_MASTER",
       "provenance_paths": [],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp", "display_width_px": 122},
-        "start": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp", "display_width_px": 144},
-        "sustain": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp", "display_width_px": 144},
-        "end": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp", "display_width_px": 144}
+        "charge": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp",
+          "display_width_px": 122
+        },
+        "start": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp",
+          "display_width_px": 144
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp",
+          "display_width_px": 144
+        },
+        "end": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp",
+          "display_width_px": 144
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "start": "BEHIND", "sustain": "BEHIND", "end": "BEHIND"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
@@ -129,13 +283,34 @@
       "source_revision": "FIST11_FIRST_PARTY_CHARGE_FIST_CONTACT_MASTERS",
       "provenance_paths": [],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist11/assets/source/f11_charge_master.webp", "display_width_px": 74},
-        "release": {"source": "labs/combat_lab/fist11/assets/source/f11_fist_master.webp", "display_width_px": 98},
-        "flight": {"source": "labs/combat_lab/fist11/assets/source/f11_fist_master.webp", "display_width_px": 98},
-        "contact": {"source": "labs/combat_lab/fist11/assets/source/f11_contact_master.webp", "display_width_px": 124},
-        "fade": {"source": "labs/combat_lab/fist11/assets/source/f11_contact_master.webp", "display_width_px": 124}
+        "charge": {
+          "source": "labs/combat_lab/fist11/assets/source/f11_charge_master.webp",
+          "display_width_px": 74
+        },
+        "release": {
+          "source": "labs/combat_lab/fist11/assets/source/f11_fist_master.webp",
+          "display_width_px": 98
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist11/assets/source/f11_fist_master.webp",
+          "display_width_px": 98
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist11/assets/source/f11_contact_master.webp",
+          "display_width_px": 124
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist11/assets/source/f11_contact_master.webp",
+          "display_width_px": 124
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "release": "FRONT", "flight": "FRONT", "contact": "FRONT", "fade": "FRONT"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "FRONT"
+      }
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
@@ -144,16 +319,672 @@
       "source_revision": "FIST12_R9_FIRST_PARTY_BLOOD_MERIDIAN_MASTERS",
       "provenance_paths": [],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_charge.webp", "grid": [4, 2], "indices": [0, 1, 2, 3], "display_width_px": 74, "fps": 10},
-        "release": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch1.webp", "grid": [4, 2], "indices": [0, 1, 2, 3], "display_width_px": 82, "fps": 12},
-        "flight": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp", "grid": [4, 2], "indices": [0, 1, 2, 3], "display_width_px": 84, "fps": 12},
-        "contact": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp", "grid": [4, 2], "indices": [0, 1, 2, 3], "display_width_px": 100, "fps": 12},
-        "fade": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_contact.webp", "grid": [4, 2], "indices": [4, 5, 6, 7], "display_width_px": 88, "fps": 10},
-        "start": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp", "grid": [4, 2], "indices": [0, 1, 2, 3], "display_width_px": 66, "fps": 6, "loop": true},
-        "sustain": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp", "grid": [4, 2], "indices": [0, 1, 2, 3], "display_width_px": 66, "fps": 6, "loop": true},
-        "end": {"source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp", "grid": [4, 2], "indices": [4, 5, 6, 7], "display_width_px": 66, "fps": 8}
+        "charge": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_charge.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 74,
+          "fps": 10
+        },
+        "release": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch1.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 82,
+          "fps": 12
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 84,
+          "fps": 12
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 100,
+          "fps": 12
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_contact.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 88,
+          "fps": 10
+        },
+        "start": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 66,
+          "fps": 6,
+          "loop": true
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 66,
+          "fps": 6,
+          "loop": true
+        },
+        "end": {
+          "source": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 66,
+          "fps": 8
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "release": "FRONT", "flight": "FRONT", "contact": "FRONT", "fade": "FRONT", "start": "FRONT", "sustain": "FRONT", "end": "FRONT"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "FRONT",
+        "start": "FRONT",
+        "sustain": "FRONT",
+        "end": "FRONT"
+      }
+    },
+    {
+      "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+      "lab_scene": "labs/combat_lab/fist06/tran_dia_quyen.tscn",
+      "lab_script": "labs/combat_lab/fist06/tran_dia_quyen.gd",
+      "source_revision": "FIST06_R3_FIRST_PARTY_CODE_PAINTED_MINERAL_RGBA",
+      "provenance_paths": [
+        "tools/vfx/generate_fist06_tran_dia_quyen.py",
+        "labs/combat_lab/fist03/assets/godfist_master.webp"
+      ],
+      "phase_sources": {
+        "charge": {
+          "source": "labs/combat_lab/fist06/assets/generated/earth_fist_main.png",
+          "grid": [
+            4,
+            4
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 128,
+          "fps": 10
+        },
+        "release": {
+          "source": "labs/combat_lab/fist06/assets/generated/earth_fist_main.png",
+          "grid": [
+            4,
+            4
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 138,
+          "fps": 12
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist06/assets/generated/earth_fist_main.png",
+          "grid": [
+            4,
+            4
+          ],
+          "indices": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "display_width_px": 142,
+          "fps": 14
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist06/assets/generated/earth_fist_hit.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 128,
+          "fps": 16
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist06/assets/generated/earth_fist_hit.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 104,
+          "fps": 12
+        }
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND"
+      },
+      "review_note": "Restored only outputs missing from the tracked first-party generator. Distinct mineral fist and local earth contact; source art is code-painted and still needs 1x visual and owner review."
+    },
+    {
+      "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+      "lab_scene": "labs/combat_lab/fist09/tran_son_ho_dong.tscn",
+      "lab_script": "labs/combat_lab/fist09/tran_son_ho_dong.gd",
+      "source_revision": "FIST09_R6_CURVED_DEFLECTION_GUARD",
+      "provenance_paths": [
+        "tools/vfx/generate_fist09_tran_son_ho_dong.py",
+        "labs/combat_lab/fist05/assets/spires_master.webp",
+        "labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64"
+      ],
+      "phase_sources": {
+        "charge": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_mountain_cast.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "display_width_px": 190,
+          "fps": 10
+        },
+        "release": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_mountain_cast.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 190,
+          "fps": 10
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_guard_block.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 104,
+          "fps": 14
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_status_slabs.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 98,
+          "fps": 10
+        },
+        "start": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_status_slabs.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 104,
+          "fps": 6,
+          "loop": true
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_status_slabs.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 104,
+          "fps": 6,
+          "loop": true
+        },
+        "end": {
+          "source": "labs/combat_lab/fist09/assets/generated/f9_status_slabs.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 98,
+          "fps": 10
+        }
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "contact": "FRONT",
+        "fade": "BEHIND",
+        "start": "BEHIND",
+        "sustain": "BEHIND",
+        "end": "BEHIND"
+      },
+      "review_note": "Restored source from tracked project-owned Fist05/Fist07 material through the tracked Fist09 generator. Guard start and sustain bind to the real status receipt; the block-contact atlas stays hidden because this fixture has no exact defended-hit receipt."
+    },
+    {
+      "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+      "lab_scene": "labs/combat_lab/fist13/huyet_khi_hoi_luu.tscn",
+      "lab_script": "labs/combat_lab/fist13/huyet_khi_hoi_luu.gd",
+      "source_revision": "FIST13_R7_FIRST_PARTY_FIST03_MATERIAL_DERIVATIVE",
+      "provenance_paths": [
+        "tools/vfx/generate_fist13_huyet_khi_hoi_luu.py",
+        "labs/combat_lab/fist03/assets/godfist_master.webp",
+        "labs/combat_lab/fist03/assets/impact_master.webp"
+      ],
+      "phase_sources": {
+        "charge": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_charge.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 104,
+          "fps": 10
+        },
+        "release": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_contact.png",
+          "grid": [
+            4,
+            3
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "display_width_px": 112,
+          "fps": 12
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_contact.png",
+          "grid": [
+            4,
+            3
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "display_width_px": 116,
+          "fps": 12
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_contact.png",
+          "grid": [
+            4,
+            3
+          ],
+          "indices": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "display_width_px": 96,
+          "fps": 10
+        },
+        "start": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_mark.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 62,
+          "fps": 6,
+          "loop": true
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_mark.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 62,
+          "fps": 6,
+          "loop": true
+        },
+        "end": {
+          "source": "labs/combat_lab/fist13/assets/generated/f13_mark.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 58,
+          "fps": 10
+        }
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "contact": "FRONT",
+        "fade": "FRONT",
+        "start": "FRONT",
+        "sustain": "FRONT",
+        "end": "BEHIND"
+      },
+      "review_note": "Restored the missing output atlases from the tracked first-party Fist03 paint sources. This is a coded material derivative, explicitly not new hand-painted or image-generated art; one hit and six-second mark are only visible after their exact MapBattle receipts."
+    },
+    {
+      "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+      "lab_scene": "labs/combat_lab/fist15/huyet_hai_quyen_vuc.tscn",
+      "lab_script": "labs/combat_lab/fist15/huyet_hai_quyen_vuc.gd",
+      "source_revision": "FIST15_R2_FIRST_PARTY_CODE_PAINTED_47_POSES",
+      "provenance_paths": [
+        "tools/vfx/generate_fist15_huyet_hai_quyen_vuc.py"
+      ],
+      "circle_targets": true,
+      "fixture_setup": {
+        "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+        "targets": [
+          "fist_factory_target_huyet_quyen_ultimate_human_01",
+          "fist_factory_target_huyet_quyen_ultimate_human_02",
+          "fist_factory_target_huyet_quyen_ultimate_human_03"
+        ],
+        "caster_side": "disciple"
+      },
+      "phase_sources": {
+        "charge": {
+          "source": "labs/combat_lab/fist15/assets/generated/f15_charge.png",
+          "grid": [
+            4,
+            3
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "display_width_px": 120,
+          "fps": 10
+        },
+        "release": {
+          "source": "labs/combat_lab/fist15/assets/generated/f15_sea.png",
+          "grid": [
+            4,
+            3
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "display_width_px": 420,
+          "fps": 10
+        },
+        "flight": {
+          "source": "labs/combat_lab/fist15/assets/generated/f15_fall.png",
+          "grid": [
+            4,
+            5
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "display_width_px": 138,
+          "fps": 12
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist15/assets/generated/f15_hit.png",
+          "grid": [
+            4,
+            2
+          ],
+          "indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "display_width_px": 124,
+          "fps": 12
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist15/assets/generated/f15_sea.png",
+          "grid": [
+            4,
+            3
+          ],
+          "indices": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "display_width_px": 420,
+          "fps": 10
+        }
+      },
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "BEHIND",
+        "flight": "FRONT",
+        "contact": "FRONT",
+        "fade": "BEHIND"
+      },
+      "review_note": "Restored the missing first-party code-painted R2 outputs from the tracked deterministic generator. Fixture-only poison setup is a separate real MapBattle cast on the three exact targets; only the candidate ultimate’s actual hit receipts trigger contact, with no fabricated poison, damage, or status."
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
@@ -165,34 +996,98 @@
         "labs/combat_lab/fist14/r5/assets/atlas_manifest.json"
       ],
       "phase_sources": {
-        "charge": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_charge_coil.png", "display_width_px": 72, "fps": 8},
-        "release": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_release_lunge.png", "display_width_px": 104},
-        "contact": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_contact_impact.png", "display_width_px": 112},
-        "fade": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_recoil.png", "display_width_px": 88},
-        "start": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png", "display_width_px": 60, "fps": 8, "loop": true},
-        "sustain": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png", "display_width_px": 60, "fps": 8, "loop": true},
-        "end": {"source": "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png", "display_width_px": 60, "fps": 8}
+        "charge": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_charge_coil.png",
+          "display_width_px": 72,
+          "fps": 8
+        },
+        "release": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_release_lunge.png",
+          "display_width_px": 104
+        },
+        "contact": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_contact_impact.png",
+          "display_width_px": 112
+        },
+        "fade": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_recoil.png",
+          "display_width_px": 88
+        },
+        "start": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png",
+          "display_width_px": 60,
+          "fps": 8,
+          "loop": true
+        },
+        "sustain": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png",
+          "display_width_px": 60,
+          "fps": 8,
+          "loop": true
+        },
+        "end": {
+          "source": "labs/combat_lab/fist14/r5/source/f14_r5_meridian_mark.png",
+          "display_width_px": 60,
+          "fps": 8
+        }
       },
-      "phase_layers": {"charge": "BEHIND", "release": "FRONT", "contact": "FRONT", "fade": "FRONT", "start": "FRONT", "sustain": "FRONT", "end": "FRONT"}
+      "phase_layers": {
+        "charge": "BEHIND",
+        "release": "FRONT",
+        "contact": "FRONT",
+        "fade": "FRONT",
+        "start": "FRONT",
+        "sustain": "FRONT",
+        "end": "FRONT"
+      }
     }
   ],
   "derived_assets": [
-    {"source": "labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp"},
-    {"source": "labs/combat_lab/fist08/assets/source/counterforce_master.png.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png"},
-    {"source": "labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp"},
-    {"source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_charge_master.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_charge.webp"},
-    {"source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch1_master.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch1.webp"},
-    {"source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch2_master.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp"},
-    {"source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch3_master.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp"},
-    {"source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_mark_master.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp"},
-    {"source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_contact_master.webp.b64", "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_contact.webp"}
+    {
+      "source": "labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist08/assets/source/counterforce_master.png.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png"
+    },
+    {
+      "source": "labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_charge_master.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_charge.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch1_master.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch1.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch2_master.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_punch3_master.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_mark_master.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp"
+    },
+    {
+      "source": "labs/combat_lab/fist12/assets/r9_sources/f12_r9_contact_master.webp.b64",
+      "output": "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_contact.webp"
+    }
   ],
   "blocked_skills": [
-    {"skill_id": "tmb.skill.fist.basic.human", "reason": "No dedicated Human source LAB or sprite master in HEAD."},
-    {"skill_id": "tmb.skill.fist.mobility.human", "reason": "No dedicated Human source LAB or sprite master in HEAD."},
-    {"skill_id": "tmb.skill.fist.kim_cang.active_01.human", "reason": "Source script references generated earth-fist atlases that are absent from the repository; no approved alternate source is available."},
-    {"skill_id": "tmb.skill.fist.kim_cang.active_04.human", "reason": "Source script references generated mountain guard atlases that are absent from the repository; no approved alternate source is available."},
-    {"skill_id": "tmb.skill.fist.huyet_quyen.active_03.human", "reason": "Source script references generated recovery atlases that are absent from the repository; no approved alternate source is available."},
-    {"skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human", "reason": "Source script references generated blood-sea atlases that are absent from the repository; no approved alternate source is available."}
+    {
+      "skill_id": "tmb.skill.fist.basic.human",
+      "reason": "No dedicated Human source LAB or sprite master in the latest HEAD."
+    },
+    {
+      "skill_id": "tmb.skill.fist.mobility.human",
+      "reason": "No dedicated Human source LAB or sprite master in the latest HEAD."
+    }
   ]
 }

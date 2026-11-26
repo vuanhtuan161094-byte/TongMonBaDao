@@ -29,6 +29,19 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def asset_record(relative: str) -> dict:
+    base = REPO if relative.startswith("tools/") or relative.startswith("docs/") else ROOT
+    path = base / relative
+    record = {"path": relative, "sha256": sha256(path), "bytes": path.stat().st_size}
+    if path.suffix.lower() in {".png", ".webp", ".jpg", ".jpeg"}:
+        from PIL import Image
+        with Image.open(path) as image_file:
+            record.update({"dimensions": list(image_file.size), "mode": image_file.mode})
+            if image_file.mode == "RGBA":
+                record["alpha_extrema"] = list(image_file.getchannel("A").getextrema())
+    return record
+
+
 def decode_embedded_assets(config: dict) -> list[dict]:
     records = []
     for row in config.get("derived_assets", []):
@@ -136,17 +149,24 @@ def main() -> None:
         ledger = {row["skill_id"]: row for row in csv.DictReader(file)}
     registry = load_json(REGISTRY)
     web = load_json(WEB_CATALOG)
+    previous_manifest_path = BATCH / "manifest.json"
+    previous_manifest = load_json(previous_manifest_path) if previous_manifest_path.is_file() else {}
     registry_by_id = {row["skill_id"]: row for row in registry.get("entries", [])}
     web_by_id = {row["id"]: row for row in web.get("entries", [])}
     built = []
     frames_by_effect: Counter[str] = Counter()
+    source_asset_paths: set[str] = set()
+    generator_paths: set[str] = set()
+    source_asset_paths.update(row["source"] for row in config.get("derived_assets", []))
 
     for source_row in config["entries"]:
         skill_id = source_row["skill_id"]
         if skill_id not in canonical or skill_id not in ledger:
             raise SystemExit(f"FIST_SKILL_CATALOGUE_OR_LEDGER_MISSING {skill_id}")
-        if skill_id in registry_by_id or skill_id in web_by_id:
-            raise SystemExit(f"FIST_FACTORY_ENTRY_ALREADY_EXISTS {skill_id}")
+        already_in_registry = skill_id in registry_by_id
+        already_in_web = skill_id in web_by_id
+        if already_in_registry != already_in_web:
+            raise SystemExit(f"FIST_FACTORY_REGISTRY_WEB_MISMATCH {skill_id}")
         skill = canonical[skill_id]
         ledger_row = ledger[skill_id]
         source_paths = {
@@ -156,11 +176,16 @@ def main() -> None:
             "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         }
         source_paths.update(source_row.get("provenance_paths", []))
+        generator_paths.update(path for path in source_row.get("provenance_paths", [])
+                               if path.startswith("tools/vfx/") and path.endswith(".py"))
+        source_asset_paths.update(path for path in source_row.get("provenance_paths", [])
+                                  if not path.startswith("tools/vfx/") and (ROOT / path).is_file())
         phase_sources = {}
         for phase, raw_definition in source_row["phase_sources"].items():
             phase_definition, phase_files = path_frames(raw_definition)
             phase_sources[phase] = phase_definition
             source_paths.update(phase_files)
+            source_asset_paths.update(phase_files)
         source_paths.update(row["source"] for row in config.get("derived_assets", [])
                             if row["output"] in {path.removeprefix("res://") for phase in phase_sources.values()
                                                   for frame in phase.get("frames", [])
@@ -202,10 +227,34 @@ def main() -> None:
                     "bindings": bindings_for(effect)}
         frame_total = sum(len(value.get("frames", [])) for value in phase_sources.values())
         phase_count = len(phase_sources)
+        if already_in_registry:
+            existing_entry = registry_by_id[skill_id]
+            existing_web = web_by_id[skill_id]
+            if str(existing_entry.get("source_revision", "")) != str(source_row["source_revision"]):
+                raise SystemExit(f"FIST_EXISTING_SOURCE_REVISION_CHANGED {skill_id}")
+            if str(existing_web.get("scene", "")) != FACTORY_SCENE:
+                raise SystemExit(f"FIST_EXISTING_WEB_SCENE_CHANGED {skill_id}")
+            existing_web["source_paths"] = sorted(path for path in existing_entry.get("source_paths", [])
+                                                   if not str(path).startswith("tools/"))
+            frames_by_effect[effect] += sum(len(value.get("frames", []))
+                                            for value in existing_entry.get("phase_sources", {}).values())
+            built.append({"skill_id": skill_id, "name_vi": str(existing_entry.get("name_vi", "")),
+                          "source_revision": str(existing_entry.get("source_revision", "")),
+                          "lab_scene": source_row["lab_scene"], "effect": effect,
+                          "shape": str(existing_entry.get("shape", "")),
+                          "target_limit": int(existing_entry.get("target_limit", 1)),
+                          "source_paths": existing_entry.get("source_paths", []),
+                          "phase_count": len(existing_entry.get("phase_sources", {})),
+                          "configured_frames": sum(len(value.get("frames", []))
+                                                    for value in existing_entry.get("phase_sources", {}).values()),
+                          "native_status": str(existing_entry.get("native_status", "NATIVE_PENDING")),
+                          "owner_status": str(existing_entry.get("owner_status", "OWNER_VISUAL_PENDING")),
+                          "pve": "HOLD"})
+            continue
         source_g3 = "SOURCE_GATE_INHERITED_FROM_EXISTING_LEDGER; FACTORY_CANDIDATE_ONLY"
         motion_status = ("SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING"
                          if frame_total > phase_count else "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING")
-        notes = ("Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. "
+        notes = (str(source_row.get("review_note", "")) + " " if source_row.get("review_note") else "") + ("Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. "
                  if skill_id == "tmb.skill.fist.huyet_quyen.active_04.human" else
                  "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. ")
         entry = {
@@ -236,13 +285,18 @@ def main() -> None:
             "source_paths": sorted(source_paths),
         }
         registry["entries"].append(entry)
+        if source_row.get("fixture_setup"):
+            entry["fixture_setup"] = source_row["fixture_setup"]
         registry_by_id[skill_id] = entry
         web_row = {
             "id": skill_id, "scene": FACTORY_SCENE,
             "preview_key": "fist_batch1_" + skill_id.removeprefix("tmb.skill.fist.").removesuffix(".human").replace(".", "_"),
             "directions": ["front"], "vfx_status": "TECH_CUE_ONLY", "family_id": str(skill.get("family_id", "")),
             "school": "fist", "branch": str(skill.get("branch", "")), "name_vi": str(skill.get("name_vi", skill.get("name", ""))),
-            "source_paths": sorted(source_paths),
+            # Web staging is rooted at the Godot project; repo-root generator
+            # scripts are recorded in the batch manifest and registry, not
+            # copied into the browser review package.
+            "source_paths": sorted(path for path in source_paths if not path.startswith("tools/")),
             "review_note": notes + "Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD.",
         }
         web["entries"].append(web_row)
@@ -262,7 +316,7 @@ def main() -> None:
         "owner_approval": "PENDING", "pve": "HOLD",
     }
     registry.setdefault("batch_status", {})[config["batch"]] = {
-        "source_status": "SOURCE_BACKED_11_HUMAN_CAST_MASTERS; EXISTING_LAB_ASSETS_REUSED",
+        "source_status": f"SOURCE_BACKED_{len(built)}_HUMAN_CAST_MASTERS; EXISTING_LAB_ASSETS_REUSED_AND_MISSING_GENERATED_OUTPUTS_RESTORED",
         "native_import_capture": "NATIVE_PENDING; SHARED_RUNNER; OWNER=PENDING; PVE=HOLD",
         "owner_status": "OWNER_VISUAL_PENDING", "pve": "HOLD",
     }
@@ -272,6 +326,12 @@ def main() -> None:
         "source_gate_ledger": "docs/operations/vfx_school_ledgers/05_fist_183.csv",
         "source_policy": "Reuse existing source masters byte-for-byte; embedded .b64 masters are base64-decoded without pixel edits.",
         "derived_assets": decoded,
+        "generator_sources": [asset_record(path) for path in sorted(generator_paths)],
+        "source_assets": [asset_record(path) for path in sorted(source_asset_paths)],
+        "previous_native_capture": previous_manifest.get("native_capture", {}),
+        "native_capture": {"technical_status": "NATIVE_PENDING", "skills": len(built),
+                           "accepted_candidate_events": 0, "synthetic_candidate_events": 0,
+                           "owner_approval": "PENDING", "pve": "HOLD"},
         "skills": built, "blocked_skills": config.get("blocked_skills", []),
         "mechanic_frame_counts": dict(sorted(frames_by_effect.items())),
         "owner_approval": "PENDING", "pve": "HOLD",

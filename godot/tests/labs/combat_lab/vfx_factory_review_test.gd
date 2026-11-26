@@ -73,11 +73,11 @@ func _run() -> void:
 		canonical_by_id[str(row.get("id", ""))] = row
 	var cases: Array = registry.get("entries", [])
 	skill_count = cases.size()
-	_check(cases.size() == 82, "shared registry retains 17 Formation, 15 Talisman, 16 Poison, 11 Fist, 17 Sword and other school candidates")
+	_check(cases.size() == 86, "shared registry retains 17 Formation, 15 Talisman, 16 Poison, 15 Fist, 17 Sword and other school candidates")
 	var fist_capture: Dictionary = fist_manifest.get("native_capture", {})
 	var fist_batch_status := str(fist_manifest.get("status", ""))
 	var fist_native_status := str(fist_capture.get("technical_status", ""))
-	_check(fist_manifest.get("skills", []).size() == 11
+	_check(fist_manifest.get("skills", []).size() == 15
 		and (fist_batch_status.begins_with("CANDIDATE; NATIVE_PENDING")
 			or fist_native_status.begins_with("NATIVE_TECH_PASS_GODOT_4.7.2_1280x720"))
 		and str(fist_capture.get("owner_approval", "")) == "PENDING"
@@ -490,6 +490,12 @@ func _run() -> void:
 			if str(canonical.get("effect", "")) == "mark":
 				_check(fist_bindings.has("status_applied"),
 					"Fist mark sustain uses its exact status receipt " + skill_id)
+			if str(canonical.get("effect", "")) == "consume_poison":
+				var setup: Dictionary = entry.get("fixture_setup", {})
+				_check(str(setup.get("skill_id", "")) == "tmb.skill.poison.doc_cham.active_02.human"
+					and str(setup.get("caster_side", "")) == "disciple"
+					and setup.get("targets", []).size() == int(canonical.get("target_limit", 0)),
+					"Fist poison setup uses separate real MapBattle receipts on every selected target " + skill_id)
 			if skill_id == "tmb.skill.fist.huyet_quyen.active_04.human":
 				_check(str(entry.get("source_revision", "")).begins_with("FIST14_R5")
 					and not str(entry.get("source_paths", [])).contains("r7_luminous")
@@ -560,5 +566,5 @@ func _run() -> void:
 func _finish() -> void:
 	print("VFX_FACTORY_REVIEW_RESULT=" + ("PASS" if failures == 0 else "FAIL")
 		+ " cases=" + str(checked) + " skills=" + str(skill_count)
-		+ " formation=17 talisman=15 poison=16 fist=11 AS58=resolved AS62=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
+		+ " formation=17 talisman=15 poison=16 fist=15 AS58=resolved AS62=resolved curse=AS66_storyboard blade=AS50 receipt palm=AS60 spear=AS54 failures=" + str(failures))
 	quit(0 if failures == 0 else 1)

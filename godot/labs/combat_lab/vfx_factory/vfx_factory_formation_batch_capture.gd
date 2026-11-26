@@ -493,8 +493,9 @@ func _make_battle_fixture(skill_id: String, fixture_index: int) -> Dictionary:
 			if setup_target.is_empty():
 				continue
 			var setup_position: Vector2 = setup_target.get("position", Vector2(5.0, 3.0))
+			var setup_caster_side := str(setup_definition.get("caster_side", "monster"))
 			var poisoner := _actor("factory_setup_poisoner_%02d_%02d" % [fixture_index, setup_index],
-				"monster", setup_position + Vector2(1.0, 0.0))
+				setup_caster_side, setup_position + Vector2(1.0, 0.0))
 			poisoner["v63_combat_enabled"] = true
 			poisoner["v63_skill_loadout"] = [setup_skill_id]
 			poisoner["v63_combat_branch_id"] = "doc_cham"
