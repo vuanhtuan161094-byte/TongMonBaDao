@@ -39,6 +39,16 @@ def build(root, dest, sha):
         batch = batches.get(school, {})
         video = source(root, batch.get("video"), ".mp4")
         index = source(root, batch.get("last_capture_index"), ".json")
+        # Some batches store exact native media on the per-skill rows.
+        if not video:
+            for row in registry.get("entries", []):
+                if row.get("school") != school:
+                    continue
+                candidate = source(root, row.get("native_video"), ".mp4")
+                if candidate:
+                    video = candidate
+                    index = source(root, row.get("native_index"), ".json")
+                    break
         label = "Chờ duyệt mỹ thuật · PvE HOLD"
         if not video:
             sections.append(f"<section><h2>{esc(name)}</h2><p>Chưa có đường dẫn MP4 trong registry hiện tại.</p></section>")

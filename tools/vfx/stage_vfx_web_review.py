@@ -234,6 +234,52 @@ def main():
             if not isinstance(relative, str) or relative.startswith("/") or ".." in Path(relative).parts or "\\" in relative:
                 raise SystemExit("VFX_WEB_CATALOG_UNSAFE_SOURCE_PATH")
             files.add(relative)
+    # Catalog source_paths contains provenance, native-only tests and video evidence.
+    # Do not import arbitrary GDScript or package MP4s in the interactive Web PCK.
+    # Factory reads only its phase textures, catalogue JSON and shared renderer.
+    legacy_prefixes = (
+        "labs/combat_lab/sword_human_phi_kiem_truy_anh/",
+        "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/",
+        "labs/combat_lab/sword_batch6_20261124/",
+        "labs/combat_lab/sword_batch9_20261124/",
+    )
+    legacy_test = "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd"
+    files = {p for p in files if p in SOURCE_FILES or p in FACTORY_RUNTIME_FILES
+             or p == legacy_test or p.startswith(legacy_prefixes)
+             or Path(p).suffix.lower() in {".png", ".webp", ".svg", ".json", ".tres", ".gdshader"}}
+    files = {p for p in files if "/review/native/" not in p and not p.startswith("tests/") or p == legacy_test}
+    files = {p for p in files if Path(p).suffix.lower() not in {".mp4", ".avi", ".gif", ".zip"}}
+    factory = json.loads((root / "labs/combat_lab/vfx_factory/registry.json").read_text(encoding="utf-8"))
+    for row in factory["entries"]:
+        for path in _res_paths(row.get("phase_sources", {})):
+            _require_source(root, path, "Factory phase resource")
+            files.add(path)
+        for path in _res_paths(row.get("catalog_path", "")):
+            _require_source(root, path, "Factory canonical catalog")
+            files.add(path)
+    # Preserve original source review variants alongside the new Factory adapter.
+    # They have separate preview keys but the same canonical skill ID.
+    original_sword = {
+        "tmb.skill.sword.ngu_kiem.active_01.human": (
+            "r2b", "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.tscn"),
+        "tmb.skill.sword.ngu_kiem.active_02.human": (
+            "r1e", "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn"),
+    }
+    originals = []
+    for entry in entries:
+        pair = original_sword.get(entry["id"])
+        if pair and entry["scene"] != "res://" + pair[1]:
+            key, scene = pair
+            _require_source(root, scene, "original Sword review scene")
+            files.add(scene)
+            variant = dict(entry, scene="res://" + scene, preview_key=key,
+                           name_vi=entry["name_vi"] + " · nguồn gốc",
+                           review_variant="ORIGINAL_SOURCE_LAB")
+            originals.append(variant)
+            entry["name_vi"] += " · Factory"
+            entry["review_variant"] = "FACTORY_ADAPTER"
+    entries = originals + entries
+    catalog["entries"] = entries
     manifest = {}
     for relative in sorted(files):
         old, new = root / relative, dest / relative
@@ -245,7 +291,7 @@ def main():
             raise SystemExit(f"Nonidentical staging copy: {relative}")
         manifest[relative] = {"sha256": digest(old), "bytes": old.stat().st_size}
     # Reproducible candidates, generated only inside disposable staging; no source-tree mutations.
-    if any(str(e.get("preview_key","")) in {f"s{i:02d}" for i in range(9,18)} for e in entries):
+    if any(p.startswith("labs/combat_lab/sword_batch9_20261124/") and p.endswith(".tscn") for p in files):
         generated = dest / "labs/combat_lab/sword_batch9_20261124/generated"
         subprocess.run([sys.executable,str(root.parent / "tools/vfx/build_sword_batch9.py"),"--godot",str(root),"--output",str(generated)],check=True)
         for p in sorted(generated.iterdir()):

@@ -122,23 +122,23 @@ func _ready() -> void:
     if OS.has_feature("web") and _entries.size() > 1:
         var query_text: Variant = JavaScriptBridge.eval("new URLSearchParams(window.location.search).get('skill')", true)
         var key := str(query_text).strip_edges().to_lower()
-        var selected_id := ""
-        if key == "r1e":
-            selected_id = "tmb.skill.sword.ngu_kiem.active_02.human"
-        elif key.begins_with("s"):
-            for entry in _entries:
-                if str(entry.get("preview_key","")) == key:
-                    selected_id = str(entry.get("id",""))
+        # Preview key selects a specific revision, not merely a skill ID.
+        # Existing r1e/r2b links continue to open the original approved source lab.
+        if not key.is_empty() and key != "null":
+            for i in range(_entries.size()):
+                var info: Dictionary = _entries[i]
+                var preview_key := str(info.get("preview_key",""))
+                var matches := preview_key == key
+                if not matches and key.length() == 3 and key.begins_with("s"):
+                    matches = preview_key == "sword_factory_batch1_" + key.substr(1)
+                if matches:
+                    _picker.select(i)
+                    _change_skill(i)
+                    if key == "r1e":
+                        print("VFX_R1E_DEEPLINK=PASS")
+                    else:
+                        print("VFX_WEB_DEEPLINK=PASS key=",key," id=",str(info.get("id","")))
                     break
-        for i in range(_entries.size()):
-            if str(_entries[i].get("id","")) == selected_id:
-                _picker.select(i)
-                _change_skill(i)
-                if key == "r1e":
-                    print("VFX_R1E_DEEPLINK=PASS")
-                else:
-                    print("BATCH6_WEB_DEEPLINK=PASS key=",key," id=",selected_id)
-                break
 
 func _button(parent: BoxContainer, title: String, callback: Callable) -> Button:
     var control := Button.new()

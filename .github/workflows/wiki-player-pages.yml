@@ -160,7 +160,8 @@ jobs:
             --source godot --destination "$RUNNER_TEMP/tmb-vfx-web-stage"
           GODOT="$RUNNER_TEMP/tmb-godot/Godot_v4.7.2-stable_linux.x86_64"
           STAGE="$RUNNER_TEMP/tmb-vfx-web-stage"
-          "$GODOT" --headless --path "$STAGE" --editor --import
+          "$GODOT" --headless --path "$STAGE" --editor --import 2>&1 | tee "$RUNNER_TEMP/vfx-web-import.log"
+          if grep -Eiq 'SCRIPT ERROR|Parse Error|Failed to load script|Failed to load resource' "$RUNNER_TEMP/vfx-web-import.log"; then exit 1; fi
           "$GODOT" --headless --path "$STAGE" --check-only \
             --script res://labs/visual_bridge_v1/as48_sword_anchor_lab.gd
           "$GODOT" --headless --path "$STAGE" --check-only \
