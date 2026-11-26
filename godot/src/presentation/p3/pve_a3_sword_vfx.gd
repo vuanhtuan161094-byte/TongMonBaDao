@@ -3,6 +3,7 @@ extends RefCounted
 const ROOT := "res://assets/p3/vfx/a3_sword_batch6/"
 const PREVIEW_SETTING := "runtime/a3_sword_vfx_preview"
 const BINDINGS := {
+    "tmb.skill.sword.ngu_kiem.active_02.human":{"tag":"02","shape":"circle","limit":3},
     "tmb.skill.sword.ngu_kiem.active_03.human":{"tag":"03","shape":"line","limit":3},
     "tmb.skill.sword.ngu_kiem.active_04.human":{"tag":"04","shape":"single_target","limit":1},
     "tmb.skill.sword.ngu_kiem.ultimate.human":{"tag":"05","shape":"circle","limit":3},
@@ -11,6 +12,7 @@ const BINDINGS := {
     "tmb.skill.sword.sat_kiem.active_03.human":{"tag":"08","shape":"single_target","limit":1}
 }
 const PRESENTATION := {
+    "02":{"extent":212.0,"arc":0.0,"rotate":false},
     "03":{"extent":190.0,"arc":-12.0,"rotate":true},
     "04":{"extent":184.0,"arc":-24.0,"rotate":true},
     "05":{"extent":218.0,"arc":0.0,"rotate":false},
@@ -116,7 +118,7 @@ func cues() -> Array[Dictionary]:
                 var fraction := clampf(elapsed/float(cue["windup"]),0.0,1.0)
                 # Visual anticipation only: projectile-speed skills travel during the authoritative cast deadline.
                 var tag := str(BINDINGS[str(cue["id"])]["tag"])
-                if tag in ["03","04","05"] and fraction>=0.60:
+                if tag in ["02","03","04","05"] and fraction>=0.60:
                     var progress := (fraction-0.60)/0.40
                     result.append({"id":cue["id"],"phase":"release","caster":cue["caster"],"target":cue["target"],"frame":6+mini(10,int(progress*11.0)),"progress":progress})
                 else:
@@ -139,9 +141,10 @@ func texture_for(skill_id: String) -> Texture2D:
     var tag := str(BINDINGS[skill_id]["tag"])
     if _textures.has(tag):
         return _textures[tag] as Texture2D
-    var path := ROOT+"sword_"+tag+"_24f.png"
+    var path := ROOT+("sword_02_r1e_12f.png" if tag=="02" else "sword_"+tag+"_24f.png")
     var texture := ResourceLoader.load(path,"Texture2D",ResourceLoader.CACHE_MODE_IGNORE) as Texture2D
-    if texture == null or texture.get_size() != Vector2(2048,3072):
+    var expected_size := Vector2(2048,1536) if tag=="02" else Vector2(2048,3072)
+    if texture == null or texture.get_size() != expected_size:
         return null
     _textures[tag] = texture
     _texture_order.append(tag)
@@ -188,6 +191,15 @@ func draw_on(canvas: CanvasItem, positions: Dictionary, projection: Callable, sc
             frame=clampi(frame,17,21)
         if texture == null:
             continue
+        # R1E uses the 12 exact owner-accepted source cels, not derived V2 art.
+        # Keep the three gameplay-bound phases distinct at the original cadence.
+        if tag == "02":
+            if phase == "charge":
+                frame = clampi(floori(float(frame) / 2.0), 0, 2)
+            elif phase == "contact":
+                frame = clampi(9 + floori(float(frame-17) / 2.0), 9, 11)
+            else:
+                frame = clampi(3 + floori(float(frame-6) / 2.0), 3, 8)
         var region := Rect2(Vector2(frame%4,floori(float(frame)/4.0))*512.0,Vector2(512,512))
         var extent := Vector2.ONE*float(profile["extent"])*scale_amount
         if phase == "charge":

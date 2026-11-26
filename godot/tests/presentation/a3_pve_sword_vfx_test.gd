@@ -81,5 +81,5 @@ func _run() -> void:
         if not fx.cues().is_empty():
             _fail("hold did not clear")
             return
-    print("A3_PVE_CONTRACT_PASS skills=6 real_casts=6 real_positive_hits=6 default_hold=1")
+    print("A3_PVE_CONTRACT_PASS skills=%d real_casts=%d real_positive_hits=%d default_hold=1" % [FX.BINDINGS.size(),FX.BINDINGS.size(),FX.BINDINGS.size()])
     quit(0)
