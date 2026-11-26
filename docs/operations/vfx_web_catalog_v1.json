@@ -2446,7 +2446,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.ba_quyen.active_02.human",
@@ -2471,7 +2471,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.ba_quyen.ultimate.human",
@@ -2497,7 +2497,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.ba_quyen.active_03.human",
@@ -2523,7 +2523,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.ba_quyen.active_04.human",
@@ -2550,7 +2550,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.kim_cang.active_02.human",
@@ -2576,7 +2576,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.kim_cang.active_03.human",
@@ -2602,7 +2602,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.kim_cang.ultimate.human",
@@ -2628,7 +2628,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.huyet_quyen.active_01.human",
@@ -2655,7 +2655,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.huyet_quyen.active_02.human",
@@ -2691,7 +2691,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp"
       ],
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.huyet_quyen.active_04.human",
@@ -2722,7 +2722,7 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD."
+      "review_note": "Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed: 41 accepted MapBattle fixture events across 11 skills, zero synthetic. Phase index, sheet and video linked; owner review pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.kim_cang.active_01.human",
@@ -2744,9 +2744,12 @@
         "labs/combat_lab/fist06/tran_dia_quyen.gd",
         "labs/combat_lab/fist06/tran_dia_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
-        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Restored only outputs missing from the tracked first-party generator. Distinct mineral fist and local earth contact; source art is code-painted and still needs 1x visual and owner review. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+      "review_note": "Restored only outputs missing from the tracked first-party generator. Distinct mineral fist and local earth contact; source art is code-painted and still needs 1x visual and owner review. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.kim_cang.active_04.human",
@@ -2770,9 +2773,12 @@
         "labs/combat_lab/fist09/tran_son_ho_dong.gd",
         "labs/combat_lab/fist09/tran_son_ho_dong.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
-        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Restored source from tracked project-owned Fist05/Fist07 material through the tracked Fist09 generator. Guard start and sustain bind to the real status receipt; the block-contact atlas stays hidden because this fixture has no exact defended-hit receipt. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+      "review_note": "Restored source from tracked project-owned Fist05/Fist07 material through the tracked Fist09 generator. Guard start and sustain bind to the real status receipt; the block-contact atlas stays hidden because this fixture has no exact defended-hit receipt. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.huyet_quyen.active_03.human",
@@ -2796,9 +2802,12 @@
         "labs/combat_lab/fist13/huyet_khi_hoi_luu.gd",
         "labs/combat_lab/fist13/huyet_khi_hoi_luu.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
-        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Restored the missing output atlases from the tracked first-party Fist03 paint sources. This is a coded material derivative, explicitly not new hand-painted or image-generated art; one hit and six-second mark are only visible after their exact MapBattle receipts. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+      "review_note": "Restored the missing output atlases from the tracked first-party Fist03 paint sources. This is a coded material derivative, explicitly not new hand-painted or image-generated art; one hit and six-second mark are only visible after their exact MapBattle receipts. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     },
     {
       "id": "tmb.skill.fist.huyet_quyen.ultimate.human",
@@ -2821,9 +2830,12 @@
         "labs/combat_lab/fist15/huyet_hai_quyen_vuc.gd",
         "labs/combat_lab/fist15/huyet_hai_quyen_vuc.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
-        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
-      "review_note": "Restored the missing first-party code-painted R2 outputs from the tracked deterministic generator. Fixture-only poison setup is a separate real MapBattle cast on the three exact targets; only the candidate ultimate’s actual hit receipts trigger contact, with no fabricated poison, damage, or status. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD."
+      "review_note": "Restored the missing first-party code-painted R2 outputs from the tracked deterministic generator. Fixture-only poison setup is a separate real MapBattle cast on the three exact targets; only the candidate ultimate’s actual hit receipts trigger contact, with no fabricated poison, damage, or status. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
     }
   ],
   "updated_at": "2026-11-25"

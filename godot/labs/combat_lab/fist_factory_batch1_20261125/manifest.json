@@ -3,7 +3,7 @@
   "batch": "fist_human_cast_batch1_20261125",
   "school": "fist",
   "human_cast_masters": 15,
-  "status": "CANDIDATE; NATIVE_PENDING; OWNER_PENDING; PVE_HOLD",
+  "status": "CANDIDATE; NATIVE_TECH_PASS; OWNER_PENDING; PVE_HOLD",
   "source_gate_ledger": "docs/operations/vfx_school_ledgers/05_fist_183.csv",
   "source_policy": "Reuse existing source masters byte-for-byte; embedded .b64 masters are base64-decoded without pixel edits.",
   "derived_assets": [
@@ -844,10 +844,16 @@
   ],
   "previous_native_capture": {},
   "native_capture": {
-    "technical_status": "NATIVE_PENDING",
+    "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
     "skills": 15,
-    "accepted_candidate_events": 0,
+    "accepted_candidate_events": 56,
+    "fixture_setup_receipts": 12,
     "synthetic_candidate_events": 0,
+    "video": "review/native/fist_batch1_native_1280x720.mp4",
+    "video_sha256": "27ba7749c0a207f0c8f1631fe4a5b6f3bb8fbb72be169dcf06fb9f1438b31fd3",
+    "contact_sheet": "review/native/fist_batch1_contact_sheet_1280x720.png",
+    "contact_sheet_sha256": "33518c3362301dbb38f069f2b088802020b7cd84dc0e06f48c2678e2920d21cd",
+    "index": "review/native/fist_batch1_capture_index.json",
     "owner_approval": "PENDING",
     "pve": "HOLD"
   },
@@ -907,7 +913,8 @@
       "configured_frames": 32,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
@@ -932,7 +939,8 @@
       "configured_frames": 4,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
@@ -958,7 +966,8 @@
       "configured_frames": 5,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 5
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
@@ -984,7 +993,8 @@
       "configured_frames": 5,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 5
     },
     {
       "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
@@ -1011,7 +1021,8 @@
       "configured_frames": 5,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 5
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
@@ -1028,16 +1039,17 @@
         "labs/combat_lab/fist07/kim_cang_ho_the.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
-        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist07_kim_cang_guardian_r5.webp"
       ],
       "phase_count": 4,
       "configured_frames": 4,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
@@ -1054,16 +1066,17 @@
         "labs/combat_lab/fist08/phan_chan_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
-        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist08_counterforce_master.png"
       ],
       "phase_count": 4,
       "configured_frames": 4,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
@@ -1080,16 +1093,17 @@
         "labs/combat_lab/fist10/bat_dong_kim_chung.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
-        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist10_r2_illustrated_bell.webp"
       ],
       "phase_count": 4,
       "configured_frames": 4,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
@@ -1116,7 +1130,8 @@
       "configured_frames": 5,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
@@ -1138,21 +1153,22 @@
         "labs/combat_lab/fist12/doan_mach_lien_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_charge.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_contact.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_mark.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch1.webp",
         "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch2.webp",
-        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp",
-        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
-        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
-        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+        "labs/combat_lab/fist_factory_batch1_20261125/source/decoded/fist12_r9_punch3.webp"
       ],
       "phase_count": 8,
       "configured_frames": 32,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 4
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
@@ -1171,13 +1187,17 @@
         "labs/combat_lab/fist06/tran_dia_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "tools/vfx/generate_fist06_tran_dia_quyen.py"
       ],
       "phase_count": 5,
       "configured_frames": 27,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
@@ -1198,13 +1218,17 @@
         "labs/combat_lab/fist09/tran_son_ho_dong.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "tools/vfx/generate_fist09_tran_son_ho_dong.py"
       ],
       "phase_count": 7,
       "configured_frames": 40,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 3
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
@@ -1225,13 +1249,17 @@
         "labs/combat_lab/fist13/huyet_khi_hoi_luu.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "tools/vfx/generate_fist13_huyet_khi_hoi_luu.py"
       ],
       "phase_count": 7,
       "configured_frames": 56,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 4
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
@@ -1251,13 +1279,17 @@
         "labs/combat_lab/fist15/huyet_hai_quyen_vuc.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
         "tools/vfx/generate_fist15_huyet_hai_quyen_vuc.py"
       ],
       "phase_count": 5,
       "configured_frames": 47,
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 5
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
@@ -1288,7 +1320,8 @@
       "configured_frames": 7,
       "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "owner_status": "OWNER_VISUAL_PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "accepted_events": 4
     }
   ],
   "blocked_skills": [
@@ -1308,5 +1341,6 @@
     "mark": 95
   },
   "owner_approval": "PENDING",
-  "pve": "HOLD"
+  "pve": "HOLD",
+  "visual_review_status": "NATIVE_PHASE_SAMPLES_CAPTURED; ART_SELF_REVIEW_PENDING"
 }

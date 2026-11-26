@@ -13,7 +13,7 @@
         "skill_release",
         "v63_skill_hit"
       ],
-      "contact_frame_seconds": 0.77,
+      "contact_frame_seconds": 0.657044333333333,
       "encounter_id": "vfx_factory_fist_capture_00",
       "event_count": 3,
       "event_trace": [
@@ -29,12 +29,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_01.human",
           "target_ids": [
             "foe_00"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 0.7,
+          "capture_frame_seconds": 0.604850333333333,
           "caster_id": "caster_00",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_00/caster_00/1/skill_release",
@@ -44,12 +43,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_01.human",
           "target_ids": [
             "foe_00"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 0.75,
+          "capture_frame_seconds": 0.637044333333333,
           "caster_id": "caster_00",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_00/caster_00/1/v63_skill_hit/foe_00",
@@ -59,8 +57,7 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_01.human",
           "target_ids": [
             "foe_00"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -72,37 +69,38 @@
       "fixture_setup_receipts": [],
       "name_vi": "Khai Sơn Trọng Quyền",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 0.7,
+      "release_frame_seconds": 0.604850333333333,
       "skill_id": "tmb.skill.fist.ba_quyen.active_01.human",
       "synthetic_events": 0,
       "video_duration_seconds": 1.4,
       "video_start_seconds": 0.0,
-      "phase_samples": {
-        "charge": {
+      "phase_samples": [
+        {
+          "phase": "charge",
           "time_seconds": 0.08,
-          "receipt_type": "skill_cast",
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
           "frame_index": 2
         },
-        "release": {
-          "time_seconds": 0.76,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 0.63,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 15
+          "frame_index": 13,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 0.79,
-          "receipt_type": "v63_skill_hit",
+        {
+          "phase": "contact",
+          "time_seconds": 0.657,
           "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 16
+          "frame_index": 13
         },
-        "state_end": {
-          "time_seconds": 1.07,
-          "receipt_type": "v63_skill_hit",
-          "basis": "POST_CONTACT_FADE_WINDOW",
-          "frame_index": 21
+        {
+          "phase": "fade",
+          "time_seconds": 1.316,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 26
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 3,
@@ -111,13 +109,13 @@
         "skill_release",
         "status_applied"
       ],
-      "contact_frame_seconds": 2.05,
+      "contact_frame_seconds": 1.821814,
       "encounter_id": "vfx_factory_fist_capture_01",
       "event_count": 3,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 1.45,
+          "capture_frame_seconds": 1.4,
           "caster_id": "caster_01",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_01/caster_01/1/skill_cast",
@@ -127,12 +125,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
           "target_ids": [
             "caster_01"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 1.9,
+          "capture_frame_seconds": 1.709314,
           "caster_id": "caster_01",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_01/caster_01/1/skill_release",
@@ -142,12 +139,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
           "target_ids": [
             "caster_01"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 1.95,
+          "capture_frame_seconds": 1.721814,
           "caster_id": "caster_01",
           "contact_receipt_target_count": 0,
           "event_expiry_seconds": 4.45,
@@ -159,8 +155,7 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
           "target_ids": [
             "caster_01"
-          ],
-          "visual_phase": "start"
+          ]
         }
       ],
       "event_types": [
@@ -172,43 +167,53 @@
       "fixture_setup_receipts": [],
       "name_vi": "Phi Thân Liên Cước",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 1.9,
+      "release_frame_seconds": 1.709314,
       "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
       "synthetic_events": 0,
       "video_duration_seconds": 4.93,
-      "video_start_seconds": 1.4,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 1.53,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 1.253867,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 1.334,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 31
+          "frame_index": 27
         },
-        "release": {
-          "time_seconds": 1.96,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 1.734,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 39
+          "frame_index": 35,
+          "receipt_type": "skill_release"
         },
-        "state_start": {
-          "time_seconds": 2.05,
-          "receipt_type": "status_applied",
-          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
-          "frame_index": 41
+        {
+          "phase": "state_start",
+          "time_seconds": 1.822,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 36,
+          "receipt_type": "status_applied"
         },
-        "state_sustain": {
-          "time_seconds": 3.95,
-          "receipt_type": "status_applied",
-          "basis": "MIDDLE_OF_RECEIPT_DURATION",
-          "frame_index": 79
+        {
+          "phase": "state_sustain",
+          "time_seconds": 3.722,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 74,
+          "receipt_type": "status_applied"
         },
-        "state_end": {
-          "time_seconds": 6.01,
-          "receipt_type": "status_applied",
-          "basis": "REAL_EVENT_EXPIRY",
-          "frame_index": 120
+        {
+          "phase": "state_end",
+          "time_seconds": 5.622,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 112,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 6.094,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 122
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 5,
@@ -217,13 +222,13 @@
         "skill_release",
         "v63_skill_hit"
       ],
-      "contact_frame_seconds": 7.96999999999998,
+      "contact_frame_seconds": 7.75333333333334,
       "encounter_id": "vfx_factory_fist_capture_02",
       "event_count": 5,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 6.39999999999999,
+          "capture_frame_seconds": 6.33082600000001,
           "caster_id": "caster_02",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_02/caster_02/1/skill_cast",
@@ -233,12 +238,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_ultimate_human_01"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 7.89999999999998,
+          "capture_frame_seconds": 7.72083333333334,
           "caster_id": "caster_02",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_02/caster_02/1/skill_release",
@@ -248,12 +252,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_ultimate_human_01"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 7.94999999999998,
+          "capture_frame_seconds": 7.73333333333334,
           "caster_id": "caster_02",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_02/caster_02/1/v63_skill_hit/fist_factory_target_ba_quyen_ultimate_human_01",
@@ -263,12 +266,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_ultimate_human_01"
-          ],
-          "visual_phase": "contact"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 7.99999999999998,
+          "capture_frame_seconds": 7.7462962962963,
           "caster_id": "caster_02",
           "contact_receipt_target_count": 2,
           "event_id": "vfx_factory_fist_capture_02/caster_02/1/v63_skill_hit/fist_factory_target_ba_quyen_ultimate_human_02",
@@ -278,12 +280,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_ultimate_human_02"
-          ],
-          "visual_phase": "contact"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 8.04999999999998,
+          "capture_frame_seconds": 7.75925925925926,
           "caster_id": "caster_02",
           "contact_receipt_target_count": 3,
           "event_id": "vfx_factory_fist_capture_02/caster_02/1/v63_skill_hit/fist_factory_target_ba_quyen_ultimate_human_03",
@@ -293,8 +294,7 @@
           "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_ultimate_human_03"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -306,37 +306,38 @@
       "fixture_setup_receipts": [],
       "name_vi": "Sơn Hà Chấn Thiên",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 7.89999999999998,
+      "release_frame_seconds": 7.72083333333334,
       "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
       "synthetic_events": 0,
       "video_duration_seconds": 2.025,
-      "video_start_seconds": 6.34999999999999,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 6.47999999999999,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 6.19416166666667,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 6.274,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 130
+          "frame_index": 125
         },
-        "release": {
-          "time_seconds": 7.9599999999999795,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 7.746,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 159
+          "frame_index": 155,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 7.98999999999998,
-          "receipt_type": "v63_skill_hit",
+        {
+          "phase": "contact",
+          "time_seconds": 7.753,
           "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 160
+          "frame_index": 155
         },
-        "state_end": {
-          "time_seconds": 8.26999999999998,
-          "receipt_type": "v63_skill_hit",
-          "basis": "POST_CONTACT_FADE_WINDOW",
-          "frame_index": 165
+        {
+          "phase": "fade",
+          "time_seconds": 8.129,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 163
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 5,
@@ -345,13 +346,13 @@
         "skill_release",
         "v63_skill_hit"
       ],
-      "contact_frame_seconds": 9.32,
+      "contact_frame_seconds": 9.09030196969698,
       "encounter_id": "vfx_factory_fist_capture_03",
       "event_count": 5,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 8.44999999999999,
+          "capture_frame_seconds": 8.36666666666667,
           "caster_id": "caster_03",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_03/caster_03/1/skill_cast",
@@ -361,12 +362,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_03_human_01"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 9.25,
+          "capture_frame_seconds": 9.05818075757576,
           "caster_id": "caster_03",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_03/caster_03/1/skill_release",
@@ -376,12 +376,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_03_human_01"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 9.3,
+          "capture_frame_seconds": 9.07030196969698,
           "caster_id": "caster_03",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_03/caster_03/1/v63_skill_hit/fist_factory_target_ba_quyen_active_03_human_01",
@@ -391,12 +390,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_03_human_01"
-          ],
-          "visual_phase": "contact"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 9.35,
+          "capture_frame_seconds": 9.08220673160174,
           "caster_id": "caster_03",
           "contact_receipt_target_count": 2,
           "event_id": "vfx_factory_fist_capture_03/caster_03/1/v63_skill_hit/fist_factory_target_ba_quyen_active_03_human_02",
@@ -406,12 +404,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_03_human_02"
-          ],
-          "visual_phase": "contact"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 9.4,
+          "capture_frame_seconds": 9.0941114935065,
           "caster_id": "caster_03",
           "contact_receipt_target_count": 3,
           "event_id": "vfx_factory_fist_capture_03/caster_03/1/v63_skill_hit/fist_factory_target_ba_quyen_active_03_human_03",
@@ -421,8 +418,7 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_03_human_03"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -434,37 +430,38 @@
       "fixture_setup_receipts": [],
       "name_vi": "Lôi Đình Chấn Quyền",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 9.25,
+      "release_frame_seconds": 9.05818075757576,
       "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
       "synthetic_events": 0,
       "video_duration_seconds": 1.4,
-      "video_start_seconds": 8.39999999999999,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 8.52999999999999,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 8.22916666666667,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 8.309,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 171
+          "frame_index": 166
         },
-        "release": {
-          "time_seconds": 9.31,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 9.083,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 186
+          "frame_index": 182,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 9.34,
-          "receipt_type": "v63_skill_hit",
+        {
+          "phase": "contact",
+          "time_seconds": 9.09,
           "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 187
+          "frame_index": 182
         },
-        "state_end": {
-          "time_seconds": 9.620000000000001,
-          "receipt_type": "v63_skill_hit",
-          "basis": "POST_CONTACT_FADE_WINDOW",
-          "frame_index": 192
+        {
+          "phase": "fade",
+          "time_seconds": 9.545,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 191
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 5,
@@ -473,13 +470,13 @@
         "skill_release",
         "v63_skill_hit"
       ],
-      "contact_frame_seconds": 10.72,
+      "contact_frame_seconds": 10.5055555555556,
       "encounter_id": "vfx_factory_fist_capture_04",
       "event_count": 5,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 9.85000000000001,
+          "capture_frame_seconds": 9.77608933333335,
           "caster_id": "caster_04",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_04/caster_04/1/skill_cast",
@@ -489,12 +486,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_04_human_01"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 10.65,
+          "capture_frame_seconds": 10.4722222222222,
           "caster_id": "caster_04",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_04/caster_04/1/skill_release",
@@ -504,12 +500,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_04_human_01"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 10.7,
+          "capture_frame_seconds": 10.4855555555556,
           "caster_id": "caster_04",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_04/caster_04/1/v63_skill_hit/fist_factory_target_ba_quyen_active_04_human_01",
@@ -519,12 +514,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_04_human_01"
-          ],
-          "visual_phase": "contact"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 10.75,
+          "capture_frame_seconds": 10.4988888888889,
           "caster_id": "caster_04",
           "contact_receipt_target_count": 2,
           "event_id": "vfx_factory_fist_capture_04/caster_04/1/v63_skill_hit/fist_factory_target_ba_quyen_active_04_human_02",
@@ -534,12 +528,11 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_04_human_02"
-          ],
-          "visual_phase": "contact"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 10.8,
+          "capture_frame_seconds": 10.5122222222222,
           "caster_id": "caster_04",
           "contact_receipt_target_count": 3,
           "event_id": "vfx_factory_fist_capture_04/caster_04/1/v63_skill_hit/fist_factory_target_ba_quyen_active_04_human_03",
@@ -549,8 +542,7 @@
           "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
           "target_ids": [
             "fist_factory_target_ba_quyen_active_04_human_03"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -562,37 +554,38 @@
       "fixture_setup_receipts": [],
       "name_vi": "Địa Mạch Liên Chấn",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 10.65,
+      "release_frame_seconds": 10.4722222222222,
       "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
       "synthetic_events": 0,
       "video_duration_seconds": 1.4,
-      "video_start_seconds": 9.80000000000001,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 9.93000000000001,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 9.6357142857143,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 9.716,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 199
+          "frame_index": 194
         },
-        "release": {
-          "time_seconds": 10.71,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 10.497,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 214
+          "frame_index": 210,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 10.739999999999998,
-          "receipt_type": "v63_skill_hit",
+        {
+          "phase": "contact",
+          "time_seconds": 10.506,
           "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 215
+          "frame_index": 210
         },
-        "state_end": {
-          "time_seconds": 11.02,
-          "receipt_type": "v63_skill_hit",
-          "basis": "POST_CONTACT_FADE_WINDOW",
-          "frame_index": 220
+        {
+          "phase": "fade",
+          "time_seconds": 10.952,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 219
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 3,
@@ -601,13 +594,13 @@
         "skill_release",
         "status_applied"
       ],
-      "contact_frame_seconds": 11.85,
+      "contact_frame_seconds": 11.602398,
       "encounter_id": "vfx_factory_fist_capture_05",
       "event_count": 3,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 11.25,
+          "capture_frame_seconds": 11.15,
           "caster_id": "caster_05",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_05/caster_05/1/skill_cast",
@@ -617,12 +610,11 @@
           "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
           "target_ids": [
             "caster_05"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 11.7,
+          "capture_frame_seconds": 11.4912868888889,
           "caster_id": "caster_05",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_05/caster_05/1/skill_release",
@@ -632,12 +624,11 @@
           "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
           "target_ids": [
             "caster_05"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 11.75,
+          "capture_frame_seconds": 11.502398,
           "caster_id": "caster_05",
           "contact_receipt_target_count": 0,
           "event_expiry_seconds": 4.45,
@@ -649,8 +640,7 @@
           "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
           "target_ids": [
             "caster_05"
-          ],
-          "visual_phase": "start"
+          ]
         }
       ],
       "event_types": [
@@ -662,43 +652,53 @@
       "fixture_setup_receipts": [],
       "name_vi": "Kim Cang Hộ Thể",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 11.7,
+      "release_frame_seconds": 11.4912868888889,
       "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
       "synthetic_events": 0,
       "video_duration_seconds": 4.93,
-      "video_start_seconds": 11.2,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 11.33,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 11.0367697777778,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 11.117,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 227
+          "frame_index": 222
         },
-        "release": {
-          "time_seconds": 11.76,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 11.516,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 235
+          "frame_index": 230,
+          "receipt_type": "skill_release"
         },
-        "state_start": {
-          "time_seconds": 11.85,
-          "receipt_type": "status_applied",
-          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
-          "frame_index": 237
+        {
+          "phase": "state_start",
+          "time_seconds": 11.602,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 232,
+          "receipt_type": "status_applied"
         },
-        "state_sustain": {
-          "time_seconds": 13.75,
-          "receipt_type": "status_applied",
-          "basis": "MIDDLE_OF_RECEIPT_DURATION",
-          "frame_index": 275
+        {
+          "phase": "state_sustain",
+          "time_seconds": 13.502,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 270,
+          "receipt_type": "status_applied"
         },
-        "state_end": {
-          "time_seconds": 15.81,
-          "receipt_type": "status_applied",
-          "basis": "REAL_EVENT_EXPIRY",
-          "frame_index": 316
+        {
+          "phase": "state_end",
+          "time_seconds": 15.402,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 308,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 15.877,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 318
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 3,
@@ -707,13 +707,13 @@
         "skill_release",
         "status_applied"
       ],
-      "contact_frame_seconds": 16.8000000000001,
+      "contact_frame_seconds": 16.5426746363637,
       "encounter_id": "vfx_factory_fist_capture_06",
       "event_count": 3,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 16.2000000000001,
+          "capture_frame_seconds": 16.1145256666667,
           "caster_id": "caster_06",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_06/caster_06/1/skill_cast",
@@ -723,12 +723,11 @@
           "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
           "target_ids": [
             "caster_06"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 16.6500000000001,
+          "capture_frame_seconds": 16.4305534242425,
           "caster_id": "caster_06",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_06/caster_06/1/skill_release",
@@ -738,12 +737,11 @@
           "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
           "target_ids": [
             "caster_06"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 16.7000000000001,
+          "capture_frame_seconds": 16.4426746363637,
           "caster_id": "caster_06",
           "contact_receipt_target_count": 0,
           "event_expiry_seconds": 4.45,
@@ -755,8 +753,7 @@
           "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
           "target_ids": [
             "caster_06"
-          ],
-          "visual_phase": "start"
+          ]
         }
       ],
       "event_types": [
@@ -768,43 +765,53 @@
       "fixture_setup_receipts": [],
       "name_vi": "Phản Chấn Quyền",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 16.6500000000001,
+      "release_frame_seconds": 16.4305534242425,
       "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
       "synthetic_events": 0,
       "video_duration_seconds": 4.93,
-      "video_start_seconds": 16.1500000000001,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 16.280000000000097,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 15.9721563333334,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 16.052,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 326
+          "frame_index": 321
         },
-        "release": {
-          "time_seconds": 16.7100000000001,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 16.456,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 334
+          "frame_index": 329,
+          "receipt_type": "skill_release"
         },
-        "state_start": {
-          "time_seconds": 16.8000000000001,
-          "receipt_type": "status_applied",
-          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
-          "frame_index": 336
+        {
+          "phase": "state_start",
+          "time_seconds": 16.543,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 331,
+          "receipt_type": "status_applied"
         },
-        "state_sustain": {
-          "time_seconds": 18.7000000000001,
-          "receipt_type": "status_applied",
-          "basis": "MIDDLE_OF_RECEIPT_DURATION",
-          "frame_index": 374
+        {
+          "phase": "state_sustain",
+          "time_seconds": 18.443,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 369,
+          "receipt_type": "status_applied"
         },
-        "state_end": {
-          "time_seconds": 20.760000000000097,
-          "receipt_type": "status_applied",
-          "basis": "REAL_EVENT_EXPIRY",
-          "frame_index": 415
+        {
+          "phase": "state_end",
+          "time_seconds": 20.343,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 407,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 20.812,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 416
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 3,
@@ -813,13 +820,13 @@
         "skill_release",
         "status_applied"
       ],
-      "contact_frame_seconds": 22.4000000000002,
+      "contact_frame_seconds": 22.1897596666666,
       "encounter_id": "vfx_factory_fist_capture_07",
       "event_count": 3,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 21.1500000000002,
+          "capture_frame_seconds": 21.0497946666667,
           "caster_id": "caster_07",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_07/caster_07/1/skill_cast",
@@ -829,12 +836,11 @@
           "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
           "target_ids": [
             "caster_07"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 22.2500000000002,
+          "capture_frame_seconds": 22.073093,
           "caster_id": "caster_07",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_07/caster_07/1/skill_release",
@@ -844,12 +850,11 @@
           "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
           "target_ids": [
             "caster_07"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 22.3000000000002,
+          "capture_frame_seconds": 22.0897596666666,
           "caster_id": "caster_07",
           "contact_receipt_target_count": 0,
           "event_expiry_seconds": 5.15,
@@ -861,8 +866,7 @@
           "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
           "target_ids": [
             "caster_07"
-          ],
-          "visual_phase": "start"
+          ]
         }
       ],
       "event_types": [
@@ -874,43 +878,53 @@
       "fixture_setup_receipts": [],
       "name_vi": "Bất Động Kim Chung",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 22.2500000000002,
+      "release_frame_seconds": 22.073093,
       "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
       "synthetic_events": 0,
       "video_duration_seconds": 5.63,
-      "video_start_seconds": 21.1000000000002,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 21.2300000000002,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 20.9068223333333,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 20.987,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 425
+          "frame_index": 420
         },
-        "release": {
-          "time_seconds": 22.310000000000198,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 22.098,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 446
+          "frame_index": 442,
+          "receipt_type": "skill_release"
         },
-        "state_start": {
-          "time_seconds": 22.4000000000002,
-          "receipt_type": "status_applied",
-          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
-          "frame_index": 448
+        {
+          "phase": "state_start",
+          "time_seconds": 22.19,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 444,
+          "receipt_type": "status_applied"
         },
-        "state_sustain": {
-          "time_seconds": 24.3000000000002,
-          "receipt_type": "status_applied",
-          "basis": "MIDDLE_OF_RECEIPT_DURATION",
-          "frame_index": 486
+        {
+          "phase": "state_sustain",
+          "time_seconds": 24.09,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 482,
+          "receipt_type": "status_applied"
         },
-        "state_end": {
-          "time_seconds": 26.3600000000002,
-          "receipt_type": "status_applied",
-          "basis": "REAL_EVENT_EXPIRY",
-          "frame_index": 527
+        {
+          "phase": "state_end",
+          "time_seconds": 25.99,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 520,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 26.447,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 529
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 3,
@@ -919,13 +933,13 @@
         "skill_release",
         "v63_skill_hit"
       ],
-      "contact_frame_seconds": 27.5700000000003,
+      "contact_frame_seconds": 27.331464095238,
       "encounter_id": "vfx_factory_fist_capture_08",
       "event_count": 3,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 26.8000000000002,
+          "capture_frame_seconds": 26.6999999999999,
           "caster_id": "caster_08",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_08/caster_08/1/skill_cast",
@@ -935,12 +949,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
           "target_ids": [
             "foe_08"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 27.5000000000003,
+          "capture_frame_seconds": 27.2971783809522,
           "caster_id": "caster_08",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_08/caster_08/1/skill_release",
@@ -950,12 +963,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
           "target_ids": [
             "foe_08"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 27.5500000000003,
+          "capture_frame_seconds": 27.311464095238,
           "caster_id": "caster_08",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_08/caster_08/1/v63_skill_hit/foe_08",
@@ -965,8 +977,7 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
           "target_ids": [
             "foe_08"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -978,37 +989,38 @@
       "fixture_setup_receipts": [],
       "name_vi": "Huyết Liệt Quyền",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 27.5000000000003,
+      "release_frame_seconds": 27.2971783809522,
       "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
       "synthetic_events": 0,
       "video_duration_seconds": 1.4,
-      "video_start_seconds": 26.7500000000002,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 26.880000000000198,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 26.5539413333332,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 26.634,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 538
+          "frame_index": 533
         },
-        "release": {
-          "time_seconds": 27.560000000000297,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 27.322,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 551
+          "frame_index": 546,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 27.5900000000003,
-          "receipt_type": "v63_skill_hit",
+        {
+          "phase": "contact",
+          "time_seconds": 27.331,
           "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 552
+          "frame_index": 547
         },
-        "state_end": {
-          "time_seconds": 27.8700000000003,
-          "receipt_type": "v63_skill_hit",
-          "basis": "POST_CONTACT_FADE_WINDOW",
+        {
+          "phase": "fade",
+          "time_seconds": 27.87,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
           "frame_index": 557
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 4,
@@ -1018,13 +1030,13 @@
         "v63_skill_hit",
         "status_applied"
       ],
-      "contact_frame_seconds": 28.8000000000003,
+      "contact_frame_seconds": 28.5361705555554,
       "encounter_id": "vfx_factory_fist_capture_09",
       "event_count": 4,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 28.2000000000003,
+          "capture_frame_seconds": 28.0999999999999,
           "caster_id": "caster_09",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_09/caster_09/1/skill_cast",
@@ -1034,12 +1046,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
           "target_ids": [
             "foe_09"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 28.6500000000003,
+          "capture_frame_seconds": 28.4222816666665,
           "caster_id": "caster_09",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_09/caster_09/1/skill_release",
@@ -1049,12 +1060,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
           "target_ids": [
             "foe_09"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 28.7000000000003,
+          "capture_frame_seconds": 28.4361705555554,
           "caster_id": "caster_09",
           "contact_receipt_target_count": 0,
           "event_expiry_seconds": 6.45,
@@ -1066,12 +1076,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
           "target_ids": [
             "foe_09"
-          ],
-          "visual_phase": "start"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 28.7500000000003,
+          "capture_frame_seconds": 28.4504562698411,
           "caster_id": "caster_09",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_09/caster_09/1/v63_skill_hit/foe_09",
@@ -1081,8 +1090,7 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
           "target_ids": [
             "foe_09"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -1095,49 +1103,53 @@
       "fixture_setup_receipts": [],
       "name_vi": "Đoạn Mạch Liên Quyền",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 28.6500000000003,
+      "release_frame_seconds": 28.4222816666665,
       "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
       "synthetic_events": 0,
       "video_duration_seconds": 6.93,
-      "video_start_seconds": 28.1500000000003,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 28.2800000000003,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 27.9609293333332,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 28.041,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 566
+          "frame_index": 561
         },
-        "release": {
-          "time_seconds": 28.7100000000003,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 28.447,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 574
+          "frame_index": 569,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 28.790000000000298,
-          "receipt_type": "v63_skill_hit",
-          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 576
+        {
+          "phase": "state_start",
+          "time_seconds": 28.536,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 571,
+          "receipt_type": "status_applied"
         },
-        "state_start": {
-          "time_seconds": 28.800000000000303,
-          "receipt_type": "status_applied",
-          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
-          "frame_index": 576
+        {
+          "phase": "state_sustain",
+          "time_seconds": 31.436,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 629,
+          "receipt_type": "status_applied"
         },
-        "state_sustain": {
-          "time_seconds": 31.7000000000003,
-          "receipt_type": "status_applied",
-          "basis": "MIDDLE_OF_RECEIPT_DURATION",
-          "frame_index": 634
+        {
+          "phase": "state_end",
+          "time_seconds": 34.336,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 687,
+          "receipt_type": "status_applied"
         },
-        "state_end": {
-          "time_seconds": 34.7600000000003,
-          "receipt_type": "status_applied",
-          "basis": "REAL_EVENT_EXPIRY",
-          "frame_index": 695
+        {
+          "phase": "fade",
+          "time_seconds": 34.801,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 696
         }
-      }
+      ]
     },
     {
       "accepted_event_count": 4,
@@ -1147,13 +1159,13 @@
         "v63_skill_hit",
         "status_applied"
       ],
-      "contact_frame_seconds": 35.7500000000001,
+      "contact_frame_seconds": 35.463226111111,
       "encounter_id": "vfx_factory_fist_capture_10",
       "event_count": 4,
       "event_trace": [
         {
           "accepted": true,
-          "capture_frame_seconds": 35.1500000000001,
+          "capture_frame_seconds": 35.0333333333332,
           "caster_id": "caster_10",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_10/caster_10/1/skill_cast",
@@ -1163,12 +1175,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
           "target_ids": [
             "foe_10"
-          ],
-          "visual_phase": "charge"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 35.6000000000001,
+          "capture_frame_seconds": 35.3493372222221,
           "caster_id": "caster_10",
           "contact_receipt_target_count": 0,
           "event_id": "vfx_factory_fist_capture_10/caster_10/1/skill_release",
@@ -1178,12 +1189,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
           "target_ids": [
             "foe_10"
-          ],
-          "visual_phase": "release"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 35.6500000000001,
+          "capture_frame_seconds": 35.363226111111,
           "caster_id": "caster_10",
           "contact_receipt_target_count": 0,
           "event_expiry_seconds": 6.45,
@@ -1195,12 +1205,11 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
           "target_ids": [
             "foe_10"
-          ],
-          "visual_phase": "start"
+          ]
         },
         {
           "accepted": true,
-          "capture_frame_seconds": 35.7000000000001,
+          "capture_frame_seconds": 35.3771149999998,
           "caster_id": "caster_10",
           "contact_receipt_target_count": 1,
           "event_id": "vfx_factory_fist_capture_10/caster_10/1/v63_skill_hit/foe_10",
@@ -1210,8 +1219,7 @@
           "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
           "target_ids": [
             "foe_10"
-          ],
-          "visual_phase": "contact"
+          ]
         }
       ],
       "event_types": [
@@ -1224,49 +1232,624 @@
       "fixture_setup_receipts": [],
       "name_vi": "Liệp Huyết Truy Đả",
       "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
-      "release_frame_seconds": 35.6000000000001,
+      "release_frame_seconds": 35.3493372222221,
       "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
       "synthetic_events": 0,
       "video_duration_seconds": 6.93,
-      "video_start_seconds": 35.1000000000001,
-      "phase_samples": {
-        "charge": {
-          "time_seconds": 35.230000000000096,
-          "receipt_type": "skill_cast",
+      "video_start_seconds": 34.8977536666665,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 34.978,
           "basis": "REAL_MAPBATTLE_SKILL_CAST",
-          "frame_index": 705
+          "frame_index": 700
         },
-        "release": {
-          "time_seconds": 35.6600000000001,
-          "receipt_type": "skill_release",
+        {
+          "phase": "release",
+          "time_seconds": 35.374,
           "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
-          "frame_index": 713
+          "frame_index": 707,
+          "receipt_type": "skill_release"
         },
-        "contact": {
-          "time_seconds": 35.7400000000001,
-          "receipt_type": "v63_skill_hit",
-          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
-          "frame_index": 715
+        {
+          "phase": "state_start",
+          "time_seconds": 35.463,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 709,
+          "receipt_type": "status_applied"
         },
-        "state_start": {
-          "time_seconds": 35.7500000000001,
-          "receipt_type": "status_applied",
-          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
-          "frame_index": 715
+        {
+          "phase": "state_sustain",
+          "time_seconds": 38.363,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 767,
+          "receipt_type": "status_applied"
         },
-        "state_sustain": {
-          "time_seconds": 38.6500000000001,
-          "receipt_type": "status_applied",
-          "basis": "MIDDLE_OF_RECEIPT_DURATION",
-          "frame_index": 773
+        {
+          "phase": "state_end",
+          "time_seconds": 41.263,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 825,
+          "receipt_type": "status_applied"
         },
-        "state_end": {
-          "time_seconds": 41.7100000000001,
-          "receipt_type": "status_applied",
-          "basis": "REAL_EVENT_EXPIRY",
-          "frame_index": 834
+        {
+          "phase": "fade",
+          "time_seconds": 41.738,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 835
         }
-      }
+      ]
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 42.6091755555556,
+      "encounter_id": "vfx_factory_fist_capture_11",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 41.9819333333334,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_11/caster_11/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+          "target_ids": [
+            "foe_11"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 42.5752866666667,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_11/caster_11/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.72999997138977,
+          "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+          "target_ids": [
+            "foe_11"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 42.5891755555556,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_fist_capture_11/caster_11/1/v63_skill_hit/foe_11",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.72999997138977,
+          "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+          "target_ids": [
+            "foe_11"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Trấn Địa Quyền",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 42.5752866666667,
+      "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 41.8444296666667,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 41.924,
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 838
+        },
+        {
+          "phase": "release",
+          "time_seconds": 42.6,
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 852,
+          "receipt_type": "skill_release"
+        },
+        {
+          "phase": "contact",
+          "time_seconds": 42.609,
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 852
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 43.16,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 863
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 43.8336456666668,
+      "encounter_id": "vfx_factory_fist_capture_12",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 43.4000000000001,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_12/caster_12/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+          "target_ids": [
+            "caster_12"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 43.7169790000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_12/caster_12/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.45,
+          "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+          "target_ids": [
+            "caster_12"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 43.7336456666668,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 4.45,
+          "event_id": "vfx_factory_fist_capture_12/caster_12/1/status_applied/caster_12/guard",
+          "event_state_duration_seconds": 4.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.45,
+          "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+          "target_ids": [
+            "caster_12"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Trấn Sơn Hộ Đồng",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 43.7169790000002,
+      "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 4.93,
+      "video_start_seconds": 43.2535548148149,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 43.334,
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 867
+        },
+        {
+          "phase": "release",
+          "time_seconds": 43.742,
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 875,
+          "receipt_type": "skill_release"
+        },
+        {
+          "phase": "state_start",
+          "time_seconds": 43.834,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 877,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "state_sustain",
+          "time_seconds": 45.734,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 915,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "state_end",
+          "time_seconds": 47.634,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 953,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 48.094,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 962
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 4,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 48.7678150000003,
+      "encounter_id": "vfx_factory_fist_capture_13",
+      "event_count": 4,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 48.3321713333336,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_13/caster_13/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+          "target_ids": [
+            "foe_13"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 48.6540309629632,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_13/caster_13/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.45,
+          "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+          "target_ids": [
+            "foe_13"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 48.6678150000003,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 6.45,
+          "event_id": "vfx_factory_fist_capture_13/caster_13/1/status_applied/foe_13/mark",
+          "event_state_duration_seconds": 6.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.45,
+          "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+          "target_ids": [
+            "foe_13"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 48.6811483333336,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_fist_capture_13/caster_13/1/v63_skill_hit/foe_13",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.45,
+          "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+          "target_ids": [
+            "foe_13"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Huyết Khí Hồi Lưu",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 48.6540309629632,
+      "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 6.93,
+      "video_start_seconds": 48.1928910000002,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 48.273,
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 965
+        },
+        {
+          "phase": "release",
+          "time_seconds": 48.679,
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 974,
+          "receipt_type": "skill_release"
+        },
+        {
+          "phase": "state_start",
+          "time_seconds": 48.768,
+          "basis": "REAL_MAPBATTLE_STATUS_APPLIED",
+          "frame_index": 975,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "state_sustain",
+          "time_seconds": 51.668,
+          "basis": "REAL_MAPBATTLE_STATUS_DURATION",
+          "frame_index": 1033,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "state_end",
+          "time_seconds": 54.568,
+          "basis": "REAL_MAPBATTLE_STATUS_EXPIRY",
+          "frame_index": 1091,
+          "receipt_type": "status_applied"
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 55.033,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 1101
+        }
+      ]
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 56.692363333334,
+      "encounter_id": "vfx_factory_fist_capture_14",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 55.2647920000005,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_14/caster_14/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.725,
+          "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+          "target_ids": [
+            "fist_factory_target_huyet_quyen_ultimate_human_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.6578426666673,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_fist_capture_14/caster_14/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 3.25,
+          "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+          "target_ids": [
+            "fist_factory_target_huyet_quyen_ultimate_human_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.672363333334,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_fist_capture_14/caster_14/1/v63_skill_hit/fist_factory_target_huyet_quyen_ultimate_human_01",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 3.25,
+          "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+          "target_ids": [
+            "fist_factory_target_huyet_quyen_ultimate_human_01"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.682384333334,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_fist_capture_14/caster_14/1/v63_skill_hit/fist_factory_target_huyet_quyen_ultimate_human_02",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 3.25,
+          "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+          "target_ids": [
+            "fist_factory_target_huyet_quyen_ultimate_human_02"
+          ]
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 56.6962732222229,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_fist_capture_14/caster_14/1/v63_skill_hit/fist_factory_target_huyet_quyen_ultimate_human_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 3.25,
+          "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+          "target_ids": [
+            "fist_factory_target_huyet_quyen_ultimate_human_03"
+          ]
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_01"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_00/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_01"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_fist_capture_14/event/4",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_01"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_00",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_00/1/v63_skill_hit/fist_factory_target_huyet_quyen_ultimate_human_01",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_01"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_01/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_01/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_fist_capture_14/event/9",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_01",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_01/1/v63_skill_hit/fist_factory_target_huyet_quyen_ultimate_human_02",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_02"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_02/1/skill_cast",
+          "event_type": "skill_cast",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_03"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_02/1/skill_release",
+          "event_type": "skill_release",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_03"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_fist_capture_14/event/14",
+          "event_type": "status_applied",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_03"
+        },
+        {
+          "bound_to_candidate_visual": false,
+          "caster_id": "factory_setup_poisoner_14_02",
+          "event_id": "vfx_factory_fist_capture_14/factory_setup_poisoner_14_02/1/v63_skill_hit/fist_factory_target_huyet_quyen_ultimate_human_03",
+          "event_type": "v63_skill_hit",
+          "real_mapbattle_event": true,
+          "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+          "target_id": "fist_factory_target_huyet_quyen_ultimate_human_03"
+        }
+      ],
+      "name_vi": "Huyết Hải Quyền Vực",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 56.6578426666673,
+      "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 2.025,
+      "video_start_seconds": 55.1291666666672,
+      "phase_samples": [
+        {
+          "phase": "charge",
+          "time_seconds": 55.209,
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 1104
+        },
+        {
+          "phase": "release",
+          "time_seconds": 56.683,
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 1134,
+          "receipt_type": "skill_release"
+        },
+        {
+          "phase": "contact",
+          "time_seconds": 56.692,
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 1134
+        },
+        {
+          "phase": "fade",
+          "time_seconds": 57.064,
+          "basis": "POST_RECEIPT_FADE_WINDOW",
+          "frame_index": 1141
+        }
+      ]
     }
   ],
   "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
@@ -1274,46 +1857,35 @@
     1280,
     720
   ],
-  "source_head": "c5c52e3dbffca31b78e21facafabad1d5726f40c",
   "receipt_summary": {
-    "candidate_events": 41,
-    "accepted_candidate_events": 41,
+    "candidate_events": 56,
+    "accepted_candidate_events": 56,
+    "fixture_setup_receipts": 12,
     "synthetic_candidate_events": 0,
-    "fixture_setup_receipts": 0,
-    "event_types": [
-      "skill_cast",
-      "skill_release",
-      "status_applied",
-      "v63_skill_hit"
-    ],
-    "fixture_policy": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY; SETUP_EVENTS_ARE_NOT_CANDIDATE_EVENTS"
+    "setup_events_separate_from_candidate_events": true
   },
   "movie": {
     "path": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
     "codec": "h264",
-    "pixel_format": "yuv420p",
     "viewport_px": [
       1280,
       720
     ],
     "fps": 20,
-    "duration_seconds": 42.1,
-    "frame_count": 842,
-    "bytes": 2613015,
-    "sha256": "7b71d80b2da7d7d7d337c00da810ed80cc38db6f55243333a12e524d565be698",
-    "full_decode": "PASS"
+    "duration_seconds": 58.45,
+    "full_decode": "PASS",
+    "sha256": "27ba7749c0a207f0c8f1631fe4a5b6f3bb8fbb72be169dcf06fb9f1438b31fd3",
+    "source_capture_window_seconds": {
+      "start": 42.8,
+      "end": 101.25,
+      "duration": 58.45
+    },
+    "timeline_basis": "GODOT_RUNNER_VIDEO_START_SECONDS; EXTERNAL_STARTUP_TRIMMED"
   },
   "contact_sheet": {
     "path": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
-    "columns": [
-      "CHARGE",
-      "RELEASE",
-      "CONTACT",
-      "STATE START",
-      "SUSTAIN",
-      "STATE END / FADE"
-    ],
-    "phase_samples": "RECEIPT_TIMED; ACTUAL_MAPBATTLE_EVENTS_ONLY",
-    "sha256": "24ce8909642a098a3a80caaf507f335895d4297a725237c8f3755e9c2386bdf7"
+    "sha256": "33518c3362301dbb38f069f2b088802020b7cd84dc0e06f48c2678e2920d21cd",
+    "columns": 5,
+    "phase_samples": "RECEIPT_TIMED_REAL_MAPBATTLE_ONLY"
   }
 }

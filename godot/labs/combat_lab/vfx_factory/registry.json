@@ -19242,7 +19242,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist01/assets/PROVENANCE.md",
@@ -19437,7 +19437,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist02/assets/v4/guardian_spirit_master.webp",
@@ -19669,7 +19669,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 5 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 5 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist03/assets/godfist_master.webp",
@@ -19902,7 +19902,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 5 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 5 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist04/assets/threefold_impact_master.webp",
@@ -20135,7 +20135,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 5 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 5 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist05/assets/molten_shard_master.webp",
@@ -20300,7 +20300,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64",
@@ -20464,7 +20464,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist08/assets/source/counterforce_master.png.b64",
@@ -20628,7 +20628,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist10/assets/source/r2_illustrated_bell_640.webp.b64",
@@ -20800,7 +20800,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 3 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist11/assets/source/f11_charge_master.webp",
@@ -21286,7 +21286,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING",
-      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 4 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 4 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist12/assets/r9_sources/f12_r9_charge_master.webp.b64",
@@ -21503,7 +21503,7 @@
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "DISTINCT_SOURCE_PHASE_MASTERS; FRAME_BY_FRAME_SEQUENCE_PENDING",
-      "review_note": "Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 4 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD.",
+      "review_note": "Factory candidate reuses the existing Fist14 R5 package with its owner rework status preserved; the R7 and R8 G3-failed lanes remain excluded. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native candidate-event capture passed in Godot 4.7.2 at 1280x720/20 FPS: 4 accepted MapBattle fixture events, zero synthetic events. Receipt-timed phase samples, contact sheet and combined video are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist14/liep_huyet_truy_da.gd",
@@ -29011,11 +29011,11 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "SOURCE_GATE_INHERITED_FROM_EXISTING_LEDGER; FACTORY_CANDIDATE_ONLY",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING",
-      "review_note": "Restored only outputs missing from the tracked first-party generator. Distinct mineral fist and local earth contact; source art is code-painted and still needs 1x visual and owner review. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD.",
+      "review_note": "Restored only outputs missing from the tracked first-party generator. Distinct mineral fist and local earth contact; source art is code-painted and still needs 1x visual and owner review. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist03/assets/godfist_master.webp",
@@ -29025,8 +29025,18 @@
         "labs/combat_lab/fist06/tran_dia_quyen.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "tools/vfx/generate_fist06_tran_dia_quyen.py"
-      ]
+        "tools/vfx/generate_fist06_tran_dia_quyen.py",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+      ],
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0,
+      "native_index": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit"
     },
     {
       "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
@@ -29545,11 +29555,11 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "SOURCE_GATE_INHERITED_FROM_EXISTING_LEDGER; FACTORY_CANDIDATE_ONLY",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING",
-      "review_note": "Restored source from tracked project-owned Fist05/Fist07 material through the tracked Fist09 generator. Guard start and sustain bind to the real status receipt; the block-contact atlas stays hidden because this fixture has no exact defended-hit receipt. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD.",
+      "review_note": "Restored source from tracked project-owned Fist05/Fist07 material through the tracked Fist09 generator. Guard start and sustain bind to the real status receipt; the block-contact atlas stays hidden because this fixture has no exact defended-hit receipt. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 3 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist05/assets/spires_master.webp",
@@ -29561,8 +29571,18 @@
         "labs/combat_lab/fist09/tran_son_ho_dong.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "tools/vfx/generate_fist09_tran_son_ho_dong.py"
-      ]
+        "tools/vfx/generate_fist09_tran_son_ho_dong.py",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+      ],
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0,
+      "native_index": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied"
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
@@ -30232,11 +30252,11 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "SOURCE_GATE_INHERITED_FROM_EXISTING_LEDGER; FACTORY_CANDIDATE_ONLY",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING",
-      "review_note": "Restored the missing output atlases from the tracked first-party Fist03 paint sources. This is a coded material derivative, explicitly not new hand-painted or image-generated art; one hit and six-second mark are only visible after their exact MapBattle receipts. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD.",
+      "review_note": "Restored the missing output atlases from the tracked first-party Fist03 paint sources. This is a coded material derivative, explicitly not new hand-painted or image-generated art; one hit and six-second mark are only visible after their exact MapBattle receipts. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 4 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist03/assets/godfist_master.webp",
@@ -30248,8 +30268,18 @@
         "labs/combat_lab/fist13/huyet_khi_hoi_luu.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "tools/vfx/generate_fist13_huyet_khi_hoi_luu.py"
-      ]
+        "tools/vfx/generate_fist13_huyet_khi_hoi_luu.py",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
+      ],
+      "native_event_count": 4,
+      "native_accepted_event_count": 4,
+      "native_synthetic_event_count": 0,
+      "native_index": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=4; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit"
     },
     {
       "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
@@ -30873,11 +30903,11 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "SOURCE_GATE_INHERITED_FROM_EXISTING_LEDGER; FACTORY_CANDIDATE_ONLY",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; NATIVE_MOTION_REVIEW_PENDING",
-      "review_note": "Restored the missing first-party code-painted R2 outputs from the tracked deterministic generator. Fixture-only poison setup is a separate real MapBattle cast on the three exact targets; only the candidate ultimate’s actual hit receipts trigger contact, with no fabricated poison, damage, or status. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD.",
+      "review_note": "Restored the missing first-party code-painted R2 outputs from the tracked deterministic generator. Fixture-only poison setup is a separate real MapBattle cast on the three exact targets; only the candidate ultimate’s actual hit receipts trigger contact, with no fabricated poison, damage, or status. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Exact skill and receipt contract come from the Human catalogue. Only MapBattle receipts trigger contact or persistent state. No synthetic damage or status. Native capture pending; owner approval pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD. Native 1280×720/20 FPS H.264 capture passed full decode; 5 real candidate event(s) accepted, with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; owner visual review remains pending; PvE HOLD.",
       "source_paths": [
         "data/combat/v63_human_combat_catalog.json",
         "labs/combat_lab/fist15/assets/generated/f15_charge.png",
@@ -30888,7 +30918,10 @@
         "labs/combat_lab/fist15/huyet_hai_quyen_vuc.tscn",
         "labs/combat_lab/fist_factory_batch1_20261125/README.md",
         "labs/combat_lab/fist_factory_batch1_20261125/batch_config.json",
-        "tools/vfx/generate_fist15_huyet_hai_quyen_vuc.py"
+        "tools/vfx/generate_fist15_huyet_hai_quyen_vuc.py",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
       "fixture_setup": {
         "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
@@ -30898,7 +30931,14 @@
           "fist_factory_target_huyet_quyen_ultimate_human_03"
         ],
         "caster_side": "disciple"
-      }
+      },
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0,
+      "native_index": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit"
     }
   ],
   "batch_status": {
@@ -30930,7 +30970,7 @@
     },
     "fist_human_cast_batch1_20261125": {
       "source_status": "SOURCE_BACKED_15_HUMAN_CAST_MASTERS; EXISTING_LAB_ASSETS_REUSED_AND_MISSING_GENERATED_OUTPUTS_RESTORED",
-      "native_import_capture": "NATIVE_PENDING; SHARED_RUNNER; OWNER=PENDING; PVE=HOLD",
+      "native_import_capture": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE; SKILLS=15; ACCEPTED_EVENTS=56; SETUP_RECEIPTS=12_SEPARATE; SYNTHETIC=0; OWNER=PENDING; PVE=HOLD",
       "owner_status": "OWNER_VISUAL_PENDING",
       "pve": "HOLD"
     },
@@ -31033,10 +31073,14 @@
     },
     "fist": {
       "expected_count": 15,
-      "technical_status": "NATIVE_PENDING",
-      "receipt_status": "REAL_MAPBATTLE_V2_EXACT_SKILL_FIXTURES; CAPTURE_PENDING",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_CAPTURE; SKILLS=15; ACCEPTED_EVENTS=56; SETUP_RECEIPTS=12_SEPARATE; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied,v63_skill_hit",
       "owner_approval": "PENDING",
-      "pve": "HOLD"
+      "pve": "HOLD",
+      "last_capture_index": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_capture_index.json",
+      "video": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
+      "contact_sheet": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
+      "visual_review_status": "RECEIPT_TIMED_CHARGE_RELEASE_CONTACT_AND_STATUS_PHASE_SAMPLES_CAPTURED; ART_SELF_REVIEW_PENDING"
     },
     "sword": {
       "expected_count": 17,

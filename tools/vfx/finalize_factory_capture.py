@@ -103,13 +103,17 @@ def contact_sheet(index: dict, video: Path, output: Path) -> None:
     rows = (len(samples) + columns - 1) // columns
     sheet = Image.new("RGB", (columns * tile_w, rows * (tile_h + label_h)), (18, 21, 29))
     draw = ImageDraw.Draw(sheet)
-    font = ImageFont.load_default()
+    font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    font = ImageFont.truetype(str(font_path), 11) if font_path.is_file() else ImageFont.load_default()
     for i, (name, phase, at) in enumerate(samples):
         frame = grab_frame(video, at)
         frame.thumbnail((tile_w - 4, tile_h), Image.Resampling.LANCZOS)
         x, y = (i % columns) * tile_w, (i // columns) * (tile_h + label_h)
         sheet.paste(frame, (x + (tile_w - frame.width) // 2, y + label_h))
-        draw.text((x + 4, y + 6), f"{name} · {phase} · {at:.2f}s", fill=(240, 240, 245), font=font)
+        label = f"{name} · {phase} · {at:.2f}s"
+        while len(label) > 8 and draw.textlength(label, font=font) > tile_w - 8:
+            label = label[:-5].rstrip() + "…"
+        draw.text((x + 4, y + 6), label, fill=(240, 240, 245), font=font)
     sheet.save(output, optimize=True)
 
 
@@ -120,6 +124,10 @@ def main() -> None:
     parser.add_argument("--batch-dir", required=True, help="Directory relative to Godot root")
     parser.add_argument("--raw-index", type=Path, required=True)
     parser.add_argument("--raw-movie", type=Path, required=True)
+    parser.add_argument("--capture-start-seconds", type=float, default=0.0,
+                        help="Trim external screen-recording startup before runner time 0")
+    parser.add_argument("--capture-end-seconds", type=float,
+                        help="Exclusive end in the raw screen recording; defaults to its duration")
     args = parser.parse_args()
     root = args.repo.resolve()
     repo = root.parent
@@ -164,7 +172,16 @@ def main() -> None:
     movie = native_dir / f"{prefix}_native_1280x720.mp4"
     sheet = native_dir / f"{prefix}_contact_sheet_1280x720.png"
     index_path = native_dir / f"{prefix}_capture_index.json"
-    run(["ffmpeg", "-hide_banner", "-loglevel", "warning", "-y", "-i", str(args.raw_movie.resolve()),
+    raw_probe = probe(args.raw_movie.resolve())
+    raw_duration = float(raw_probe.get("format", {}).get("duration", 0.0))
+    capture_start = max(0.0, args.capture_start_seconds)
+    capture_end = args.capture_end_seconds if args.capture_end_seconds is not None else raw_duration
+    capture_end = min(float(capture_end), raw_duration)
+    capture_duration = capture_end - capture_start
+    if capture_start >= capture_end or capture_duration < 1.0:
+        raise SystemExit(f"NATIVE_CAPTURE_WINDOW_INVALID start={capture_start} end={capture_end} raw_duration={raw_duration}")
+    run(["ffmpeg", "-hide_banner", "-loglevel", "warning", "-y", "-ss", f"{capture_start:.3f}",
+         "-i", str(args.raw_movie.resolve()), "-t", f"{capture_duration:.3f}",
          "-an", "-vf", f"fps={FPS},scale={W}:{H}:flags=lanczos,format=yuv420p",
          "-c:v", "libx264", "-preset", "fast", "-crf", "19", "-pix_fmt", "yuv420p",
          "-movflags", "+faststart", str(movie)])
@@ -184,7 +201,11 @@ def main() -> None:
                                 "setup_events_separate_from_candidate_events": True}
     index["movie"] = {"path": f"res://{native_rel}/{movie.name}", "codec": "h264", "viewport_px": [W, H],
                       "fps": FPS, "duration_seconds": float(stream_data.get("format", {}).get("duration", 0.0)),
-                      "full_decode": "PASS", "sha256": digest(movie)}
+                      "full_decode": "PASS", "sha256": digest(movie),
+                      "source_capture_window_seconds": {"start": round(capture_start, 3),
+                                                          "end": round(capture_end, 3),
+                                                          "duration": round(capture_duration, 3)},
+                      "timeline_basis": "GODOT_RUNNER_VIDEO_START_SECONDS; EXTERNAL_STARTUP_TRIMMED"}
     for row in rows:
         entry = by_id[row["skill_id"]]
         row["name_vi"] = entry.get("name_vi", row.get("name_vi", ""))
