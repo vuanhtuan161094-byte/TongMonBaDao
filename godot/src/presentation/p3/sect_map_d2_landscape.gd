@@ -8,14 +8,15 @@ const SCENIC_SPRITES := {
     "pond":preload("res://art/map_d2_candidate/scenery_v2/lotus_pond.svg"),
     "reeds":preload("res://art/map_d2_candidate/scenery_v2/reeds.svg"),
     "flowers":preload("res://art/map_d2_candidate/scenery_v2/flowers.svg"),
-    "stone":preload("res://art/map_d2_candidate/scenery_v2/moss_stones.svg")
+    "stone":preload("res://art/map_d2_candidate/scenery_v2/moss_stones.svg"),
+    "lantern":preload("res://art/map_d2_candidate/scenery_v2/jade_lantern.svg")
 }
 const SCENIC_ACCENTS := [
     {"cell":Vector2i(110,108),"kind":"pond"},
     {"cell":Vector2i(105,111),"kind":"reeds"},
     {"cell":Vector2i(77,109),"kind":"flowers"},
     {"cell":Vector2i(80,113),"kind":"flowers"},
-    {"cell":Vector2i(91,79),"kind":"flowers"},
+    {"cell":Vector2i(91,79),"kind":"lantern"},
     {"cell":Vector2i(100,108),"kind":"stone"},
     {"cell":Vector2i(76,85),"kind":"stone"}
 ]

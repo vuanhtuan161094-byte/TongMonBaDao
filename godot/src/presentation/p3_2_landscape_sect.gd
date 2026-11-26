@@ -7189,6 +7189,7 @@ func _cultivation_operation_text() -> String:
     var lines: Array[String] = []
     var ready_count := 0
     var v2_gate_count := 0
+    var body_gate_count := 0
     var active_count := 0
     var ids: Array = state.disciples.keys()
     ids.sort()
@@ -7207,16 +7208,22 @@ func _cultivation_operation_text() -> String:
                     lines.append("• %s · Tu Vi V2: dữ liệu chưa sẵn sàng" % disciple.display_name)
                 continue
             var tuvi: Dictionary = progression["cultivation"]
+            var body: Dictionary = progression["body"]
             var at_gate := bool(tuvi.get("at_major_gate", false))
+            var at_body_gate := bool(body.get("at_major_gate",false))
+            if at_body_gate:
+                body_gate_count += 1
             if at_gate:
                 v2_gate_count += 1
-            if active or at_gate:
-                lines.append("• %s · %s tầng %d · %.0f/%.0f · Thể lực viễn chinh %.0f%s" % [
-                    disciple.display_name,
-                    str(tuvi["name"]), int(tuvi["floor"]),
-                    float(tuvi["xp"]), float(tuvi["required_xp"]),
-                    disciple.stamina,
-                    " · CHỜ CỔNG ĐẠI CẢNH" if at_gate else ""
+            if active or at_gate or at_body_gate:
+                var tuvi_missing := maxf(0.0,float(tuvi["required_xp"])-float(tuvi["xp"]))
+                var body_missing := maxf(0.0,float(body["required_xp"])-float(body["xp"]))
+                lines.append("• %s · Thể lực viễn chinh %.0f\n  Tu Vi: %s tầng %d · %.0f/%.0f · còn %.0f EXP%s\n  Luyện Thể: %s tầng %d · %.0f/%.0f · còn %.0f EXP%s" % [
+                    disciple.display_name,disciple.stamina,
+                    str(tuvi["name"]),int(tuvi["floor"]),float(tuvi["xp"]),float(tuvi["required_xp"]),tuvi_missing,
+                    " · CỔNG ĐẠI CẢNH (%.1f%%)" % (float(tuvi.get("effective_breakthrough_chance",0.0))*100.0) if at_gate else "",
+                    str(body["name"]),int(body["floor"]),float(body["xp"]),float(body["required_xp"]),body_missing,
+                    " · CẦN THỐI THỂ" if at_body_gate else ""
                 ])
             continue
 
@@ -7240,10 +7247,10 @@ func _cultivation_operation_text() -> String:
     return (
         "Đang tu luyện/phá cảnh: %d\n"
         + "Đủ điều kiện đột phá: %d\n"
-        + "Chờ cổng đại cảnh: %d\n\n"
+        + "Chờ cổng đại cảnh: %d · Luyện Thể: %d\n\n"
         + "ĐỆ TỬ LIÊN QUAN\n%s\n\n"
         + "Tiến độ tu luyện hiển thị theo hồ sơ từng đệ tử; cổng đại cảnh có điều kiện riêng."
-    ) % [active_count, ready_count, v2_gate_count, "\n".join(lines)]
+    ) % [active_count, ready_count, v2_gate_count, body_gate_count, "\n".join(lines)]
 
 func _residence_operation_text() -> String:
     var population := state.disciples.size()
