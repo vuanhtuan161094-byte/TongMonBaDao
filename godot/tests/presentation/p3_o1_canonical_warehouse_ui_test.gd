@@ -52,25 +52,27 @@ func _check_opening_ui() -> bool:
     var iron := warehouse.quantity(state, &"thanh_thiet")
     var wood := warehouse.quantity(state, &"linh_moc")
     var iron_name := ResourceRegistry.new().display_name(&"thanh_thiet")
+    var iron_available := warehouse.available_quantity(state,&"thanh_thiet")
     var iron_total_text := str(ui.call("_compact_number", iron))
+    var iron_available_text := str(ui.call("_compact_number", iron_available))
     if iron < P37Factory.INITIAL_BUILD_ORE or wood < P37Factory.INITIAL_BUILD_WOOD:
         return _fail("O1 opening starter materials missing from canonical Warehouse.")
     var label: Label = ui.get("resource_label") as Label
-    if label == null or not label.text.contains("Thiết %d/%d" % [iron, iron]):
+    if label == null or not label.text.contains("Thiết %d/%d" % [iron, iron_available]):
         return _fail("O1 top bar does not show truthful total/usable iron.")
     var legacy_detail := str(ui.call("_building_detail", SectMapPresentation.DEST_WAREHOUSE))
-    if not legacy_detail.contains("Thanh Thiết: %d (dùng %d)" % [iron, iron]):
+    if not legacy_detail.contains("Thanh Thiết: %d (dùng %d)" % [iron, iron_available]):
         return _fail("O1 base warehouse popup disagrees with WarehouseSystem.")
     var detail := str(ui.call("_warehouse_operation_text"))
-    var warehouse_line := "• %s ×%s · dùng được %s" % [iron_name, iron_total_text, iron_total_text]
+    var warehouse_line := "• %s ×%s · dùng được %s" % [iron_name, iron_total_text, iron_available_text]
     if not detail.contains(warehouse_line):
         return _fail("O1 operations Warehouse panel disagrees with WarehouseSystem.")
-    if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [iron, iron]):
+    if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [iron, iron_available]):
         return _fail("O1 Mine panel does not show truthful stock.")
-    if not str(ui.call("_forge_operation_text")).contains("Thanh Thiết %d (dùng %d)" % [iron, iron]):
+    if not str(ui.call("_forge_operation_text")).contains("Thanh Thiết %d (dùng %d)" % [iron, iron_available]):
         return _fail("O1 Forge panel does not show truthful stock.")
     var preview := str(ui.call("_recipe_material_status", RECIPE_ID))
-    if not preview.contains("Thanh Thiết tồn %d / dùng %d / cần 3" % [iron, iron]):
+    if not preview.contains("Thanh Thiết tồn %d / dùng %d / cần 3" % [iron, iron_available]):
         return _fail("O1 recipe preview does not show canonical stock and need.")
     if not EquipmentSystem.new().can_craft(state, RECIPE_ID) or not preview.contains("Đủ nguyên liệu"):
         return _fail("O1 initial recipe preview disagrees with real can_craft.")
@@ -103,13 +105,14 @@ func _check_real_mine_deposit() -> bool:
         return _fail("O1 did not earn and deposit a real Mine output.")
     ui.call("_refresh_all")
     var label: Label = ui.get("resource_label") as Label
-    if not label.text.contains("Thiết %d/%d" % [after, after]):
+    if not label.text.contains("Thiết %d/%d" % [after, warehouse.available_quantity(state,&"thanh_thiet")]):
         return _fail("O1 UI did not refresh after actual Mine deposit.")
-    if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [after, after]):
+    if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [after, warehouse.available_quantity(state,&"thanh_thiet")]):
         return _fail("O1 Mine panel stayed stale after actual output.")
+    var after_available_text := str(ui.call("_compact_number", warehouse.available_quantity(state,&"thanh_thiet")))
     var after_text := str(ui.call("_compact_number", after))
     var warehouse_line := "• %s ×%s · dùng được %s" % [
-        ResourceRegistry.new().display_name(&"thanh_thiet"), after_text, after_text
+        ResourceRegistry.new().display_name(&"thanh_thiet"), after_text, after_available_text
     ]
     if not str(ui.call("_warehouse_operation_text")).contains(warehouse_line):
         return _fail("O1 Warehouse panel stayed stale after actual output.")

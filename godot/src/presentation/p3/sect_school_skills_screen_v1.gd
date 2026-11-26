@@ -185,18 +185,21 @@ func refresh() -> void:
     add_child(right)
     _label(right,"KỸ NĂNG CỦA ĐỆ TỬ",Vector2(15,12),Vector2(475,30),17,GOLD)
     var v63_live := V63HumanSkillCombatSystem.is_enabled(_state)
-    _label(right,"Kỹ năng P2 đang chơi dùng được trong PvE" if _skill_page == "basic"
+    _label(right,("Công pháp · nguồn học, chi phí và thành thạo" if _skill_page == "method" else "Kỹ năng P2 đang chơi dùng được trong PvE") if _skill_page != "v63"
         else ("Học và trang bị theo quyền V6.3" if v63_live
             else "V6.3 hiện KHÓA · xem trước, không cộng sức mạnh"),
         Vector2(15,43),Vector2(477,27),12,SOFT)
-    var basic_tab := _button(right,"ĐANG CHƠI · P2",Vector2(12,77),
-        Vector2(226,38),_skill_page == "basic")
+    var basic_tab := _button(right,"KỸ NĂNG P2",Vector2(12,77),
+        Vector2(152,38),_skill_page == "basic")
     basic_tab.name = "SchoolBasicSkillTab"
     basic_tab.pressed.connect(Callable(self,"_choose_skill_page").bind("basic"))
-    var advanced_tab := _button(right,"36 NHÁNH · V6.3",Vector2(246,77),
-        Vector2(246,38),_skill_page == "v63")
+    var advanced_tab := _button(right,"36 NHÁNH",Vector2(172,77),
+        Vector2(152,38),_skill_page == "v63")
     advanced_tab.name = "SchoolV63SkillTab"
     advanced_tab.pressed.connect(Callable(self,"_choose_skill_page").bind("v63"))
+    var method_tab := _button(right,"CÔNG PHÁP",Vector2(332,77),Vector2(160,38),_skill_page == "method")
+    method_tab.name = "SchoolTechniqueTab"
+    method_tab.pressed.connect(Callable(self,"_choose_skill_page").bind("method"))
     if _skill_page == "v63":
         for i in range(3):
             var tiers := ["human","immortal","divine"]
@@ -216,7 +219,9 @@ func refresh() -> void:
     stack.add_theme_constant_override("separation",5)
     scroll.add_child(stack)
     var displayed := 0
-    if _skill_page == "basic":
+    if _skill_page == "method":
+        displayed = _append_techniques(stack,d)
+    elif _skill_page == "basic":
         # Actual nine P2.5 combat skills; teach through the existing backend,
         # whose stage/feature gates and combat loadout already drive real PvE.
         var basic_system := CombatSkillSystem.new()
@@ -226,7 +231,7 @@ func refresh() -> void:
             var id := str(raw_id)
             var def: Dictionary = CombatSkillSystem.SKILLS[id]
             var known := bool(d.learned_combat_skills.get(id,false))
-            var can_learn := basic_system.can_learn_skill(_state,d,StringName(id))
+            var can_learn := basic_system.can_learn_skill(_state,d,StringName(id)) and _can_change_loadout(d)
             var row := HBoxContainer.new()
             row.add_theme_constant_override("separation",5)
             stack.add_child(row)
@@ -242,8 +247,9 @@ func refresh() -> void:
             action.custom_minimum_size = Vector2(118,42)
             action.text = "ĐÃ HỌC" if known else ("HỌC" if can_learn else "CHƯA ĐỦ")
             action.disabled = known or not can_learn
-            action.tooltip_text = "Đã có trong chiến đấu" if known else (
-                "Không đủ điều kiện học" if not can_learn else "Học bằng CombatSkillSystem thật")
+            var available_in_pve := str(def.get("effect","")) in ["damage","burn","weaken","guard"]
+            action.tooltip_text = ("Đã học · dùng trong PvE" if available_in_pve else "Đã học · adapter PvE chưa hỗ trợ") if known else (
+                "Không đủ điều kiện học" if not can_learn else ("Học bằng CombatSkillSystem thật" if available_in_pve else "Có thể học · adapter PvE chưa hỗ trợ"))
             action.pressed.connect(Callable(self,"_ask_skill").bind(id,"learn_basic"))
             row.add_child(action)
             displayed += 1
@@ -302,6 +308,104 @@ func refresh() -> void:
         empty.add_theme_color_override("font_color",SOFT)
         stack.add_child(empty)
     _label(self,_feedback,Vector2(25,516),Vector2(1110,29),13,GOLD)
+
+func _can_change_loadout(d: DiscipleState) -> bool:
+    return d.region_id == &"sect" and d.active_pve_encounter_id.is_empty() and d.injury_level == 0 and d.hp > 0.0
+
+func _append_techniques(stack: VBoxContainer,d: DiscipleState) -> int:
+    var intro := Label.new()
+    intro.text = "Cống hiến %d · Linh thạch cá nhân %d" % [d.contribution_points,d.spirit_stones]
+    intro.add_theme_color_override("font_color",GOLD)
+    stack.add_child(intro)
+    var ready := _can_change_loadout(d)
+    var count := 0
+    if DiscipleRealmProgressV2.owns_v2_progression(d):
+        var learner := V63LearningSystem.new()
+        var live := V63LearningSystem.is_enabled(_state)
+        if not live:
+            var locked := Label.new()
+            locked.text = "Công pháp V6.3 đang khóa phát hành. Chỉ tra cứu; không trừ tài nguyên."
+            locked.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+            locked.custom_minimum_size.x = 445
+            stack.add_child(locked)
+        if not d.v63_study_job.is_empty():
+            var job: Dictionary = d.v63_study_job
+            var row := _method_row(stack,"ĐANG HỌC · "+str(job.get("technique_id",""))+"\n%d/%d nhịp" % [int(job.get("progress_ticks",0)),int(job.get("duration_ticks",0))])
+            _method_action(row,"HỦY HỌC",str(job.get("job_id","")),"cancel_method",live and ready)
+        for definition in V63LearningSystem.techniques():
+            var id := str(definition.get("id",""))
+            var cost: Dictionary = definition.get("cost",{})
+            var known := d.known_techniques.has(id)
+            var check := learner.can_start_study(_state,d,StringName(id))
+            var equipped := str(d.active_technique_main) == id
+            var detail := str(definition.get("name",id))+"\n"+("%d cống hiến · %d linh thạch · %d nhịp" % [int(cost.get("contribution",0)),int(cost.get("spirit_stones",0)),int(definition.get("study_ticks",0))])
+            var row := _method_row(stack,detail)
+            var button := _method_action(row,"ĐANG DÙNG" if equipped else ("CHÍNH TU" if known else "HỌC"),id,"equip_method" if known else "study_method",ready and live and not equipped and (known or bool(check.get("ok",false))))
+            button.tooltip_text = str(check.get("reason","")) if not known else "Trang bị vào ô chính tu"
+            count += 1
+        return count
+    var system := TechniqueSystem.new()
+    var ids: Array = TechniqueSystem.TECHNIQUES.keys()
+    ids.sort()
+    for raw in ids:
+        var id := str(raw)
+        var key := StringName(id)
+        var known := d.learned_techniques.has(id)
+        var archived := system.is_archived(_state,key)
+        var detail := system.technique_name(key)
+        var action := "learn_legacy_method"
+        var caption := "HỌC"
+        var enabled := ready and bool(system.learning_preview(_state,d,key).get("ok",false))
+        if known:
+            var mastery: Dictionary = d.learned_techniques[id]
+            var level := int(mastery.get("level",1))
+            var xp := float(mastery.get("xp",0.0))
+            var need := system.mastery_required(level)
+            detail += "\nLv%d · %.0f/%.0f EXP" % [level,xp,need]
+            if d.active_technique_id != key:
+                action = "equip_legacy_method"
+                caption = "CHÍNH TU"
+                enabled = ready and _state.sect.techniques_enabled
+            else:
+                action = "upgrade_legacy_method"
+                caption = "NÂNG CẤP" if need > 0.0 else "TỐI ĐA"
+                enabled = ready and need > 0.0 and xp+0.000001 >= need
+                var costs := system.upgrade_material_cost(key,level)
+                for resource in costs:
+                    var stock := WarehouseSystem.new().available_quantity(_state,StringName(resource)) if _state.sect.p3_7_resources_enabled else int(_state.sect.technique_materials.get(resource,0))
+                    enabled = enabled and stock >= int(costs[resource])
+                    detail += " · %s %d/%d" % [ResourceRegistry.new().display_name(StringName(resource)),stock,int(costs[resource])]
+        else:
+            var definition := system.definition(key)
+            detail += "\n%d cống hiến · %d linh thạch" % [int(definition.get("learn_contribution",0)),int(definition.get("learn_stones",0))]
+            if not archived:
+                caption = "CHƯA CÓ SÁCH"
+                enabled = false
+        _method_action(_method_row(stack,detail),caption,id,action,enabled)
+        count += 1
+    return count
+
+func _method_row(stack: VBoxContainer,detail: String) -> HBoxContainer:
+    var row := HBoxContainer.new()
+    row.add_theme_constant_override("separation",5)
+    stack.add_child(row)
+    var label := Label.new()
+    label.custom_minimum_size = Vector2(326,48)
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    label.text = detail
+    label.add_theme_font_size_override("font_size",12)
+    row.add_child(label)
+    return row
+
+func _method_action(row: HBoxContainer,caption: String,id: String,action: String,enabled: bool) -> Button:
+    var button := Button.new()
+    button.name = "MethodAction_"+action+"_"+id.sha256_text().substr(0,12)
+    button.custom_minimum_size = Vector2(118,42)
+    button.text = caption
+    button.disabled = not enabled
+    button.pressed.connect(Callable(self,"_ask_skill").bind(id,action))
+    row.add_child(button)
+    return button
 
 func _school_seal(school: String) -> Texture2D:
     var index := SectASCharCandidateBridgeV1.SCHOOL_IDS.find(school)

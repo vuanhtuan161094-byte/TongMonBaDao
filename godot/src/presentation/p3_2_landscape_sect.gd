@@ -9822,8 +9822,29 @@ func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: Str
     var writable := runtime_session != null and runtime_session.owner != null and not runtime_session.owner.runtime_write_blocked
     if not writable:
         reason = "Phiên chơi chưa cho phép ghi dữ liệu"
+    elif disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty() or disciple.injury_level != 0 or disciple.hp <= 0.0:
+        reason = "Đệ tử phải ở tông môn và đủ sức khỏe"
     elif action == "learn_basic":
         ok = CombatSkillSystem.new().learn_skill(state,disciple,StringName(skill_id))
+    elif action in ["learn_legacy_method","equip_legacy_method","upgrade_legacy_method"] and not DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        var system := TechniqueSystem.new()
+        var result: Dictionary = {}
+        match action:
+            "learn_legacy_method": result = system.learn_technique(state,disciple,StringName(skill_id))
+            "equip_legacy_method": result = {"ok":system.set_active_technique(state,disciple,StringName(skill_id)),"reason":"not_learned"}
+            "upgrade_legacy_method": result = system.upgrade_technique(state,disciple,StringName(skill_id))
+        ok = bool(result.get("ok",false))
+        reason = str(result.get("reason","không đủ điều kiện"))
+    elif action in ["study_method","equip_method","cancel_method"] and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        var learner := V63LearningSystem.new()
+        var request := "v9:"+str(state.sect.v63_learning_event_count)+":"+str(disciple_id).sha256_text().substr(0,16)+":"+action+":"+skill_id.sha256_text().substr(0,16)
+        var result: Dictionary = {}
+        match action:
+            "study_method": result = learner.start_study(state,disciple,StringName(skill_id),request)
+            "equip_method": result = learner.equip_slot(state,disciple,"main",StringName(skill_id))
+            "cancel_method": result = learner.cancel_study(state,disciple,request,skill_id)
+        ok = bool(result.get("ok",false))
+        reason = str(result.get("reason","không đủ điều kiện"))
     elif action in ["learn","equip"] and V63HumanSkillCombatSystem.is_enabled(state):
         var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
         var school := SectASCharCandidateBridgeV1.school_for_disciple(disciple)
@@ -9835,7 +9856,7 @@ func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: Str
             ok = bool(result.get("ok",false))
             reason = str(result.get("reason","không đủ điều kiện"))
     var screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false) as SectSchoolSkillsScreenV1
-    var feedback := "Đã cập nhật kỹ năng" if ok else "Không thể thực hiện: "+reason
+    var feedback := ("Đã cập nhật công pháp" if action.contains("method") else "Đã cập nhật kỹ năng") if ok else "Không thể thực hiện: "+reason
     if ok:
         var saved := runtime_session.save()
         feedback += " · Đã lưu" if bool(saved.get("ok",false)) else " · Chưa xác nhận lưu"

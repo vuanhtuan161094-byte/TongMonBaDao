@@ -270,14 +270,15 @@ func craft_manual(state: SimulationState, technique_id: StringName) -> Dictionar
     state.sect.technique_event_count += 1
     return _result(true, "crafted")
 
-func learn_technique(state: SimulationState, disciple: DiscipleState, technique_id: StringName) -> Dictionary:
-    if not state.sect.techniques_enabled or not is_archived(state, technique_id):
+func learning_preview(state: SimulationState, disciple: DiscipleState, technique_id: StringName) -> Dictionary:
+    if state == null or disciple == null or not state.disciples.has(disciple.id) or state.disciples[disciple.id] != disciple:
+        return _result(false, "unknown_disciple")
+    if not state.sect.techniques_enabled or definition(technique_id).is_empty() or not is_archived(state, technique_id):
         return _result(false, "not_archived")
     if disciple.learned_techniques.has(str(technique_id)):
         return _result(false, "already_learned")
     if disciple.learned_techniques.size() >= MAX_LEARNED_TECHNIQUES:
         return _result(false, "technique_slots_full")
-
     var info := definition(technique_id)
     var contribution_cost := int(info.get("learn_contribution", 0))
     var stone_cost := int(info.get("learn_stones", 0))
@@ -285,6 +286,14 @@ func learn_technique(state: SimulationState, disciple: DiscipleState, technique_
         return _result(false, "not_enough_contribution")
     if disciple.spirit_stones < stone_cost:
         return _result(false, "not_enough_personal_spirit_stones")
+    return {"ok":true,"reason":"ready","contribution":contribution_cost,"spirit_stones":stone_cost}
+
+func learn_technique(state: SimulationState, disciple: DiscipleState, technique_id: StringName) -> Dictionary:
+    var check := learning_preview(state,disciple,technique_id)
+    if not bool(check.get("ok",false)):
+        return check
+    var contribution_cost := int(check["contribution"])
+    var stone_cost := int(check["spirit_stones"])
 
     disciple.contribution_points -= contribution_cost
     disciple.spirit_stones -= stone_cost
