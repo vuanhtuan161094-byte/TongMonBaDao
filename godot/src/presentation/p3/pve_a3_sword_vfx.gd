@@ -114,7 +114,7 @@ func observe(events: Array[Dictionary], battle: MapBattleV2, enabled: bool) -> v
             if str(event.get("effect","")) != "damage":
                 continue
             var windup := clampf(float(event.get("release_at",battle.now))-float(event.get("time",battle.now)),0.05,2.0)
-            _casts[cast_id] = {"id":skill_id,"caster":caster,"target":target,"started":_clock,"windup":windup,"released":false,"seen":{}}
+            _casts[cast_id] = {"id":skill_id,"caster":caster,"target":target,"started":_clock,"windup":windup,"released":false,"seen":{},"seen_receipts":{}}
             continue
         if not _casts.has(cast_id):
             continue
@@ -126,11 +126,16 @@ func observe(events: Array[Dictionary], battle: MapBattleV2, enabled: bool) -> v
             cue["release_clock"] = _clock
         elif kind == "v63_skill_hit" and bool(cue["released"]) and float(event.get("damage",0.0)) > 0.0:
             var seen: Dictionary = cue["seen"]
-            if seen.has(target) or seen.size() >= int(binding["limit"]) or _hits.size() >= MAX_HITS:
+            var seen_receipts: Dictionary = cue["seen_receipts"]
+            # Target limit counts distinct targets, not damage receipts. A later
+            # canonical hit on the same target may show contact again, but never
+            # the same event_id twice, including during repeated snapshots.
+            if seen_receipts.has(event_id) or (not seen.has(target) and seen.size() >= int(binding["limit"])) or _hits.size() >= MAX_HITS:
                 continue
             if str(binding["shape"]) == "single_target" and target != cue["target"]:
                 continue
             seen[target] = true
+            seen_receipts[event_id] = true
             if not cue.has("first_contact"):
                 cue["first_contact"] = _clock
             _hits.append({"id":skill_id,"caster":caster,"target":target,"at":victim.get("position",Vector2.ZERO),"started":_clock})
