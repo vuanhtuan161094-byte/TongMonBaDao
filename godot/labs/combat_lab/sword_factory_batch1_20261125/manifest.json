@@ -3,7 +3,7 @@
   "batch": "sword_human_cast_batch1_20261125",
   "school": "sword",
   "human_cast_masters": 17,
-  "status": "CANDIDATE; NATIVE_PENDING; OWNER_PENDING; PVE_HOLD",
+  "status": "CANDIDATE; NATIVE_TECH_PASS; OWNER_PENDING; PVE_HOLD",
   "source_policy": "Reuse exact existing RGBA source revisions; batch9 atlases are derived from the existing painted sword_batch6 cels by the tracked deterministic builder. No new art.",
   "external_provenance_paths": [
     "docs/operations/vfx_school_ledgers/03_sword_183.csv",
@@ -869,5 +869,18 @@
       "owner_status": "OWNER_VISUAL_PENDING",
       "pve": "HOLD"
     }
-  ]
+  ],
+  "native_capture": {
+    "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+    "skills": 17,
+    "accepted_candidate_events": 58,
+    "synthetic_candidate_events": 0,
+    "video": "review/native/sword_batch1_native_1280x720.mp4",
+    "video_sha256": "4596c3da700f4f89f0eef11000e43e46441d4ffaa93f322b2c57bbb8dae62b9e",
+    "contact_sheet": "review/native/sword_batch1_contact_sheet_1280x720.png",
+    "contact_sheet_sha256": "1174cc9b7c29c2bf53c2ac42f3607b5cd35f6f4ef638bfd5737657ccceeffd64",
+    "index": "review/native/sword_batch1_capture_index.json",
+    "owner_approval": "PENDING",
+    "pve": "HOLD"
+  }
 }

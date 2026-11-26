@@ -21,6 +21,9 @@
         "data/combat/v63_sword_combat_catalog.json",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
@@ -31,7 +34,7 @@
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/source/phi_kiem_human_r2b_atlas_rgba.png"
       ],
       "art_source": "FIRST_PARTY_IMAGEGEN_ORIGINAL_RGBA_8_POSES_PLUS_REAL_AS48_JIAN",
-      "review_note": "Human R2B original source committed, owner tạm được visual preference, isolated LAB synthetic one-target event; AS48 Front only; does not imply G3.5 native or CI success until exact-SHA run. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Human R2B original source committed, owner tạm được visual preference, isolated LAB synthetic one-target event; AS48 Front only; does not imply G3.5 native or CI success until exact-SHA run. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "preview_key": "sword_factory_batch1_01",
       "school": "sword",
       "branch": "ngu_kiem"
@@ -55,6 +58,9 @@
         "data/combat/v63_sword_combat_catalog.json",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/KVHP_R1E_VFX_only_atlas_4x3_RGBA.png",
@@ -64,7 +70,7 @@
         "tests/labs/combat_lab/vfx_sword02_r1e_contract_test.gd"
       ],
       "art_source": "FIRST_PARTY_AI_DRAWN_VFX_ONLY_12_POSES_ALPHA_POSTPROCESSED",
-      "review_note": "V2 source owner approved 2026-11-24; 12 original R1E RGBA + 11 derived motion inbetweens + final alpha-fade, 25fps / 0.96s review only; runtime and Front direction require exact SHA Chromium evidence. Toggle V2/R1E side by side in same existing Web hub. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision R1E_V2_OWNER_APPROVED_SOURCE_ART; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "V2 source owner approved 2026-11-24; 12 original R1E RGBA + 11 derived motion inbetweens + final alpha-fade, 25fps / 0.96s review only; runtime and Front direction require exact SHA Chromium evidence. Toggle V2/R1E side by side in same existing Web hub. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision R1E_V2_OWNER_APPROVED_SOURCE_ART; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "preview_key": "sword_factory_batch1_02",
       "school": "sword",
       "branch": "ngu_kiem"
@@ -92,10 +98,13 @@
         "labs/combat_lab/sword_batch6_20261124/sword_03_lab.tscn",
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
-        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ngu_kiem"
     },
@@ -122,10 +131,13 @@
         "labs/combat_lab/sword_batch6_20261124/sword_04_lab.tscn",
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
-        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ngu_kiem"
     },
@@ -152,10 +164,13 @@
         "labs/combat_lab/sword_batch6_20261124/sword_05_lab.tscn",
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
-        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ngu_kiem"
     },
@@ -182,10 +197,13 @@
         "labs/combat_lab/sword_batch6_20261124/sword_06_lab.tscn",
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
-        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "sat_kiem"
     },
@@ -212,10 +230,13 @@
         "labs/combat_lab/sword_batch6_20261124/sword_07_lab.tscn",
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
-        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "sat_kiem"
     },
@@ -242,10 +263,13 @@
         "labs/combat_lab/sword_batch6_20261124/sword_08_lab.tscn",
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
-        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json"
+        "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4"
       ],
       "art_source": "FIRST_PARTY_APPROVED_AI_VFX_DERIVED_24_RGBA_FRAMES",
-      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Existing canonical One Game /vfx/ lab, real AS48 Front + independent socket weapon and 3 moving monster sprites. Owner approved source batch only. Runtime visual QA pending; no actual PvE, no merge. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH6_OWNER_APPROVED_SOURCE_ATLAS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "sat_kiem"
     },
@@ -272,10 +296,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "sat_kiem"
     },
@@ -302,10 +329,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "sat_kiem"
     },
@@ -332,10 +362,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ho_kiem"
     },
@@ -362,10 +395,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ho_kiem"
     },
@@ -392,10 +428,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ho_kiem"
     },
@@ -422,10 +461,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ho_kiem"
     },
@@ -452,10 +494,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": "ho_kiem"
     },
@@ -482,10 +527,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": ""
     },
@@ -512,10 +560,13 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png"
       ],
       "art_source": "DERIVED_EXISTING_PAINTED_RGBA",
-      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD.",
+      "review_note": "Candidate only; generated exact source during staged export. Guard friendly only; mobility no damage. PvE HOLD. Factory adapter status: shared AS48/Weapon Library runtime candidate reuses source revision BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; native exact-skill capture pending; owner visual approval pending; PvE HOLD. Native candidate-event capture: 17 skills / 58 accepted MapBattle events / zero synthetic events; Godot 4.7.2 1280x720 20 FPS H.264 full decode PASS. Owner review pending; PvE HOLD.",
       "school": "sword",
       "branch": ""
     },

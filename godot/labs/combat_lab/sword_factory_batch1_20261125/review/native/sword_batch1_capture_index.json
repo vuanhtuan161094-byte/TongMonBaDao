@@ -1,0 +1,1814 @@
+{
+  "owner_approval": "PENDING",
+  "pve": "HOLD",
+  "receipts": "REAL_MAPBATTLE_V2_TEST_FIXTURE_EVENTS_ONLY",
+  "renderer": "Godot 4.7.2 shared VFX Factory + existing AS-CHAR and Source A",
+  "schema": "tmb.vfx_factory_native_batch_capture.v1",
+  "school": "sword",
+  "skills": [
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 0.72,
+      "encounter_id": "vfx_factory_sword_capture_00",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.0,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_00/caster_00/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+          "target_ids": [
+            "foe_00"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.65,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_00/caster_00/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.68,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+          "target_ids": [
+            "foe_00"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 0.7,
+          "caster_id": "caster_00",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_00/caster_00/1/v63_skill_hit/foe_00",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.68,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+          "target_ids": [
+            "foe_00"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Phi Kiếm Truy Ảnh — R2B nguồn minh họa, owner tạm chấp nhận",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 0.65,
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 0.0,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 0.08,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 2
+        },
+        "release": {
+          "time_seconds": 0.71,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 14
+        },
+        "contact": {
+          "time_seconds": 0.74,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 15
+        },
+        "state_end": {
+          "time_seconds": 1.02,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 20
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 2.02,
+      "encounter_id": "vfx_factory_sword_capture_01",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 1.45,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_01/caster_01/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_02_target_1"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 1.95,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_01/caster_01/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.517861694693565,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_02_target_1"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.0,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_01/caster_01/1/v63_skill_hit/sword_factory_02_target_1",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.517861694693565,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_02_target_1"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.05,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_sword_capture_01/caster_01/1/v63_skill_hit/sword_factory_02_target_2",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.517861694693565,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_02_target_2"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.1,
+          "caster_id": "caster_01",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_sword_capture_01/caster_01/1/v63_skill_hit/sword_factory_02_target_3",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.517861694693565,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_02_target_3"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Kiếm Vũ Hồi Phong — R1E V2 24f (so sánh 12f)",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 1.95,
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 1.4,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 1.53,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 31
+        },
+        "release": {
+          "time_seconds": 2.01,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 40
+        },
+        "contact": {
+          "time_seconds": 2.04,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 41
+        },
+        "state_end": {
+          "time_seconds": 2.32,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 46
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 3.47,
+      "encounter_id": "vfx_factory_sword_capture_02",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 2.85,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_02/caster_02/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+          "target_ids": [
+            "sword_factory_03_target_1"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 3.4,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_02/caster_02/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.562222211625841,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+          "target_ids": [
+            "sword_factory_03_target_1"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 3.45,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_02/caster_02/1/v63_skill_hit/sword_factory_03_target_1",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.562222211625841,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+          "target_ids": [
+            "sword_factory_03_target_1"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 3.5,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_sword_capture_02/caster_02/1/v63_skill_hit/sword_factory_03_target_2",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.562222211625841,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+          "target_ids": [
+            "sword_factory_03_target_2"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 3.55,
+          "caster_id": "caster_02",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_sword_capture_02/caster_02/1/v63_skill_hit/sword_factory_03_target_3",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.562222211625841,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+          "target_ids": [
+            "sword_factory_03_target_3"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Tứ Phương Phi Nhận — 24f AS48 Combat Lab",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 3.4,
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 2.8,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 2.93,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 59
+        },
+        "release": {
+          "time_seconds": 3.46,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 69
+        },
+        "contact": {
+          "time_seconds": 3.49,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 70
+        },
+        "state_end": {
+          "time_seconds": 3.77,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 75
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 5.26999999999999,
+      "encounter_id": "vfx_factory_sword_capture_03",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 4.24999999999999,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_03/caster_03/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+          "target_ids": [
+            "foe_03"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 5.19999999999999,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_03/caster_03/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+          "target_ids": [
+            "foe_03"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 5.24999999999999,
+          "caster_id": "caster_03",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_03/caster_03/1/v63_skill_hit/foe_03",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+          "target_ids": [
+            "foe_03"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Kiếm Quang Hồi Chủ — 24f AS48 Combat Lab",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 5.19999999999999,
+      "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.5,
+      "video_start_seconds": 4.19999999999999,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 4.32999999999999,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 87
+        },
+        "release": {
+          "time_seconds": 5.25999999999999,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 105
+        },
+        "contact": {
+          "time_seconds": 5.28999999999999,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 106
+        },
+        "state_end": {
+          "time_seconds": 5.5699999999999905,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 111
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 7.01999999999998,
+      "encounter_id": "vfx_factory_sword_capture_04",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 5.74999999999999,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_04/caster_04/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+          "target_ids": [
+            "sword_factory_05_target_1"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 6.94999999999998,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_04/caster_04/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.22628935575485,
+          "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+          "target_ids": [
+            "sword_factory_05_target_1"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 6.99999999999998,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_04/caster_04/1/v63_skill_hit/sword_factory_05_target_1",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.22628935575485,
+          "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+          "target_ids": [
+            "sword_factory_05_target_1"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 7.04999999999998,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_sword_capture_04/caster_04/1/v63_skill_hit/sword_factory_05_target_2",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.22628935575485,
+          "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+          "target_ids": [
+            "sword_factory_05_target_2"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 7.09999999999998,
+          "caster_id": "caster_04",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_sword_capture_04/caster_04/1/v63_skill_hit/sword_factory_05_target_3",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.22628935575485,
+          "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+          "target_ids": [
+            "sword_factory_05_target_3"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Vạn Kiếm Quy Tông — 24f AS48 Combat Lab",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 6.94999999999998,
+      "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.72628935575485,
+      "video_start_seconds": 5.69999999999999,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 5.82999999999999,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 117
+        },
+        "release": {
+          "time_seconds": 7.009999999999979,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 140
+        },
+        "contact": {
+          "time_seconds": 7.03999999999998,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 141
+        },
+        "state_end": {
+          "time_seconds": 7.31999999999998,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 146
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 7.76999999999998,
+      "encounter_id": "vfx_factory_sword_capture_05",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 7.49999999999998,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_05/caster_05/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+          "target_ids": [
+            "foe_05"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 7.69999999999998,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_05/caster_05/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+          "target_ids": [
+            "foe_05"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 7.74999999999998,
+          "caster_id": "caster_05",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_05/caster_05/1/v63_skill_hit/foe_05",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+          "target_ids": [
+            "foe_05"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Trảm Ảnh Nhất Tuyến — 24f AS48 Combat Lab",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 7.69999999999998,
+      "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 7.44999999999998,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 7.57999999999998,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 152
+        },
+        "release": {
+          "time_seconds": 7.759999999999979,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 155
+        },
+        "contact": {
+          "time_seconds": 7.78999999999998,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 156
+        },
+        "state_end": {
+          "time_seconds": 8.069999999999979,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 161
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 9.27,
+      "encounter_id": "vfx_factory_sword_capture_06",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 8.89999999999999,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_06/caster_06/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_07_target_1"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.2,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_06/caster_06/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.35,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_07_target_1"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.25,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_06/caster_06/1/v63_skill_hit/sword_factory_07_target_1",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.35,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_07_target_1"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.3,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_sword_capture_06/caster_06/1/v63_skill_hit/sword_factory_07_target_2",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.35,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_07_target_2"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 9.35,
+          "caster_id": "caster_06",
+          "contact_receipt_target_count": 3,
+          "event_id": "vfx_factory_sword_capture_06/caster_06/1/v63_skill_hit/sword_factory_07_target_3",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.35,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+          "target_ids": [
+            "sword_factory_07_target_3"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Phá Vân Trực Trảm — 24f AS48 Combat Lab",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 9.2,
+      "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 8.84999999999999,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 8.97999999999999,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 180
+        },
+        "release": {
+          "time_seconds": 9.26,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 185
+        },
+        "contact": {
+          "time_seconds": 9.29,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 186
+        },
+        "state_end": {
+          "time_seconds": 9.57,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 191
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 11.07,
+      "encounter_id": "vfx_factory_sword_capture_07",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 10.3,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_07/caster_07/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+          "target_ids": [
+            "foe_07"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 11.0,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_07/caster_07/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.75,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+          "target_ids": [
+            "foe_07"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 11.05,
+          "caster_id": "caster_07",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_07/caster_07/1/v63_skill_hit/foe_07",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.75,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+          "target_ids": [
+            "foe_07"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Đoạn Thủy Kiếm Mang — 24f AS48 Combat Lab",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 11.0,
+      "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 10.25,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 10.38,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 208
+        },
+        "release": {
+          "time_seconds": 11.06,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 221
+        },
+        "contact": {
+          "time_seconds": 11.09,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 222
+        },
+        "state_end": {
+          "time_seconds": 11.370000000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 227
+        }
+      }
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_mobility"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_sword_capture_08",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 11.7,
+          "caster_id": "caster_08",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 0.45,
+          "event_id": "vfx_factory_sword_capture_08/event/1",
+          "event_state_duration_seconds": 0.45,
+          "event_type": "v63_mobility",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
+          "target_ids": [],
+          "visual_phase": "start"
+        }
+      ],
+      "event_types": [
+        "v63_mobility"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "mobility_frame_seconds": 11.72,
+      "name_vi": "Tàng Phong Đột Thứ — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
+      "start_frame_seconds": 11.72,
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 11.65,
+      "phase_samples": {
+        "state_start": {
+          "time_seconds": 11.799999999999999,
+          "receipt_type": "v63_mobility",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 236
+        },
+        "state_end": {
+          "time_seconds": 12.02,
+          "receipt_type": "v63_mobility",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 240
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 14.4700000000001,
+      "encounter_id": "vfx_factory_sword_capture_09",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 13.1000000000001,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_09/caster_09/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+          "target_ids": [
+            "foe_09"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 14.4000000000001,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_09/caster_09/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.35,
+          "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+          "target_ids": [
+            "foe_09"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 14.4500000000001,
+          "caster_id": "caster_09",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_09/caster_09/1/v63_skill_hit/foe_09",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 1.35,
+          "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+          "target_ids": [
+            "foe_09"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Nhất Kiếm Đoạn Thiên — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 14.4000000000001,
+      "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.85,
+      "video_start_seconds": 13.0500000000001,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 13.1800000000001,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 264
+        },
+        "release": {
+          "time_seconds": 14.4600000000001,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 289
+        },
+        "contact": {
+          "time_seconds": 14.4900000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 290
+        },
+        "state_end": {
+          "time_seconds": 14.7700000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 295
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 15.3000000000001,
+      "encounter_id": "vfx_factory_sword_capture_10",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 14.9500000000001,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_10/caster_10/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+          "target_ids": [
+            "caster_10"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 15.1500000000001,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_10/caster_10/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+          "target_ids": [
+            "caster_10"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 15.2000000000001,
+          "caster_id": "caster_10",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 3.25,
+          "event_id": "vfx_factory_sword_capture_10/caster_10/1/status_applied/caster_10/guard",
+          "event_state_duration_seconds": 3.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+          "target_ids": [
+            "caster_10"
+          ],
+          "visual_phase": "start"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Kiếm Bích Hộ Thân — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 15.1500000000001,
+      "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 3.73,
+      "video_start_seconds": 14.9000000000001,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 15.0300000000001,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 301
+        },
+        "release": {
+          "time_seconds": 15.2100000000001,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 304
+        },
+        "state_start": {
+          "time_seconds": 15.3000000000001,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 306
+        },
+        "state_sustain": {
+          "time_seconds": 16.700000000000102,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 334
+        },
+        "state_end": {
+          "time_seconds": 18.2600000000001,
+          "receipt_type": "status_applied",
+          "basis": "REAL_EVENT_EXPIRY",
+          "frame_index": 365
+        }
+      }
+    },
+    {
+      "accepted_event_count": 3,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 19.0200000000001,
+      "encounter_id": "vfx_factory_sword_capture_11",
+      "event_count": 3,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.7000000000001,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_11/caster_11/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+          "target_ids": [
+            "foe_11"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 18.9500000000001,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_11/caster_11/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.28,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+          "target_ids": [
+            "foe_11"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 19.0000000000001,
+          "caster_id": "caster_11",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_11/caster_11/1/v63_skill_hit/foe_11",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.28,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+          "target_ids": [
+            "foe_11"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Hồi Kiếm Phản Thế — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 18.9500000000001,
+      "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 18.6500000000001,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 18.780000000000097,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 376
+        },
+        "release": {
+          "time_seconds": 19.010000000000097,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 380
+        },
+        "contact": {
+          "time_seconds": 19.0400000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 381
+        },
+        "state_end": {
+          "time_seconds": 19.3200000000001,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 386
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 20.4500000000002,
+      "encounter_id": "vfx_factory_sword_capture_12",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 20.1000000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_12/caster_12/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+          "target_ids": [
+            "caster_12"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 20.3000000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_12/caster_12/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+          "target_ids": [
+            "caster_12"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 20.3500000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 2.75,
+          "event_id": "vfx_factory_sword_capture_12/caster_12/1/status_applied/ally_12/guard",
+          "event_state_duration_seconds": 2.5,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+          "target_ids": [
+            "ally_12"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 20.4000000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 2.75,
+          "event_id": "vfx_factory_sword_capture_12/caster_12/1/status_applied/caster_12/guard",
+          "event_state_duration_seconds": 2.5,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+          "target_ids": [
+            "caster_12"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 20.4500000000002,
+          "caster_id": "caster_12",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 2.75,
+          "event_id": "vfx_factory_sword_capture_12/caster_12/1/status_applied/sword_factory_13_target_2/guard",
+          "event_state_duration_seconds": 2.5,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+          "target_ids": [
+            "sword_factory_13_target_2"
+          ],
+          "visual_phase": "start"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Liên Tâm Kiếm Thuẫn — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 20.3000000000002,
+      "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 3.23,
+      "video_start_seconds": 20.0500000000001,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 20.1800000000002,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 404
+        },
+        "release": {
+          "time_seconds": 20.3600000000002,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 407
+        },
+        "state_start": {
+          "time_seconds": 20.450000000000202,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 409
+        },
+        "state_sustain": {
+          "time_seconds": 21.6000000000002,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 432
+        },
+        "state_end": {
+          "time_seconds": 22.9100000000002,
+          "receipt_type": "status_applied",
+          "basis": "REAL_EVENT_EXPIRY",
+          "frame_index": 458
+        }
+      }
+    },
+    {
+      "accepted_event_count": 4,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "contact_frame_seconds": 23.7700000000002,
+      "encounter_id": "vfx_factory_sword_capture_13",
+      "event_count": 4,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 23.3500000000002,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_13/caster_13/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+          "target_ids": [
+            "sword_factory_14_target_1"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 23.7000000000002,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_13/caster_13/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.38,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+          "target_ids": [
+            "sword_factory_14_target_1"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 23.7500000000002,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_13/caster_13/1/v63_skill_hit/sword_factory_14_target_1",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.38,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+          "target_ids": [
+            "sword_factory_14_target_1"
+          ],
+          "visual_phase": "contact"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 23.8000000000002,
+          "caster_id": "caster_13",
+          "contact_receipt_target_count": 2,
+          "event_id": "vfx_factory_sword_capture_13/caster_13/1/v63_skill_hit/sword_factory_14_target_2",
+          "event_type": "v63_skill_hit",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.38,
+          "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+          "target_ids": [
+            "sword_factory_14_target_2"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_skill_hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Thiên Cương Hộ Mệnh — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 23.7000000000002,
+      "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 23.3000000000002,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 23.4300000000002,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 469
+        },
+        "release": {
+          "time_seconds": 23.760000000000197,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 475
+        },
+        "contact": {
+          "time_seconds": 23.790000000000198,
+          "receipt_type": "v63_skill_hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 476
+        },
+        "state_end": {
+          "time_seconds": 24.0700000000002,
+          "receipt_type": "v63_skill_hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 481
+        }
+      }
+    },
+    {
+      "accepted_event_count": 5,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "contact_frame_seconds": 25.4500000000002,
+      "encounter_id": "vfx_factory_sword_capture_14",
+      "event_count": 5,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 24.7500000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_14/caster_14/1/skill_cast",
+          "event_type": "skill_cast",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+          "target_ids": [
+            "caster_14"
+          ],
+          "visual_phase": "charge"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 25.3000000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_id": "vfx_factory_sword_capture_14/caster_14/1/skill_release",
+          "event_type": "skill_release",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+          "target_ids": [
+            "caster_14"
+          ],
+          "visual_phase": "release"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 25.3500000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 5.6,
+          "event_id": "vfx_factory_sword_capture_14/caster_14/1/status_applied/ally_14/guard",
+          "event_state_duration_seconds": 5.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+          "target_ids": [
+            "ally_14"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 25.4000000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 5.6,
+          "event_id": "vfx_factory_sword_capture_14/caster_14/1/status_applied/caster_14/guard",
+          "event_state_duration_seconds": 5.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+          "target_ids": [
+            "caster_14"
+          ],
+          "visual_phase": "start"
+        },
+        {
+          "accepted": true,
+          "capture_frame_seconds": 25.4500000000002,
+          "caster_id": "caster_14",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 5.6,
+          "event_id": "vfx_factory_sword_capture_14/caster_14/1/status_applied/sword_factory_15_target_2/guard",
+          "event_state_duration_seconds": 5.0,
+          "event_type": "status_applied",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.6,
+          "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+          "target_ids": [
+            "sword_factory_15_target_2"
+          ],
+          "visual_phase": "start"
+        }
+      ],
+      "event_types": [
+        "skill_cast",
+        "skill_release",
+        "status_applied"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Thiên Cương Kiếm Giới — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": 25.3000000000002,
+      "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 6.08,
+      "video_start_seconds": 24.7000000000002,
+      "phase_samples": {
+        "charge": {
+          "time_seconds": 24.830000000000197,
+          "receipt_type": "skill_cast",
+          "basis": "REAL_MAPBATTLE_SKILL_CAST",
+          "frame_index": 497
+        },
+        "release": {
+          "time_seconds": 25.3600000000002,
+          "receipt_type": "skill_release",
+          "basis": "REAL_MAPBATTLE_SKILL_RELEASE",
+          "frame_index": 507
+        },
+        "state_start": {
+          "time_seconds": 25.450000000000202,
+          "receipt_type": "status_applied",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 509
+        },
+        "state_sustain": {
+          "time_seconds": 27.8500000000002,
+          "receipt_type": "status_applied",
+          "basis": "MIDDLE_OF_RECEIPT_DURATION",
+          "frame_index": 557
+        },
+        "state_end": {
+          "time_seconds": 30.4100000000002,
+          "receipt_type": "status_applied",
+          "basis": "REAL_EVENT_EXPIRY",
+          "frame_index": 608
+        }
+      }
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "hit"
+      ],
+      "contact_frame_seconds": 30.8700000000003,
+      "encounter_id": "vfx_factory_sword_capture_15",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 30.8500000000003,
+          "caster_id": "caster_15",
+          "contact_receipt_target_count": 1,
+          "event_id": "vfx_factory_sword_capture_15/event/2",
+          "event_type": "hit",
+          "reason": "BASIC_HIT_BOUND_FROM_REAL_MAPBATTLE_AND_ACTOR_LOADOUT",
+          "simulation_event_time_seconds": 0.25,
+          "skill_id": "tmb.skill.sword.basic.human",
+          "target_ids": [
+            "foe_15"
+          ],
+          "visual_phase": "contact"
+        }
+      ],
+      "event_types": [
+        "hit"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "name_vi": "Tâm Kiếm Nhập Môn — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.sword.basic.human",
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 30.8000000000003,
+      "phase_samples": {
+        "contact": {
+          "time_seconds": 30.8900000000003,
+          "receipt_type": "hit",
+          "basis": "REAL_MAPBATTLE_CONTACT_RECEIPT",
+          "frame_index": 618
+        },
+        "state_end": {
+          "time_seconds": 31.1700000000003,
+          "receipt_type": "hit",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 623
+        }
+      }
+    },
+    {
+      "accepted_event_count": 1,
+      "configured_event_types": [
+        "skill_cast",
+        "skill_release",
+        "v63_mobility"
+      ],
+      "contact_frame_seconds": -1.0,
+      "encounter_id": "vfx_factory_sword_capture_16",
+      "event_count": 1,
+      "event_trace": [
+        {
+          "accepted": true,
+          "capture_frame_seconds": 32.2500000000003,
+          "caster_id": "caster_16",
+          "contact_receipt_target_count": 0,
+          "event_expiry_seconds": 0.35,
+          "event_id": "vfx_factory_sword_capture_16/event/1",
+          "event_state_duration_seconds": 0.35,
+          "event_type": "v63_mobility",
+          "reason": "RECEIPT_BOUND",
+          "simulation_event_time_seconds": 0.0,
+          "skill_id": "tmb.skill.sword.mobility.human",
+          "target_ids": [],
+          "visual_phase": "start"
+        }
+      ],
+      "event_types": [
+        "v63_mobility"
+      ],
+      "fixture": "REAL_MAPBATTLE_VFX_TEST_FIXTURE",
+      "fixture_setup_receipts": [],
+      "mobility_frame_seconds": 32.2700000000003,
+      "name_vi": "Đạp Kiếm Tầm Phong — ứng viên R2",
+      "receipt_feed": "REAL_MAPBATTLE_RECEIPT_ACCEPTED",
+      "release_frame_seconds": -1.0,
+      "skill_id": "tmb.skill.sword.mobility.human",
+      "start_frame_seconds": 32.2700000000003,
+      "synthetic_events": 0,
+      "video_duration_seconds": 1.4,
+      "video_start_seconds": 32.2000000000003,
+      "phase_samples": {
+        "state_start": {
+          "time_seconds": 32.3500000000003,
+          "receipt_type": "v63_mobility",
+          "basis": "REAL_MAPBATTLE_STATE_RECEIPT",
+          "frame_index": 647
+        },
+        "state_end": {
+          "time_seconds": 32.5700000000003,
+          "receipt_type": "v63_mobility",
+          "basis": "POST_CONTACT_FADE_WINDOW",
+          "frame_index": 651
+        }
+      }
+    }
+  ],
+  "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+  "viewport_px": [
+    1280,
+    720
+  ],
+  "source_head": "389b22256a74162fe1093d9ec346f8966542a309",
+  "receipt_summary": {
+    "candidate_events": 58,
+    "accepted_candidate_events": 58,
+    "synthetic_candidate_events": 0,
+    "fixture_setup_receipts": 0,
+    "fixture_policy": "EXACT_MAPBATTLE_V2_EVENTS_ONLY; SWORD_BASIC_HIT_RESOLVED_FROM_ACTUAL_ACTOR_LOADOUT; NO_SYNTHETIC_EVENTS"
+  },
+  "movie": {
+    "path": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+    "codec": "h264",
+    "pixel_format": "yuv420p",
+    "viewport_px": [
+      1280,
+      720
+    ],
+    "fps": 20,
+    "duration_seconds": 33.65,
+    "frame_count": 673,
+    "bytes": 3589367,
+    "sha256": "4596c3da700f4f89f0eef11000e43e46441d4ffaa93f322b2c57bbb8dae62b9e",
+    "full_decode": "PASS"
+  },
+  "contact_sheet": {
+    "path": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+    "columns": [
+      "CHARGE",
+      "RELEASE",
+      "CONTACT",
+      "STATE START",
+      "SUSTAIN",
+      "STATE END / FADE"
+    ],
+    "phase_samples": "RECEIPT_TIMED; ACTUAL_MAPBATTLE_EVENTS_ONLY",
+    "sha256": "1174cc9b7c29c2bf53c2ac42f3607b5cd35f6f4ef638bfd5737657ccceeffd64"
+  }
+}

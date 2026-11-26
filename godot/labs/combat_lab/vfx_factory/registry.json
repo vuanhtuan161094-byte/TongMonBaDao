@@ -21776,7 +21776,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "R2B_G3_ART_SELF_REWORK_REQUIRED; projectile still reads as an energy lance; untouched source preserved.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; R2B_FIRST_PARTY_8_POSE_G3_REWORK_REQUIRED; RUNTIME_MOTION_REVIEW_PENDING",
@@ -21786,6 +21786,9 @@
         "data/combat/v63_sword_combat_catalog.json",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/source/phi_kiem_human_r1_candidate_atlas.png",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r1/sword_human_r1_vfx_layer.gd",
         "labs/combat_lab/sword_human_phi_kiem_truy_anh/r2b/phi_kiem_r2b_lab.gd",
@@ -21804,7 +21807,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. R2B_G3_ART_SELF_REWORK_REQUIRED; projectile still reads as an energy lance; untouched source preserved. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. R2B_G3_ART_SELF_REWORK_REQUIRED; projectile still reads as an energy lance; untouched source preserved. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
@@ -22139,7 +22149,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "R1E_V2 source motion is owner-approved; Factory actor/runtime presentation remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; R1E_V2_OWNER_APPROVED_SOURCE_ART; RUNTIME_MOTION_REVIEW_PENDING",
@@ -22149,6 +22159,9 @@
         "data/combat/v63_sword_combat_catalog.json",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.gd",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/r1e_lab.tscn",
         "labs/combat_lab/sword_human_kiem_vu_hoi_phong/r1e/source/KVHP_R1E_VFX_only_atlas_4x3_RGBA.png",
@@ -22166,7 +22179,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. R1E_V2 source motion is owner-approved; Factory actor/runtime presentation remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. R1E_V2 source motion is owner-approved; Factory actor/runtime presentation remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
@@ -22605,7 +22625,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH6_OWNER_APPROVED_SOURCE_ATLAS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -22619,6 +22639,9 @@
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
       ],
@@ -22629,7 +22652,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
@@ -22914,7 +22944,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH6_OWNER_APPROVED_SOURCE_ATLAS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -22928,6 +22958,9 @@
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
       ],
@@ -22938,7 +22971,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
@@ -23372,7 +23412,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH6_OWNER_APPROVED_SOURCE_ATLAS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -23386,6 +23426,9 @@
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
       ],
@@ -23396,7 +23439,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
@@ -23780,7 +23830,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH6_OWNER_APPROVED_SOURCE_ATLAS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -23794,6 +23844,9 @@
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
       ],
@@ -23804,7 +23857,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
@@ -24243,7 +24303,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH6_OWNER_APPROVED_SOURCE_ATLAS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -24257,6 +24317,9 @@
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
       ],
@@ -24267,7 +24330,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
@@ -24651,7 +24721,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Original owner-approved source bytes; runtime scale/socket review remains pending.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH6_OWNER_APPROVED_SOURCE_ATLAS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -24665,6 +24735,9 @@
         "labs/combat_lab/sword_batch6_20261124/sword_batch6_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
       ],
@@ -24675,7 +24748,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Original owner-approved source bytes; runtime scale/socket review remains pending. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
@@ -25061,7 +25141,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -25074,6 +25154,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_09_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -25085,7 +25168,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 1 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=1; SYNTHETIC=0; EVENTS=v63_mobility",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 1,
+      "native_accepted_event_count": 1,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
@@ -25469,7 +25559,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -25482,6 +25572,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_10_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -25493,7 +25586,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
@@ -25872,7 +25972,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -25885,6 +25985,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_11_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -25896,7 +25999,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
@@ -26280,7 +26390,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -26293,6 +26403,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_12_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -26304,7 +26417,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 3 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=3; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 3,
+      "native_accepted_event_count": 3,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
@@ -26732,7 +26852,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -26745,6 +26865,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_13_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -26756,7 +26879,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
@@ -27179,7 +27309,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -27192,6 +27322,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_14_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -27203,7 +27336,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 4 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=4; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 4,
+      "native_accepted_event_count": 4,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
@@ -27631,7 +27771,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -27644,6 +27784,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_15_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -27655,7 +27798,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 5 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,status_applied",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 5,
+      "native_accepted_event_count": 5,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.basic.human",
@@ -28025,7 +28175,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -28038,6 +28188,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_16_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -28049,7 +28202,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 1 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=1; SYNTHETIC=0; EVENTS=hit",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 1,
+      "native_accepted_event_count": 1,
+      "native_synthetic_event_count": 0
     },
     {
       "skill_id": "tmb.skill.sword.mobility.human",
@@ -28435,7 +28595,7 @@
       "source_lab_visual_status": "NOT_ART_APPROVED",
       "source_owner_gate": "OWNER_VISUAL_PENDING",
       "source_g3": "Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized.",
-      "native_status": "NATIVE_PENDING",
+      "native_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
       "native_ready": false,
       "owner_status": "OWNER_VISUAL_PENDING",
       "motion_status": "SOURCE_FRAME_SEQUENCE_IN_SHARED_RENDERER; BATCH9_R2_DERIVED_FROM_EXISTING_PAINTED_CELS; RUNTIME_MOTION_REVIEW_PENDING",
@@ -28448,6 +28608,9 @@
         "labs/combat_lab/sword_batch9_20261124/sword_batch9_lab.gd",
         "labs/combat_lab/sword_factory_batch1_20261125/README.md",
         "labs/combat_lab/sword_factory_batch1_20261125/batch_config.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+        "labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
         "labs/combat_lab/sword_factory_batch1_20261125/source/derived_batch9/sword_17_24f.png",
         "src/presentation/p3/pve_aschar_frame_renderer_v1.gd",
         "src/presentation/p3/sect_aschar_candidate_bridge_v1.gd"
@@ -28459,7 +28622,14 @@
       "weapon_family": "jian",
       "weapon_grip_socket": "main_hand",
       "weapon_tip_anchor": "weapon_tip",
-      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture pending; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD."
+      "review_note": "Shared Factory adapter reuses the exact existing source revision through AS48 at real 1x game scale, with the existing Weapon Library Jian and per-frame grip/weapon_tip socket. Reuses the existing Batch6 painted source cels through the committed deterministic R2 composition; not new painted art. Preserve the 2026-11-25 A3 notes: 09/17 trails weak, 11/13 shield shape slash-like, 15 realm cluttered, 14 line-cel duplication, 10 contact oversized. Native exact-skill capture passed; source art approval does not transfer to this runtime adapter. Owner visual review pending; PvE HOLD. Native 1280x720/20 FPS H.264 capture passed full decode; 1 real MapBattle event(s) accepted, with no synthetic events. The receipt-timed contact sheet, video and event index are linked in this batch. Owner review remains pending; PvE HOLD.",
+      "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=1; SYNTHETIC=0; EVENTS=v63_mobility",
+      "native_index": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_capture_index.json",
+      "native_contact_sheet": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_contact_sheet_1280x720.png",
+      "native_video": "res://labs/combat_lab/sword_factory_batch1_20261125/review/native/sword_batch1_native_1280x720.mp4",
+      "native_event_count": 1,
+      "native_accepted_event_count": 1,
+      "native_synthetic_event_count": 0
     }
   ],
   "batch_status": {
@@ -28496,8 +28666,8 @@
       "pve": "HOLD"
     },
     "sword_human_cast_batch1_20261125": {
-      "source_status": "17_EXISTING_HUMAN_CAST_SOURCE_REVISIONS_REUSED; NO_ORIGINAL_LAB_SOURCE_OVERWRITTEN",
-      "native_import_capture": "NATIVE_PENDING; EXPECTED=17; SHARED_MAPBATTLE_V2_RECEIPT_RUNNER; OWNER=PENDING; PVE=HOLD",
+      "source_status": "17_EXISTING_HUMAN_CAST_SOURCE_REVISIONS_REUSED; BATCH9_DERIVED_CELS_HASHED; ORIGINAL_LABS_UNCHANGED",
+      "native_import_capture": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE; SKILLS=17; ACCEPTED_EVENTS=58; SYNTHETIC=0; OWNER=PENDING; PVE=HOLD",
       "owner_status": "OWNER_VISUAL_PENDING",
       "pve": "HOLD"
     }
@@ -28605,8 +28775,9 @@
     },
     "sword": {
       "expected_count": 17,
-      "technical_status": "NATIVE_PENDING",
-      "receipt_status": "CAPTURE_PENDING; EXACT_SKILL_MAPBATTLE_V2_EVENTS; NO_SYNTHETIC_RECEIPTS",
+      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_20FPS_H264_FULL_DECODE",
+      "receipt_status": "REAL_MAPBATTLE_V2_FIXTURE_CAPTURE; SKILLS=17; ACCEPTED_EVENTS=58; SYNTHETIC=0",
+      "visual_review_status": "RECEIPT_TIMED_1280x720_CAPTURED; ART_SELF_REVIEW_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"
     }
