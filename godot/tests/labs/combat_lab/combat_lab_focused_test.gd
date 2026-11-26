@@ -896,6 +896,23 @@ func _prepare_action(skill: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"poison_heal_damage_receipt_missing"}
     if not ally_id.is_empty() and effect == "cleanse":
         battle.actors[ally_id]["status_effects"] = {"weaken": {"until": 40.0, "factor": 0.8}}
+    # P1 B-lineage guard is conditional on a living branch summon and a
+    # threatened owner. Prove rejection first, then create the real summon.
+    if school == "summon" and effect == "guard" and str(skill.get("family_slot","")) == "active_03" and lineage == "b" and generation in ["immortal","divine"]:
+        target["position"] = (actor["position"] as Vector2)+Vector2(3,0)
+        target["v63_pending_cast"] = {"target_id":str(actor.id),"v63_skill_id":"matrix_enemy_telegraph"}
+        if V63HumanSkillCombatSystem.try_cast(battle,actor,target,false):
+            return {"ok":false,"reason":"summon_guard_cast_without_owned_summon"}
+        var summon_id := "tmb.skill.summon.%s.active_01.human" % branch
+        V63SummonSkillCombatSystem.release_cast(battle,{"v63_skill_id":summon_id,"mastery_event_id":"matrix_summon_%d" % serial},actor)
+        var found := false
+        for candidate in battle.actors.values():
+            if bool(candidate.get("is_v63_summon",false)) and str(candidate.get("summon_owner_id","")) == str(actor.id):
+                candidate["position"] = (actor["position"] as Vector2)+Vector2(1.5,0)
+                found = true
+                break
+        if not found:
+            return {"ok":false,"reason":"summon_guard_real_summon_missing"}
     if effect == "consume_poison":
         target["status_effects"] = {"v63_poison": [{"owner_id": str(actor.id), "source_skill_id": "fixture", "stack_ordinal": 1,
             "attack_snapshot": actor.stats.duplicate(true), "ratio": 0.05, "element": "wood", "applied_at": 0.0, "next_tick": 100.0, "expires_at": 100.0}]}
@@ -1064,15 +1081,23 @@ func _probe_heal_factor(skill_id: String, factor: float, innate: bool = false, s
     else:
         caster["v63_passive_ids"] = [skill_id]
     var ally := _actor("matrix_wounded", Vector2(10.1, 10.0), "healer")
-    ally["hp"] = 50000.0
+    ally["hp"] = 100000.0
     var battle := MapBattleV2.new(517)
     if not bool(battle.setup("matrix_heal_factor", [caster, ally], [_enemy("matrix_heal_enemy", Vector2(16, 10))]).get("ok", false)):
         return {"status": "FAIL", "reason": "heal_factor_setup_failed"}
     caster = battle.actors["matrix_healer"]
     ally = battle.actors["matrix_wounded"]
-    V63HumanSkillCombatSystem._heal_target(battle, caster, ally, skill_id, 0.2)
-    var actual := float(ally.hp) - 50000.0
-    var expected := 20000.0 * (1.0 + clampf(factor, 0.0, 0.25))
+    var enemy: Dictionary = battle.actors["matrix_heal_enemy"]
+    enemy["stats"]["attack"] = 40000.0
+    enemy["stats"]["crit_chance"] = 0.0
+    var committed_damage := battle._deal_direct(enemy,ally,1.0,"basic",false,"wood",false)
+    var before := float(ally.hp)
+    var power := 0.02
+    var expected := float(ally.max_hp)*power*(1.0+clampf(factor,0.0,0.25))
+    if committed_damage <= expected or before <= 0.0 or (school == "poison" and V63PoisonEvolutionV1.heal_capacity(ally,battle.now) < expected):
+        return {"status":"FAIL","reason":"heal_factor_fixture_lacks_real_damage_allowance"}
+    V63HumanSkillCombatSystem._heal_target(battle,caster,ally,skill_id,power)
+    var actual := float(ally.hp)-before
     if is_equal_approx(actual, expected): return {"status": "PASS", "reason": "V6.3 heal consumer applied passive heal_factor"}
     return {"status": "FAIL", "reason": "heal_factor expected %.3f got %.3f" % [expected, actual]}
 
