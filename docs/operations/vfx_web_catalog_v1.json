@@ -2836,7 +2836,30 @@
         "labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4"
       ],
       "review_note": "Restored the missing first-party code-painted R2 outputs from the tracked deterministic generator. Fixture-only poison setup is a separate real MapBattle cast on the three exact targets; only the candidate ultimate’s actual hit receipts trigger contact, with no fabricated poison, damage, or status. Factory candidate reuses the existing Human Fist LAB source without changing the source gate. Source gate is preserved and owner approval remains pending. Factory contact/state is receipt-bound; native capture pending; PvE HOLD. Native candidate-event capture: 15 skills / 56 accepted MapBattle events / 12 separate fixture setup receipts / zero synthetic events; full H.264 decode PASS. Owner visual review pending; PvE HOLD."
+    },
+    {
+      "id": "tmb.skill.blade.cuong_dao.active_04.human",
+      "name_vi": "Cuồng Đao Phá Vây — R1 · 16 cel",
+      "school_vi": "Đao Tu",
+      "branch_vi": "Cuồng Đao",
+      "tier": "human",
+      "scene": "res://labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+      "directions": [
+        "front"
+      ],
+      "vfx_status": "CANDIDATE_G3",
+      "g3_art": "NEW_SOURCE_ART_REVIEW_PENDING",
+      "owner_art": "OWNER_VISUAL_PENDING",
+      "art_source": "ORIGINAL_AUTHORED_VECTOR_CEL_ATLAS",
+      "source_paths": [
+        "labs/combat_lab/vfx_factory/vfx_factory_review.gd",
+        "labs/combat_lab/vfx_factory/vfx_factory_review.tscn",
+        "labs/combat_lab/vfx_factory/registry.json",
+        "labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+        "data/combat/v63_blade_combat_catalog.json"
+      ],
+      "review_note": "Original authored vector cel candidate, 4 charge + 4 projectile + 4 contact + 4 dissipation. Not ImageGen or painted RGBA master. Godot raster import; canonical combat receipt gating. Owner review and PvE HOLD."
     }
   ],
-  "updated_at": "2026-11-25"
+  "updated_at": "2026-11-26"
 }

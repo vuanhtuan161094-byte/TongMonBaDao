@@ -155,8 +155,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -194,11 +194,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -210,8 +210,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -226,10 +226,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -242,7 +242,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -257,10 +257,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -273,7 +273,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -287,11 +287,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 166,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -303,8 +303,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -389,8 +389,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -428,11 +428,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -444,7 +444,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -463,7 +463,7 @@
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -494,7 +494,7 @@
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -521,11 +521,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -537,7 +537,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -621,8 +621,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -660,11 +660,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -676,7 +676,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -695,7 +695,7 @@
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -726,7 +726,7 @@
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -753,11 +753,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -769,7 +769,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -855,8 +855,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -894,11 +894,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 181,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -910,8 +910,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -926,10 +926,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 181,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -942,7 +942,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -957,10 +957,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 181,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -973,7 +973,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -987,11 +987,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 181,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1003,8 +1003,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -1089,8 +1089,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -1128,11 +1128,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 224,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1144,8 +1144,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -1160,10 +1160,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 224,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1176,7 +1176,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -1191,10 +1191,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 224,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1207,7 +1207,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -1221,11 +1221,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 224,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1237,8 +1237,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -1249,7 +1249,7 @@
         "flight_at": 1.1,
         "contact_at": 1.52,
         "fade_at": 1.72,
-        "loop_seconds": 2.0,
+        "loop_seconds": 2,
         "contact_window_seconds": 0.2,
         "fade_window_seconds": 0.26,
         "start_window_seconds": 0.18,
@@ -1322,8 +1322,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -1361,11 +1361,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1377,7 +1377,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -1396,7 +1396,7 @@
             156.5
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1427,7 +1427,7 @@
             156.5
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1454,11 +1454,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1470,7 +1470,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -1579,8 +1579,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -1618,11 +1618,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1634,7 +1634,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -1653,7 +1653,7 @@
             156.5
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1684,7 +1684,7 @@
             156.5
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1711,11 +1711,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1727,7 +1727,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -1818,8 +1818,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -1857,11 +1857,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1873,8 +1873,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -1889,10 +1889,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1905,7 +1905,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -1920,10 +1920,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1936,7 +1936,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -1950,11 +1950,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 159,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -1966,8 +1966,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -2048,8 +2048,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -2087,11 +2087,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 170,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2103,8 +2103,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -2119,10 +2119,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 170,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2135,7 +2135,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -2150,10 +2150,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 170,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2166,7 +2166,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -2180,11 +2180,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 170,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2196,8 +2196,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -2288,8 +2288,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -2327,11 +2327,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2343,7 +2343,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -2362,7 +2362,7 @@
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2393,7 +2393,7 @@
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2420,11 +2420,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2436,7 +2436,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -2529,8 +2529,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -2568,11 +2568,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2584,7 +2584,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -2603,7 +2603,7 @@
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2634,7 +2634,7 @@
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2661,11 +2661,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 195,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -2677,7 +2677,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -2754,8 +2754,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -3036,8 +3036,8 @@
       "actor_asset_id": 68,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -3075,11 +3075,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3091,8 +3091,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -3107,10 +3107,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3123,7 +3123,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -3138,10 +3138,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3154,7 +3154,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -3168,11 +3168,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3184,8 +3184,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -3252,8 +3252,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -3291,11 +3291,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3307,7 +3307,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -3326,7 +3326,7 @@
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3357,7 +3357,7 @@
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3384,11 +3384,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 108,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3400,7 +3400,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -3483,8 +3483,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -3522,11 +3522,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3538,7 +3538,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -3557,7 +3557,7 @@
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3588,7 +3588,7 @@
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3615,11 +3615,11 @@
             313
           ],
           "pivot_px": [
-            157.0,
+            157,
             156.5
           ],
           "display_width_px": 217,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3631,7 +3631,7 @@
                 313
               ],
               "pivot_px": [
-                157.0,
+                157,
                 156.5
               ]
             }
@@ -3708,8 +3708,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -3747,11 +3747,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3763,8 +3763,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -3779,10 +3779,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3795,7 +3795,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -3810,10 +3810,10 @@
           ],
           "pivot_px": [
             156.5,
-            157.0
+            157
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3826,7 +3826,7 @@
               ],
               "pivot_px": [
                 156.5,
-                157.0
+                157
               ]
             }
           ]
@@ -3840,11 +3840,11 @@
             314
           ],
           "pivot_px": [
-            157.0,
-            157.0
+            157,
+            157
           ],
           "display_width_px": 188,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3856,8 +3856,8 @@
                 314
               ],
               "pivot_px": [
-                157.0,
-                157.0
+                157,
+                157
               ]
             }
           ]
@@ -3935,8 +3935,8 @@
       "actor_asset_id": 68,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -3975,10 +3975,10 @@
           ],
           "pivot_px": [
             271.5,
-            362.0
+            362
           ],
           "display_width_px": 238,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -3991,7 +3991,7 @@
               ],
               "pivot_px": [
                 271.5,
-                362.0
+                362
               ]
             }
           ]
@@ -4006,10 +4006,10 @@
           ],
           "pivot_px": [
             271.5,
-            362.0
+            362
           ],
           "display_width_px": 238,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -4022,7 +4022,7 @@
               ],
               "pivot_px": [
                 271.5,
-                362.0
+                362
               ]
             }
           ]
@@ -4037,10 +4037,10 @@
           ],
           "pivot_px": [
             271.5,
-            362.0
+            362
           ],
           "display_width_px": 238,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -4053,7 +4053,7 @@
               ],
               "pivot_px": [
                 271.5,
-                362.0
+                362
               ]
             }
           ]
@@ -4068,10 +4068,10 @@
           ],
           "pivot_px": [
             271.5,
-            362.0
+            362
           ],
           "display_width_px": 238,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false,
           "frames": [
             {
@@ -4084,15 +4084,15 @@
               ],
               "pivot_px": [
                 271.5,
-                362.0
+                362
               ]
             }
           ]
         }
       },
       "review_timeline": {
-        "release_at": 1.0,
-        "flight_at": 1.0,
+        "release_at": 1,
+        "flight_at": 1,
         "contact_at": 1.42,
         "fade_at": 1.62,
         "loop_seconds": 1.9,
@@ -4102,7 +4102,7 @@
         "end_window_seconds": 0.2,
         "actor_action_seconds": 0.35,
         "clock": "REVIEW_STORYBOARD_ONLY",
-        "charge_window_seconds": 1.0,
+        "charge_window_seconds": 1,
         "release_window_seconds": 0.18
       },
       "receipt_manifest": {
@@ -4187,7 +4187,7 @@
         "charge": {
           "path": "res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
           "display_width_px": 124,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "release": {
@@ -4291,7 +4291,7 @@
         "contact": {
           "path": "res://labs/combat_lab/talisman02/assets/tal02_fracture_impact.webp",
           "display_width_px": 88,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "fade": {
@@ -4367,8 +4367,8 @@
       "review_note": "Uses the current TAL02 painted ink-lightning atlas and underfoot array byte-for-byte. The older owner-approved source revision is preserved in Git history; current atlas revision and this Factory adapter remain owner-review pending. Native TECH_PASS at 1280x720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. ART_SELF_REVIEW_RELEASE_READABILITY_ONLY_FULL_MOTION_AND_CONTACT_PENDING. Full frame-by-frame art review and owner approval pending; PvE HOLD.",
       "phase_offsets": {
         "release": [
-          80.0,
-          0.0
+          80,
+          0
         ]
       },
       "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT"
@@ -4423,7 +4423,7 @@
         "charge": {
           "path": "res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
           "display_width_px": 104,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "start": {
@@ -4528,7 +4528,7 @@
         "flight_at": 0.5,
         "contact_at": 0.68,
         "fade_at": 6.7,
-        "loop_seconds": 7.0,
+        "loop_seconds": 7,
         "contact_window_seconds": 0.18,
         "fade_window_seconds": 0.24,
         "start_window_seconds": 0.2,
@@ -4620,7 +4620,7 @@
         "charge": {
           "path": "res://labs/combat_lab/talisman02/assets/talisman_foot_array.webp",
           "display_width_px": 112,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "release": {
@@ -4724,7 +4724,7 @@
         "contact": {
           "path": "res://labs/combat_lab/talisman04/assets/tal04_r3_local_fracture.webp",
           "display_width_px": 88,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "fade": {
@@ -4800,8 +4800,8 @@
       "review_note": "The current existing cloud-fissure and local fracture sources are reused without rebaking. Earlier TAL04 art rework history is retained; new shared adapter remains a candidate. Native TECH_PASS at 1280x720. CAST_RELEASE_ONLY_NO_HIT_RECEIPT. ART_SELF_REVIEW_CLOUD_RELEASE_READABILITY_ONLY_FULL_MOTION_PENDING. Full frame-by-frame art review and owner approval pending; PvE HOLD.",
       "phase_offsets": {
         "release": [
-          80.0,
-          0.0
+          80,
+          0
         ]
       },
       "native_event_status": "CAST_RELEASE_ONLY_NO_HIT_RECEIPT"
@@ -5051,7 +5051,7 @@
         "contact": {
           "path": "res://labs/combat_lab/talisman05/assets/tal05_r3_impact.webp",
           "display_width_px": 88,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "fade": {
@@ -5146,8 +5146,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -5597,8 +5597,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -6070,8 +6070,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -6481,7 +6481,7 @@
         "release_at": 0.5,
         "flight_at": 0.5,
         "contact_at": 0.76,
-        "fade_at": 1.0,
+        "fade_at": 1,
         "loop_seconds": 1.45,
         "contact_window_seconds": 0.24,
         "fade_window_seconds": 0.25,
@@ -6540,8 +6540,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -6958,8 +6958,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -7235,8 +7235,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -7498,8 +7498,8 @@
       "actor_asset_id": 66,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -7694,12 +7694,12 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
             0.55,
-            0.0
+            0
           ]
         }
       ],
@@ -7710,12 +7710,12 @@
           598
         ],
         "fixture_position": [
-          6.0,
+          6,
           5.2
         ],
         "fixture_motion_delta": [
           0.1,
-          0.0
+          0
         ]
       },
       "target_screen_position": [
@@ -7730,8 +7730,8 @@
       "actor_asset_id": 60,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -7860,8 +7860,8 @@
             492
           ],
           "fixture_position": [
-            6.0,
-            3.0
+            6,
+            3
           ],
           "fixture_motion_delta": [
             0.1,
@@ -7876,7 +7876,7 @@
           ],
           "fixture_position": [
             7.6,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             0.1,
@@ -7911,8 +7911,8 @@
       "actor_asset_id": 54,
       "actor_action": "attack",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {},
       "source_anchor": "weapon_tip",
@@ -8040,12 +8040,12 @@
           "id": "factory_blade_target_01",
           "label": "BLADE MOVING TARGET 01",
           "screen_position": [
-            690.0,
-            492.0
+            690,
+            492
           ],
           "fixture_position": [
-            6.0,
-            3.0
+            6,
+            3
           ],
           "fixture_motion_delta": [
             -0.4,
@@ -8057,8 +8057,8 @@
         "id": "factory_blade_outside",
         "label": "OUTSIDE TARGET · UNCHANGED",
         "screen_position": [
-          844.0,
-          598.0
+          844,
+          598
         ],
         "fixture_position": [
           6.2,
@@ -8069,16 +8069,16 @@
       "actor_sex": "male",
       "actor_action": "attack",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "asset_id": "curved_dao",
         "anchor_slot": "main_hand",
         "asset_scale": 0.68,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_tip",
@@ -8101,25 +8101,25 @@
         "charge": {
           "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_charge_r1.png",
           "display_width_px": 85,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "flight": {
           "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_flight_r1.png",
           "display_width_px": 180,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "contact": {
           "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_contact_r1.png",
           "display_width_px": 50,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         },
         "fade": {
           "path": "res://labs/combat_lab/blade01/pha_vay_khai_son_r1/source/production/pha_vay_khai_son_fade_r1.png",
           "display_width_px": 80,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         }
       },
@@ -8180,15 +8180,15 @@
           "id": "talisman_factory_target_active_01_01",
           "label": "TALISMAN TARGET 01 · MOVING",
           "screen_position": [
-            690.0,
-            492.0
+            690,
+            492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.1
           ]
         }
@@ -8197,8 +8197,8 @@
         "id": "talisman_factory_outside",
         "label": "OUTSIDE TARGET · UNCHANGED",
         "screen_position": [
-          855.0,
-          590.0
+          855,
+          590
         ],
         "fixture_position": [
           6.3,
@@ -8209,8 +8209,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -8450,15 +8450,15 @@
           "id": "talisman_factory_target_active_01_01",
           "label": "TALISMAN TARGET 01 · MOVING",
           "screen_position": [
-            690.0,
-            492.0
+            690,
+            492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.1
           ]
         }
@@ -8467,8 +8467,8 @@
         "id": "talisman_factory_outside",
         "label": "OUTSIDE TARGET · UNCHANGED",
         "screen_position": [
-          855.0,
-          590.0
+          855,
+          590
         ],
         "fixture_position": [
           6.3,
@@ -8479,8 +8479,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -8885,15 +8885,15 @@
           "id": "talisman_factory_target_active_01_01",
           "label": "TALISMAN TARGET 01 · MOVING",
           "screen_position": [
-            690.0,
-            492.0
+            690,
+            492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.1
           ]
         }
@@ -8902,8 +8902,8 @@
         "id": "talisman_factory_outside",
         "label": "OUTSIDE TARGET · UNCHANGED",
         "screen_position": [
-          855.0,
-          590.0
+          855,
+          590
         ],
         "fixture_position": [
           6.3,
@@ -8914,8 +8914,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -9034,15 +9034,15 @@
           "id": "talisman_factory_target_active_02_01",
           "label": "TALISMAN TARGET 01 · MOVING",
           "screen_position": [
-            690.0,
-            492.0
+            690,
+            492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.1
           ]
         },
@@ -9050,15 +9050,15 @@
           "id": "talisman_factory_target_active_02_02",
           "label": "TALISMAN TARGET 02 · MOVING",
           "screen_position": [
-            820.0,
-            492.0
+            820,
+            492
           ],
           "fixture_position": [
-            6.0,
-            3.0
+            6,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.1
           ]
         },
@@ -9066,15 +9066,15 @@
           "id": "talisman_factory_target_active_02_03",
           "label": "TALISMAN TARGET 03 · MOVING",
           "screen_position": [
-            950.0,
-            492.0
+            950,
+            492
           ],
           "fixture_position": [
-            7.0,
-            3.0
+            7,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.1
           ]
         }
@@ -9083,8 +9083,8 @@
         "id": "talisman_factory_outside",
         "label": "OUTSIDE TARGET · UNCHANGED",
         "screen_position": [
-          855.0,
-          590.0
+          855,
+          590
         ],
         "fixture_position": [
           6.3,
@@ -9095,8 +9095,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -9153,7 +9153,7 @@
         "release": {
           "path": "res://labs/combat_lab/talisman12/art_sources/paf02_r2_line_paint.webp",
           "display_width_px": 408,
-          "fps": 1.0,
+          "fps": 1,
           "loop": false
         }
       },
@@ -9201,7 +9201,7 @@
       "phase_spans": {
         "release": {
           "to_actor_id": "talisman_factory_target_active_02_03",
-          "angle_offset_radians": 0.0
+          "angle_offset_radians": 0
         }
       },
       "native_event_status": "REAL_MAPBATTLE_SKILL_CAST_AND_RELEASE; NO_V63_TALISMAN_MARK_APPLIED_EVENT; MARK_CONTACT_AND_SUSTAIN_HIDDEN; SYNTHETIC=0"
@@ -9231,15 +9231,15 @@
           "id": "paf05_factory_target_01",
           "label": "T1 · MOVING",
           "screen_position": [
-            690.0,
-            492.0
+            690,
+            492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -9247,15 +9247,15 @@
           "id": "paf05_factory_target_02",
           "label": "T2 · MOVING",
           "screen_position": [
-            820.0,
-            492.0
+            820,
+            492
           ],
           "fixture_position": [
-            6.0,
-            3.0
+            6,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -9263,15 +9263,15 @@
           "id": "paf05_factory_target_03",
           "label": "T3 · MOVING",
           "screen_position": [
-            950.0,
-            492.0
+            950,
+            492
           ],
           "fixture_position": [
-            7.0,
-            3.0
+            7,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -9280,8 +9280,8 @@
         "id": "paf05_factory_outside",
         "label": "OUTSIDE CIRCLE · UNCHANGED",
         "screen_position": [
-          855.0,
-          590.0
+          855,
+          590
         ],
         "fixture_position": [
           6.3,
@@ -9292,8 +9292,8 @@
       "actor_asset_id": 64,
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -9968,11 +9968,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -9981,7 +9981,7 @@
         "id": "poison_factory_outside_01",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -9994,8 +9994,8 @@
       "actor_asset_id": 62,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -10360,11 +10360,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -10373,7 +10373,7 @@
         "id": "poison_factory_outside_02",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -10386,8 +10386,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -10591,11 +10591,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -10604,7 +10604,7 @@
         "id": "poison_factory_outside_03",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -10617,8 +10617,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -11040,11 +11040,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -11060,7 +11060,7 @@
             3.05
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -11076,7 +11076,7 @@
             3.7
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -11085,7 +11085,7 @@
         "id": "poison_factory_outside_04",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -11098,8 +11098,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -11304,11 +11304,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -11324,7 +11324,7 @@
             3.05
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -11340,7 +11340,7 @@
             3.7
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -11349,7 +11349,7 @@
         "id": "poison_factory_outside_05",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -11362,8 +11362,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -11577,7 +11577,7 @@
       "review_timeline": {
         "release_at": 0.55,
         "flight_at": 0.55,
-        "contact_at": 1.0,
+        "contact_at": 1,
         "fade_at": 1.27,
         "loop_seconds": 1.4500000000000002,
         "charge_window_seconds": 0.55,
@@ -11712,11 +11712,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -11732,7 +11732,7 @@
             3.05
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -11748,7 +11748,7 @@
             3.7
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -11757,7 +11757,7 @@
         "id": "poison_factory_outside_06",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -11770,8 +11770,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -12449,7 +12449,7 @@
         "flight_at": 1.1,
         "contact_at": 1.55,
         "fade_at": 1.82,
-        "loop_seconds": 2.0,
+        "loop_seconds": 2,
         "charge_window_seconds": 0.55,
         "release_window_seconds": 0.18,
         "contact_window_seconds": 0.24,
@@ -12562,11 +12562,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -12575,7 +12575,7 @@
         "id": "poison_factory_outside_07",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -12588,8 +12588,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -13080,11 +13080,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -13093,7 +13093,7 @@
         "id": "poison_factory_outside_08",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -13106,8 +13106,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -13809,11 +13809,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -13822,7 +13822,7 @@
         "id": "poison_factory_outside_09",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -13835,8 +13835,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -14577,11 +14577,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -14597,7 +14597,7 @@
             3.05
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -14613,7 +14613,7 @@
             3.7
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -14622,7 +14622,7 @@
         "id": "poison_factory_outside_10",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -14635,8 +14635,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -15294,11 +15294,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -15314,7 +15314,7 @@
             3.05
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -15330,7 +15330,7 @@
             3.7
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -15339,7 +15339,7 @@
         "id": "poison_factory_outside_11",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -15352,8 +15352,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -16074,11 +16074,11 @@
           ],
           "fixture_position": [
             4.8,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
-            0.0
+            0,
+            0
           ]
         }
       ],
@@ -16086,7 +16086,7 @@
         "id": "poison_factory_outside_12",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -16099,8 +16099,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -16454,7 +16454,7 @@
       "review_timeline": {
         "release_at": 0.55,
         "flight_at": 0.55,
-        "contact_at": 1.0,
+        "contact_at": 1,
         "fade_at": 1.27,
         "loop_seconds": 1.4500000000000002,
         "charge_window_seconds": 0.55,
@@ -16561,11 +16561,11 @@
           ],
           "fixture_position": [
             4.8,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
-            0.0
+            0,
+            0
           ]
         }
       ],
@@ -16573,7 +16573,7 @@
         "id": "poison_factory_outside_13",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -16586,8 +16586,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -16941,7 +16941,7 @@
       "review_timeline": {
         "release_at": 0.55,
         "flight_at": 0.55,
-        "contact_at": 1.0,
+        "contact_at": 1,
         "fade_at": 1.27,
         "loop_seconds": 1.4500000000000002,
         "charge_window_seconds": 0.55,
@@ -17048,11 +17048,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -17068,7 +17068,7 @@
             3.05
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         },
@@ -17084,7 +17084,7 @@
             3.7
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -17093,7 +17093,7 @@
         "id": "poison_factory_outside_14",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -17106,8 +17106,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -17712,11 +17712,11 @@
           ],
           "fixture_position": [
             4.8,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
-            0.0
+            0,
+            0
           ]
         },
         {
@@ -17731,8 +17731,8 @@
             3.15
           ],
           "fixture_motion_delta": [
-            0.0,
-            0.0
+            0,
+            0
           ]
         },
         {
@@ -17747,8 +17747,8 @@
             2.85
           ],
           "fixture_motion_delta": [
-            0.0,
-            0.0
+            0,
+            0
           ]
         }
       ],
@@ -17756,7 +17756,7 @@
         "id": "poison_factory_outside_15",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -17769,8 +17769,8 @@
       "actor_asset_id": 62,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -18289,11 +18289,11 @@
             492
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
-            0.0,
+            0,
             -0.04
           ]
         }
@@ -18302,7 +18302,7 @@
         "id": "poison_factory_outside_16",
         "label": "OUTSIDE EFFECT RADIUS · UNCHANGED",
         "fixture_position": [
-          8.0,
+          8,
           4.6
         ],
         "screen_position": [
@@ -18315,8 +18315,8 @@
       "actor_asset_id": 62,
       "actor_action": "run",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -19034,13 +19034,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         4.24,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -19317,13 +19317,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         6.4,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -19484,8 +19484,8 @@
             482
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
             0.1,
@@ -19501,7 +19501,7 @@
           ],
           "fixture_position": [
             5.6,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.06,
@@ -19538,14 +19538,14 @@
         ]
       },
       "fixture_target_position": [
-        6.0,
-        3.0
+        6,
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -19717,8 +19717,8 @@
             482
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
             0.1,
@@ -19734,7 +19734,7 @@
           ],
           "fixture_position": [
             5.6,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.06,
@@ -19772,13 +19772,13 @@
       },
       "fixture_target_position": [
         5.2,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -19950,8 +19950,8 @@
             482
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
             0.1,
@@ -19967,7 +19967,7 @@
           ],
           "fixture_position": [
             5.6,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.06,
@@ -20005,13 +20005,13 @@
       },
       "fixture_target_position": [
         5.2,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -20180,13 +20180,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         6.4,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -20344,13 +20344,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         6.4,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -20508,13 +20508,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         6.4,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -20670,13 +20670,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         4.24,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -20845,13 +20845,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         4.24,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -21340,13 +21340,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         4.24,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -21555,28 +21555,28 @@
           594
         ],
         "fixture_position": [
-          11.0,
-          3.0
+          11,
+          3
         ]
       },
       "fixture_target_position": [
-        6.0,
-        3.0
+        6,
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -21629,7 +21629,7 @@
             }
           ],
           "display_width_px": 190,
-          "fps": 7.0,
+          "fps": 7,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -21647,7 +21647,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 7.0,
+          "fps": 7,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -21674,7 +21674,7 @@
             }
           ],
           "display_width_px": 285,
-          "fps": 7.0,
+          "fps": 7,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -21692,7 +21692,7 @@
             }
           ],
           "display_width_px": 205,
-          "fps": 7.0,
+          "fps": 7,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -21719,7 +21719,7 @@
             }
           ],
           "display_width_px": 200,
-          "fps": 7.0,
+          "fps": 7,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -21740,8 +21740,8 @@
       },
       "delivery_phase": "flight",
       "canonical_cast_time": 0.28,
-      "canonical_projectile_speed": 10.0,
-      "canonical_range": 8.0,
+      "canonical_projectile_speed": 10,
+      "canonical_range": 8,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
@@ -21892,8 +21892,8 @@
           594
         ],
         "fixture_position": [
-          10.0,
-          3.0
+          10,
+          3
         ]
       },
       "fixture_target_position": [
@@ -21904,16 +21904,16 @@
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -21975,7 +21975,7 @@
             }
           ],
           "display_width_px": 174,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -21993,7 +21993,7 @@
             }
           ],
           "display_width_px": 174,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22038,7 +22038,7 @@
             }
           ],
           "display_width_px": 174,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22065,7 +22065,7 @@
             }
           ],
           "display_width_px": 174,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22092,7 +22092,7 @@
             }
           ],
           "display_width_px": 174,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -22113,8 +22113,8 @@
       },
       "delivery_phase": "flight",
       "canonical_cast_time": 0.36,
-      "canonical_projectile_speed": 8.0,
-      "canonical_range": 7.0,
+      "canonical_projectile_speed": 8,
+      "canonical_range": 7,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
@@ -22216,7 +22216,7 @@
           ],
           "fixture_position": [
             3.1,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             0.04,
@@ -22232,7 +22232,7 @@
           ],
           "fixture_position": [
             3.6500000000000004,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.04,
@@ -22248,7 +22248,7 @@
           ],
           "fixture_position": [
             4.2,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             0.04,
@@ -22264,28 +22264,28 @@
           594
         ],
         "fixture_position": [
-          11.0,
-          3.0
+          11,
+          3
         ]
       },
       "fixture_target_position": [
         3.1,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -22312,7 +22312,7 @@
       "phase_spans": {
         "release": {
           "to_actor_id": "sword_factory_03_target_3",
-          "angle_offset_radians": 0.0
+          "angle_offset_radians": 0
         }
       },
       "phase_aliases": {},
@@ -22379,7 +22379,7 @@
             }
           ],
           "display_width_px": 389,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22487,7 +22487,7 @@
             }
           ],
           "display_width_px": 389,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22541,7 +22541,7 @@
             }
           ],
           "display_width_px": 143,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22568,7 +22568,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -22589,8 +22589,8 @@
       },
       "delivery_phase": "flight",
       "canonical_cast_time": 0.44,
-      "canonical_projectile_speed": 9.0,
-      "canonical_range": 8.0,
+      "canonical_projectile_speed": 9,
+      "canonical_range": 8,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
@@ -22687,28 +22687,28 @@
           594
         ],
         "fixture_position": [
-          10.0,
-          3.0
+          10,
+          3
         ]
       },
       "fixture_target_position": [
-        6.0,
-        3.0
+        6,
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -22797,7 +22797,7 @@
             }
           ],
           "display_width_px": 358,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22815,7 +22815,7 @@
             }
           ],
           "display_width_px": 358,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22833,7 +22833,7 @@
             }
           ],
           "display_width_px": 358,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22869,7 +22869,7 @@
             }
           ],
           "display_width_px": 143,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -22887,7 +22887,7 @@
             }
           ],
           "display_width_px": 358,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -22908,8 +22908,8 @@
       },
       "delivery_phase": "flight",
       "canonical_cast_time": 0.5,
-      "canonical_projectile_speed": 8.0,
-      "canonical_range": 7.0,
+      "canonical_projectile_speed": 8,
+      "canonical_range": 7,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
@@ -23056,8 +23056,8 @@
           594
         ],
         "fixture_position": [
-          12.0,
-          3.0
+          12,
+          3
         ]
       },
       "fixture_target_position": [
@@ -23068,16 +23068,16 @@
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -23166,7 +23166,7 @@
             }
           ],
           "display_width_px": 451,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -23274,7 +23274,7 @@
             }
           ],
           "display_width_px": 451,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -23328,7 +23328,7 @@
             }
           ],
           "display_width_px": 143,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -23355,7 +23355,7 @@
             }
           ],
           "display_width_px": 230,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -23363,7 +23363,7 @@
       "review_timeline": {
         "release_at": 1.1,
         "flight_at": 1.1,
-        "contact_at": 2.0,
+        "contact_at": 2,
         "fade_at": 2.24,
         "loop_seconds": 2.58,
         "charge_window_seconds": 1.1,
@@ -23376,8 +23376,8 @@
       },
       "delivery_phase": "flight",
       "canonical_cast_time": 1.1,
-      "canonical_projectile_speed": 10.0,
-      "canonical_range": 9.0,
+      "canonical_projectile_speed": 10,
+      "canonical_range": 9,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
@@ -23475,27 +23475,27 @@
         ],
         "fixture_position": [
           5.5,
-          3.0
+          3
         ]
       },
       "fixture_target_position": [
         3.8,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -23584,7 +23584,7 @@
             }
           ],
           "display_width_px": 369,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -23692,7 +23692,7 @@
             }
           ],
           "display_width_px": 369,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -23746,7 +23746,7 @@
             }
           ],
           "display_width_px": 143,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -23773,7 +23773,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -23794,7 +23794,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.24,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.5,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -23894,7 +23894,7 @@
           ],
           "fixture_position": [
             3.1,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             0.04,
@@ -23910,7 +23910,7 @@
           ],
           "fixture_position": [
             3.6500000000000004,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.04,
@@ -23926,7 +23926,7 @@
           ],
           "fixture_position": [
             4.2,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             0.04,
@@ -23943,27 +23943,27 @@
         ],
         "fixture_position": [
           7.2,
-          3.0
+          3
         ]
       },
       "fixture_target_position": [
         3.1,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -23990,7 +23990,7 @@
       "phase_spans": {
         "release": {
           "to_actor_id": "sword_factory_07_target_3",
-          "angle_offset_radians": 0.0
+          "angle_offset_radians": 0
         }
       },
       "phase_aliases": {},
@@ -24057,7 +24057,7 @@
             }
           ],
           "display_width_px": 410,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24165,7 +24165,7 @@
             }
           ],
           "display_width_px": 410,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24219,7 +24219,7 @@
             }
           ],
           "display_width_px": 143,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24246,7 +24246,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -24267,7 +24267,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.35,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 4.2,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -24366,27 +24366,27 @@
         ],
         "fixture_position": [
           5.5,
-          3.0
+          3
         ]
       },
       "fixture_target_position": [
         3.8,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -24475,7 +24475,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24583,7 +24583,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24637,7 +24637,7 @@
             }
           ],
           "display_width_px": 143,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24664,7 +24664,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -24685,7 +24685,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.75,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.5,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -24778,22 +24778,22 @@
       "preview_outside": {},
       "fixture_target_position": [
         5.6,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -24868,7 +24868,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24895,7 +24895,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -24940,7 +24940,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -25030,7 +25030,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": true,
           "fade_seconds": 0.16
         },
@@ -25084,7 +25084,7 @@
             }
           ],
           "display_width_px": 300,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -25105,8 +25105,8 @@
       },
       "delivery_phase": "start",
       "canonical_cast_time": 0.1,
-      "canonical_projectile_speed": 0.0,
-      "canonical_range": 5.0,
+      "canonical_projectile_speed": 0,
+      "canonical_range": 5,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
@@ -25203,28 +25203,28 @@
           594
         ],
         "fixture_position": [
-          6.0,
-          3.0
+          6,
+          3
         ]
       },
       "fixture_target_position": [
         4.16,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -25313,7 +25313,7 @@
             }
           ],
           "display_width_px": 200,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -25394,7 +25394,7 @@
             }
           ],
           "display_width_px": 358,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -25448,7 +25448,7 @@
             }
           ],
           "display_width_px": 180,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -25502,7 +25502,7 @@
             }
           ],
           "display_width_px": 250,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -25523,8 +25523,8 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 1.35,
-      "canonical_projectile_speed": 0.0,
-      "canonical_range": 3.0,
+      "canonical_projectile_speed": 0,
+      "canonical_range": 3,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
@@ -25618,22 +25618,22 @@
       "preview_outside": {},
       "fixture_target_position": [
         3.44,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -25708,7 +25708,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -25762,7 +25762,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -25870,7 +25870,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": true,
           "fade_seconds": 0.16
         },
@@ -25915,7 +25915,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -25936,8 +25936,8 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.1,
-      "canonical_projectile_speed": 0.0,
-      "canonical_range": 2.0,
+      "canonical_projectile_speed": 0,
+      "canonical_range": 2,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
@@ -26035,27 +26035,27 @@
         ],
         "fixture_position": [
           5.5,
-          3.0
+          3
         ]
       },
       "fixture_target_position": [
         3.8,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -26144,7 +26144,7 @@
             }
           ],
           "display_width_px": 200,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -26198,7 +26198,7 @@
             }
           ],
           "display_width_px": 292,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -26270,7 +26270,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -26333,7 +26333,7 @@
             }
           ],
           "display_width_px": 240,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -26354,7 +26354,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.28,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.5,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -26504,16 +26504,16 @@
       "actor_asset_id": 48,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -26588,7 +26588,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -26642,7 +26642,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -26750,7 +26750,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": true,
           "fade_seconds": 0.16
         },
@@ -26795,7 +26795,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -26816,7 +26816,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.18,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.8,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -26916,7 +26916,7 @@
           ],
           "fixture_position": [
             3.1,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             0.04,
@@ -26932,7 +26932,7 @@
           ],
           "fixture_position": [
             3.6500000000000004,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.04,
@@ -26949,27 +26949,27 @@
         ],
         "fixture_position": [
           5.6,
-          3.0
+          3
         ]
       },
       "fixture_target_position": [
         3.1,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -26996,7 +26996,7 @@
       "phase_spans": {
         "release": {
           "to_actor_id": "sword_factory_14_target_2",
-          "angle_offset_radians": 0.0
+          "angle_offset_radians": 0
         }
       },
       "phase_aliases": {},
@@ -27063,7 +27063,7 @@
             }
           ],
           "display_width_px": 190,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -27171,7 +27171,7 @@
             }
           ],
           "display_width_px": 292,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -27225,7 +27225,7 @@
             }
           ],
           "display_width_px": 220,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -27252,7 +27252,7 @@
             }
           ],
           "display_width_px": 230,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -27273,7 +27273,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.38,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.6,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -27423,16 +27423,16 @@
       "actor_asset_id": 48,
       "actor_action": "cast",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -27525,7 +27525,7 @@
             }
           ],
           "display_width_px": 210,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -27561,7 +27561,7 @@
             }
           ],
           "display_width_px": 271,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -27678,7 +27678,7 @@
             }
           ],
           "display_width_px": 271,
-          "fps": 25.0,
+          "fps": 25,
           "loop": true,
           "fade_seconds": 0.16
         },
@@ -27714,7 +27714,7 @@
             }
           ],
           "display_width_px": 271,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -27735,7 +27735,7 @@
       },
       "delivery_phase": "release",
       "canonical_cast_time": 0.6,
-      "canonical_projectile_speed": 0.0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.5,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -27834,27 +27834,27 @@
         ],
         "fixture_position": [
           5.2,
-          3.0
+          3
         ]
       },
       "fixture_target_position": [
         3.584,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -27925,7 +27925,7 @@
             }
           ],
           "display_width_px": 150,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -28015,7 +28015,7 @@
             }
           ],
           "display_width_px": 241,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -28078,7 +28078,7 @@
             }
           ],
           "display_width_px": 190,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -28132,14 +28132,14 @@
             }
           ],
           "display_width_px": 180,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
       },
       "review_timeline": {
-        "release_at": 0.0,
-        "flight_at": 0.0,
+        "release_at": 0,
+        "flight_at": 0,
         "contact_at": 0.18,
         "fade_at": 0.42,
         "loop_seconds": 1.8,
@@ -28152,8 +28152,8 @@
         "actor_action_seconds": 0.35
       },
       "delivery_phase": "release",
-      "canonical_cast_time": 0.0,
-      "canonical_projectile_speed": 0.0,
+      "canonical_cast_time": 0,
+      "canonical_projectile_speed": 0,
       "canonical_range": 2.2,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
@@ -28231,23 +28231,23 @@
       "preview_targets": [],
       "preview_outside": {},
       "fixture_target_position": [
-        6.0,
-        3.0
+        6,
+        3
       ],
       "actor_sex": "male",
       "actor_asset_id": 48,
       "actor_action": "attack",
       "facing_vector": [
-        0.0,
-        1.0
+        0,
+        1
       ],
       "preview_attachment_override": {
         "asset_id": "owner_liked_jian_existing",
         "anchor_slot": "main_hand",
         "asset_scale": 0.14,
         "align_tip_to_direction": [
-          1.0,
-          0.0
+          1,
+          0
         ]
       },
       "source_anchor": "weapon_grip",
@@ -28322,7 +28322,7 @@
             }
           ],
           "display_width_px": 180,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -28349,7 +28349,7 @@
             }
           ],
           "display_width_px": 240,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -28394,7 +28394,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.16
         },
@@ -28457,7 +28457,7 @@
             }
           ],
           "display_width_px": 379,
-          "fps": 25.0,
+          "fps": 25,
           "loop": true,
           "fade_seconds": 0.16
         },
@@ -28538,7 +28538,7 @@
             }
           ],
           "display_width_px": 300,
-          "fps": 25.0,
+          "fps": 25,
           "loop": false,
           "fade_seconds": 0.24
         }
@@ -28559,8 +28559,8 @@
       },
       "delivery_phase": "start",
       "canonical_cast_time": 0.08,
-      "canonical_projectile_speed": 0.0,
-      "canonical_range": 6.0,
+      "canonical_projectile_speed": 0,
+      "canonical_range": 6,
       "receipt_manifest": {
         "schema": "tmb.vfx_bindings.v1",
         "skill_id": "tmb.skill.sword.mobility.human",
@@ -28652,13 +28652,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         4.24,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -29061,13 +29061,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         6.4,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -29607,13 +29607,13 @@
       "preview_outside": {},
       "fixture_target_position": [
         4.24,
-        3.0
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -30309,8 +30309,8 @@
             482
           ],
           "fixture_position": [
-            5.0,
-            3.0
+            5,
+            3
           ],
           "fixture_motion_delta": [
             0.1,
@@ -30326,7 +30326,7 @@
           ],
           "fixture_position": [
             5.6,
-            3.0
+            3
           ],
           "fixture_motion_delta": [
             -0.06,
@@ -30363,14 +30363,14 @@
         ]
       },
       "fixture_target_position": [
-        6.0,
-        3.0
+        6,
+        3
       ],
       "actor_sex": "male",
       "actor_action": "cast",
       "facing_vector": [
-        1.0,
-        0.0
+        1,
+        0
       ],
       "preview_attachment_override": {
         "suppress_attachments": true
@@ -30939,6 +30939,302 @@
       "native_contact_sheet": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_contact_sheet_1280x720.png",
       "native_video": "res://labs/combat_lab/fist_factory_batch1_20261125/review/native/fist_batch1_native_1280x720.mp4",
       "native_event_status": "REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED=5; SYNTHETIC=0; EVENTS=skill_cast,skill_release,v63_skill_hit"
+    },
+    {
+      "skill_id": "tmb.skill.blade.cuong_dao.active_04.human",
+      "school": "blade",
+      "branch": "cuong_dao",
+      "name_vi": "Cuồng Đao Phá Vây · Nhân Giai — R1",
+      "catalog_path": "res://data/combat/v63_blade_combat_catalog.json",
+      "effect": "damage",
+      "shape": "single_target",
+      "target_limit": 1,
+      "mechanic_template": "projectile",
+      "target_mode": "single_target",
+      "preview_target_kind": "monster",
+      "target_actor_id": "factory_blade_target_04",
+      "outside_actor_id": "factory_blade_outside_04",
+      "preview_targets": [
+        {
+          "id": "factory_blade_target_04",
+          "label": "MOVING TARGET",
+          "screen_position": [
+            690,
+            492
+          ],
+          "fixture_position": [
+            6,
+            3
+          ],
+          "fixture_motion_delta": [
+            -0.4,
+            -0.2
+          ]
+        }
+      ],
+      "preview_outside": {
+        "id": "factory_blade_outside_04",
+        "label": "OUTSIDE RANGE · UNCHANGED",
+        "screen_position": [
+          844,
+          598
+        ],
+        "fixture_position": [
+          10,
+          6
+        ]
+      },
+      "actor_asset_id": 50,
+      "actor_sex": "male",
+      "actor_action": "attack",
+      "facing_vector": [
+        1,
+        0
+      ],
+      "preview_attachment_override": {
+        "asset_id": "curved_dao",
+        "anchor_slot": "main_hand",
+        "asset_scale": 0.68,
+        "align_tip_to_direction": [
+          1,
+          0
+        ]
+      },
+      "source_anchor": "weapon_tip",
+      "phase_anchors": {
+        "charge": "weapon_tip",
+        "flight": "weapon_tip",
+        "contact": "target_chest",
+        "fade": "target_chest"
+      },
+      "draw_layer": "FRONT",
+      "source_g3": "NEW_AUTHORED_VECTOR_CELS; RASTER_IMPORT_AND_ART_REVIEW_PENDING",
+      "native_status": "NATIVE_CAPTURE_PENDING",
+      "owner_status": "OWNER_VISUAL_PENDING",
+      "native_ready": false,
+      "motion_status": "16_DISTINCT_AUTHORED_CELS; NO_RIG_NO_TWEEN; ART_PENDING",
+      "showcase_moving_target": true,
+      "delivery_phase": "flight",
+      "native_batch": "blade",
+      "phase_sources": {
+        "charge": {
+          "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                0,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                256,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                512,
+                0,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                768,
+                0,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 105,
+          "fps": 12,
+          "loop": false
+        },
+        "flight": {
+          "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                0,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                256,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                512,
+                256,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                768,
+                256,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 186,
+          "fps": 16,
+          "loop": false
+        },
+        "contact": {
+          "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                0,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                256,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                512,
+                512,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                768,
+                512,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 146,
+          "fps": 18,
+          "loop": false
+        },
+        "fade": {
+          "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+          "frames": [
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                0,
+                768,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                256,
+                768,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                512,
+                768,
+                256,
+                256
+              ]
+            },
+            {
+              "path": "res://labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+              "region": [
+                768,
+                768,
+                256,
+                256
+              ]
+            }
+          ],
+          "display_width_px": 145,
+          "fps": 12,
+          "loop": false
+        }
+      },
+      "review_timeline": {
+        "release_at": 0.5,
+        "flight_at": 0.5,
+        "contact_at": 1,
+        "fade_at": 1.22,
+        "loop_seconds": 1.6,
+        "charge_window_seconds": 0.5,
+        "release_window_seconds": 0.16,
+        "contact_window_seconds": 0.22,
+        "fade_window_seconds": 0.33,
+        "actor_action_seconds": 0.5,
+        "clock": "REAL_MAPBATTLE_CAST_TO_CANONICAL_RELEASE_DEADLINE"
+      },
+      "receipt_manifest": {
+        "schema": "tmb.vfx_bindings.v1",
+        "skill_id": "tmb.skill.blade.cuong_dao.active_04.human",
+        "bindings": [
+          {
+            "event_type": "skill_cast",
+            "caster_slot": "weapon_tip",
+            "target_slot": "foot",
+            "actor_clip": "attack",
+            "visual_phase": "charge"
+          },
+          {
+            "event_type": "v63_skill_hit",
+            "caster_slot": "weapon_tip",
+            "target_slot": "chest",
+            "actor_clip": "attack",
+            "visual_phase": "contact"
+          }
+        ]
+      },
+      "review_note": "Original authored vector cel candidate, 4 charge + 4 projectile + 4 contact + 4 dissipation. Not ImageGen or painted RGBA master. Godot raster import; canonical combat receipt gating. Owner review and PvE HOLD.",
+      "native_capture_mode": "REAL_MAPBATTLE_EXACT_SKILL_EVENTS",
+      "source_revision": "BLADE04_R1_VECTOR_CEL_ATLAS",
+      "source_owner_gate": "OWNER_VISUAL_PENDING",
+      "source_paths": [
+        "labs/combat_lab/blade04/cuong_dao_pha_vay_r1/source/cuong_dao_pha_vay_16cel.svg",
+        "data/combat/v63_blade_combat_catalog.json"
+      ]
     }
   ],
   "batch_status": {
@@ -31054,9 +31350,9 @@
       "receipt_status": "NO_GAMEPLAY_RECEIPT_CONFIGURED; STORYBOARD_ONLY; CONTACT_HIDDEN"
     },
     "blade": {
-      "expected_count": 1,
-      "technical_status": "NATIVE_TECH_PASS_GODOT_4.7.2_1280x720_H264_FULL_DECODE",
-      "receipt_status": "REAL_MAPBATTLE_V63_SKILL_CAST_AND_EXACT_SKILL_HIT_ACCEPTED; SYNTHETIC=0",
+      "expected_count": 2,
+      "technical_status": "BATCH_RECAPTURE_PENDING",
+      "receipt_status": "NEW_SKILL_NATIVE_PENDING",
       "owner_approval": "PENDING",
       "pve": "HOLD"
     },

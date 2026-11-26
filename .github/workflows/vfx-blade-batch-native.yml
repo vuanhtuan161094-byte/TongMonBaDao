@@ -1,0 +1,42 @@
+name: VFX Blade batch actual native video
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/labs/combat_lab/blade04/**'
+      - '.github/workflows/vfx-blade-batch-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install capture dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth ffmpeg libgl1-mesa-dri
+          curl -fL --retry 3 -o /tmp/godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum -c -
+          unzip -oq /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+      - name: Real Godot native capture
+        run: |
+          set -euo pipefail
+          G=/tmp/Godot_v4.7.2-stable_linux.x86_64
+          mkdir -p "$RUNNER_TEMP/blade"
+          "$G" --headless --path godot --editor --import
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "$G" --path godot --resolution 1280x720 --audio-driver Dummy --fixed-fps 20 --write-movie "$RUNNER_TEMP/blade/capture.avi" res://labs/combat_lab/vfx_factory/vfx_factory_formation_batch_capture.tscn -- --tmb-vfx-school=blade --tmb-vfx-index="$RUNNER_TEMP/blade/index.json" 2>&1 | tee "$RUNNER_TEMP/blade/capture.log"
+          python3 -c 'import json,sys; x=json.load(open(sys.argv[1])); assert len(x["skills"])==2; assert all(r["accepted_event_count"]>0 and r["synthetic_events"]==0 for r in x["skills"])' "$RUNNER_TEMP/blade/index.json"
+          ffmpeg -y -v error -i "$RUNNER_TEMP/blade/capture.avi" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$RUNNER_TEMP/blade/blade.mp4"
+          ffmpeg -v error -i "$RUNNER_TEMP/blade/blade.mp4" -f null -
+          rm "$RUNNER_TEMP/blade/capture.avi"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blade-native-review-${{ github.sha }}
+          path: ${{ runner.temp }}/blade/
+          if-no-files-found: warn
+          retention-days: 14
