@@ -1,0 +1,39 @@
+{
+  "revision": "R7",
+  "source_class": "FIRST_PARTY_FIST03_PAINTED_MATERIAL_DERIVATIVE",
+  "rights": "Project-owned original painted FIST03 godfist_master.webp and impact_master.webp",
+  "not_new_illustration": true,
+  "no_poison_master": true,
+  "no_rig": true,
+  "no_gif": true,
+  "original_sources": [
+    "/workspace/TongMonBaDao-VFX/godot/labs/combat_lab/fist03/assets/godfist_master.webp",
+    "/workspace/TongMonBaDao-VFX/godot/labs/combat_lab/fist03/assets/impact_master.webp"
+  ],
+  "atlases": {
+    "charge": {
+      "frames": 8,
+      "dimensions": [
+        1280,
+        640
+      ],
+      "sha256": "ff0ce802318f51d86b9a4cd1174f01b7be2e3de0833ea44f504ed1f541bd66d1"
+    },
+    "contact": {
+      "frames": 12,
+      "dimensions": [
+        1280,
+        960
+      ],
+      "sha256": "49fd4125fdccc0e821a7e83464494ac458a8803f8b93d3011a2d5ff8b6006ab7"
+    },
+    "mark": {
+      "frames": 8,
+      "dimensions": [
+        1280,
+        640
+      ],
+      "sha256": "1108b528c312c800b01609fffef5b98a3b64906b38e08ff98421543876ba1827"
+    }
+  }
+}

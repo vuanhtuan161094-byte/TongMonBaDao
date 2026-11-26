@@ -1,0 +1,73 @@
+{
+  "revision": "FIST15_R2",
+  "provenance": "ORIGINAL_FIRST_PARTY_CODE_PAINTED_RGBA_NOT_HAND_PAINTED",
+  "reference": "JX Wudang #158 timing and pure light language only; NO copied commercial pixels",
+  "atlases": {
+    "charge": {
+      "sha256": "b801b4b74242a85a8e597a4867830cf2c63aa7f7c01cae7a2795569f2d0f3e67",
+      "frames": 10,
+      "size": [
+        1280,
+        960
+      ],
+      "cell": 320
+    },
+    "sea": {
+      "sha256": "b1b9702f5283611dd5fb6aa5a729cb8d47a4f341d2045446672a0cc09a1bb8b5",
+      "frames": 12,
+      "size": [
+        1280,
+        960
+      ],
+      "cell": 320
+    },
+    "fall": {
+      "sha256": "0570fa95ad7d25af886516d9f2669c3a24112b8018c0d01c8edc84b654a9ed77",
+      "frames": 17,
+      "size": [
+        1280,
+        1600
+      ],
+      "cell": 320
+    },
+    "hit": {
+      "sha256": "33d397fd656ca91b823045ede15089947867a93470e6ccacb93162c0c1b09e68",
+      "frames": 8,
+      "size": [
+        1280,
+        640
+      ],
+      "cell": 320
+    }
+  },
+  "masters": {
+    "charge": {
+      "sha256": "3a13741be93085318b7dd4855a8ebf34d1830fa9613b40d5febd089178eb366f",
+      "pixels": [
+        512,
+        512
+      ]
+    },
+    "sea": {
+      "sha256": "1770432a1cd36f72af7e34a21a3cefbcd22e71b0049b88e99de4492ff7ffb0e7",
+      "pixels": [
+        512,
+        512
+      ]
+    },
+    "fall": {
+      "sha256": "963213426f3798c140fb90e3c8a8aeeedecdd294751b5bff1665109956b13337",
+      "pixels": [
+        512,
+        512
+      ]
+    },
+    "hit": {
+      "sha256": "4dfcd4832bea56844b0284b5e02dd118fbcbf5028b99107e02ff998bae5ca93a",
+      "pixels": [
+        512,
+        512
+      ]
+    }
+  }
+}

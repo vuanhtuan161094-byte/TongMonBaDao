@@ -1,0 +1,353 @@
+{
+  "schema": "tmb.vfx_factory_recovered_source_batch.v1",
+  "batch": "fist_human_cast_recovery_20261126",
+  "art_source": "FIRST_PARTY_CODE_PAINTED_RASTER_OR_PROJECT_OWNED_MATERIAL_DERIVATIVE; NO_EXTERNAL_PIXELS; NO_RIG",
+  "source_gate": "CANDIDATE_ONLY; OWNER_VISUAL_PENDING; TECHNICAL_IMPORT_PENDING; PVE_HOLD",
+  "frame_validation": "RGBA and nonempty cell checks; review still required at 1280x720 in Godot",
+  "entries": [
+    {
+      "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+      "school_dir": "fist06",
+      "source_status": "RESTORED_FROM_TRACKED_FIRST_PARTY_GENERATOR; OWNER_VISUAL_PENDING",
+      "generator": "tools/vfx/generate_fist06_tran_dia_quyen.py",
+      "generator_sha256": "2d96dc532cc0e810f8a1cbbdfc81486262d99b8ea6836074b6eed00b2bd665c1",
+      "inputs": [
+        {
+          "path": "godot/labs/combat_lab/fist03/assets/godfist_master.webp",
+          "sha256": "9cf2cdef41af0381cb9c0dda7344ab0923f71ce48681f6c3255652b715cf5c15",
+          "bytes": 14848
+        }
+      ],
+      "outputs": [
+        {
+          "path": "godot/labs/combat_lab/fist06/assets/generated/earth_fist_main.png",
+          "sha256": "4d3a9fbf6a2b72c736882af1f245b4642bc48309241b312fb9ee04d5366e47c1",
+          "bytes": 485898,
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            254
+          ],
+          "nontransparent_cells": 16,
+          "cell_px": 256
+        },
+        {
+          "path": "godot/labs/combat_lab/fist06/assets/generated/earth_fist_hit.png",
+          "sha256": "7da7dab3881a46b862ef929db9306d2c9df00ac159080a3a7fefac784d9b980d",
+          "bytes": 247632,
+          "dimensions": [
+            1024,
+            512
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            252
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 256
+        }
+      ]
+    },
+    {
+      "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+      "school_dir": "fist09",
+      "source_status": "RESTORED_FROM_TRACKED_FIRST_PARTY_GENERATOR; OWNER_VISUAL_PENDING",
+      "generator": "tools/vfx/generate_fist09_tran_son_ho_dong.py",
+      "generator_sha256": "127335e1656d212085c71c663e9f7c1d2a0ddc5e9f07bcfcc600b355d32603d1",
+      "inputs": [
+        {
+          "path": "godot/labs/combat_lab/fist05/assets/spires_master.webp",
+          "sha256": "4ab625927350f80c227f52bcf57e29ac382ddf26d3cf6cb2d51fff0793252a75",
+          "bytes": 71226
+        },
+        {
+          "path": "godot/labs/combat_lab/fist07/assets/source/kim_cang_guardian_master_r5.webp.b64",
+          "sha256": "3f016cbbaeb1c937d55db104f00faa792864d881acd241cc3ca174a56d8eb886",
+          "bytes": 322000
+        }
+      ],
+      "outputs": [
+        {
+          "path": "godot/labs/combat_lab/fist09/assets/generated/f9_mountain_cast.png",
+          "sha256": "6c270d2019c9c8e755b4b6358c9aa0c079bb680b5fc0c44c47401f7067d36434",
+          "bytes": 889318,
+          "dimensions": [
+            1280,
+            640
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            252
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist09/assets/generated/f9_status_slabs.png",
+          "sha256": "ea1ba2f2a30c2ab1a2eff7ca3e2d2574eb92bc97bd9747fddd5c3a8ac8367e14",
+          "bytes": 105550,
+          "dimensions": [
+            768,
+            384
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            234
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 192
+        },
+        {
+          "path": "godot/labs/combat_lab/fist09/assets/generated/f9_guard_block.png",
+          "sha256": "6769fe262aa7d23ca12a1d82953191a0f8357a9b406d4c09adb064341fff987b",
+          "bytes": 354443,
+          "dimensions": [
+            1024,
+            512
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            253
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 256
+        }
+      ]
+    },
+    {
+      "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+      "school_dir": "fist13",
+      "source_status": "RESTORED_FROM_TRACKED_FIRST_PARTY_GENERATOR; OWNER_VISUAL_PENDING",
+      "generator": "tools/vfx/generate_fist13_huyet_khi_hoi_luu.py",
+      "generator_sha256": "ec782976aafc6028e680584f7217146815503dd8b608dc03c31555aad004e40c",
+      "inputs": [
+        {
+          "path": "godot/labs/combat_lab/fist03/assets/godfist_master.webp",
+          "sha256": "9cf2cdef41af0381cb9c0dda7344ab0923f71ce48681f6c3255652b715cf5c15",
+          "bytes": 14848
+        },
+        {
+          "path": "godot/labs/combat_lab/fist03/assets/impact_master.webp",
+          "sha256": "9a1774cfab8ec58c3cc974ab7b5ab315f2b691741df9e3f499fc8a04380b19ee",
+          "bytes": 41530
+        }
+      ],
+      "outputs": [
+        {
+          "path": "godot/labs/combat_lab/fist13/assets/generated/f13_charge.png",
+          "sha256": "ff0ce802318f51d86b9a4cd1174f01b7be2e3de0833ea44f504ed1f541bd66d1",
+          "bytes": 363949,
+          "dimensions": [
+            1280,
+            640
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            236
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist13/assets/generated/f13_contact.png",
+          "sha256": "49fd4125fdccc0e821a7e83464494ac458a8803f8b93d3011a2d5ff8b6006ab7",
+          "bytes": 703755,
+          "dimensions": [
+            1280,
+            960
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            253
+          ],
+          "nontransparent_cells": 12,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist13/assets/generated/f13_mark.png",
+          "sha256": "1108b528c312c800b01609fffef5b98a3b64906b38e08ff98421543876ba1827",
+          "bytes": 136132,
+          "dimensions": [
+            1280,
+            640
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            246
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist13/assets/generated/f13_original_code_painted_hero.png",
+          "sha256": "9f644f6212b6f6272713f362574d90efb87a310a55d28804b319130f2a4204b7",
+          "bytes": 62901,
+          "dimensions": [
+            320,
+            320
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            249
+          ],
+          "nontransparent_cells": 1,
+          "cell_px": 320
+        }
+      ]
+    },
+    {
+      "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+      "school_dir": "fist15",
+      "source_status": "RESTORED_FROM_TRACKED_FIRST_PARTY_GENERATOR; OWNER_VISUAL_PENDING",
+      "generator": "tools/vfx/generate_fist15_huyet_hai_quyen_vuc.py",
+      "generator_sha256": "0b3261bb7ecfa2c65159eaead6088d309984cff67e12b0b2035f452ef57a4ee1",
+      "inputs": [],
+      "outputs": [
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_charge.png",
+          "sha256": "b801b4b74242a85a8e597a4867830cf2c63aa7f7c01cae7a2795569f2d0f3e67",
+          "bytes": 223863,
+          "dimensions": [
+            1280,
+            960
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            255
+          ],
+          "nontransparent_cells": 10,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_sea.png",
+          "sha256": "b1b9702f5283611dd5fb6aa5a729cb8d47a4f341d2045446672a0cc09a1bb8b5",
+          "bytes": 518310,
+          "dimensions": [
+            1280,
+            960
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            216
+          ],
+          "nontransparent_cells": 12,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_fall.png",
+          "sha256": "0570fa95ad7d25af886516d9f2669c3a24112b8018c0d01c8edc84b654a9ed77",
+          "bytes": 691546,
+          "dimensions": [
+            1280,
+            1600
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            255
+          ],
+          "nontransparent_cells": 17,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_hit.png",
+          "sha256": "33d397fd656ca91b823045ede15089947867a93470e6ccacb93162c0c1b09e68",
+          "bytes": 296652,
+          "dimensions": [
+            1280,
+            640
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            255
+          ],
+          "nontransparent_cells": 8,
+          "cell_px": 320
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_charge_master.png",
+          "sha256": "3a13741be93085318b7dd4855a8ebf34d1830fa9613b40d5febd089178eb366f",
+          "bytes": 34168,
+          "dimensions": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            251
+          ],
+          "nontransparent_cells": 1,
+          "cell_px": 512
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_sea_master.png",
+          "sha256": "1770432a1cd36f72af7e34a21a3cefbcd22e71b0049b88e99de4492ff7ffb0e7",
+          "bytes": 66212,
+          "dimensions": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            209
+          ],
+          "nontransparent_cells": 1,
+          "cell_px": 512
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_fall_master.png",
+          "sha256": "963213426f3798c140fb90e3c8a8aeeedecdd294751b5bff1665109956b13337",
+          "bytes": 65341,
+          "dimensions": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            253
+          ],
+          "nontransparent_cells": 1,
+          "cell_px": 512
+        },
+        {
+          "path": "godot/labs/combat_lab/fist15/assets/generated/f15_hit_master.png",
+          "sha256": "4dfcd4832bea56844b0284b5e02dd118fbcbf5028b99107e02ff998bae5ca93a",
+          "bytes": 58072,
+          "dimensions": [
+            512,
+            512
+          ],
+          "mode": "RGBA",
+          "alpha_extrema": [
+            0,
+            253
+          ],
+          "nontransparent_cells": 1,
+          "cell_px": 512
+        }
+      ]
+    }
+  ],
+  "blocked_remaining": [
+    "tmb.skill.fist.basic.human",
+    "tmb.skill.fist.mobility.human"
+  ]
+}
