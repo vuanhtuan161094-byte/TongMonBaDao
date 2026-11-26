@@ -133,8 +133,8 @@ jobs:
         if: always()
         shell: bash
         run: |
-          mkdir -p "$RUNNER_TEMP/art05-evidence"
-          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > "$RUNNER_TEMP/art05-evidence/source-sha.txt"
+          mkdir -p eco07-virtual-gui-evidence
+          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > eco07-virtual-gui-evidence/source-sha.txt
 
       - name: Upload screenshot comparison evidence even on failure
         if: always()

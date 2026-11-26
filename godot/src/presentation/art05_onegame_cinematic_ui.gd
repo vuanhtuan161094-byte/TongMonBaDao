@@ -441,7 +441,9 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     if panel == null:
         return
     var quality := str((state.disciples[disciple_id] as DiscipleState).disciple_quality)
-    var portrait := panel.find_child("SourceAProfilePortrait", true, false) as Control
+    var portrait := panel.find_child("ASCharProfilePortrait", true, false) as Control
+    if portrait == null:
+        portrait = panel.find_child("SourceAProfilePortrait", true, false) as Control
     if portrait == null:
         portrait = panel.find_child("VisualCatalogPortraitFallback", true, false) as Control
     if portrait != null:
@@ -757,13 +759,25 @@ func _art05_install_mockup_shell() -> void:
                 label.add_theme_font_size_override("font_size",24)
                 label.add_theme_color_override("font_color",ART05_GOLD)
             elif label.text == "TÔNG SƯ":
-                label.position = Vector2(490,12)
-                label.size = Vector2(300,45)
-                label.add_theme_font_size_override("font_size",25)
+                label.position = Vector2(455,12)
+                label.size = Vector2(166,45)
+                label.add_theme_font_size_override("font_size",21)
                 label.add_theme_color_override("font_color",ART05_GOLD)
         time_label.position = Vector2(23,43)
         time_label.size = Vector2(435,22)
         time_label.add_theme_color_override("font_color",ART05_MUTE)
+        var playbook := Button.new()
+        playbook.name = "OneGamePlaybookButton"
+        playbook.text = "CÁCH CHƠI"
+        playbook.tooltip_text = "Mở lộ trình phát triển tông môn bất cứ lúc nào"
+        playbook.position = Vector2(632,16)
+        playbook.size = Vector2(188,42)
+        playbook.add_theme_font_size_override("font_size",16)
+        playbook.add_theme_color_override("font_color",ART05_WHITE)
+        playbook.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,10))
+        playbook.add_theme_stylebox_override("hover",_art05_style(Color(0.16,0.30,0.25),ART05_GOLD,2,10))
+        playbook.pressed.connect(_art05_open_playbook)
+        top.add_child(playbook)
     resource_label.position = Vector2(840,10)
     resource_label.size = Vector2(414,57)
     resource_label.add_theme_font_size_override("font_size",15)
@@ -809,9 +823,13 @@ func _art05_install_mockup_shell() -> void:
                 button.position = Vector2(43+i*245,10)
                 button.size = Vector2(214,56)
                 button.text = ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Quái"][i]
-                button.tooltip_text = (
-                    "Chọn đội và vào bãi săn Thanh Trúc Lâm"
-                    if i == 4 else button.text)
+                button.tooltip_text = [
+                    "Về bản đồ tông môn và quản lý công trình",
+                    "Xem tư chất, linh căn, công pháp và trang bị đệ tử",
+                    "Xem tài nguyên thực có và lượng dùng được",
+                    "Chọn khu vực lịch luyện và đường ra ngoài",
+                    "Lập đội và vào bãi săn Thanh Trúc Lâm"
+                ][i]
                 button.add_theme_font_size_override("font_size",17)
                 button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
                 button.add_theme_color_override("font_hover_color",ART05_GOLD)
@@ -1211,3 +1229,94 @@ func _aschar_skill_action(disciple_id: StringName,skill_id: String,action: Strin
             ("Đã cập nhật kỹ năng: " if bool(result.get("ok",false)) else "Chưa thể thao tác: ")
             + (skill_id if bool(result.get("ok",false)) else str(result.get("reason",""))))
         _aschar_school_screen.refresh()
+
+# PRODUCT-UX: a reopenable player guide, not a second simulation or fake rewards.
+# Every card invokes the existing authoritative OneGame navigation.
+func _art05_open_playbook() -> void:
+    if state == null or popup_layer == null or _pve_hunt_overlay_is_open():
+        return
+    _close_building_operation_panel(true)
+    _close_disciple_summary(true)
+    _clear_popup()
+    _add_dim()
+    var panel := Panel.new()
+    panel.name = "OneGamePlaybook"
+    panel.position = Vector2(170,98)
+    panel.size = Vector2(940,520)
+    panel.z_index = 45
+    panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    panel.add_theme_stylebox_override("panel",_art05_style(ART05_DEEP,ART05_GOLD,2,18))
+    popup_layer.add_child(panel)
+    var heading := _art05_dock_label(panel,"LỘ TRÌNH TÔNG CHỦ",Vector2(24,16),Vector2(760,42),26,ART05_GOLD)
+    heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+    var intro := _art05_dock_label(panel,"Chọn một mục để mở đúng màn hình trong game. Không cần hoàn thành theo thứ tự cứng.",Vector2(25,58),Vector2(875,34),14,ART05_MUTE)
+    intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+    var close := Button.new()
+    close.name = "OneGamePlaybookClose"
+    close.text = "Đóng"
+    close.position = Vector2(828,20)
+    close.size = Vector2(88,36)
+    close.pressed.connect(_clear_popup)
+    panel.add_child(close)
+    var cards := [
+        ["01  TUYỂN ĐỆ TỬ","Xem phẩm chất và chỗ ở trước khi chiêu mộ. Mỗi lần nhận người dùng điều kiện thật.","recruit"],
+        ["02  MÔN PHÁI & KỸ NĂNG","Xem linh căn, chọn nhánh một lần. Học và trang bị kỹ năng đủ điều kiện.","school"],
+        ["03  SẢN XUẤT","Chọn người rảnh, phân công Mỏ, Linh Lâm hoặc Linh Điền. Theo dõi sản lượng và ETA.","production"],
+        ["04  TU LUYỆN","Xem công pháp, tu vi, luyện thể và điều kiện đột phá trong hồ sơ đệ tử.","cultivation"],
+        ["05  LỊCH LUYỆN","Lập đội đệ tử đủ sức khỏe. Chọn bãi săn, theo dõi giao chiến và chiến lợi phẩm.","hunt"],
+        ["06  ĐAN DƯỢC & TRANG BỊ","Dùng vật liệu thực trong kho để luyện đan, luyện khí và mở rộng tông môn.","craft"]
+    ]
+    for i in range(cards.size()):
+        var item: Array = cards[i]
+        var tile := Panel.new()
+        tile.position = Vector2(24+(i%2)*454,104+floori(float(i)/2.0)*132)
+        tile.size = Vector2(438,120)
+        tile.add_theme_stylebox_override("panel",_art05_style(ART05_JADE,Color(0.32,0.49,0.42),1,12))
+        panel.add_child(tile)
+        var title := _art05_dock_label(tile,str(item[0]),Vector2(13,9),Vector2(409,29),17,ART05_GOLD)
+        title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+        var description := _art05_dock_label(tile,str(item[1]),Vector2(13,39),Vector2(409,41),13,ART05_WHITE)
+        description.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+        var button := Button.new()
+        button.name = "OneGamePlaybook_"+str(item[2])
+        button.text = "MỞ"
+        button.position = Vector2(298,82)
+        button.size = Vector2(125,30)
+        button.add_theme_color_override("font_color",ART05_DEEP)
+        button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD,ART05_GOLD,1,7))
+        button.pressed.connect(_art05_playbook_action.bind(str(item[2])))
+        tile.add_child(button)
+    if gp1_guide_panel != null:
+        gp1_guide_panel.visible = false
+    _art05_refresh_sect_master_dock()
+
+func _art05_playbook_action(action: String) -> void:
+    if state == null:
+        return
+    _clear_popup()
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var target_id: StringName = &""
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.region_id == &"sect" and disciple.active_pve_encounter_id.is_empty() and disciple.injury_level == 0 and disciple.hp > 0.0:
+            target_id = disciple.id
+            if str(disciple.v63_combat_branch_id).is_empty():
+                break
+    if target_id == &"" and not ids.is_empty():
+        target_id = StringName(ids[0])
+    match action:
+        "recruit":
+            _open_building(SectMapPresentation.DEST_GUIDANCE)
+        "school":
+            if target_id != &"":
+                _aschar_open_school_skills(target_id)
+        "production":
+            _open_building(SectMapPresentation.DEST_MINE)
+        "cultivation":
+            if target_id != &"":
+                _open_disciple_deep_screen(target_id,"Công Pháp")
+        "hunt":
+            _open_pve_party_picker()
+        "craft":
+            _open_building(SectMapPresentation.DEST_ALCHEMY_HALL)

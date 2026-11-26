@@ -31,11 +31,12 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
     # green tiles (the prior renderer's highly visible checkerboard).
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
     slow += cos(float(cell.y)*0.16-float(cell.x)*0.09)*0.30
-    var tint := clampf(slow*0.045,-0.05,0.05)
-    var ground := Color(0.285+tint,0.405+tint,0.330+tint*0.7)
+    var ridge := sin(float(cell.x)*0.075-float(cell.y)*0.057)*0.5+cos(float(cell.y)*0.09)*0.5
+    var tint := clampf(slow*0.038+ridge*0.038,-0.07,0.07)
+    var ground := Color(0.245+tint,0.365+tint,0.285+tint*0.7)
     if not within:
         return ground.darkened(0.07)
-    ground = Color(0.37+tint,0.49+tint,0.38+tint*0.75)
+    ground = Color(0.34+tint,0.48+tint,0.35+tint*0.75)
     # District colors are understated ground material, never fake buildings.
     # Legacy layouts keep their old palette and saved house locations.
     if layout_version >= 2:
@@ -44,7 +45,7 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
         elif cell.x < 95 and cell.y < 88:
             ground = ground.blend(Color(0.27,0.47,0.57,0.53)) # cultivation ridge
         elif cell.x >= 95 and cell.y < 101:
-            ground = ground.blend(Color(0.63,0.51,0.32,0.49)) # producer quarter
+            ground = ground.blend(Color(0.58,0.49,0.33,0.34)) # producer quarter
         elif cell.y >= 101:
             ground = ground.blend(Color(0.42,0.52,0.39,0.36)) # exit approach
         else:

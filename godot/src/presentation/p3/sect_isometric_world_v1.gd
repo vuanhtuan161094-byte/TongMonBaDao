@@ -927,8 +927,18 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_actor_actions.clear()
         pve_actor_facings.clear()
     var new_visual_events := pve_jx_sword_vfx.observe_snapshot(snapshot)
-    pve_a3_sword_vfx.observe(new_visual_events,snapshot,bool(ProjectSettings.get_setting(A3_SWORD_VFX.PREVIEW_SETTING,false)))
-    pve_v8_blade_vfx.observe(new_visual_events,snapshot,bool(ProjectSettings.get_setting(V8_BLADE_VFX.PREVIEW_SETTING,false)))
+    # A real enabled school actor is sufficient for its receipt-bound art.
+    # Never enable combat/learning gates from presentation; explicit test
+    # preview settings remain supported for isolated review.
+    var sword_visual := bool(ProjectSettings.get_setting(A3_SWORD_VFX.PREVIEW_SETTING,false))
+    var blade_visual := bool(ProjectSettings.get_setting(V8_BLADE_VFX.PREVIEW_SETTING,false))
+    for raw_actor in snapshot.actors.values():
+        if not (raw_actor is Dictionary) or not bool(raw_actor.get("v63_combat_enabled",false)):
+            continue
+        sword_visual = sword_visual or bool(raw_actor.get("v63_sword_combat_enabled",false))
+        blade_visual = blade_visual or bool(raw_actor.get("v63_blade_combat_enabled",false))
+    pve_a3_sword_vfx.observe(new_visual_events,snapshot,sword_visual)
+    pve_v8_blade_vfx.observe(new_visual_events,snapshot,blade_visual)
     pve_v9_p2_spell_vfx.observe(new_visual_events,snapshot)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
@@ -1231,8 +1241,17 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
                 center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
             ]))
-            for _vertex in range(4):
-                colors.append(tone)
+            # Interpolate adjacent non-road material at corners to soften the
+            # visible tile grid without changing routes or collision.
+            if pve_landscape or preview_roads.has(cell):
+                for _vertex in range(4):
+                    colors.append(tone)
+            else:
+                var neighbors := [Vector2i(0,-1),Vector2i(1,0),Vector2i(0,1),Vector2i(-1,0)]
+                for offset in neighbors:
+                    var near_cell: Vector2i = cell+offset
+                    var near_tone := tone if preview_roads.has(near_cell) else SectMapD2Landscape.ground_color(near_cell,STARTER,preview_roads,map_layout_version)
+                    colors.append(tone.lerp(near_tone,0.34))
             indices.append_array(PackedInt32Array([
                 base,base+1,base+2,base,base+2,base+3
             ]))
@@ -1711,6 +1730,13 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
         "spirit_field":
             tint = Color(0.46,0.55,0.36)
             detail = Color(0.91,0.84,0.53)
+    # At working zoom use the authored site vignette rather than a flat icon.
+    # Far-overview remains bounded by the original lightweight LOD.
+    if not overview and candidate_site_art.has(kind):
+        var miniature: Texture2D = candidate_site_art[kind]
+        var extent := Vector2(78.0,52.0)
+        draw_texture_rect(miniature,Rect2(p-Vector2(extent.x*0.5,extent.y*0.78),extent),false)
+        return
     var rx := 15.0 if overview else 20.0
     var ry := 8.0 if overview else 11.0
     var ring := PackedVector2Array([
@@ -1745,14 +1771,15 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         # Show authentic new architecture for each primary site and selected
         # instance even at normal zoom; distant extra sites keep cheap LOD.
         var v3_showcase := V3_ART.supported(StringName(kind)) and (
-            (building_id.ends_with("_001") and camera.zoom.x >= 0.96)
+            (building_id.ends_with("_001") and camera.zoom.x >= 0.65)
             or (not building_id.is_empty() and building_id == selected_visual_site_id))
         # One genuine Owner-approved Mine landmark remains visible at default
         # map zoom; other 99 possible sites retain cheap LOD unless selected.
         var owner_mine_showcase := kind == "mine" and vis07_mine_owner_art_loaded and (
-            (building_id.ends_with("_001") and camera.zoom.x >= 0.75)
+            (building_id.ends_with("_001") and camera.zoom.x >= 0.65)
             or (not building_id.is_empty() and building_id == selected_visual_site_id))
-        if (level < 2 or not allow_detail) and not v3_showcase and not owner_mine_showcase:
+        var primary_worksite := building_id.ends_with("_001") and camera.zoom.x >= 0.65 and candidate_site_art.has(kind)
+        if (level < 2 or not allow_detail) and not v3_showcase and not owner_mine_showcase and not primary_worksite:
             _draw_compact_producer(p,kind,level == 0)
             return
     # Approved new architecture never overwrites the SHA-checked Source A originals.
