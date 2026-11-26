@@ -26,8 +26,12 @@ func _run() -> void:
     if RENDERER.frame_index("cast",0.40,4,0.40) != 3 or RENDERER.frame_index("attack",2.0,4) != 3 or RENDERER.frame_index("walk",0.5,4) != 0:
         _fail("one-shot or loop contract")
         return
-    for id in FX.BINDINGS:
-        var binding: Dictionary = FX.BINDINGS[id]
+    var skill_ids: Array = FX.BINDINGS.keys() + FX.COMPATIBLE_VARIANTS.keys()
+    if skill_ids.size() != 37 or not FX.binding_for("tmb.skill.sword.ho_kiem.active_01.human").is_empty():
+        _fail("compatible variant count or unrelated family fallback")
+        return
+    for id in skill_ids:
+        var binding: Dictionary = FX.binding_for(str(id))
         var definition := HSC.skill_definition(str(id))
         if str(definition.get("shape","")) != binding["shape"] or int(definition.get("target_limit",0)) != int(binding["limit"]) or str(definition.get("effect","")) != "damage":
             _fail("semantic mapping "+str(id))
@@ -37,7 +41,7 @@ func _run() -> void:
             _fail("runtime atlas "+str(id))
             return
         var battle := MapBattleV2.new(761)
-        battle.encounter_id = "a3_"+str(binding["tag"])
+        battle.encounter_id = "a3_"+str(id)
         var caster := _actor("caster","disciple",Vector2(2,2))
         var target := _actor("target","monster",Vector2(3,2))
         caster["v63_combat_branch_id"] = str(definition.get("branch",""))
@@ -63,7 +67,7 @@ func _run() -> void:
         fx.observe(events,battle,true)
         var contact_count := 0
         for cue in fx.cues():
-            if str(cue["phase"]) == "contact":
+            if str(cue["phase"]) == "contact" and str(cue["id"]) == str(id):
                 contact_count += 1
         if hp >= 2000.0 or contact_count != 1:
             _fail("real confirmed hit "+str(id)+" hp="+str(hp)+" contacts="+str(contact_count)+" events="+str(events))
@@ -81,5 +85,5 @@ func _run() -> void:
         if not fx.cues().is_empty():
             _fail("hold did not clear")
             return
-    print("A3_PVE_CONTRACT_PASS skills=%d real_casts=%d real_positive_hits=%d default_hold=1" % [FX.BINDINGS.size(),FX.BINDINGS.size(),FX.BINDINGS.size()])
+    print("A3_PVE_CONTRACT_PASS skills=%d real_casts=%d real_positive_hits=%d default_hold=1" % [skill_ids.size(),skill_ids.size(),skill_ids.size()])
     quit(0)

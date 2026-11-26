@@ -11,6 +11,44 @@ const BINDINGS := {
     "tmb.skill.sword.sat_kiem.active_02.human":{"tag":"07","shape":"line","limit":3},
     "tmb.skill.sword.sat_kiem.active_03.human":{"tag":"08","shape":"single_target","limit":1}
 }
+## Temporary same-family art reuse: exact real event IDs remain authoritative.
+const COMPATIBLE_VARIANTS := {
+    "tmb.skill.sword.ngu_kiem.active_02.immortal.a":"tmb.skill.sword.ngu_kiem.active_02.human",
+    "tmb.skill.sword.ngu_kiem.active_02.immortal.b":"tmb.skill.sword.ngu_kiem.active_02.human",
+    "tmb.skill.sword.ngu_kiem.active_02.divine.a":"tmb.skill.sword.ngu_kiem.active_02.human",
+    "tmb.skill.sword.ngu_kiem.active_02.divine.b":"tmb.skill.sword.ngu_kiem.active_02.human",
+    "tmb.skill.sword.ngu_kiem.active_03.immortal.a":"tmb.skill.sword.ngu_kiem.active_03.human",
+    "tmb.skill.sword.ngu_kiem.active_03.immortal.b":"tmb.skill.sword.ngu_kiem.active_03.human",
+    "tmb.skill.sword.ngu_kiem.active_03.divine.a":"tmb.skill.sword.ngu_kiem.active_03.human",
+    "tmb.skill.sword.ngu_kiem.active_03.divine.b":"tmb.skill.sword.ngu_kiem.active_03.human",
+    "tmb.skill.sword.ngu_kiem.active_04.immortal.a":"tmb.skill.sword.ngu_kiem.active_04.human",
+    "tmb.skill.sword.ngu_kiem.active_04.immortal.b":"tmb.skill.sword.ngu_kiem.active_04.human",
+    "tmb.skill.sword.ngu_kiem.active_04.divine.a":"tmb.skill.sword.ngu_kiem.active_04.human",
+    "tmb.skill.sword.ngu_kiem.active_04.divine.b":"tmb.skill.sword.ngu_kiem.active_04.human",
+    "tmb.skill.sword.ngu_kiem.ultimate.immortal.a":"tmb.skill.sword.ngu_kiem.ultimate.human",
+    "tmb.skill.sword.ngu_kiem.ultimate.immortal.b":"tmb.skill.sword.ngu_kiem.ultimate.human",
+    "tmb.skill.sword.ngu_kiem.ultimate.divine.a":"tmb.skill.sword.ngu_kiem.ultimate.human",
+    "tmb.skill.sword.ngu_kiem.ultimate.divine.b":"tmb.skill.sword.ngu_kiem.ultimate.human",
+    "tmb.skill.sword.ngu_kiem.ultimate.rare.a":"tmb.skill.sword.ngu_kiem.ultimate.human",
+    "tmb.skill.sword.ngu_kiem.ultimate.rare.b":"tmb.skill.sword.ngu_kiem.ultimate.human",
+    "tmb.skill.sword.sat_kiem.active_01.immortal.a":"tmb.skill.sword.sat_kiem.active_01.human",
+    "tmb.skill.sword.sat_kiem.active_01.immortal.b":"tmb.skill.sword.sat_kiem.active_01.human",
+    "tmb.skill.sword.sat_kiem.active_01.divine.a":"tmb.skill.sword.sat_kiem.active_01.human",
+    "tmb.skill.sword.sat_kiem.active_01.divine.b":"tmb.skill.sword.sat_kiem.active_01.human",
+    "tmb.skill.sword.sat_kiem.active_02.immortal.a":"tmb.skill.sword.sat_kiem.active_02.human",
+    "tmb.skill.sword.sat_kiem.active_02.immortal.b":"tmb.skill.sword.sat_kiem.active_02.human",
+    "tmb.skill.sword.sat_kiem.active_02.divine.a":"tmb.skill.sword.sat_kiem.active_02.human",
+    "tmb.skill.sword.sat_kiem.active_02.divine.b":"tmb.skill.sword.sat_kiem.active_02.human",
+    "tmb.skill.sword.sat_kiem.active_03.immortal.a":"tmb.skill.sword.sat_kiem.active_03.human",
+    "tmb.skill.sword.sat_kiem.active_03.immortal.b":"tmb.skill.sword.sat_kiem.active_03.human",
+    "tmb.skill.sword.sat_kiem.active_03.divine.a":"tmb.skill.sword.sat_kiem.active_03.human",
+    "tmb.skill.sword.sat_kiem.active_03.divine.b":"tmb.skill.sword.sat_kiem.active_03.human"
+}
+
+static func binding_for(skill_id: String) -> Dictionary:
+    var master := str(COMPATIBLE_VARIANTS.get(skill_id,skill_id))
+    return BINDINGS.get(master,{})
+
 const PRESENTATION := {
     "02":{"extent":212.0,"arc":0.0,"rotate":false},
     "03":{"extent":190.0,"arc":-12.0,"rotate":true},
@@ -54,9 +92,9 @@ func observe(events: Array[Dictionary], battle: MapBattleV2, enabled: bool) -> v
         var event_id := str(event.get("event_id",""))
         var cast_id := str(event.get("cast_id",""))
         var skill_id := str(event.get("skill_id",""))
-        if event_id.is_empty() or cast_id.is_empty() or not BINDINGS.has(skill_id):
+        if event_id.is_empty() or cast_id.is_empty() or binding_for(skill_id).is_empty():
             continue
-        var binding: Dictionary = BINDINGS[skill_id]
+        var binding: Dictionary = binding_for(skill_id)
         var caster := str(event.get("caster",event.get("actor_id","")))
         var target := str(event.get("target",event.get("target_id","")))
         if not battle.actors.has(caster) or not battle.actors.has(target):
@@ -117,7 +155,7 @@ func cues() -> Array[Dictionary]:
             if elapsed <= float(cue["windup"]):
                 var fraction := clampf(elapsed/float(cue["windup"]),0.0,1.0)
                 # Visual anticipation only: projectile-speed skills travel during the authoritative cast deadline.
-                var tag := str(BINDINGS[str(cue["id"])]["tag"])
+                var tag := str(binding_for(str(cue["id"]))["tag"])
                 if tag in ["02","03","04","05"] and fraction>=0.60:
                     var progress := (fraction-0.60)/0.40
                     result.append({"id":cue["id"],"phase":"release","caster":cue["caster"],"target":cue["target"],"frame":6+mini(10,int(progress*11.0)),"progress":progress})
@@ -127,7 +165,7 @@ func cues() -> Array[Dictionary]:
             var flight := _clock-float(cue.get("release_clock",_clock))
             if flight < 0.32:
                 result.append({"id":cue["id"],"phase":"release","caster":cue["caster"],"target":cue["target"],"frame":6+mini(10,int(flight/0.32*11.0)),"progress":clampf(flight/0.32,0.0,0.9)})
-        elif str(BINDINGS[str(cue["id"])]["tag"]) == "04" and cue.has("first_contact"):
+        elif str(binding_for(str(cue["id"]))["tag"]) == "04" and cue.has("first_contact"):
             var back := _clock-float(cue["first_contact"])-0.12
             if back >= 0.0 and back < 0.24:
                 result.append({"id":cue["id"],"phase":"return","caster":cue["caster"],"target":cue["target"],"frame":16-mini(10,int(back/0.24*11.0)),"progress":clampf(back/0.24,0.0,1.0)})
@@ -136,9 +174,10 @@ func cues() -> Array[Dictionary]:
     return result
 
 func texture_for(skill_id: String) -> Texture2D:
-    if not BINDINGS.has(skill_id):
+    var binding := binding_for(skill_id)
+    if binding.is_empty():
         return null
-    var tag := str(BINDINGS[skill_id]["tag"])
+    var tag := str(binding["tag"])
     if _textures.has(tag):
         return _textures[tag] as Texture2D
     var path := ROOT+("sword_02_r1e_12f.png" if tag=="02" else "sword_"+tag+"_24f.png")
@@ -163,7 +202,7 @@ func draw_on(canvas: CanvasItem, positions: Dictionary, projection: Callable, sc
             continue
         var at: Vector2 = projection.call(cue.get("at",positions.get(target,Vector2.ZERO)) if phase=="contact" else positions.get(target,Vector2.ZERO))
         at += Vector2(0,-42)*scale_amount
-        var profile: Dictionary = PRESENTATION[str(BINDINGS[str(cue["id"])]["tag"])]
+        var profile: Dictionary = PRESENTATION[str(binding_for(str(cue["id"]))["tag"])]
         var heading := 0.0
         if positions.has(caster):
             var from: Vector2 = projection.call(positions[caster])
@@ -181,7 +220,7 @@ func draw_on(canvas: CanvasItem, positions: Dictionary, projection: Callable, sc
                         at = from.lerp(destination,progress)
                         heading = (destination-from).angle()
                     at.y += float(profile["arc"])*sin(PI*progress)*scale_amount
-        var tag := str(BINDINGS[str(cue["id"])]["tag"])
+        var tag := str(binding_for(str(cue["id"]))["tag"])
         var texture := texture_for(str(cue["id"]))
         var frame := int(cue["frame"])
         if tag=="04" and phase in ["release","return"]:
