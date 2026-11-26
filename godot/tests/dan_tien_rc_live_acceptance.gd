@@ -86,9 +86,11 @@ func _run() -> void:
 		for _frame in range(3):
 			await process_frame
 		var source_candidate: CandidateState = state.recruitment_candidates[female_candidate_id]
-		var source_scene := DiscipleSourceAVisualPool.scene_path_for_disciple(source_candidate.to_disciple())
+		var source_disciple := source_candidate.to_disciple()
+		var source_id := SectASCharCandidateBridgeV1.actor_id_for_disciple(source_disciple)
+		var source_scene := str(AscharVisualIdentityV1.SOURCE_PATHS.get(source_id,""))
 		if not source_scene.is_empty():
-			if not _check(_has_source_a_preview(screen), "verified Source A portrait renders for the selected candidate"):
+			if not _check(SectASCharCandidateBridgeV1.preview_texture_for_disciple(source_disciple) != null and _has_source_a_preview(screen), "source-backed AS-CHAR candidate portrait renders"):
 				return
 			if not await _capture("dan_tien_recruitment_1280x720.png"):
 				return

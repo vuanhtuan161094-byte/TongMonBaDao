@@ -662,13 +662,14 @@ func _refresh_top_bar() -> void:
     resource_label.text = "Tiền %s ◆ Linh thạch %s\nThiết %s/%s  •  Đan %s/%s  •  Tủy %s/%s" % [
         _compact_number(state.sect.treasury),
         _compact_number(state.sect.spirit_stones),
-        _compact_number(_warehouse_quantity(&"thanh_thiet")),
-        _compact_number(_warehouse_available(&"thanh_thiet")),
+        str(_warehouse_quantity(&"thanh_thiet")),
+        str(_warehouse_available(&"thanh_thiet")),
         _compact_number(_warehouse_quantity(&"yeu_dan", true)),
         _compact_number(_warehouse_available(&"yeu_dan", true)),
         _compact_number(_warehouse_quantity(&"linh_tuy", true)),
         _compact_number(_warehouse_available(&"linh_tuy", true))
     ]
+    resource_label.tooltip_text = "Thanh Thiết: %s\nYêu Đan: %s\nLinh Tủy: %s" % [_warehouse_pair(&"thanh_thiet"),_warehouse_pair(&"yeu_dan",true),_warehouse_pair(&"linh_tuy",true)]
 
 func _refresh_tasks() -> void:
     if task_label != null:
