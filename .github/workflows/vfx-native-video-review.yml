@@ -22,7 +22,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          command -v ffmpeg
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg
+          fi
+          ffmpeg -version | head -n 1
           python3 -m py_compile tools/vfx/build_native_video_review.py
           python3 tools/vfx/build_native_video_review.py --source godot --destination "$RUNNER_TEMP/native-review" --sha "$GITHUB_SHA" --gifs
           python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); assert m["gif_count"] > 0 and m["gif_count"] == len(m["clips"]); print(m["gif_count"], "real indexed GIF clips")' "$RUNNER_TEMP/native-review/review-manifest.json"

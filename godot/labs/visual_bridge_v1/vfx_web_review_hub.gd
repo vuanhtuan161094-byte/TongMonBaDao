@@ -18,6 +18,7 @@ var _bg_button: Button
 var _zoom_button: Button
 var _version_button: Button
 var _version_v2 := true
+var _original_projectile_phase := false
 
 func _read_catalog() -> void:
     if not FileAccess.file_exists(CATALOG):
@@ -176,6 +177,7 @@ func _change_skill(index: int) -> void:
         remove_child(_lab)
         _lab.queue_free()
     _lab = candidate
+    _original_projectile_phase = str(info.get("preview_key","")) in ["r1e","r2b"]
     _lab.name = "SelectedVfxLab"
     add_child(_lab)
     _version_v2 = true
@@ -221,7 +223,9 @@ func _seek_phase(phase: String) -> void:
     if _lab == null:
         return
     _paused = true
-    _lab.call("review_seek_phase", phase)
+    # Original sword labs call the middle phase projectile; Factory uses release.
+    var actual_phase := "projectile" if phase == "release" and _original_projectile_phase else phase
+    _lab.call("review_seek_phase", actual_phase)
     _pause_button.text = "Tiếp tục"
 
 func _replay() -> void:

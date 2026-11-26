@@ -148,6 +148,14 @@ jobs:
           du -h _site/play/index.*
           find _site/play -maxdepth 1 -type f | sort
 
+      - name: Upload canonical playable Web export independently of review gate
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-game-playable-web-${{ github.sha }}
+          path: _site/play/
+          retention-days: 14
+          if-no-files-found: error
+
       - name: Export isolated VFX Web review into SAME canonical Pages site
         shell: bash
         run: |
