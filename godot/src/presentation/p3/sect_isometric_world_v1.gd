@@ -240,6 +240,12 @@ const PVE_FEEDBACK_LIMIT := 48
 const PVE_FEEDBACK_LIFETIME := 0.85
 const PVE_BASIC_CONTACT := preload("res://art/pve_v7/basic_contact_6cel.svg")
 const PVE_BASIC_CONTACT_SECONDS := 0.24
+const PVE_SCHOOL_CONTACT := {
+    "spear":preload("res://art/pve_v8/spear_contact_6cel.svg"),
+    "bow":preload("res://art/pve_v8/bow_contact_6cel.svg"),
+    "palm":preload("res://art/pve_v8/palm_contact_6cel.svg"),
+    "dual_blade":preload("res://art/pve_v8/dual_blade_contact_6cel.svg")
+}
 var pve_clock := 0.0
 var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
@@ -1552,12 +1558,16 @@ func _draw_pve_actor(data: Dictionary) -> void:
     # World-space HP/name anchors belong above the chibi head, not beneath
     # the feet (which obscured movement and made the fight look unfinished).
     # Camera2D already scales the Node2D drawing: do not multiply zoom twice.
-    var bar_width := 44.0
+    var tier := str(actor.get("tier","normal"))
+    var bar_width := 56.0 if tier == "boss" else 44.0
     var hp_ratio := clampf(float(actor.get("hp",0.0))/maxf(1.0,float(actor.get("max_hp",1.0))),0.0,1.0)
     var bar_at := foot+Vector2(-bar_width*0.5,-82.0)
-    draw_rect(Rect2(bar_at,Vector2(bar_width,5.0)),Color(0.04,0.07,0.05,0.9))
-    if hp_ratio > 0.0:
+    # Readable 30-hunter view: hide full-health ordinary monster bars and dead bars.
+    if alive and (side == "disciple" or tier in ["boss","elite"] or hp_ratio < 0.999):
+        draw_rect(Rect2(bar_at,Vector2(bar_width,5.0)),Color(0.04,0.07,0.05,0.9))
         draw_rect(Rect2(bar_at,Vector2(bar_width*hp_ratio,5.0)),Color("85d884") if side == "disciple" else Color("e88372"))
+        if tier == "boss":
+            draw_rect(Rect2(bar_at-Vector2(1,1),Vector2(bar_width+2,7)),Color("e7bb72"),false,1.0)
     if side == "disciple" and pve_selected_actor_ids.size() == 1 and pve_selected_actor_ids.has(id):
         var font := ThemeDB.fallback_font
         if font != null:
@@ -1593,12 +1603,15 @@ func _ingest_pve_damage_feedback(events: Array[Dictionary], snapshot: MapBattleV
         var source := str(event.get("attacker",""))
         var basic_contact := kind == "hit" and str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source)
         var angle := 0.0
+        var contact_school := ""
         if basic_contact:
+            if str(snapshot.actors[source].get("side","")) == "disciple":
+                contact_school = str((pve_view_rows.get(source,{}) as Dictionary).get("aschar_school",""))
             var from: Vector2 = pve_render_positions.get(source,snapshot.actors[source].get("position",Vector2.ZERO))
             var heading := project(origin)-project(from)
             if heading.length_squared() > 0.001:
-                angle = heading.angle()+PI*0.25
-        pve_damage_feedback.append({"target":target,"origin":origin,"started":pve_clock,"label":label,"color":tint,"lane":lane%3,"basic_contact":basic_contact,"angle":angle})
+                angle = heading.angle() if contact_school in PVE_SCHOOL_CONTACT else heading.angle()+PI*0.25
+        pve_damage_feedback.append({"target":target,"origin":origin,"started":pve_clock,"label":label,"color":tint,"lane":lane%3,"basic_contact":basic_contact,"angle":angle,"contact_school":contact_school})
 
 func _draw_pve_damage_feedback() -> void:
     var font := ThemeDB.fallback_font
@@ -1614,7 +1627,8 @@ func _draw_pve_damage_feedback() -> void:
             var region := Rect2(Vector2(frame%3,floori(float(frame)/3.0))*128.0,Vector2(128,128))
             var extent := Vector2(94,94)
             draw_set_transform(foot+Vector2(0,-40),float(item.get("angle",0.0)))
-            draw_texture_rect_region(PVE_BASIC_CONTACT,Rect2(-extent*0.5,extent),region)
+            var atlas: Texture2D = PVE_SCHOOL_CONTACT.get(str(item.get("contact_school","")),PVE_BASIC_CONTACT)
+            draw_texture_rect_region(atlas,Rect2(-extent*0.5,extent),region)
             draw_set_transform(Vector2.ZERO)
         var age := clampf(elapsed/PVE_FEEDBACK_LIFETIME,0.0,1.0)
         var opacity := 1.0-smoothstep(0.55,1.0,age)

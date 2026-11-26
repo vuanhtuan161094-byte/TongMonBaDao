@@ -83,7 +83,7 @@ func _make_shell() -> MarginContainer:
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
-	stack.add_child(UI.label("Ứng viên • Lục Duy • tiếp dẫn", 12, UI.MUTED, false))
+	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
 	var reduce := UI.button("VFX: %s" % VIS_QUALITY.mode_label(), false, UI.JADE)
 	reduce.name = "VISReducedMotionGuidance"

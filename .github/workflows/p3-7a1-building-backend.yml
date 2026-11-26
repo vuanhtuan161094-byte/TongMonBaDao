@@ -115,6 +115,18 @@ jobs:
       - name: Print Godot version
         run: godot --version
 
+      - name: Generate existing canonical FIST01 native raster assets before all-script import
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq python3-pil python3-numpy
+          /usr/bin/python3 tools/vfx/generate_fist01_painted_atlas.py | tee /tmp/fist01-generator.log
+          grep -Fq "FIST_R9_PAINTED_GENERATOR=PASS alpha=true no_rig=true" /tmp/fist01-generator.log
+          for name in fist_charge_r9 fist_hero_r9 fist_impact_r9; do
+            test -s "godot/labs/combat_lab/fist01/assets/painted_r9/$name.png"
+          done
+
       - name: Run latest P3.7 fast backend gate
         shell: pwsh
         run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien.ps1 -GodotBin /usr/local/bin/godot

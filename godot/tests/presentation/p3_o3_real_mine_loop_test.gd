@@ -216,15 +216,16 @@ func _run() -> void:
         return
 
     ui.call("_refresh_all")
+    var ore_available := warehouse.available_quantity(state, &"thanh_thiet")
     var top: Label = ui.get("resource_label") as Label
-    if top == null or not top.text.contains("Thiết %d/%d" % [ore_after, ore_after]):
-        _fail("O3 top bar disagrees with canonical ore after real production.")
+    print("O3_ORE_PROJECTION total=%d available=%d label=%s" % [ore_after,ore_available,top.text if top != null else "<missing>"])
+    if ore_available < 0 or ore_available > ore_after or top == null or not top.text.contains("Thiết %d/%d" % [ore_after, ore_available]):
+        _fail("O3 top bar disagrees with canonical total/available ore after real production.")
         return
-    if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [ore_after, ore_after]):
+    if not str(ui.call("_mine_operation_text")).contains("Thanh Thiết tồn (dùng): %d (dùng %d)" % [ore_after, ore_available]):
         _fail("O3 Mine panel disagrees with canonical ore.")
         return
     var warehouse_text := str(ui.call("_warehouse_operation_text"))
-    var ore_available := warehouse.available_quantity(state, &"thanh_thiet")
     if not warehouse_text.contains("• Thanh Thiết ×%d · dùng được %d" % [ore_after, ore_available]):
         _fail("O3 Warehouse panel disagrees with canonical ore.")
         return

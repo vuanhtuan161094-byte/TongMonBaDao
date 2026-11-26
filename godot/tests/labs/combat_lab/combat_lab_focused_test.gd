@@ -23,7 +23,7 @@ func _run() -> void:
     poison_only = OS.get_environment("TMB_COMBAT_LAB_POISON_ONLY").strip_edges() == "1"
     _check(V63FeatureGates.all_disabled(), "V6.3 feature gates remain OFF by default")
     var definitions := CombatLabRosterAdapter.skill_definitions()
-    _check(definitions.size() == 549, "expected 549 V6.3 skill IDs, got %d" % definitions.size())
+    _check(definitions.size() == 2196, "expected 2196 V6.3 skill IDs, got %d" % definitions.size())
     _test_loadout_and_party()
     _test_six_disciple_battle()
     _test_ui_controls()
@@ -859,6 +859,10 @@ func _prepare_action(skill: Dictionary) -> Dictionary:
     actor["v63_combat_branch_id"] = branch
     actor["v63_combat_generation"] = generation
     actor["v63_combat_lineage"] = lineage
+    # Explicit disposable test actor flag, never a persisted feature-gate change.
+    var school := str(skill.get("school",""))
+    if school in ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]:
+        actor["v63_%s_combat_enabled" % school] = true
     actor["v63_skill_loadout"] = [id]
     if generation == "immortal":
         V63ImmortalSkillCombatSystem.attach_immortal_state(actor, lineage)
@@ -953,7 +957,18 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
     actor["v63_combat_lineage"] = lineage
     if innate:
         var expected := ""
-        if generation == "human": expected = str(V63HumanSkillCombatSystem.branch_definitions().get(branch, {}).get("innate_node_id", ""))
+        var school := str(skill.get("school",""))
+        if school in ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]:
+            actor["v63_%s_combat_enabled" % school] = true
+            # Additive school branch tables do not carry the legacy innate_node_ids fields.
+            # Resolve the one matching innate from the actual combined catalog.
+            var matching: Array[String] = []
+            for raw in CombatLabRosterAdapter.skill_definitions().values():
+                if str(raw.get("slot","")) == "innate" and str(raw.get("school","")) == school and str(raw.get("branch","")) == branch and str(raw.get("generation",raw.get("tier",""))) == generation and str(raw.get("lineage","")) == lineage:
+                    matching.append(str(raw.get("id","")))
+            if matching.size() == 1:
+                expected = matching[0]
+        elif generation == "human": expected = str(V63HumanSkillCombatSystem.branch_definitions().get(branch, {}).get("innate_node_id", ""))
         elif generation == "immortal": expected = str(V63ImmortalSkillCombatSystem.branch_definitions().get(branch, {}).get("innate_node_ids", {}).get(lineage, ""))
         elif generation == "divine": expected = str(V63DivineSkillCombatSystem.branch_definitions().get(branch, {}).get("divine_innate_node_ids", {}).get(lineage, ""))
         if expected != id: return {"status": "FAIL", "reason": "branch_does_not_derive_innate:%s" % expected}

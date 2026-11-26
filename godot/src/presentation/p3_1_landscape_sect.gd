@@ -669,7 +669,7 @@ func _refresh_top_bar() -> void:
         _compact_number(_warehouse_quantity(&"linh_tuy", true)),
         _compact_number(_warehouse_available(&"linh_tuy", true))
     ]
-    resource_label.tooltip_text = "Thanh Thiết: %s\nYêu Đan: %s\nLinh Tủy: %s" % [_warehouse_pair(&"thanh_thiet"),_warehouse_pair(&"yeu_dan",true),_warehouse_pair(&"linh_tuy",true)]
+    resource_label.tooltip_text = "Tồn kho / dùng được (không gồm lượng đã giữ chỗ)\nThanh Thiết: %s\nYêu Đan: %s\nLinh Tủy: %s" % [_warehouse_pair(&"thanh_thiet"),_warehouse_pair(&"yeu_dan",true),_warehouse_pair(&"linh_tuy",true)]
 
 func _refresh_tasks() -> void:
     if task_label != null:
