@@ -84,7 +84,10 @@ static func draw_scenic_accents(world: Node2D, active_chunks: Array[Vector2i], c
         # Sprite-only scenery at the original authored map positions and scale.
         # No collision, resources, buildings or navigation changes.
         var extent := size * (0.90 if kind == "pond" else 0.74)
-        var anchor := Vector2(extent.x*0.5,extent.y*0.72)
+        # Tall lantern artwork includes a base at the bottom of the image.
+        # Ground it at the tile foot instead of burying its base across adjacent tiles.
+        var foot_ratio := 0.94 if kind == "lantern" else 0.72
+        var anchor := Vector2(extent.x*0.5,extent.y*foot_ratio)
         world.draw_texture_rect(texture,Rect2(point-anchor,extent),false)
 
 
