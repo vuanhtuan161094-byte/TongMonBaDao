@@ -54,10 +54,12 @@ func _refresh_building_operation_art() -> void:
         var override_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
         if override_host != null:
             var picture := override_host.get_node_or_null("VIS08OriginalBuildingSprite") as TextureRect
+            # Re-evaluate visible siblings on every refresh, including a
+            # previously active V3/ambient layer.
+            for old_picture in override_host.get_children():
+                if old_picture is CanvasItem and old_picture != picture:
+                    old_picture.visible = false
             if picture == null:
-                for old_picture in override_host.get_children():
-                    if old_picture is CanvasItem:
-                        old_picture.visible = false
                 picture = TextureRect.new()
                 picture.name = "VIS08OriginalBuildingSprite"
                 picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -85,14 +87,19 @@ func _refresh_building_operation_art() -> void:
     for child in host.get_children():
         if child is CanvasItem:
             child.visible = false
-    var picture := TextureRect.new()
-    picture.name = "ASBuildV3FacilitySprite"
+    # A production tick may refresh this view many times. Reuse a single
+    # imported sprite instead of retaining hidden copies indefinitely.
+    var picture := host.get_node_or_null("ASBuildV3FacilitySprite") as TextureRect
+    if picture == null:
+        picture = TextureRect.new()
+        picture.name = "ASBuildV3FacilitySprite"
+        picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        host.add_child(picture)
+        picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     picture.texture = tex
-    picture.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-    picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-    picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    host.add_child(picture)
+    picture.visible = true
     var room := host.get_node_or_null("Art02FacilityAmbient") as Control
     if room != null and active and selected_building != SectMapPresentation.DEST_ALCHEMY_HALL:
         room.visible = true
@@ -265,7 +272,7 @@ func _art05_reflow() -> void:
     var subtitle := building_operation_panel.get_node_or_null("Label")
     # Preserve the original management caption's node identity.
     for child in building_operation_panel.get_children():
-        if child is Label and child != building_operation_title and child != building_operation_body:
+        if child is Label and child != building_operation_title and child != building_operation_body and not str(child.name).begins_with("R2"):
             var label := child as Label
             label.position = Vector2(21,47)
             label.size = Vector2(650,18)
@@ -314,30 +321,30 @@ func _art05_reflow() -> void:
                     art.size = Vector2(31,31)
     for child in building_operation_panel.get_children():
         if child is HSeparator:
-            child.position = Vector2(16,301)
+            child.position = Vector2(16,300)
             child.size = Vector2(799,2)
     if building_operation_scroll != null:
-        building_operation_scroll.position = Vector2(16,314)
-        building_operation_scroll.size = Vector2(371,223)
+        building_operation_scroll.position = Vector2(16,328)
+        building_operation_scroll.size = Vector2(371,209)
         building_operation_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     if building_operation_content != null:
         building_operation_content.custom_minimum_size.x = 348
     if building_management_container != null:
         building_management_container.custom_minimum_size.x = 348
     if building_operation_live_panel != null:
-        building_operation_live_panel.position = Vector2(400,314)
-        building_operation_live_panel.size = Vector2(414,224)
+        building_operation_live_panel.position = Vector2(400,328)
+        building_operation_live_panel.size = Vector2(414,210)
         building_operation_live_panel.add_theme_stylebox_override("panel",_art05_style(
             Color(0.032,0.126,0.148,0.99),Color(0.42,0.58,0.53,0.55),1,10))
     if building_operation_live_scroll != null:
         building_operation_live_scroll.position = Vector2(9,8)
-        building_operation_live_scroll.size = Vector2(395,207)
+        building_operation_live_scroll.size = Vector2(395,193)
         building_operation_live_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     if building_operation_live_content != null:
         building_operation_live_content.custom_minimum_size.x = 370
     _art05_repack_galleries()
-    _r2_operation_caption("R2ActionCaption","ĐIỀU PHỐI",Vector2(18,300),Vector2(355,16))
-    _r2_operation_caption("R2LiveCaption","HOẠT ĐỘNG THỰC TẾ",Vector2(405,300),Vector2(397,16))
+    _r2_operation_caption("R2ActionCaption","ĐIỀU PHỐI NHÂN SỰ",Vector2(18,304),Vector2(355,20))
+    _r2_operation_caption("R2LiveCaption","HOẠT ĐỘNG THỰC TẾ",Vector2(405,304),Vector2(397,20))
     if building_operation_scroll != null:
         building_operation_scroll.clip_contents = true
     if building_operation_live_panel != null:
@@ -1419,7 +1426,7 @@ func _r2_operation_caption(node_name: String, caption: String, at: Vector2, dime
     label.text = caption
     label.position = at
     label.size = dimensions
-    label.add_theme_font_size_override("font_size",11)
+    label.add_theme_font_size_override("font_size",13)
     label.add_theme_color_override("font_color",ART05_GOLD)
     label.z_index = 2
 

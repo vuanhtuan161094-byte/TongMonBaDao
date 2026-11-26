@@ -38,6 +38,19 @@ func _run() -> void:
         assert(action_scroll != null and live_scroll != null,"Real actions must be reachable by scroll")
         assert(action_scroll.size.x >= 350.0 and live_scroll.size.x >= 380.0,
             "Touch management columns must remain operable")
+        var action_caption := panel.get_node_or_null("R2ActionCaption") as Label
+        var live_caption := panel.get_node_or_null("R2LiveCaption") as Label
+        assert(action_caption != null and live_caption != null,"Readable operation headings must be mounted")
+        assert(action_caption.get_global_rect().end.y <= action_scroll.get_global_rect().position.y,
+            "Action heading overlaps real controls")
+        assert(live_caption.get_global_rect().end.y <= live_scroll.get_global_rect().position.y,
+            "Live heading overlaps real production details")
+        var host := panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
+        assert(host != null,"Real building art host missing")
+        var before_count := host.get_child_count()
+        for _refresh in range(4):
+            game.call("_refresh_building_operation_art")
+        assert(host.get_child_count() == before_count,"Building art refresh must not accumulate duplicate visual nodes")
         if destination == SectMapPresentation.DEST_WAREHOUSE:
             var stock := panel.find_child("Art02WarehouseStockGallery",true,false) as GridContainer
             if stock != null:
