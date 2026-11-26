@@ -1032,7 +1032,7 @@ func _art05_refresh_sect_master_dock() -> void:
     _art05_dock_panel.visible = not _art05_dock_collapsed \
         and not _building_operation_is_open() and not _popup_is_open() \
         and not (build_mode_panel != null and build_mode_panel.visible) \
-        and not _disciple_summary_is_open()
+        and not _disciple_summary_is_open() and not _pve_hunt_overlay_is_open()
     if not _art05_dock_panel.visible:
         return
     var dest := str(_art05_dock_destination)
@@ -1256,6 +1256,8 @@ func _art05_open_playbook() -> void:
     close.text = "Đóng"
     close.position = Vector2(828,20)
     close.size = Vector2(88,36)
+    close.add_theme_color_override("font_color",ART05_WHITE)
+    close.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,8))
     close.pressed.connect(_clear_popup)
     panel.add_child(close)
     var cards := [

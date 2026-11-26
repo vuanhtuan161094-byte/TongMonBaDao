@@ -39,6 +39,9 @@ func _run() -> void:
     var cap := await _capture(out.path_join("00_map_1280x720.png"))
     if not cap:
         return
+    var extended := OS.get_environment("TMB_PLAYBOOK_CAPTURE") == "1"
+    if extended and not await _capture_playbook(out):
+        return
     var paths := [
         [SectMapPresentation.DEST_MAIN_HALL,"01_hall_1280x720.png"],
         [SectMapPresentation.DEST_MINE,"02_mine_1280x720.png"],
@@ -104,7 +107,7 @@ func _run() -> void:
         "mean_engine_fps_observed": fps_sum/float(maxi(fps_samples,1)),
         "static_memory_bytes": OS.get_static_memory_usage(),
         "workforce_rows": found,
-        "screenshots": 7,
+        "screenshots": 10 if extended else 7,
         "physical_windows_owner_acceptance": false,
         "linux_virtual_display_only": true,
         "android_device_tested": false
@@ -121,6 +124,52 @@ func _run() -> void:
     _cleanup()
     print("ECO07 VIRTUAL_GODOT_GUI_CAPTURE PASS ",JSON.stringify(metrics))
     quit(0)
+
+func _capture_playbook(out: String) -> bool:
+    var entry := screen.find_child("OneGamePlaybookButton",true,false) as Button
+    if entry == null or not entry.is_visible_in_tree():
+        return _fail("OneGame help entry is absent from the real HUD.")
+    entry.pressed.emit()
+    await process_frame
+    var panel := screen.find_child("OneGamePlaybook",true,false) as Panel
+    if panel == null or not panel.is_visible_in_tree():
+        return _fail("Help button did not open the real playbook.")
+    for action in ["recruit","school","production","cultivation","hunt","craft"]:
+        var item := panel.find_child("OneGamePlaybook_"+action,true,false) as Button
+        if item == null or item.disabled or not item.is_visible_in_tree():
+            return _fail("Playbook navigation is unavailable: "+action)
+    if not await _capture(out.path_join("07_playbook_1280x720.png")):
+        return false
+    var production := panel.find_child("OneGamePlaybook_production",true,false) as Button
+    production.pressed.emit()
+    await process_frame
+    if StringName(screen.get("selected_building")) != SectMapPresentation.DEST_MINE:
+        return _fail("Playbook production action did not select the actual Mine.")
+    screen.call("_bottom_action","home")
+    screen.call("_art05_focus_masterplan_district","forge",true)
+    for _i in range(30):
+        await process_frame
+    if not await _capture(out.path_join("09_production_district_1280x720.png")):
+        return false
+    screen.call("_bottom_action","home")
+    entry.pressed.emit()
+    await process_frame
+    panel = screen.find_child("OneGamePlaybook",true,false) as Panel
+    if panel == null:
+        return _fail("Playbook could not be reopened.")
+    var cultivate := panel.find_child("OneGamePlaybook_cultivation",true,false) as Button
+    if cultivate == null:
+        return _fail("Cultivation navigation unavailable.")
+    cultivate.pressed.emit()
+    await process_frame
+    if screen.find_child("DiscipleDeepScreen",true,false) == null:
+        return _fail("Playbook cultivation action did not open the real disciple profile.")
+    if not await _capture(out.path_join("10_disciple_cultivation_1280x720.png")):
+        return false
+    screen.call("_bottom_action","home")
+    await process_frame
+    print("ONEGAME_PLAYBOOK_REAL_NAV_PASS")
+    return true
 
 func _capture(path: String) -> bool:
     for _i in range(3):
@@ -140,6 +189,9 @@ func _capture(path: String) -> bool:
     if error != OK:
         return _fail("Could not save Virtual GL rendered PNG: "+path+" "+str(error))
     print("ECO07 VIRTUAL_GODOT_SCREENSHOT_OK ",path," distinct_samples=",colors.size())
+    if OS.get_environment("TMB_PLAYBOOK_CAPTURE") == "1":
+        for _i in range(24):
+            await process_frame
     return true
 
 func _cleanup() -> void:
