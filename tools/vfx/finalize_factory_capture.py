@@ -232,7 +232,7 @@ def main() -> None:
         entry["native_contact_sheet"] = f"res://{native_rel}/{sheet.name}"
         entry["native_video"] = f"res://{native_rel}/{movie.name}"
         entry["native_event_status"] = f"REAL_MAPBATTLE_V2_FIXTURE; ACCEPTED={count}; SYNTHETIC=0; EVENTS={','.join(row.get('event_types', []))}"
-        entry["review_note"] = entry.get("review_note", "").split(" Native 1280x720/20 FPS H.264 capture passed")[0]
+        entry["review_note"] = entry.get("review_note", "").split(" Native 1280×720/20 FPS H.264 capture passed")[0]
         entry["review_note"] += (f" Native 1280×720/20 FPS H.264 capture passed full decode; {count} real candidate event(s) accepted, "
                                  "with zero synthetic events. Receipt-timed phase samples and contact sheet are linked; "
                                  "owner visual review remains pending; PvE HOLD.")
