@@ -238,6 +238,8 @@ var pve_actor_facings: Dictionary = {}
 var pve_damage_feedback: Array[Dictionary] = []
 const PVE_FEEDBACK_LIMIT := 48
 const PVE_FEEDBACK_LIFETIME := 0.85
+const PVE_BASIC_CONTACT := preload("res://art/pve_v7/basic_contact_6cel.svg")
+const PVE_BASIC_CONTACT_SECONDS := 0.24
 var pve_clock := 0.0
 var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
@@ -1002,8 +1004,10 @@ func _process(delta: float) -> void:
         elif pve_clock > float(cue.get("until",-1.0)) and str(cue.get("action","")) in ["attack","cast","hit","run"]:
             var moving := (pve_render_positions.get(id,Vector2.ZERO) as Vector2).distance_to(
                 pve_target_positions.get(id,Vector2.ZERO)) > 0.035
-            cue["action"] = "run" if moving else "idle"
-            cue["started"] = pve_clock
+            var next_action := "run" if moving else "idle"
+            if str(cue.get("action","")) != next_action:
+                cue["started"] = pve_clock
+            cue["action"] = next_action
             cue["until"] = pve_clock+0.2 if moving else -1.0
         pve_actor_actions[id] = cue
     queue_redraw()
@@ -1047,13 +1051,8 @@ func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) ->
             if str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source_id):
                 var attack_window := _pve_visual_action_seconds(snapshot.actors[source_id])
                 pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+attack_window}
-            # React only to a real positive direct-damage commit. Do not cancel
-            # an in-progress cast/attack, simulate stun or replay a DoT tick.
-            if snapshot.actors.has(target_id) and float(event.get("damage",0.0)) > 0.0 and str(event.get("kind","")) != "dot":
-                var victim: Dictionary = snapshot.actors[target_id]
-                var target_cue: Dictionary = pve_actor_actions.get(target_id,{})
-                if str(victim.get("side","")) == "monster" and float(victim.get("hp",0.0)) > 0.0 and str(target_cue.get("action","idle")) in ["idle","run"]:
-                    pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.18}
+            # Basic hit/DoT do not interrupt the victim clip. A separate
+            # receipt-driven contact sprite supplies the visible impact.
         elif kind == "status_applied" and snapshot.actors.has(target_id) and \
                 str(event.get("status","")) in ["stun","freeze","knockback","knock_up","stagger"]:
             pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.30}
@@ -1591,7 +1590,15 @@ func _ingest_pve_damage_feedback(events: Array[Dictionary], snapshot: MapBattleV
                 lane += 1
         if pve_damage_feedback.size() >= PVE_FEEDBACK_LIMIT:
             pve_damage_feedback.pop_front()
-        pve_damage_feedback.append({"target":target,"origin":origin,"started":pve_clock,"label":label,"color":tint,"lane":lane%3})
+        var source := str(event.get("attacker",""))
+        var basic_contact := kind == "hit" and str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source)
+        var angle := 0.0
+        if basic_contact:
+            var from: Vector2 = pve_render_positions.get(source,snapshot.actors[source].get("position",Vector2.ZERO))
+            var heading := project(origin)-project(from)
+            if heading.length_squared() > 0.001:
+                angle = heading.angle()+PI*0.25
+        pve_damage_feedback.append({"target":target,"origin":origin,"started":pve_clock,"label":label,"color":tint,"lane":lane%3,"basic_contact":basic_contact,"angle":angle})
 
 func _draw_pve_damage_feedback() -> void:
     var font := ThemeDB.fallback_font
@@ -1601,7 +1608,15 @@ func _draw_pve_damage_feedback() -> void:
         var foot := project(item["origin"])
         if not _visible_world(foot):
             continue
-        var age := clampf((pve_clock-float(item["started"]))/PVE_FEEDBACK_LIFETIME,0.0,1.0)
+        var elapsed := pve_clock-float(item["started"])
+        if bool(item.get("basic_contact",false)) and elapsed < PVE_BASIC_CONTACT_SECONDS:
+            var frame := clampi(int(elapsed/PVE_BASIC_CONTACT_SECONDS*6.0),0,5)
+            var region := Rect2(Vector2(frame%3,floori(float(frame)/3.0))*128.0,Vector2(128,128))
+            var extent := Vector2(94,94)
+            draw_set_transform(foot+Vector2(0,-40),float(item.get("angle",0.0)))
+            draw_texture_rect_region(PVE_BASIC_CONTACT,Rect2(-extent*0.5,extent),region)
+            draw_set_transform(Vector2.ZERO)
+        var age := clampf(elapsed/PVE_FEEDBACK_LIFETIME,0.0,1.0)
         var opacity := 1.0-smoothstep(0.55,1.0,age)
         var color: Color = item["color"]
         color.a = opacity

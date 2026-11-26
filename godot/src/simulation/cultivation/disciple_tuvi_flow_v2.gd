@@ -81,6 +81,7 @@ static func preview_rate(state: SimulationState, disciple: DiscipleState, specia
         "base_tuvi_per_minute":base_rate,
         "cultivate_multiplier":multiplier,
         "effective_tuvi_per_minute":float(dry.get("gained",0.0)),
+        "applied_tuvi_this_minute":float(dry.get("applied_xp",0.0)),
         "natural_factor":float(dry.get("natural_factor",1.0))
     }
 
@@ -116,7 +117,7 @@ static func resolve_minute(
         return grant
 
     disciple.v2_realm_progress["last_passive_tuvi_tick"] = state.tick
-    SectHallSystemV1.record_cultivation(state, disciple, float(grant.get("gained", 0.0)))
+    SectHallSystemV1.record_cultivation(state, disciple, float(grant.get("applied_xp", 0.0)))
     return {
         "ok":true,
         "event_id":"%d:%s:PASSIVE_TUVI" % [state.tick,str(disciple.id)],
@@ -126,6 +127,7 @@ static func resolve_minute(
         "base_tuvi_per_minute":authored_base,
         "cultivate_multiplier":multiplier,
         "gained":grant["gained"],
+        "applied_xp":grant["applied_xp"],
         "natural_factor":grant.get("natural_factor",1.0),
         "realm":grant["realm"],
         "floor":grant["floor"],

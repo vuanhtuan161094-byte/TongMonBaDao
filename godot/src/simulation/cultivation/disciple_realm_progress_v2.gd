@@ -314,6 +314,8 @@ static func grant_xp(
                 return {"ok":false,"reason":"v2_hp_sync_failed"}
     return {
         "ok":true,"track":track,"gained":gained,
+        # Keep nominal gain for compatibility; actual credit excludes discarded major-gate overflow.
+        "applied_xp":maxf(0.0,gained-extra),
         "natural_factor":maxf(0.0,natural_factor),
         "floors_earned":floors_earned,
         "realm":realm,"floor":floor_index,"xp":xp,

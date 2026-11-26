@@ -121,7 +121,8 @@ static func preview_minute(state: SimulationState, disciple: DiscipleState) -> D
         "building_id":str(prepared["building"].id),
         "cost_spirit_stones":STONE_COST_PER_MINUTE,
         "base_body_xp_per_minute":BASE_BODY_XP_PER_MINUTE,
-        "gained":float(preview.get("gained",0.0))}
+        "gained":float(preview.get("gained",0.0)),
+        "applied_xp":float(preview.get("applied_xp",0.0))}
 
 # Called once by SimulationScheduler for a real TRAIN_BODY simulation minute.
 # Charge first, grant only after the debit, rollback if grant cannot commit.

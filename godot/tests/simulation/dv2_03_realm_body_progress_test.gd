@@ -142,8 +142,13 @@ func _run() -> void:
     if not _check(bool(gate_gain.get("ok",false)) and
         int(gate_gain["realm"]) == 1 and int(gate_gain["floor"]) == 10 and
         _close(float(gate_gain["xp"]),1000.0) and
-        float(gate_gain["unapplied_overflow"]) > 0.0,
+        _close(float(gate_gain["applied_xp"]),1100.0) and
+        _close(float(gate_gain["unapplied_overflow"]),2900.0),
         "Automatic minor floors must stop at the actual major gate."):
+        return
+    var full_gate := DiscipleRealmProgressV2.grant_xp(disciple,"cultivation",1000.0,"fixed",_costs(1),[],true)
+    if not _check(bool(full_gate.get("ok",false)) and _close(float(full_gate["applied_xp"]),0.0) and _close(float(full_gate["unapplied_overflow"]),1000.0),
+        "A fully capped gate must not report credited EXP."):
         return
     var old_stamina := disciple.stamina
     var old_hp := disciple.hp

@@ -154,6 +154,7 @@ static func _receipt(
         "unit":RATE_UNIT,
         "base_body_xp_per_minute":ready["base_body_xp_per_minute"],
         "gained":grant["gained"],
+        "applied_xp":grant["applied_xp"],
         "natural_factor":grant.get("natural_factor",1.0),
         "realm":grant["realm"],
         "floor":grant["floor"],
