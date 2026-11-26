@@ -40,7 +40,7 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/vis02-actual-game-evidence"
           export LIBGL_ALWAYS_SOFTWARE=1
           xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
-            --path godot --rendering-method gl_compatibility --resolution 1280x720 \
+            --path godot --audio-driver Dummy --rendering-method gl_compatibility --resolution 1280x720 \
             --write-movie "$GITHUB_WORKSPACE/vis02-actual-game-evidence/vis02_real_godot_movie.avi" --fixed-fps 30 \
             -s res://tests/presentation/vis02_real_recruit_visual_capture.gd \
             -- "$GITHUB_WORKSPACE/vis02-actual-game-evidence" create
@@ -59,7 +59,7 @@ jobs:
           set -euo pipefail
           export LIBGL_ALWAYS_SOFTWARE=1
           xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
-            --path godot --rendering-method gl_compatibility --resolution 1280x720 \
+            --path godot --audio-driver Dummy --rendering-method gl_compatibility --resolution 1280x720 \
             -s res://tests/presentation/vis02_real_recruit_visual_capture.gd \
             -- "$GITHUB_WORKSPACE/vis02-actual-game-evidence" reload
           test "$(find "$GITHUB_WORKSPACE/vis02-actual-game-evidence" -maxdepth 1 -name '*.png' | wc -l)" -eq 12
