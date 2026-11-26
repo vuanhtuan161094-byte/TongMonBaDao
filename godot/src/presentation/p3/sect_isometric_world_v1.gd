@@ -10,6 +10,8 @@ const STARTER := Rect2i(72,72,48,48)
 const HALF_W := 25.0
 const HALF_H := 13.0
 const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.svg")
+const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
+const R2_COURT: Texture2D = preload("res://art/onegame_world_r2/jade_court.svg")
 const R2_PRODUCERS := {
     "mine":preload("res://art/onegame_world_r2/mine_compact.svg"),
     "linh_forest":preload("res://art/onegame_world_r2/forest_compact.svg"),
@@ -1388,6 +1390,12 @@ func _draw() -> void:
         var terrain_rows: Array = terrain_overlays_by_chunk.get(chunk_id,[])
         for row in terrain_rows:
             draw_texture_rect(row["texture"],row["rect"],false,row["tint"])
+    if not pve_landscape:
+        # Ground-only ceremonial paving under the existing hall district.
+        var court_center := project(Vector2(88.5,95.5))
+        if _visible_world(court_center):
+            var court_extent := Vector2(350,182)
+            draw_texture_rect(R2_COURT,Rect2(court_center-court_extent*0.5,court_extent),false)
     for chunk_id in active_chunks:
         var road_rows: Array = road_overlays_by_chunk.get(chunk_id,[])
         for row in road_rows:
@@ -1395,6 +1403,13 @@ func _draw() -> void:
             draw_texture_rect(row["texture"],row["rect"],false,
                 Color(0.96,0.95,0.88,0.96))
     if pve_landscape:
+        # Render a real crossing at each existing navigation bridge, below
+        # characters; the illustration never creates a walkable cell.
+        for bridge_y in PVE_BRIDGE_ROWS:
+            var bridge_center := project(Vector2(roundf(pve_stream_center_x(float(bridge_y))),float(bridge_y)))
+            if _visible_world(bridge_center):
+                var bridge_extent := Vector2(326,183)
+                draw_texture_rect(R2_BRIDGE,Rect2(bridge_center-Vector2(163,95),bridge_extent),false)
         _ensure_pve_static_draw_queue()
         _draw_pve_actor_depth_merge()
         pve_a3_sword_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)

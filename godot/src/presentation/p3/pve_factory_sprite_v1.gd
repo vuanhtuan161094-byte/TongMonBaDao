@@ -97,10 +97,18 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
             if not phases.has("charge"):
                 continue
             var windup := clampf(float(event.get("release_at",battle.now))-battle.now,0.06,6.0)
-            _add(cast_key,{"skill":id,"phase":"charge","owner":owner,"target":target,"origin":origin,"at":at,"begin":_clock,"end":_clock+windup,"kind":kind,"persistent":false})
+            # The combat deadline already includes projectile travel. Display
+            # a flight before that deadline, not after damage has landed.
+            var definition := V63HumanSkillCombatSystem.skill_definition(id)
+            var speed := float(definition.get("projectile_speed",0.0))
+            var travel := minf(windup*0.85,origin.distance_to(at)/speed) if speed > 0.0 and phases.has("flight") else 0.0
+            _add(cast_key,{"skill":id,"phase":"charge","owner":owner,"target":target,"origin":origin,"at":at,"begin":_clock,"end":_clock+windup,"travel":travel,"kind":kind,"persistent":false})
             continue
         if kind == "skill_release":
+            var prior: Dictionary = _cues.get(cast_key,{})
             _cues.erase(cast_key)
+            if float(prior.get("travel",0.0)) > 0.0 and not phases.has("release"):
+                continue
         elif kind == "hit" or kind.ends_with("_hit"):
             if float(event.get("damage",0.0)) <= 0.0:
                 continue
@@ -194,6 +202,12 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
         elif bool(cue.get("persistent",false)) and age > 0.20:
             phase = "sustain"
             age -= 0.20
+        elif phase == "charge" and float(cue.get("travel",0.0)) > 0.0:
+            var travel := float(cue["travel"])
+            if age >= duration-travel:
+                phase = "flight"
+                age = maxf(0.0,age-(duration-travel))
+                progress = clampf(age/travel,0.0,1.0)
         var source: Dictionary = phases.get(phase,{})
         var frames: Array = source.get("frames",[])
         if frames.is_empty():
