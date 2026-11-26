@@ -1286,16 +1286,24 @@ func _art05_open_playbook() -> void:
         panel.add_child(tile)
         var title := _art05_dock_label(tile,str(item[0]),Vector2(13,9),Vector2(409,29),17,ART05_GOLD)
         title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-        var description := _art05_dock_label(tile,str(item[1]),Vector2(13,39),Vector2(409,41),13,ART05_WHITE)
+        var action := str(item[2])
+        var needs_disciple := action in ["school","cultivation","hunt"]
+        var recruit_first := needs_disciple and state.disciples.is_empty()
+        var hint := str(item[1])
+        if recruit_first:
+            hint = "Chưa có đệ tử. Hãy chiêu mộ tại Dẫn Tiên Đài trước khi sử dụng chức năng này."
+        elif action == "recruit":
+            hint = "Đệ tử %d/%d • Chiêu mộ lệnh: %d. Xem ứng viên tại Dẫn Tiên Đài." % [state.disciples.size(),state.sect.disciple_capacity,state.sect.disciple_recruitment_tokens]
+        var description := _art05_dock_label(tile,hint,Vector2(13,39),Vector2(409,41),13,ART05_WHITE)
         description.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
         var button := Button.new()
         button.name = "OneGamePlaybook_"+str(item[2])
-        button.text = "MỞ"
+        button.text = "TUYỂN TRƯỚC" if recruit_first else "MỞ"
         button.position = Vector2(298,82)
         button.size = Vector2(125,30)
         button.add_theme_color_override("font_color",ART05_DEEP)
         button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD,ART05_GOLD,1,7))
-        button.pressed.connect(_art05_playbook_action.bind(str(item[2])))
+        button.pressed.connect(_art05_playbook_action.bind("recruit" if recruit_first else action))
         tile.add_child(button)
     if gp1_guide_panel != null:
         gp1_guide_panel.visible = false
@@ -1316,6 +1324,9 @@ func _art05_playbook_action(action: String) -> void:
                 break
     if target_id == &"" and not ids.is_empty():
         target_id = StringName(ids[0])
+    if ids.is_empty() and action in ["school","cultivation","hunt"]:
+        _open_building(SectMapPresentation.DEST_GUIDANCE)
+        return
     match action:
         "recruit":
             _open_building(SectMapPresentation.DEST_GUIDANCE)
