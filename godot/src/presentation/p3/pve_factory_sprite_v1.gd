@@ -239,7 +239,15 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
         if str(entry.get("mechanic","")) not in ["circle_aoe","formation"]:
             at += Vector2(0,-30)
         var width := float(source.get("width",110))
+        # Enhance only source-backed contact cels. Keep original projectile,
+        # AoE footprint, and persistent status scale intact.
+        var accent_contact := phase == "contact" and str(entry.get("mechanic","")) in ["projectile","melee","line"]
+        if accent_contact:
+            width *= 1.12
         var dims := Vector2(width,width*region.size.y/region.size.x)
         canvas.draw_set_transform(at,angle)
+        if accent_contact:
+            var halo_dims := dims*1.18
+            canvas.draw_texture_rect_region(texture,Rect2(-halo_dims*0.5,halo_dims),region,Color(1,1,1,opacity*0.22))
         canvas.draw_texture_rect_region(texture,Rect2(-dims*0.5,dims),region,Color(1,1,1,opacity))
         canvas.draw_set_transform(Vector2.ZERO)

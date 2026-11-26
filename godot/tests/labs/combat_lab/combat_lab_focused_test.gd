@@ -1062,10 +1062,11 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
         return _probe_summon_modifier(skill,actor,mods)
     if school in ["sword","blade"] and float(mods.get("absorbed_reflect_ratio",0.0)) > 0.0:
         return _probe_absorbed_reflection(skill,actor)
-    # Blood Ma's branch-level restriction does not prove five distinct
-    # passive IDs with zero authored benefit. Preserve explicit NOT_TESTED.
+    # These catalog rows carry the Blood Ma seal and neutral numerical
+    # modifiers. Verify the authored shared restriction, not a fictional
+    # independent passive benefit. Keep a separate result category.
     if str(skill.get("divine_rule","")) == "blood_ma_seal":
-        return {"status":"NOT_TESTED","reason":"blood_ma_seal_is_branch_rule_no_individual_passive_delta"}
+        return _probe_blood_ma_sealed_passive(skill,actor)
     if float(mods.get("heal_factor", 0.0)) > 0.0:
         var heal_result := _probe_heal_factor(id, float(mods.heal_factor),innate,school)
         if str(heal_result.status) == "PASS": return heal_result
@@ -1079,6 +1080,49 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
     if mods.is_empty() or mods.values().all(func(value: Variant) -> bool: return is_zero_approx(float(value))):
         return {"status": "NOT_TESTED", "reason": "catalog modifiers are zero and no matching runtime consumer was found"}
     return {"status": "NOT_TESTED", "reason": "catalog effect has no matching generic or specialized runtime consumer"}
+
+# The source catalog deliberately assigns blood_ma_seal and neutral stats.
+# Verify both the branch rule and absence of a per-ID unintended benefit.
+func _probe_blood_ma_sealed_passive(skill: Dictionary, actor: Dictionary) -> Dictionary:
+    if str(skill.get("branch","")) != "huyet_quyen" or str(skill.get("generation","")) != "divine" or str(skill.get("lineage","")) != "a":
+        return {"status":"FAIL","reason":"unexpected_blood_ma_seal_identity"}
+    var definition: Dictionary = skill.get("passive_modifiers",{})
+    for key in definition:
+        var neutral := 1.0 if str(key) == "guard_factor" else 0.0
+        if not is_equal_approx(float(definition[key]),neutral):
+            return {"status":"NOT_TESTED","reason":"blood_ma_seal_has_non_neutral_modifier_requires_own_probe"}
+    serial += 1
+    actor["id"] = "matrix_blood_ma_%d" % serial
+    var disciple := DiscipleState.new({"id":str(actor.id)})
+    V63DivineSkillCombatSystem.attach_divine_state(actor,disciple,"a",3)
+    if str(actor.get("v63_blood_mode","")) != "blood_ma" or not is_equal_approx(float(actor.max_hp),65000.0):
+        return {"status":"FAIL","reason":"blood_ma_seal_runtime_hp_ceiling"}
+    var baseline := _without_passive(actor)
+    var stats_before := V63HumanSkillCombatSystem.effective_attack_stats(baseline,baseline.stats)
+    var stats_after := V63HumanSkillCombatSystem.effective_attack_stats(actor,actor.stats)
+    var defense_before := V63HumanSkillCombatSystem.effective_defense_stats(baseline,baseline.stats)
+    var defense_after := V63HumanSkillCombatSystem.effective_defense_stats(actor,actor.stats)
+    if stats_before != stats_after or defense_before != defense_after or float(stats_after.get("lifesteal",0.0)) != 0.0:
+        return {"status":"FAIL","reason":"blood_ma_neutral_passive_changed_stats"}
+    var ally := _actor("matrix_blood_ma_ally_%d" % serial,Vector2(10.2,10))
+    var enemy := _enemy("matrix_blood_ma_enemy_%d" % serial,Vector2(12,10))
+    var battle := MapBattleV2.new(930000+serial)
+    if not bool(battle.setup("matrix_blood_ma_%d" % serial,[actor,ally],[enemy],false).get("ok",false)):
+        return {"status":"FAIL","reason":"blood_ma_seal_setup"}
+    actor = battle.actors[str(actor.id)]
+    ally = battle.actors[str(ally.id)]
+    actor["hp"] = 40000.0
+    V63HumanSkillCombatSystem._heal_target(battle,ally,actor,"",0.02)
+    if not is_equal_approx(float(actor.hp),40000.0):
+        return {"status":"FAIL","reason":"blood_ma_external_heal_above_threshold_not_blocked"}
+    actor["hp"] = 20000.0
+    V63HumanSkillCombatSystem._heal_target(battle,actor,actor,"",0.02)
+    if not is_equal_approx(float(actor.hp),20000.0):
+        return {"status":"FAIL","reason":"blood_ma_self_heal_not_blocked"}
+    V63HumanSkillCombatSystem._heal_target(battle,ally,actor,"",0.02)
+    if not is_equal_approx(float(actor.hp),20650.0):
+        return {"status":"FAIL","reason":"blood_ma_external_heal_below_threshold_not_halved"}
+    return {"status":"SEALED_VERIFIED","reason":"authored neutral passive; shared blood_ma HP cap/self heal/external heal restrictions verified; no distinct bonus"}
 
 # Compare two real summoned actors from the same branch and authored skill.
 # Verify the field consumed by the live lifecycle, not the source modifier alone.

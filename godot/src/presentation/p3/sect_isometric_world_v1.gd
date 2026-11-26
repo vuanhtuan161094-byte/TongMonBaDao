@@ -10,6 +10,7 @@ const STARTER := Rect2i(72,72,48,48)
 const HALF_W := 25.0
 const HALF_H := 13.0
 const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.svg")
+const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
 const R2_COURT: Texture2D = preload("res://art/onegame_world_r2/jade_court.svg")
 const R2_PRODUCERS := {
@@ -1396,6 +1397,18 @@ func _draw() -> void:
         if _visible_world(court_center):
             var court_extent := Vector2(350,182)
             draw_texture_rect(R2_COURT,Rect2(court_center-court_extent*0.5,court_extent),false)
+    if not pve_landscape:
+        # Add authored ground detail below existing productive buildings.
+        # Do not change picking, collision or add artificial production sites.
+        for item in display_instances:
+            var kind := str(item.get("destination",""))
+            if not bool(item.get("managed",false)) or not R2_PRODUCERS.has(kind):
+                continue
+            var foot: Vector2 = item["world"]
+            if _visible_world(foot):
+                var apron_extent := Vector2(146,76)
+                var tint := Color(1.0,0.92,0.78,0.84) if kind == "mine" else Color(0.90,1.0,0.88,0.82)
+                draw_texture_rect(R2_PRODUCER_APRON,Rect2(foot-apron_extent*0.5,apron_extent),false,tint)
     for chunk_id in active_chunks:
         var road_rows: Array = road_overlays_by_chunk.get(chunk_id,[])
         for row in road_rows:
@@ -1820,7 +1833,7 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
     # Far-overview remains bounded by the original lightweight LOD.
     if R2_PRODUCERS.has(kind):
         var miniature: Texture2D = R2_PRODUCERS[kind]
-        var extent := Vector2(63.0,47.25) if overview else Vector2(88.0,66.0)
+        var extent := Vector2(72.0,54.0) if overview else Vector2(108.0,81.0)
         draw_texture_rect(miniature,Rect2(p-Vector2(extent.x*0.5,extent.y*0.78),extent),false)
         return
     var rx := 15.0 if overview else 20.0

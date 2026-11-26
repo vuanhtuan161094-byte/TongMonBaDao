@@ -586,10 +586,23 @@ func _build_construction_ui() -> void:
         if open_hall != null:
             open_hall.position = Vector2(18,247)
             open_hall.text = "ĐẠI ĐIỆN · XEM ĐIỀU KIỆN MỞ RỘNG"
+        # These three dynamic labels were inherited from the light-paper
+        # panel and rendered nearly black on the dark ART05 surface.
+        if build_mode_description != null:
+            build_mode_description.add_theme_color_override("font_color",ART05_WHITE)
+            build_mode_description.add_theme_font_size_override("font_size",14)
+            build_mode_description.position = Vector2(18,52)
+            build_mode_description.size = Vector2(354,74)
         if build_mode_feedback != null:
             build_mode_feedback.position = Vector2(18,291)
+            build_mode_feedback.size = Vector2(354,44)
+            build_mode_feedback.add_theme_color_override("font_color",ART05_GOLD)
+            build_mode_feedback.add_theme_font_size_override("font_size",12)
         if build_mode_site_label != null:
             build_mode_site_label.position = Vector2(18,337)
+            build_mode_site_label.size = Vector2(354,52)
+            build_mode_site_label.add_theme_color_override("font_color",ART05_WHITE)
+            build_mode_site_label.add_theme_font_size_override("font_size",12)
         if build_mode_confirm != null:
             build_mode_confirm.position = Vector2(18,393)
         var cancel := build_mode_panel.get_node_or_null("CancelMapConstruction") as Button
@@ -711,6 +724,9 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
         else:
             build_mode_site_label.text = "Lô đã quy hoạch (%d, %d) · Xác nhận để khởi công." % [
                 build_mode_site.x,build_mode_site.y]
+    if build_mode_site_label != null:
+        var blocked := build_mode_site != SectResidenceSiteV1.UNSELECTED and build_mode_confirm != null and build_mode_confirm.disabled
+        build_mode_site_label.add_theme_color_override("font_color",Color(1.0,0.72,0.51) if blocked else ART05_WHITE)
     if build_mode_kind == "relocate":
         build_mode_kind = ""
         if build_mode_confirm != null:

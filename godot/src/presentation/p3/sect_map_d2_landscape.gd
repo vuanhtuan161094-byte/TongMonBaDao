@@ -35,21 +35,22 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
     var tint := clampf(slow*0.038+ridge*0.038,-0.07,0.07)
     var ground := Color(0.245+tint,0.365+tint,0.285+tint*0.7)
     if not within:
-        return ground.darkened(0.07)
-    ground = Color(0.34+tint,0.48+tint,0.35+tint*0.75)
-    # District colors are understated ground material, never fake buildings.
-    # Legacy layouts keep their old palette and saved house locations.
+        return ground.darkened(0.025)
+    var edge_distance := minf(minf(float(cell.x-starter.position.x),float(starter.end.x-1-cell.x)),minf(float(cell.y-starter.position.y),float(starter.end.y-1-cell.y)))
+    var interior := smoothstep(0.0,8.0,edge_distance)
+    ground = ground.lerp(Color(0.37+tint,0.50+tint,0.35+tint*0.75),interior)
+    # Broad falloffs instead of the visibly rectangular district bands.
+    # Only ground material changes; the masterplan remains authoritative.
     if layout_version >= 2:
-        if cell.x < 85 and cell.y >= 94:
-            ground = ground.blend(Color(0.29,0.57,0.39,0.57)) # inner residence
-        elif cell.x < 95 and cell.y < 88:
-            ground = ground.blend(Color(0.27,0.47,0.57,0.53)) # cultivation ridge
-        elif cell.x >= 95 and cell.y < 101:
-            ground = ground.blend(Color(0.58,0.49,0.33,0.34)) # producer quarter
-        elif cell.y >= 101:
-            ground = ground.blend(Color(0.42,0.52,0.39,0.36)) # exit approach
-        else:
-            ground = ground.blend(Color(0.57,0.58,0.42,0.40)) # civic court
+        var point := Vector2(cell)
+        var residence := (1.0-smoothstep(4.0,14.0,point.distance_to(Vector2(80,101))))*interior
+        var cultivation := (1.0-smoothstep(4.0,13.0,point.distance_to(Vector2(88,82))))*interior
+        var production := (1.0-smoothstep(5.0,16.0,point.distance_to(Vector2(103,94))))*interior
+        var civic := (1.0-smoothstep(3.0,12.0,point.distance_to(Vector2(89,96))))*interior
+        ground = ground.lerp(Color(0.35,0.53,0.37),residence*0.45)
+        ground = ground.lerp(Color(0.32,0.48,0.45),cultivation*0.38)
+        ground = ground.lerp(Color(0.52,0.49,0.34),production*0.43)
+        ground = ground.lerp(Color(0.54,0.55,0.40),civic*0.30)
     elif cell.x < 84 and cell.y >= 100:
         ground = ground.blend(Color(0.31,0.47,0.36,0.44))
     elif cell.x >= 94 and cell.y >= 88:
@@ -57,8 +58,8 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
     elif cell.y < 88:
         ground = ground.blend(Color(0.40,0.49,0.39,0.20))
     # A recognizable courtyard silhouette beneath the verified Main Hall.
-    if cell.x >= 84 and cell.x <= 92 and cell.y >= 91 and cell.y <= 98:
-        ground = ground.blend(Color(0.61,0.63,0.54,0.56))
+    var court_weight := 1.0-smoothstep(2.0,6.5,Vector2(cell).distance_to(Vector2(88.5,95.5)))
+    ground = ground.lerp(Color(0.61,0.63,0.54),court_weight*0.42)
     if roads.has(cell):
         ground = ground.blend(Color(0.64,0.60,0.48,0.62))
     return ground
