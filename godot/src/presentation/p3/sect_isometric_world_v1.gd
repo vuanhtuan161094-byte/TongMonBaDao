@@ -234,6 +234,10 @@ var pve_target_positions: Dictionary = {}
 var pve_actor_actions: Dictionary = {}
 # Transient rendering direction: maintain facing after movement or a cast/hit.
 var pve_actor_facings: Dictionary = {}
+# Presentation only: consume the same fresh receipt stream as the existing VFX.
+var pve_damage_feedback: Array[Dictionary] = []
+const PVE_FEEDBACK_LIMIT := 48
+const PVE_FEEDBACK_LIFETIME := 0.85
 var pve_clock := 0.0
 var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
@@ -896,12 +900,14 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_actor_facings.clear()
         pve_jx_sword_vfx.observe_snapshot(null)
         pve_a3_sword_vfx.reset()
+        pve_damage_feedback.clear()
         queue_redraw()
         return
     if _pve_last_visual_encounter_id != snapshot.encounter_id:
         # Actor IDs can be reused across PvE runs. Do not interpolate or
         # continue a one-shot animation from the previous encounter.
         _pve_last_visual_encounter_id = snapshot.encounter_id
+        pve_damage_feedback.clear()
         pve_target_positions.clear()
         pve_render_positions.clear()
         pve_actor_actions.clear()
@@ -934,6 +940,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
             pve_actor_actions.erase(id)
             pve_actor_facings.erase(id)
     _apply_pve_actor_events(new_visual_events,snapshot)
+    _ingest_pve_damage_feedback(new_visual_events,snapshot)
     if not pve_camera_initialized and camera != null:
         for raw_id in snapshot.actors:
             var actor: Dictionary = snapshot.actors[raw_id]
@@ -963,6 +970,9 @@ func _process(delta: float) -> void:
     if not pve_landscape or pve_battle == null:
         return
     pve_clock += maxf(0.0,delta)
+    for index in range(pve_damage_feedback.size()-1,-1,-1):
+        if pve_clock-float(pve_damage_feedback[index]["started"]) >= PVE_FEEDBACK_LIFETIME:
+            pve_damage_feedback.remove_at(index)
     var vfx_advance_started_usec := Time.get_ticks_usec() if pve_performance_logging_enabled else 0
     pve_jx_sword_vfx.advance(delta)
     pve_a3_sword_vfx.advance(delta)
@@ -977,7 +987,8 @@ func _process(delta: float) -> void:
             var actor: Dictionary = pve_battle.actors.get(id,{})
             var current: Vector2 = pve_render_positions[id]
             var destination: Vector2 = pve_target_positions[id]
-            if destination.distance_squared_to(current) > 0.001:
+            var visual_action := str((pve_actor_actions.get(id,{}) as Dictionary).get("action","idle"))
+            if visual_action in ["idle","run"] and destination.distance_squared_to(current) > 0.001:
                 pve_actor_facings[id] = destination-current
             pve_render_positions[id] = current.move_toward(
                 destination,maxf(0.1,float(actor.get("move_speed",3.0)))*delta)
@@ -1021,7 +1032,13 @@ func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) ->
             if to_target.length_squared() > 0.001:
                 pve_actor_facings[source_id] = to_target
         if kind == "move" and snapshot.actors.has(source_id):
-            pve_actor_actions[source_id] = {"action":"run","started":pve_clock,"until":pve_clock+0.3}
+            var current_cue: Dictionary = pve_actor_actions.get(source_id,{})
+            if str(current_cue.get("action","idle")) in ["idle","run"] or pve_clock >= float(current_cue.get("until",-1.0)):
+                if str(current_cue.get("action","")) != "run":
+                    pve_actor_actions[source_id] = {"action":"run","started":pve_clock,"until":pve_clock+0.3}
+                else:
+                    current_cue["until"] = pve_clock+0.3
+                    pve_actor_actions[source_id] = current_cue
         elif kind == "skill_cast" and snapshot.actors.has(source_id):
             var skill_id := str(event.get("skill_id", ""))
             var cast_window := _pve_visual_action_seconds(snapshot.actors[source_id], skill_id)
@@ -1030,8 +1047,13 @@ func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) ->
             if str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source_id):
                 var attack_window := _pve_visual_action_seconds(snapshot.actors[source_id])
                 pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+attack_window}
-            # Basic damage and poison DoT leave the target's walk/cast/attack
-            # alive. The already-authoritative VFX/HP-number can show contact.
+            # React only to a real positive direct-damage commit. Do not cancel
+            # an in-progress cast/attack, simulate stun or replay a DoT tick.
+            if snapshot.actors.has(target_id) and float(event.get("damage",0.0)) > 0.0 and str(event.get("kind","")) != "dot":
+                var victim: Dictionary = snapshot.actors[target_id]
+                var target_cue: Dictionary = pve_actor_actions.get(target_id,{})
+                if str(victim.get("side","")) == "monster" and float(victim.get("hp",0.0)) > 0.0 and str(target_cue.get("action","idle")) in ["idle","run"]:
+                    pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.18}
         elif kind == "status_applied" and snapshot.actors.has(target_id) and \
                 str(event.get("status","")) in ["stun","freeze","knockback","knock_up","stagger"]:
             pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.30}
@@ -1296,6 +1318,7 @@ func _draw() -> void:
         _ensure_pve_static_draw_queue()
         _draw_pve_actor_depth_merge()
         pve_a3_sword_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
+        _draw_pve_damage_feedback()
         return
     _draw_masterplan_lots()
     _draw_masterplan_district_signs()
@@ -1492,11 +1515,12 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var action := "die" if not alive else str(visual.get("action","idle"))
     if alive and pve_clock > float(visual.get("until",-1.0)):
         action = "run" if (pve_target_positions.get(id,cell) as Vector2).distance_to(cell) > 0.035 else "idle"
-    if action == "cast" and pve_jx_sword_vfx.comparison_style == "jx1":
+    # AS-CHAR has a real cast clip; the legacy JX comparison must not hide it.
+    if action == "cast" and pve_jx_sword_vfx.comparison_style == "jx1" and not (pve_view_rows.get(id,{}) as Dictionary).has("aschar_school"):
         action = "idle"
     var facing: Vector2 = pve_actor_facings.get(id,
         Vector2.RIGHT if side == "disciple" else Vector2.LEFT)
-    if pve_target_positions.has(id) and pve_render_positions.has(id):
+    if action in ["idle","run"] and pve_target_positions.has(id) and pve_render_positions.has(id):
         var movement: Vector2 = (pve_target_positions[id] as Vector2)-(pve_render_positions[id] as Vector2)
         if movement.length_squared() > 0.001:
             facing = movement
@@ -1542,6 +1566,49 @@ func _draw_pve_actor(data: Dictionary) -> void:
             draw_string_outline(font,foot+Vector2(-40.0,-93.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,2,Color(0.02,0.04,0.03,0.94))
             draw_string(font,foot+Vector2(-40.0,-93.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f4f1dd"))
 
+
+# One label per real authoritative hit/heal, never per derived skill_hit/pilot_impact.
+func _ingest_pve_damage_feedback(events: Array[Dictionary], snapshot: MapBattleV2) -> void:
+    for event in events:
+        var kind := str(event.get("type",""))
+        if kind not in ["hit","heal","pilot_hot_tick","pilot_poison_tick"]:
+            continue
+        var target := str(event.get("target",""))
+        if not snapshot.actors.has(target):
+            continue
+        var healing := kind in ["heal","pilot_hot_tick"]
+        var amount := float(event.get("amount",0.0)) if healing else float(event.get("damage",0.0))
+        if amount <= 0.0 or is_nan(amount) or is_inf(amount):
+            continue
+        var critical := not healing and bool(event.get("critical",false))
+        var poison := kind == "pilot_poison_tick" or str(event.get("kind","")) == "dot"
+        var tint := Color("8df5a1") if healing else (Color("ffe093") if critical else (Color("c3e586") if poison else Color("fff1d2")))
+        var label := ("+" if healing else ("BẠO " if critical else "−")) + ("%.0f" % amount if amount >= 1.0 else "%.1f" % amount)
+        var origin: Vector2 = pve_render_positions.get(target,snapshot.actors[target].get("position",Vector2.ZERO))
+        var lane := 0
+        for item in pve_damage_feedback:
+            if str(item.get("target","")) == target:
+                lane += 1
+        if pve_damage_feedback.size() >= PVE_FEEDBACK_LIMIT:
+            pve_damage_feedback.pop_front()
+        pve_damage_feedback.append({"target":target,"origin":origin,"started":pve_clock,"label":label,"color":tint,"lane":lane%3})
+
+func _draw_pve_damage_feedback() -> void:
+    var font := ThemeDB.fallback_font
+    if font == null or camera == null:
+        return
+    for item in pve_damage_feedback:
+        var foot := project(item["origin"])
+        if not _visible_world(foot):
+            continue
+        var age := clampf((pve_clock-float(item["started"]))/PVE_FEEDBACK_LIFETIME,0.0,1.0)
+        var opacity := 1.0-smoothstep(0.55,1.0,age)
+        var color: Color = item["color"]
+        color.a = opacity
+        var at := foot+Vector2((float(item["lane"])-1.0)*24.0,-100.0-age*36.0)
+        var label := str(item["label"])
+        draw_string_outline(font,at-Vector2(48,0),label,HORIZONTAL_ALIGNMENT_CENTER,96,17,3,Color(0.03,0.035,0.02,opacity))
+        draw_string(font,at-Vector2(48,0),label,HORIZONTAL_ALIGNMENT_CENTER,96,17,color)
 
 func _visible_world(point: Vector2) -> bool:
     if camera == null:
