@@ -6,8 +6,8 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    var state := P37Factory.create_state(602901)
-    var ids: Array = state.disciples.keys()
+    var baseline := P37Factory.create_state(602901)
+    var ids: Array = baseline.disciples.keys()
     ids.sort()
     if ids.size() < 6:
         push_error("Need six ACTUAL P3.7 disciples for 5-tier group balance matrix.")
@@ -21,18 +21,35 @@ func _run() -> void:
     for raw_region in regions:
         var region := str(raw_region)
         for level in range(1,6):
-            var chosen := HuntingMapV2.choose_level(state,region,level)
-            if not bool(chosen.get("ok",false)):
-                push_error("Region-level choice refused in balance benchmark.")
-                quit(1)
-                return
             var won := [0,0,0]
             var downed := [0,0,0]
             var duration := [0.0,0.0,0.0]
             for configuration in range(3):
                 for run_index in range(8):
+                    # Each sample is an independent seeded battle, not a continuation of
+                    # the previous wounded/dead party or its settlement receipts.
+                    var state := SimulationState.from_dict(baseline.to_dict().duplicate(true))
+                    if state == null:
+                        push_error("Balance fixture could not restore baseline state.")
+                        quit(1)
+                        return
+                    var chosen := HuntingMapV2.choose_level(state,region,level)
+                    if not bool(chosen.get("ok",false)):
+                        push_error("Region-level choice refused: %s" % str(chosen))
+                        quit(1)
+                        return
                     var members: Array = []
                     for i in range(int(scenario_people[configuration])):
+                        var disciple: DiscipleState = state.disciples[ids[i]]
+                        # For a V2-profile fixture, set the requested coordinates through
+                        # the canonical initializer before battle. Never spoof a live save.
+                        if DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+                            disciple.v2_realm_progress = {}
+                            var configured := DiscipleRealmProgressV2.initialize(disciple,int(scenario_realm[configuration]),1,int(scenario_realm[configuration]),1)
+                            if not bool(configured.get("ok",false)):
+                                push_error("Balance fixture progression refused: %s" % str(configured))
+                                quit(1)
+                                return
                         members.append({
                             "disciple_id":str(ids[i]),
                             "party_id":"balance_party",
@@ -49,12 +66,12 @@ func _run() -> void:
                     ]
                     var start := run.begin(state,region,encounter_id,seed_value,members)
                     if not bool(start.get("ok",false)):
-                        push_error("One group balance session could not initialize.")
+                        push_error("Balance start refused: %s result=%s" % [encounter_id,str(start)])
                         quit(1)
                         return
                     var ended := run.finish()
                     if not bool(ended.get("ok",false)):
-                        push_error("One group balance session did not resolve.")
+                        push_error("Balance finish refused: %s result=%s" % [encounter_id,str(ended)])
                         quit(1)
                         return
                     var result: Dictionary = ended["summary"]

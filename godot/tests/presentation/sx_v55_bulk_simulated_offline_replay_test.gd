@@ -122,7 +122,17 @@ func _run_crop(crop_id: StringName, offline_minutes: int) -> bool:
             or not is_equal_approx(float((again.disciples[chosen.id] as DiscipleState).profession_xp.get("herbalism",0.0)),after_xp) \
             or again.sect.spirit_stones != before_retry_stones \
             or again.sect.economy_a_receipts != before_retry_receipts:
-        return _fail("second cold load duplicated goods/XP/wages/debit")
+        var changed_receipts: Array = []
+        for receipt_id in before_retry_receipts:
+            if not again.sect.economy_a_receipts.has(receipt_id) or again.sect.economy_a_receipts[receipt_id] != before_retry_receipts[receipt_id]:
+                changed_receipts.append(str(receipt_id))
+        print("SX_V55_REPLAY_DIFF crop=",str(crop_id), " tick=",before_retry_tick,"/",again.tick,
+            " stock=",after_stock,"/",warehouse.quantity(again,crop_id),
+            " xp=",after_xp,"/",float((again.disciples[chosen.id] as DiscipleState).profession_xp.get("herbalism",0.0)),
+            " stones=",before_retry_stones,"/",again.sect.spirit_stones,
+            " receipt_counts=",before_retry_receipts.size(),"/",again.sect.economy_a_receipts.size(),
+            " changed_receipts=",str(changed_receipts))
+        return _fail("second cold load changed goods/XP/wages/debit or receipt values")
     if not again.validate_invariants().is_empty():
         return _fail("offline bulk Save broke canonical invariants "+str(again.validate_invariants()))
     print("SX_V55_OFFLINE_CASE_PASS crop=",str(crop_id),

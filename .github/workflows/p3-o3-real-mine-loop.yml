@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
       - 'godot/src/presentation/p3/sect_map_presentation.gd'
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
