@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="174" height="166" viewBox="0 0 174 166">
+<defs><linearGradient id="leaf" x2="1" y2="1"><stop stop-color="#c5d68a"/><stop offset=".55" stop-color="#719a57"/><stop offset="1" stop-color="#305e4a"/></linearGradient><linearGradient id="stem" x2="1" y2="0"><stop stop-color="#385b43"/><stop offset=".5" stop-color="#a0b96b"/><stop offset="1" stop-color="#527749"/></linearGradient><linearGradient id="rock" x2="1" y2="1"><stop stop-color="#b0c0a5"/><stop offset="1" stop-color="#4a6e62"/></linearGradient></defs>
+<ellipse cx="85" cy="145" rx="74" ry="17" fill="#233d32" opacity=".25"/>
+<path d="M17 142 34 127 53 123 70 130 98 125 122 134 151 140 140 151 90 158 46 155Z" fill="#658369" stroke="#526e57"/>
+<path d="M24 142 36 130 50 128 61 139 51 147 31 148Z" fill="url(#rock)" stroke="#59796a"/>
+<path d="M104 141 118 126 136 129 148 142 133 151 116 150Z" fill="url(#rock)" stroke="#59796a"/>
+<path d="M42 132 53 135 57 142M117 130 129 134 137 142" stroke="#c2c9a7" stroke-width="1.6" fill="none"/>
+<g stroke="url(#stem)" fill="none" stroke-linecap="round"><path d="M69 142 Q61 86 49 32" stroke-width="6"/><path d="M80 146 Q87 83 84 12" stroke-width="7"/><path d="M96 143 Q107 83 125 37" stroke-width="6"/><path d="M61 142 Q43 102 24 75" stroke-width="4"/><path d="M108 145 Q126 107 147 76" stroke-width="4"/></g>
+<g stroke="#c9d28e" stroke-width="1.5"><path d="M58 79 64 78M53 53 58 51M65 108 71 107M82 44 89 44M84 74 91 75M82 105 88 106M110 79 116 81M118 55 124 57M102 109 108 111"/></g>
+<g fill="url(#leaf)" stroke="#4d7750" stroke-width=".75">
+<path d="M53 36 Q35 10 12 17 Q26 34 53 36ZM49 35 Q44 10 56 4 Q65 21 49 35ZM52 46 Q76 22 92 29 Q78 44 52 46Z"/>
+<path d="M83 21 Q63 0 42 5 Q52 24 83 21ZM86 23 Q101 1 122 4 Q110 23 86 23ZM84 39 Q63 19 51 28 Q61 45 84 39Z"/>
+<path d="M84 52 Q111 27 134 31 Q119 49 84 52ZM83 63 Q65 43 42 49 Q57 67 83 63ZM91 72 Q116 49 135 55 Q116 71 91 72Z"/>
+<path d="M124 39 Q140 14 162 18 Q152 37 124 39ZM123 49 Q107 29 101 32 Q104 49 123 49ZM115 72 Q137 48 159 52 Q142 71 115 72Z"/>
+<path d="M27 79 Q9 62 2 68 Q9 83 27 79ZM39 96 Q17 83 5 91 Q22 105 39 96ZM147 78 Q155 55 173 54 Q171 73 147 78ZM130 110 Q154 92 170 100 Q157 113 130 110Z"/>
+<path d="M66 104 Q43 85 28 90 Q42 108 66 104ZM90 99 Q107 80 124 83 Q111 102 90 99Z"/>
+</g><g fill="#95aa70"><path d="M36 146 39 132 42 146ZM47 149 53 136 54 150ZM85 151 80 136 90 150ZM129 150 136 138 137 150Z"/></g><path d="M20 148 Q59 155 84 151 Q117 156 151 145" stroke="#b8c49b" stroke-width="1.4" opacity=".65" fill="none"/>
+</svg>
