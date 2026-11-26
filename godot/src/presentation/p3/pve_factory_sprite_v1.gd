@@ -46,6 +46,13 @@ func _binding(id: String) -> Dictionary:
     _resolved[id] = {}
     return {}
 
+static func resolve_receipt_phase(phases: Dictionary, requested: String) -> String:
+    if phases.has(requested):
+        return requested
+    if requested == "release" and phases.has("flight"):
+        return "flight"
+    return ""
+
 func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
     if battle == null:
         reset()
@@ -94,22 +101,18 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
             continue
         if kind == "skill_release":
             _cues.erase(cast_key)
-            if not phases.has(phase):
-                continue
         elif kind == "hit" or kind.ends_with("_hit"):
             if float(event.get("damage",0.0)) <= 0.0:
                 continue
-        if not phases.has(phase):
-            # Some reviewed atlas manifests name their receipt-bound travel
-            # phase "flight"; never substitute contact for a release.
-            if phase == "release" and phases.has("flight"):
-                phase = "flight"
-            else:
-                continue
-        var ids: Array = [target]
-        if target.is_empty() and event.get("target_ids",[]) is Array:
-            ids = event.get("target_ids",[])
-        if ids.is_empty() and kind in ["skill_release","v63_mobility"]:
+        phase = resolve_receipt_phase(phases,phase)
+        if phase.is_empty():
+            continue
+        var ids: Array = []
+        if not target.is_empty():
+            ids.append(target)
+        elif event.get("target_ids",[]) is Array:
+            ids = event.get("target_ids",[]).duplicate()
+        if ids.is_empty() and kind in ["skill_release","v63_mobility"] and phase != "flight":
             ids = [owner]
         for raw_target in ids:
             var tid := str(raw_target)
@@ -191,9 +194,6 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
         elif bool(cue.get("persistent",false)) and age > 0.20:
             phase = "sustain"
             age -= 0.20
-        elif phase == "charge" and phases.has("flight") and progress > 0.60:
-            phase = "flight"
-            age = maxf(0.0,age-duration*0.60)
         var source: Dictionary = phases.get(phase,{})
         var frames: Array = source.get("frames",[])
         if frames.is_empty():
@@ -217,7 +217,7 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
         if phase == "charge":
             at = origin
         elif phase == "flight":
-            at = origin.lerp(target,clampf((progress-0.60)/0.40,0.0,1.0)) if str(cue["phase"]) == "charge" else target
+            at = origin.lerp(target,progress)
             angle = (target-origin).angle()
         elif str(entry.get("shape","")) == "line" and phase == "release":
             at = origin.lerp(target,0.5)
