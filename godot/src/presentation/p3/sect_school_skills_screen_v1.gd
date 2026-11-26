@@ -127,7 +127,7 @@ func refresh() -> void:
     portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
     portrait.texture = SectASCharCandidateBridgeV1.preview_texture(_school,sex)
     left.add_child(portrait)
-    _label(left,SectASCharCandidateBridgeV1.SCHOOL_NAMES.get(_school,"")+" · Ngoại hình thử nghiệm",Vector2(45,212),Vector2(270,22),11,SOFT)
+    _label(left,SectASCharCandidateBridgeV1.SCHOOL_NAMES.get(_school,"")+" · Ngoại hình đệ tử",Vector2(45,212),Vector2(270,22),11,SOFT)
     var selector := GridContainer.new()
     selector.name = "SchoolSelectorGrid"
     selector.columns = 3
@@ -142,7 +142,9 @@ func refresh() -> void:
         b.text = SectASCharCandidateBridgeV1.SCHOOL_NAMES[school]
         b.custom_minimum_size = Vector2(103,37)
         b.add_theme_font_size_override("font_size",12)
-        b.add_theme_color_override("font_color",GOLD if school == _school else IVORY)
+        b.add_theme_color_override("font_color",Color(0.045,0.12,0.12) if school == _school else IVORY)
+        b.add_theme_stylebox_override("normal",_style(GOLD if school == _school else Color(0.06,0.20,0.19),GOLD if school == _school else Color(0.34,0.54,0.50)))
+        b.add_theme_stylebox_override("hover",_style(Color(0.13,0.30,0.28),GOLD))
         b.icon = _school_seal(school)
         b.add_theme_constant_override("icon_max_width",22)
         b.tooltip_text = "Đã bái môn" if school == selected_school else "Xem môn phái"
@@ -154,7 +156,7 @@ func refresh() -> void:
     mid.add_theme_stylebox_override("panel",_style(JADE,Color(0.37,0.63,0.60)))
     add_child(mid)
     _label(mid,"CHỌN NHÁNH",Vector2(15,14),Vector2(226,26),17,GOLD)
-    _label(mid,"3 nhánh mỗi môn phái",Vector2(15,45),Vector2(223,26),12,SOFT)
+    _label(mid,"So sánh 3 nhánh trước khi bái môn",Vector2(15,45),Vector2(223,26),12,SOFT)
     var branches := SectASCharCandidateBridgeV1.branches_for(_school)
     var current_preview := _selected_preview_branch(branches)
     if _school == selected_school and _preview_branch.is_empty():
@@ -187,7 +189,7 @@ func refresh() -> void:
     var v63_live := V63HumanSkillCombatSystem.is_enabled(_state)
     _label(right,("Công pháp · nguồn học, chi phí và thành thạo" if _skill_page == "method" else "Kỹ năng P2 đang chơi dùng được trong PvE") if _skill_page != "v63"
         else ("Học và trang bị theo quyền V6.3" if v63_live
-            else "V6.3 hiện KHÓA · xem trước, không cộng sức mạnh"),
+            else "Kỹ năng nâng cao đang khóa · tra cứu trước khi mở"),
         Vector2(15,43),Vector2(477,27),12,SOFT)
     var basic_tab := _button(right,"KỸ NĂNG P2",Vector2(12,77),
         Vector2(152,38),_skill_page == "basic")

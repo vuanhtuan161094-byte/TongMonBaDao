@@ -31,7 +31,14 @@ func _run() -> void:
             or not text_value.contains("Đệ tử"):
         _fail("top bar lacks currency/roster status")
         return
-    for raw_name in ["Thiết","Đan","Tủy"]:
+    # Product HUD now deliberately includes canonical iron total/available.
+    # It is not an arbitrary inventory dump; other raw goods remain in Kho.
+    var stock := WarehouseSystem.new()
+    var iron_total := int(stock.quantity(state,&"thanh_thiet"))
+    if not text_value.contains("Thiết %d/" % iron_total):
+        _fail("HUD iron total differs from canonical warehouse")
+        return
+    for raw_name in ["Đan","Tủy"]:
         if text_value.contains(raw_name):
             _fail("raw warehouse item leaked into global HUD: "+raw_name)
             return

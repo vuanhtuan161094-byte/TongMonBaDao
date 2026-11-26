@@ -1,0 +1,566 @@
+{
+  "schema": "tmb.pve.formation_r2.v1",
+  "provenance": [
+    {
+      "runtime_path": "res://assets/p3/vfx/formation_r2/formation_1.png",
+      "source": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set1_transparent_rgba.png",
+      "sha256": "61d5eb8711b5f2d506b8f5fb00c7a53cb110c00eb039093bea5b5caab72ed8fa"
+    },
+    {
+      "runtime_path": "res://assets/p3/vfx/formation_r2/formation_2.png",
+      "source": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set2_transparent_rgba.png",
+      "sha256": "51205069a167c1e0870ab3e16f78ab2808d520de9ff4616d280ce08c63bdeb59"
+    },
+    {
+      "runtime_path": "res://assets/p3/vfx/formation_r2/formation_3.png",
+      "source": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set3_transparent_rgba.png",
+      "sha256": "85ab5594fccce88a48e098dd362ff2c8609b1d5c5c8b81f8c2b9fca7a0ac6102"
+    },
+    {
+      "runtime_path": "res://assets/p3/vfx/formation_r2/formation_4.png",
+      "source": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set4_transparent_rgba.png",
+      "sha256": "c76176c1b6da6a7b144981799a70819e6d56d9ce3dcd807d227e11c0966d8d77"
+    },
+    {
+      "runtime_path": "res://assets/p3/vfx/formation_r2/formation_5.png",
+      "source": "res://labs/combat_lab/formation01/factory_batch1_20261125/source/atlases/formation_set5_transparent_rgba.png",
+      "sha256": "bcceafa2217b3e537e06d5c294c621b2539c21cc6eb2731a7c8762343c2acc7a"
+    }
+  ],
+  "bindings": {
+    "tmb.skill.formation.phong_toa_tran.active_01.human": {
+      "atlas": 0,
+      "frames": [
+        [
+          0,
+          0,
+          314,
+          314
+        ],
+        [
+          314,
+          0,
+          313,
+          314
+        ],
+        [
+          627,
+          0,
+          313,
+          314
+        ],
+        [
+          940,
+          0,
+          314,
+          314
+        ]
+      ],
+      "effect": "slow",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.phong_toa_tran.active_02.human": {
+      "atlas": 0,
+      "frames": [
+        [
+          0,
+          314,
+          314,
+          313
+        ],
+        [
+          314,
+          314,
+          313,
+          313
+        ],
+        [
+          627,
+          314,
+          313,
+          313
+        ],
+        [
+          940,
+          314,
+          314,
+          313
+        ]
+      ],
+      "effect": "slow",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.phong_toa_tran.active_03.human": {
+      "atlas": 0,
+      "frames": [
+        [
+          0,
+          627,
+          314,
+          313
+        ],
+        [
+          314,
+          627,
+          313,
+          313
+        ],
+        [
+          627,
+          627,
+          313,
+          313
+        ],
+        [
+          940,
+          627,
+          314,
+          313
+        ]
+      ],
+      "effect": "slow",
+      "shape": "single_target",
+      "limit": 1,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.phong_toa_tran.active_04.human": {
+      "atlas": 0,
+      "frames": [
+        [
+          0,
+          940,
+          314,
+          314
+        ],
+        [
+          314,
+          940,
+          313,
+          314
+        ],
+        [
+          627,
+          940,
+          313,
+          314
+        ],
+        [
+          940,
+          940,
+          314,
+          314
+        ]
+      ],
+      "effect": "slow",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.phong_toa_tran.ultimate.human": {
+      "atlas": 1,
+      "frames": [
+        [
+          0,
+          0,
+          314,
+          314
+        ],
+        [
+          314,
+          0,
+          313,
+          314
+        ],
+        [
+          627,
+          0,
+          313,
+          314
+        ],
+        [
+          940,
+          0,
+          314,
+          314
+        ]
+      ],
+      "effect": "slow",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.sat_phat_tran.active_01.human": {
+      "atlas": 1,
+      "frames": [
+        [
+          0,
+          314,
+          314,
+          313
+        ],
+        [
+          314,
+          314,
+          313,
+          313
+        ],
+        [
+          627,
+          314,
+          313,
+          313
+        ],
+        [
+          940,
+          314,
+          314,
+          313
+        ]
+      ],
+      "effect": "formation_zone",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.sat_phat_tran.active_02.human": {
+      "atlas": 1,
+      "frames": [
+        [
+          0,
+          627,
+          314,
+          313
+        ],
+        [
+          314,
+          627,
+          313,
+          313
+        ],
+        [
+          627,
+          627,
+          313,
+          313
+        ],
+        [
+          940,
+          627,
+          314,
+          313
+        ]
+      ],
+      "effect": "formation_zone",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.sat_phat_tran.active_03.human": {
+      "atlas": 1,
+      "frames": [
+        [
+          0,
+          940,
+          314,
+          314
+        ],
+        [
+          314,
+          940,
+          313,
+          314
+        ],
+        [
+          627,
+          940,
+          313,
+          314
+        ],
+        [
+          940,
+          940,
+          314,
+          314
+        ]
+      ],
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.sat_phat_tran.active_04.human": {
+      "atlas": 2,
+      "frames": [
+        [
+          0,
+          0,
+          314,
+          314
+        ],
+        [
+          314,
+          0,
+          313,
+          314
+        ],
+        [
+          627,
+          0,
+          313,
+          314
+        ],
+        [
+          940,
+          0,
+          314,
+          314
+        ]
+      ],
+      "effect": "formation_zone",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.sat_phat_tran.ultimate.human": {
+      "atlas": 2,
+      "frames": [
+        [
+          0,
+          314,
+          314,
+          313
+        ],
+        [
+          314,
+          314,
+          313,
+          313
+        ],
+        [
+          627,
+          314,
+          313,
+          313
+        ],
+        [
+          940,
+          314,
+          314,
+          313
+        ]
+      ],
+      "effect": "formation_zone",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.tu_linh_tran.active_01.human": {
+      "atlas": 2,
+      "frames": [
+        [
+          0,
+          627,
+          314,
+          313
+        ],
+        [
+          314,
+          627,
+          313,
+          313
+        ],
+        [
+          627,
+          627,
+          313,
+          313
+        ],
+        [
+          940,
+          627,
+          314,
+          313
+        ]
+      ],
+      "effect": "guard",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.basic.human": {
+      "atlas": 3,
+      "frames": [
+        [
+          0,
+          0,
+          314,
+          314
+        ],
+        [
+          314,
+          0,
+          313,
+          314
+        ],
+        [
+          627,
+          0,
+          313,
+          314
+        ],
+        [
+          940,
+          0,
+          314,
+          314
+        ]
+      ],
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.mobility.human": {
+      "atlas": 3,
+      "frames": [
+        [
+          0,
+          314,
+          314,
+          313
+        ],
+        [
+          314,
+          314,
+          313,
+          313
+        ],
+        [
+          627,
+          314,
+          313,
+          313
+        ],
+        [
+          940,
+          314,
+          314,
+          313
+        ]
+      ],
+      "effect": "mobility",
+      "shape": "single_target",
+      "limit": 1,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.tu_linh_tran.active_03.human": {
+      "atlas": 3,
+      "frames": [
+        [
+          0,
+          627,
+          314,
+          313
+        ],
+        [
+          314,
+          627,
+          313,
+          313
+        ],
+        [
+          627,
+          627,
+          313,
+          313
+        ],
+        [
+          940,
+          627,
+          314,
+          313
+        ]
+      ],
+      "effect": "guard",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.tu_linh_tran.active_04.human": {
+      "atlas": 3,
+      "frames": [
+        [
+          0,
+          940,
+          314,
+          314
+        ],
+        [
+          314,
+          940,
+          313,
+          314
+        ],
+        [
+          627,
+          940,
+          313,
+          314
+        ],
+        [
+          940,
+          940,
+          314,
+          314
+        ]
+      ],
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    },
+    "tmb.skill.formation.tu_linh_tran.ultimate.human": {
+      "atlas": 4,
+      "frames": [
+        [
+          0,
+          0,
+          543,
+          724
+        ],
+        [
+          543,
+          0,
+          543,
+          724
+        ],
+        [
+          1086,
+          0,
+          543,
+          724
+        ],
+        [
+          1629,
+          0,
+          543,
+          724
+        ]
+      ],
+      "effect": "guard",
+      "shape": "circle",
+      "limit": 3,
+      "source_status": "CANDIDATE_ART_SELF_PASS_CONTACT_ONLY"
+    }
+  },
+  "excluded": [
+    {
+      "id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+      "reason": "ART_REWORK_REQUIRED_DAMAGE_VS_SHIELD_READ"
+    }
+  ]
+}

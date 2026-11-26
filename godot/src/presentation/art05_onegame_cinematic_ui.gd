@@ -23,6 +23,7 @@ func _ready() -> void:
         return
     _art05_style_global_hud()
     _art05_install_mockup_shell()
+    _r2_skin_party_picker()
     _art05_build_sect_master_dock()
     _art05_refresh_sect_master_dock()
     var aura := ART06_WORLD.new()
@@ -335,6 +336,8 @@ func _art05_reflow() -> void:
     if building_operation_live_content != null:
         building_operation_live_content.custom_minimum_size.x = 370
     _art05_repack_galleries()
+    _r2_operation_caption("R2ActionCaption","ĐIỀU PHỐI",Vector2(18,300),Vector2(355,16))
+    _r2_operation_caption("R2LiveCaption","HOẠT ĐỘNG THỰC TẾ",Vector2(405,300),Vector2(397,16))
     if building_operation_scroll != null:
         building_operation_scroll.clip_contents = true
     if building_operation_live_panel != null:
@@ -481,6 +484,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
                         VIS_QUALITY.apply_name(inner as Label, entry_quality)
             else:
                 VIS_QUALITY.apply_button(entry, entry_quality)
+    # Profile is rebuilt synchronously; avoid a stale queued old panel
+    # swallowing subsequent real clicks or being returned by find_child.
     var toggle := Button.new()
     toggle.name = "VISReducedMotionToggle"
     toggle.text = "HIỆU ỨNG: %s" % VIS_QUALITY.mode_label()
@@ -508,6 +513,10 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
 
 func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
     VIS_QUALITY.cycle_mode()
+    var previous := popup_layer.find_child("DiscipleDeepScreen",true,false) as Panel
+    if previous != null and previous.get_parent() != null:
+        previous.get_parent().remove_child(previous)
+        previous.queue_free()
     _open_disciple_deep_screen(disciple_id, tab_name, true)
 
 
@@ -1322,3 +1331,34 @@ func _art05_playbook_action(action: String) -> void:
             _open_pve_party_picker()
         "craft":
             _open_building(SectMapPresentation.DEST_ALCHEMY_HALL)
+
+func _r2_operation_caption(node_name: String, caption: String, at: Vector2, dimensions: Vector2) -> void:
+    var label := building_operation_panel.get_node_or_null(node_name) as Label
+    if label == null:
+        label = Label.new()
+        label.name = node_name
+        label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        building_operation_panel.add_child(label)
+    label.text = caption
+    label.position = at
+    label.size = dimensions
+    label.add_theme_font_size_override("font_size",11)
+    label.add_theme_color_override("font_color",ART05_GOLD)
+    label.z_index = 2
+
+func _r2_skin_party_picker() -> void:
+    if pve_party_picker_panel == null:
+        return
+    pve_party_picker_panel.add_theme_stylebox_override("panel",_art05_style(ART05_DEEP,ART05_GOLD,2,18))
+    for node in pve_party_picker_panel.get_children():
+        if node is Label:
+            var label := node as Label
+            label.add_theme_color_override("font_color",ART05_GOLD if label.text.begins_with("CHỌN ĐỘI") else ART05_WHITE)
+        elif node is Button:
+            var button := node as Button
+            var primary := button == pve_party_picker_start
+            button.add_theme_color_override("font_color",ART05_DEEP if primary else ART05_WHITE)
+            button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD if primary else ART05_JADE,ART05_GOLD,1,9))
+            button.add_theme_stylebox_override("hover",_art05_style(Color(0.23,0.43,0.35),ART05_GOLD,2,9))
+    if pve_party_picker_feedback != null:
+        pve_party_picker_feedback.add_theme_color_override("font_color",Color(1.0,0.68,0.43))

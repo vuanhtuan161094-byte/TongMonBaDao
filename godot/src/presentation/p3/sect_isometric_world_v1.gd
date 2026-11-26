@@ -9,6 +9,13 @@ const CHUNK := 16
 const STARTER := Rect2i(72,72,48,48)
 const HALF_W := 25.0
 const HALF_H := 13.0
+const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.svg")
+const R2_PRODUCERS := {
+    "mine":preload("res://art/onegame_world_r2/mine_compact.svg"),
+    "linh_forest":preload("res://art/onegame_world_r2/forest_compact.svg"),
+    "spirit_field":preload("res://art/onegame_world_r2/field_compact.svg")
+}
+const R2_FORMATION = preload("res://src/presentation/p3/pve_formation_atlas_v1.gd")
 const VIEW_SIZE := Vector2(1280,570)
 const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
@@ -253,6 +260,7 @@ var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
 var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
 var pve_a3_sword_vfx = A3_SWORD_VFX.new()
+var pve_r2_formation = R2_FORMATION.new()
 var pve_v8_blade_vfx = V8_BLADE_VFX.new()
 var pve_v9_p2_spell_vfx = V9_P2_SPELL_VFX.new()
 var pve_selected_actor_ids: Array[String] = []
@@ -914,6 +922,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_a3_sword_vfx.reset()
         pve_v8_blade_vfx.reset()
         pve_v9_p2_spell_vfx.reset()
+        pve_r2_formation.reset()
         pve_damage_feedback.clear()
         queue_redraw()
         return
@@ -940,6 +949,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
     pve_a3_sword_vfx.observe(new_visual_events,snapshot,sword_visual)
     pve_v8_blade_vfx.observe(new_visual_events,snapshot,blade_visual)
     pve_v9_p2_spell_vfx.observe(new_visual_events,snapshot)
+    pve_r2_formation.observe(new_visual_events,snapshot)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
         var id := str(raw_id)
@@ -1004,6 +1014,7 @@ func _process(delta: float) -> void:
     pve_a3_sword_vfx.advance(delta)
     pve_v8_blade_vfx.advance(delta)
     pve_v9_p2_spell_vfx.advance(delta)
+    pve_r2_formation.advance(delta)
     if pve_performance_logging_enabled:
         var vfx_advance_elapsed_usec := Time.get_ticks_usec()-vfx_advance_started_usec
         pve_vfx_advance_count += 1
@@ -1227,8 +1238,10 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
         return ground_chunk_meshes[chunk_id] as ArrayMesh
     var vertices := PackedVector2Array()
     var colors := PackedColorArray()
+    var uvs := PackedVector2Array()
     var indices := PackedInt32Array()
     var origin := chunk_id*CHUNK
+    var texture_center := project(Vector2(origin)+Vector2(CHUNK-1,CHUNK-1)*0.5)
     for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
         for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
             var cell := Vector2i(ix,iy)
@@ -1241,6 +1254,9 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
                 center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
             ]))
+            for corner in [Vector2(0,-HALF_H),Vector2(HALF_W,0),Vector2(0,HALF_H),Vector2(-HALF_W,0)]:
+                var point: Vector2 = center+corner-texture_center
+                uvs.append(Vector2(point.x/(CHUNK*HALF_W*2.0)+0.5,point.y/(CHUNK*HALF_H*2.0)+0.5))
             # Interpolate adjacent non-road material at corners to soften the
             # visible tile grid without changing routes or collision.
             if pve_landscape or preview_roads.has(cell):
@@ -1259,6 +1275,7 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
     arrays.resize(Mesh.ARRAY_MAX)
     arrays[Mesh.ARRAY_VERTEX] = vertices
     arrays[Mesh.ARRAY_COLOR] = colors
+    arrays[Mesh.ARRAY_TEX_UV] = uvs
     arrays[Mesh.ARRAY_INDEX] = indices
     var mesh := ArrayMesh.new()
     mesh.add_surface_from_arrays(
@@ -1329,7 +1346,7 @@ func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
     # Visibility still uses the original active_chunks and the existing camera.
     for chunk_id in active_chunks:
-        draw_mesh(_ground_mesh_for_chunk(chunk_id),null)
+        draw_mesh(_ground_mesh_for_chunk(chunk_id),R2_GROUND if not pve_landscape else null)
     # Scenic water/reeds/rock-garden accents are original unapproved
     # view-only candidates and cannot act as a gameplay resource node.
     if pve_landscape:
@@ -1354,6 +1371,7 @@ func _draw() -> void:
         pve_a3_sword_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
         pve_v8_blade_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"),1.0)
         pve_v9_p2_spell_vfx.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
+        pve_r2_formation.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
         _draw_pve_damage_feedback()
         return
     _draw_masterplan_lots()
@@ -1732,9 +1750,9 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
             detail = Color(0.91,0.84,0.53)
     # At working zoom use the authored site vignette rather than a flat icon.
     # Far-overview remains bounded by the original lightweight LOD.
-    if not overview and candidate_site_art.has(kind):
-        var miniature: Texture2D = candidate_site_art[kind]
-        var extent := Vector2(78.0,52.0)
+    if R2_PRODUCERS.has(kind):
+        var miniature: Texture2D = R2_PRODUCERS[kind]
+        var extent := Vector2(63.0,47.25) if overview else Vector2(88.0,66.0)
         draw_texture_rect(miniature,Rect2(p-Vector2(extent.x*0.5,extent.y*0.78),extent),false)
         return
     var rx := 15.0 if overview else 20.0
