@@ -1058,6 +1058,14 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
     changed = changed or not is_equal_approx(float(defense_before.get("damage_reduction", 0.0)), float(defense_after.get("damage_reduction", 0.0)))
     if changed: return {"status": "PASS", "reason": "existing effective stat consumer produced expected delta"}
     var mods: Dictionary = skill.get("passive_modifiers", {})
+    if school == "summon":
+        return _probe_summon_modifier(skill,actor,mods)
+    if school in ["sword","blade"] and float(mods.get("absorbed_reflect_ratio",0.0)) > 0.0:
+        return _probe_absorbed_reflection(skill,actor)
+    # Blood Ma's branch-level restriction does not prove five distinct
+    # passive IDs with zero authored benefit. Preserve explicit NOT_TESTED.
+    if str(skill.get("divine_rule","")) == "blood_ma_seal":
+        return {"status":"NOT_TESTED","reason":"blood_ma_seal_is_branch_rule_no_individual_passive_delta"}
     if float(mods.get("heal_factor", 0.0)) > 0.0:
         var heal_result := _probe_heal_factor(id, float(mods.heal_factor),innate,school)
         if str(heal_result.status) == "PASS": return heal_result
@@ -1071,6 +1079,86 @@ func _probe_modifier(skill: Dictionary, innate: bool) -> Dictionary:
     if mods.is_empty() or mods.values().all(func(value: Variant) -> bool: return is_zero_approx(float(value))):
         return {"status": "NOT_TESTED", "reason": "catalog modifiers are zero and no matching runtime consumer was found"}
     return {"status": "NOT_TESTED", "reason": "catalog effect has no matching generic or specialized runtime consumer"}
+
+# Compare two real summoned actors from the same branch and authored skill.
+# Verify the field consumed by the live lifecycle, not the source modifier alone.
+func _probe_summon_modifier(skill: Dictionary, actor: Dictionary, mods: Dictionary) -> Dictionary:
+    var samples: Array[Dictionary] = []
+    var branch := str(skill.get("branch",""))
+    var summon_id := "tmb.skill.summon.%s.active_01.human" % branch
+    for enabled in [false,true]:
+        serial += 1
+        var owner := actor.duplicate(true) if enabled else _without_passive(actor)
+        owner["id"] = "matrix_summon_owner_%d" % serial
+        var target := _enemy("matrix_summon_enemy_%d" % serial,Vector2(10.5,10))
+        var battle := MapBattleV2.new(910000+serial)
+        if not bool(battle.setup("matrix_summon_modifier_%d" % serial,[owner],[target],false).get("ok",false)):
+            return {"status":"FAIL","reason":"summon_modifier_battle_setup"}
+        owner = battle.actors[str(owner.id)]
+        V63SummonSkillCombatSystem.release_cast(battle,{"v63_skill_id":summon_id,"mastery_event_id":"matrix_modifier_%d" % serial},owner)
+        var live: Dictionary = {}
+        for candidate in battle.actors.values():
+            if bool(candidate.get("is_v63_summon",false)) and str(candidate.get("summon_owner_id","")) == str(owner.id):
+                live = candidate
+                break
+        if live.is_empty():
+            return {"status":"FAIL","reason":"summon_modifier_real_actor_missing"}
+        samples.append({
+            "summon_hp_factor":float(live.max_hp),
+            "summon_damage_factor":float(live.summon_attack_damage_ratio),
+            "summon_duration_factor":float(live.summon_expires_at)-battle.now,
+            "summon_attack_speed_factor":float(live.summon_attack_interval_seconds),
+            "summon_damage_reduction":float(live.stats.get("damage_reduction",0.0))
+        })
+    var proven := 0
+    for raw_key in mods:
+        var key := str(raw_key)
+        var amount := float(mods[key])
+        if amount <= 0.0:
+            continue
+        if not samples[0].has(key):
+            return {"status":"NOT_TESTED","reason":"unhandled_summon_modifier:"+key}
+        var baseline := float(samples[0][key])
+        var expected := baseline*(1.0+amount)
+        if key == "summon_attack_speed_factor":
+            expected = baseline/(1.0+amount)
+        elif key == "summon_damage_reduction":
+            expected = clampf(baseline+amount,0.0,0.8)
+        var actual := float(samples[1][key])
+        if is_equal_approx(baseline,actual) or absf(actual-expected) > 0.0001:
+            return {"status":"FAIL","reason":"summon_modifier_delta:%s expected %.6f actual %.6f" % [key,expected,actual]}
+        proven += 1
+    return {"status":"PASS","reason":"real summon creation applied all authored specialized modifiers"} if proven > 0 else {"status":"NOT_TESTED","reason":"no_positive_summon_modifier"}
+
+# A real direct hit while guarding must reduce enemy HP via the exact
+# reflected receipt. The same passive cannot reflect with guard expired.
+func _probe_absorbed_reflection(skill: Dictionary, actor: Dictionary) -> Dictionary:
+    serial += 1
+    var school := str(skill.get("school",""))
+    var id := str(skill.get("id",""))
+    actor["id"] = "matrix_reflect_owner_%d" % serial
+    var attacker := _enemy("matrix_reflect_enemy_%d" % serial,Vector2(10.5,10))
+    attacker["stats"]["attack"] = 4000.0
+    var battle := MapBattleV2.new(920000+serial)
+    if not bool(battle.setup("matrix_reflect_%d" % serial,[actor],[attacker],false).get("ok",false)):
+        return {"status":"FAIL","reason":"reflect_battle_setup"}
+    actor = battle.actors[str(actor.id)]
+    attacker = battle.actors[str(attacker.id)]
+    var before := float(attacker.hp)
+    battle._deal_direct(attacker,actor,1.0,"basic",false,"metal",false)
+    if not is_equal_approx(float(attacker.hp),before):
+        return {"status":"FAIL","reason":"reflection_without_guard"}
+    actor["learned_guard_until"] = battle.now+5.0
+    actor["learned_guard_factor"] = 0.5
+    var previous_defender_hp := float(actor.hp)
+    var received := battle._deal_direct(attacker,actor,1.0,"basic",false,"metal",false)
+    var found := false
+    for event in battle.events:
+        if str(event.get("type","")) == "v63_%s_guard_reflect" % school and str(event.get("skill_id","")) == id:
+            found = float(event.get("damage",0.0)) > 0.0 and float(event.get("absorbed_damage",0.0)) > 0.0
+    if found and received > 0.0 and float(actor.hp) < previous_defender_hp and float(attacker.hp) < before:
+        return {"status":"PASS","reason":"actual guarded direct hit reflected absorbed damage with exact passive receipt"}
+    return {"status":"FAIL","reason":"guard_reflection_damage_or_receipt_missing"}
 
 func _probe_heal_factor(skill_id: String, factor: float, innate: bool = false, school: String = "") -> Dictionary:
     var caster := _actor("matrix_healer", Vector2(10, 10))

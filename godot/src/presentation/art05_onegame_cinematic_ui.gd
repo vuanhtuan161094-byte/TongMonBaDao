@@ -451,6 +451,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
         portrait = panel.find_child("VisualCatalogPortraitFallback", true, false) as Control
     if portrait != null:
         var showcase := portrait.get_parent() as Control
+        # The original TextureRect size was assigned before its expand mode,
+        # so large imported portraits could keep a texture-sized minimum rect.
+        # Assign the display bounds after disabling that minimum and reserve
+        # an independent text region below the portrait.
+        showcase.clip_contents = true
+        if portrait is TextureRect:
+            var art := portrait as TextureRect
+            art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+            art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+            art.position = Vector2(24,10)
+            art.size = Vector2(252,206)
         VIS_QUALITY.apply_edge(showcase, quality)
         VIS_QUALITY.apply_frame_material(showcase, quality)
         VIS_QUALITY.apply_backlight(showcase, Rect2(Vector2(12, 6), Vector2(276, 224)), quality)
@@ -460,6 +471,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
                 var label := child as Label
                 if label.text == actor_name or label.text.begins_with(str(DiscipleGeneratorV2.QUALITY_NAMES.get(quality, "---")) + " Â· "):
                     VIS_QUALITY.apply_name(label, quality)
+                label.z_index = 2
+                label.clip_text = true
+                label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        var caption_panel := Panel.new()
+        caption_panel.name = "ProfileIdentityBackdrop"
+        caption_panel.position = Vector2(8,220)
+        caption_panel.size = Vector2(284,166)
+        caption_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        caption_panel.add_theme_stylebox_override("panel",_art05_style(Color(0.035,0.105,0.11,0.99),Color(0.48,0.59,0.51,0.75),1,10))
+        showcase.add_child(caption_panel)
+        showcase.move_child(caption_panel,portrait.get_index()+1)
     var roster := panel.find_child("DeepDiscipleRoster", true, false) as VBoxContainer
     if roster != null:
         for raw_entry in roster.get_children():
@@ -478,6 +500,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tá»
                 new_style.border_color = VIS_QUALITY.color_for(entry_quality)
                 entry.add_theme_stylebox_override("normal", new_style)
             var portrait_row := entry.get_node_or_null("VerifiedSourceARosterCard")
+            if portrait_row == null:
+                portrait_row = entry.get_node_or_null("ASCharRosterCard")
             if portrait_row != null:
                 for inner in portrait_row.find_children("*", "Label", true, false):
                     if inner is Label and (inner as Label).text == pieces[0]:
