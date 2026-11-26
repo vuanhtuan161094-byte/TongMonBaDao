@@ -9,16 +9,18 @@ const SCENIC_SPRITES := {
     "reeds":preload("res://art/map_d2_candidate/scenery_v2/reeds.svg"),
     "flowers":preload("res://art/map_d2_candidate/scenery_v2/flowers.svg"),
     "stone":preload("res://art/map_d2_candidate/scenery_v2/moss_stones.svg"),
-    "lantern":preload("res://art/map_d2_candidate/scenery_v2/jade_lantern.svg")
+    "lantern":preload("res://art/map_d2_candidate/scenery_v2/jade_lantern.svg"),
+    "stele":preload("res://art/map_d2_candidate/scenery_v6r/stone_stele.svg"),
+    "bamboo":preload("res://art/map_d2_candidate/scenery_v6r/bamboo_water_garden.svg")
 }
 const SCENIC_ACCENTS := [
     {"cell":Vector2i(110,108),"kind":"pond"},
-    {"cell":Vector2i(105,111),"kind":"reeds"},
+    {"cell":Vector2i(105,111),"kind":"bamboo"},
     {"cell":Vector2i(77,109),"kind":"flowers"},
     {"cell":Vector2i(80,113),"kind":"flowers"},
     {"cell":Vector2i(91,79),"kind":"lantern"},
     {"cell":Vector2i(100,108),"kind":"stone"},
-    {"cell":Vector2i(76,85),"kind":"stone"}
+    {"cell":Vector2i(76,85),"kind":"stele"}
 ]
 
 
@@ -86,7 +88,7 @@ static func draw_scenic_accents(world: Node2D, active_chunks: Array[Vector2i], c
         var extent := size * (0.90 if kind == "pond" else 0.74)
         # Tall lantern artwork includes a base at the bottom of the image.
         # Ground it at the tile foot instead of burying its base across adjacent tiles.
-        var foot_ratio := 0.94 if kind == "lantern" else 0.72
+        var foot_ratio := 0.94 if kind in ["lantern","stele","bamboo"] else 0.72
         var anchor := Vector2(extent.x*0.5,extent.y*foot_ratio)
         world.draw_texture_rect(texture,Rect2(point-anchor,extent),false)
 
