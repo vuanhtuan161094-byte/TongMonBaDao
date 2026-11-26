@@ -15,6 +15,7 @@ var _skill_page := "basic"
 var _skill_tier := "human"
 var _preview_branch := ""
 var _v63_defs_cache: Dictionary = {}
+const SCHOOL_SEALS := preload("res://assets/p3/school_ui/school_seals_v1.svg")
 const JADE := Color(0.032,0.143,0.146)
 const GOLD := Color(0.94,0.76,0.43)
 const IVORY := Color(0.96,0.94,0.85)
@@ -105,8 +106,6 @@ func refresh() -> void:
     var d: DiscipleState = _state.disciples[_disciple_id]
     var assigned := str(d.v63_combat_branch_id)
     var selected_school := SectASCharCandidateBridgeV1.school_for_branch(assigned)
-    if not selected_school.is_empty():
-        _school = selected_school
     _label(self,"MÔN PHÁI · KỸ NĂNG",Vector2(24,12),Vector2(520,36),24,GOLD)
     _label(self,d.display_name+"   ·   "+("Chưa bái môn" if assigned.is_empty() else "Đã bái môn"),
         Vector2(25,48),Vector2(590,25),15,SOFT)
@@ -128,7 +127,7 @@ func refresh() -> void:
     portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
     portrait.texture = SectASCharCandidateBridgeV1.preview_texture(_school,sex)
     left.add_child(portrait)
-    _label(left,"AS-CHAR · CANDIDATE",Vector2(75,212),Vector2(215,22),11,SOFT)
+    _label(left,SectASCharCandidateBridgeV1.SCHOOL_NAMES.get(_school,"")+" · Ngoại hình thử nghiệm",Vector2(45,212),Vector2(270,22),11,SOFT)
     var selector := GridContainer.new()
     selector.name = "SchoolSelectorGrid"
     selector.columns = 3
@@ -144,7 +143,9 @@ func refresh() -> void:
         b.custom_minimum_size = Vector2(103,37)
         b.add_theme_font_size_override("font_size",12)
         b.add_theme_color_override("font_color",GOLD if school == _school else IVORY)
-        b.disabled = not assigned.is_empty() and school != _school
+        b.icon = _school_seal(school)
+        b.add_theme_constant_override("icon_max_width",22)
+        b.tooltip_text = "Đã bái môn" if school == selected_school else "Xem môn phái"
         b.pressed.connect(Callable(self,"_choose_school").bind(school))
         selector.add_child(b)
     var mid := Panel.new()
@@ -156,7 +157,7 @@ func refresh() -> void:
     _label(mid,"3 nhánh mỗi môn phái",Vector2(15,45),Vector2(223,26),12,SOFT)
     var branches := SectASCharCandidateBridgeV1.branches_for(_school)
     var current_preview := _selected_preview_branch(branches)
-    if not assigned.is_empty():
+    if _school == selected_school and _preview_branch.is_empty():
         current_preview = assigned
     _preview_branch = current_preview
     for i in range(mini(3,branches.size())):
@@ -166,7 +167,7 @@ func refresh() -> void:
             Vector2(232,56),is_current)
         b.name = "SchoolBranch_"+str(branch["id"])
         b.tooltip_text = str(branch["id"])
-        b.disabled = not assigned.is_empty() and str(branch["id"]) != assigned
+        b.disabled = false
         b.pressed.connect(Callable(self,"_choose_preview_branch").bind(str(branch["id"])))
     var confirm := _button(mid,"BÁI MÔN" if assigned.is_empty() else "ĐÃ BÁI MÔN",
         Vector2(13,311),Vector2(232,42),true)
@@ -175,7 +176,7 @@ func refresh() -> void:
         or d.region_id != &"sect" or not d.active_pve_encounter_id.is_empty()
     confirm.pressed.connect(Callable(self,"_ask_branch").bind(current_preview))
     _label(mid,"Xem kỹ năng trước khi chọn. Bái môn chỉ một lần."
-        if assigned.is_empty() else "Đã chọn nhánh. Không thể đổi tại đây.",
+        if assigned.is_empty() else "Đã bái môn. Các nhánh khác chỉ được tra cứu.",
         Vector2(15,363),Vector2(231,62),12,SOFT)
     var right := Panel.new()
     right.position = Vector2(654,81)
@@ -268,12 +269,13 @@ func refresh() -> void:
             row.add_theme_constant_override("separation",5)
             stack.add_child(row)
             var text := Label.new()
-            text.custom_minimum_size = Vector2(326,48)
+            text.custom_minimum_size = Vector2(326,64)
             var lineage := str(definition.get("lineage",""))
             var lineage_label := " · Nhánh "+lineage.to_upper() if lineage in ["a","b"] else ""
             text.text = str(definition.get("name",id))+lineage_label+"\n"+str(definition.get("slot",""))
             text.text += " · CD "+str(definition.get("cooldown",0))+"s"
             text.text += " · Tầm "+str(definition.get("range",0))
+            text.text += "\n"+_effect_summary(definition)
             text.add_theme_font_size_override("font_size",12)
             text.add_theme_color_override("font_color",IVORY)
             text.tooltip_text = id+"\n"+str(definition.get("effect",""))
@@ -285,7 +287,10 @@ func refresh() -> void:
             action.name = "SchoolSkillAction_"+str(displayed)
             action.custom_minimum_size = Vector2(118,42)
             action.text = "ĐÃ DÙNG" if equipped else ("TRANG BỊ" if known else "HỌC")
-            action.disabled = not v63_live or assigned.is_empty() or equipped or not bool(definition.get("archivable",false))
+            var own_branch := _school == selected_school and (str(definition.get("branch","")).is_empty() or str(definition.get("branch","")) == assigned)
+            action.disabled = not v63_live or assigned.is_empty() or not own_branch or equipped or not bool(definition.get("archivable",false))
+            if not own_branch:
+                action.text = "TRA CỨU"
             action.tooltip_text = "V6.3 chưa được phép phát hành" if not v63_live else id
             action.pressed.connect(Callable(self,"_ask_skill").bind(id,
                 "equip" if known else "learn"))
@@ -297,6 +302,26 @@ func refresh() -> void:
         empty.add_theme_color_override("font_color",SOFT)
         stack.add_child(empty)
     _label(self,_feedback,Vector2(25,516),Vector2(1110,29),13,GOLD)
+
+func _school_seal(school: String) -> Texture2D:
+    var index := SectASCharCandidateBridgeV1.SCHOOL_IDS.find(school)
+    if index < 0:
+        return null
+    var icon := AtlasTexture.new()
+    icon.atlas = SCHOOL_SEALS
+    icon.region = Rect2((index % 4)*64,floori(float(index)/4.0)*64,64,64)
+    return icon
+
+func _effect_summary(definition: Dictionary) -> String:
+    var effect := str(definition.get("effect",""))
+    var names := {"damage":"Sát thương","guard":"Hộ thể","heal":"Hồi phục","cleanse":"Thanh tẩy","mobility":"Thân pháp","mark":"Đánh dấu","passive":"Bị động","innate":"Thiên phú","consume_poison":"Kích độc"}
+    var summary := str(names.get(effect,effect))
+    if effect == "damage":
+        summary += " "+str(definition.get("damage_ratio",0))+"×"
+        summary += " · "+str(definition.get("target_limit",1))+" mục tiêu"
+    elif float(definition.get("duration",0)) > 0:
+        summary += " · "+str(definition.get("duration",0))+"s"
+    return summary
 
 func _selected_preview_branch(branches: Array[Dictionary]) -> String:
     if branches.is_empty():
