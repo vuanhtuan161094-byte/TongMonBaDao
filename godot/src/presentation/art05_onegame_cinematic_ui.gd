@@ -718,17 +718,19 @@ const ART05_SECT_DESCRIPTIONS := {
     "gate":"Chuyển đến Thế Giới để thám hiểm hoặc xuất chinh."
 }
 
-# The top header owns ONLY currency and disciples. All raw materials,
-# elixirs and marrow stay in the existing real Warehouse inventory.
+# Keep the compact ART05 two-line header. Iron is the immediately actionable
+# construction stock; the full material list remains in Warehouse and tooltip.
 func _refresh_top_bar() -> void:
     if state == null or resource_label == null or time_label == null:
         return
-    time_label.text = "Năm đầu · Nhịp vận hành %d" % state.tick
-    resource_label.text = "Tiền %s   ◆  Linh thạch %s\nĐệ tử %d/%d" % [
+    super._refresh_top_bar()
+    resource_label.text = "Tiền %s   ◆  Linh thạch %s\nĐệ tử %d/%d  ·  Thiết %d/%d" % [
         _compact_number(state.sect.treasury),
         _compact_number(state.sect.spirit_stones),
         state.disciples.size(),
-        state.sect.disciple_capacity
+        state.sect.disciple_capacity,
+        _warehouse_quantity(&"thanh_thiet"),
+        _warehouse_available(&"thanh_thiet")
     ]
 
 func _refresh_all() -> void:
