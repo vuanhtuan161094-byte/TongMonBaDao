@@ -118,6 +118,41 @@ func _run() -> void:
     if overlay == null:
         _fail("school skill screen did not open")
         return
+    var school_choice := overlay.find_child("SchoolChoice_fist",true,false) as Button
+    if school_choice == null:
+        _fail("missing Fist browse action")
+        return
+    school_choice.pressed.emit()
+    await process_frame
+    var browse_branches := SectASCharCandidateBridgeV1.branches_for("fist")
+    var browse_id := str(browse_branches[1]["id"])
+    var browse := overlay.find_child("SchoolBranch_"+browse_id,true,false) as Button
+    if browse == null:
+        _fail("missing second branch preview")
+        return
+    browse.pressed.emit()
+    await process_frame
+    if not str(disciple.v63_combat_branch_id).is_empty() or str(overlay.get("_preview_branch")) != browse_id:
+        _fail("preview assigned disciple or lost selected branch")
+        return
+    var tier := overlay.find_child("SchoolTier_immortal",true,false) as Button
+    if tier == null:
+        _fail("missing immortal browse tab")
+        return
+    tier.pressed.emit()
+    await process_frame
+    var list := overlay.find_child("SchoolSkillList",true,false)
+    if str(overlay.get("_skill_tier")) != "immortal" or list == null or list.get_child_count() <= 10:
+        _fail("higher-tier browse still truncated or unavailable")
+        return
+    for row in list.get_children():
+        for control in row.get_children():
+            if control is Button and not control.disabled:
+                _fail("unassigned preview allowed skill action")
+                return
+    if overlay.find_child("SchoolConfirmBranch",true,false) == null:
+        _fail("missing explicit branch confirmation")
+        return
     var candidate_school := "fist"
     var branches := SectASCharCandidateBridgeV1.branches_for(candidate_school)
     var branch_id := str(branches[0]["id"])

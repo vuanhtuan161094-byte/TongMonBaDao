@@ -12,6 +12,8 @@ var _disciple_id: StringName
 var _school := "sword"
 var _feedback := ""
 var _skill_page := "basic"
+var _skill_tier := "human"
+var _preview_branch := ""
 var _v63_defs_cache: Dictionary = {}
 const JADE := Color(0.032,0.143,0.146)
 const GOLD := Color(0.94,0.76,0.43)
@@ -71,10 +73,21 @@ func show_feedback(message: String) -> void:
 
 func _choose_school(school: String) -> void:
     _school = school
+    _preview_branch = ""
     refresh()
 
 func _choose_skill_page(page: String) -> void:
     _skill_page = page
+    refresh()
+
+func _choose_preview_branch(branch: String) -> void:
+    _preview_branch = branch
+    _skill_page = "v63"
+    refresh()
+
+func _choose_tier(tier: String) -> void:
+    _skill_tier = tier
+    _skill_page = "v63"
     refresh()
 
 func _ask_branch(branch: String) -> void:
@@ -142,20 +155,28 @@ func refresh() -> void:
     _label(mid,"CHỌN NHÁNH",Vector2(15,14),Vector2(226,26),17,GOLD)
     _label(mid,"3 nhánh mỗi môn phái",Vector2(15,45),Vector2(223,26),12,SOFT)
     var branches := SectASCharCandidateBridgeV1.branches_for(_school)
+    var current_preview := _selected_preview_branch(branches)
+    if not assigned.is_empty():
+        current_preview = assigned
+    _preview_branch = current_preview
     for i in range(mini(3,branches.size())):
         var branch: Dictionary = branches[i]
-        var is_current := str(branch["id"]) == assigned
-        var b := _button(mid,str(branch["name"]),Vector2(13,87+i*88),
-            Vector2(232,62),is_current)
+        var is_current := str(branch["id"]) == current_preview
+        var b := _button(mid,str(branch["name"]),Vector2(13,78+i*74),
+            Vector2(232,56),is_current)
         b.name = "SchoolBranch_"+str(branch["id"])
         b.tooltip_text = str(branch["id"])
-        b.disabled = not assigned.is_empty() or d.region_id != &"sect" or not d.active_pve_encounter_id.is_empty()
-        if assigned.is_empty():
-            b.pressed.connect(Callable(self,"_ask_branch").bind(str(branch["id"])))
-    _label(mid,
-        "Chọn 1 nhánh để bái môn.\nChỉ chọn một lần; kỹ năng vẫn phải học riêng."
-        if assigned.is_empty() else "ĐÃ CHỌN\n"+assigned,
-        Vector2(15,367),Vector2(231,58),12,SOFT)
+        b.disabled = not assigned.is_empty() and str(branch["id"]) != assigned
+        b.pressed.connect(Callable(self,"_choose_preview_branch").bind(str(branch["id"])))
+    var confirm := _button(mid,"BÁI MÔN" if assigned.is_empty() else "ĐÃ BÁI MÔN",
+        Vector2(13,311),Vector2(232,42),true)
+    confirm.name = "SchoolConfirmBranch"
+    confirm.disabled = not assigned.is_empty() or current_preview.is_empty() \
+        or d.region_id != &"sect" or not d.active_pve_encounter_id.is_empty()
+    confirm.pressed.connect(Callable(self,"_ask_branch").bind(current_preview))
+    _label(mid,"Xem kỹ năng trước khi chọn. Bái môn chỉ một lần."
+        if assigned.is_empty() else "Đã chọn nhánh. Không thể đổi tại đây.",
+        Vector2(15,363),Vector2(231,62),12,SOFT)
     var right := Panel.new()
     right.position = Vector2(654,81)
     right.size = Vector2(508,432)
@@ -175,9 +196,17 @@ func refresh() -> void:
         Vector2(246,38),_skill_page == "v63")
     advanced_tab.name = "SchoolV63SkillTab"
     advanced_tab.pressed.connect(Callable(self,"_choose_skill_page").bind("v63"))
+    if _skill_page == "v63":
+        for i in range(3):
+            var tiers := ["human","immortal","divine"]
+            var tier_names := ["NHÂN","TIÊN","THẦN"]
+            var tier_button := _button(right,tier_names[i],Vector2(12+i*160,121),
+                Vector2(154,33),_skill_tier == tiers[i])
+            tier_button.name = "SchoolTier_"+tiers[i]
+            tier_button.pressed.connect(Callable(self,"_choose_tier").bind(tiers[i]))
     var scroll := ScrollContainer.new()
-    scroll.position = Vector2(12,121)
-    scroll.size = Vector2(480,295)
+    scroll.position = Vector2(12,162 if _skill_page == "v63" else 121)
+    scroll.size = Vector2(480,254 if _skill_page == "v63" else 295)
     scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     right.add_child(scroll)
     var stack := VBoxContainer.new()
@@ -226,24 +255,25 @@ func refresh() -> void:
             var info: Dictionary = defs[raw_id]
             if str(info.get("school","")) != _school:
                 continue
-            if str(info.get("tier",info.get("generation",""))) != "human":
+            if str(info.get("tier",info.get("generation",""))) != _skill_tier:
                 continue
             var branch := str(info.get("branch",""))
-            if not branch.is_empty() and branch != assigned and branch != _selected_preview_branch(branches):
+            if not branch.is_empty() and branch != current_preview:
                 continue
             ids.append(str(raw_id))
         ids.sort()
         for id in ids:
-            if displayed >= 10:
-                break
             var definition: Dictionary = defs[id]
             var row := HBoxContainer.new()
             row.add_theme_constant_override("separation",5)
             stack.add_child(row)
             var text := Label.new()
             text.custom_minimum_size = Vector2(326,48)
-            text.text = str(definition.get("name",id))+"\n"+str(definition.get("slot",""))
+            var lineage := str(definition.get("lineage",""))
+            var lineage_label := " · Nhánh "+lineage.to_upper() if lineage in ["a","b"] else ""
+            text.text = str(definition.get("name",id))+lineage_label+"\n"+str(definition.get("slot",""))
             text.text += " · CD "+str(definition.get("cooldown",0))+"s"
+            text.text += " · Tầm "+str(definition.get("range",0))
             text.add_theme_font_size_override("font_size",12)
             text.add_theme_color_override("font_color",IVORY)
             text.tooltip_text = id+"\n"+str(definition.get("effect",""))
@@ -255,7 +285,7 @@ func refresh() -> void:
             action.name = "SchoolSkillAction_"+str(displayed)
             action.custom_minimum_size = Vector2(118,42)
             action.text = "ĐÃ DÙNG" if equipped else ("TRANG BỊ" if known else "HỌC")
-            action.disabled = not v63_live or assigned.is_empty() or equipped
+            action.disabled = not v63_live or assigned.is_empty() or equipped or not bool(definition.get("archivable",false))
             action.tooltip_text = "V6.3 chưa được phép phát hành" if not v63_live else id
             action.pressed.connect(Callable(self,"_ask_skill").bind(id,
                 "equip" if known else "learn"))
@@ -271,4 +301,7 @@ func refresh() -> void:
 func _selected_preview_branch(branches: Array[Dictionary]) -> String:
     if branches.is_empty():
         return ""
+    for branch in branches:
+        if str(branch.get("id","")) == _preview_branch:
+            return _preview_branch
     return str(branches[0]["id"])
