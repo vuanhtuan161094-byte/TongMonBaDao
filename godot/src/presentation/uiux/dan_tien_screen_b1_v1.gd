@@ -204,6 +204,20 @@ func _build_candidate_panel() -> Control:
 	capacity_row.add_child(expand)
 	capacity.add_child(capacity_row)
 	content.add_child(capacity)
+	var management := VBoxContainer.new()
+	management.add_theme_constant_override("separation", 6)
+	var order_row := HBoxContainer.new()
+	order_row.add_theme_constant_override("separation", 9)
+	order_row.add_child(UI.icon("recruit_order", 34, UI.GOLD))
+	var order := UI.button("CHIÊU MỘ LỆNH · CÒN %d" % int(_vm.get("recruitment_tokens", 0)), true, UI.JADE)
+	order.name = "UseRecruitmentOrder"
+	order.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	order.disabled = not bool(_vm.get("can_use_order", false))
+	order.tooltip_text = "Tốn 1 Chiêu Mộ Lệnh để tạo ứng viên; không tuyển trực tiếp." if not order.disabled else "Cần còn lệnh, hàng chờ dưới 30 và Dẫn Tiên Đài đang mở."
+	order.pressed.connect(func(): recruitment_order_requested.emit())
+	order_row.add_child(order)
+	management.add_child(order_row)
+	content.add_child(management)
 	var reveal := _build_recruit_reveal()
 	if reveal != null:
 		content.add_child(reveal)
@@ -220,11 +234,24 @@ func _build_candidate_panel() -> Control:
 	search_button.name = "ApplyCandidateSearch"
 	search_button.pressed.connect(func(): _apply_candidate_search(search.text))
 	search_row.add_child(search_button)
+	var clear_search := UI.button("XÓA LỌC", false, UI.GOLD)
+	clear_search.name = "ClearCandidateSearch"
+	clear_search.disabled = _search_text.is_empty()
+	clear_search.pressed.connect(func():
+		search.text = ""
+		_apply_candidate_search(""))
+	search_row.add_child(clear_search)
 	content.add_child(search_row)
 	var pool := _filtered_candidates()
 	content.add_child(UI.label("%d ứng viên%s" % [
 		pool.size(), " · đã lọc" if not _search_text.is_empty() else ""
 	], 11, UI.MUTED, false))
+	if pool.is_empty():
+		var empty_reason := "Chưa có ứng viên. Dùng Chiêu Mộ Lệnh ở trên để tạo hồ sơ mới." if _search_text.is_empty() else "Không tìm thấy tên phù hợp. Chọn XÓA LỌC để xem toàn bộ ứng viên."
+		var empty_hint := UI.label(empty_reason, 12, UI.PAPER, false)
+		empty_hint.name = "CandidateEmptyReason"
+		empty_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		content.add_child(empty_hint)
 	if not pool.is_empty():
 		var candidate_scroll := ScrollContainer.new()
 		candidate_scroll.name = "CandidateChoiceScroll"
@@ -297,20 +324,6 @@ func _build_candidate_panel() -> Control:
 		panel_content.add_child(gate_label)
 	panel_content.add_child(decisions)
 	content.add_child(_build_guidance_management())
-	var management := VBoxContainer.new()
-	management.add_theme_constant_override("separation", 6)
-	var order_row := HBoxContainer.new()
-	order_row.add_theme_constant_override("separation", 9)
-	order_row.add_child(UI.icon("recruit_order", 34, UI.GOLD))
-	var order := UI.button("CHIÊU MỘ LỆNH · CÒN %d" % int(_vm.get("recruitment_tokens", 0)), true, UI.JADE)
-	order.name = "UseRecruitmentOrder"
-	order.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	order.disabled = not bool(_vm.get("can_use_order", false))
-	order.tooltip_text = "Tốn 1 Chiêu Mộ Lệnh để tạo ứng viên; không tuyển trực tiếp." if not order.disabled else "Cần còn lệnh, hàng chờ dưới 30 và Dẫn Tiên Đài đang mở."
-	order.pressed.connect(func(): recruitment_order_requested.emit())
-	order_row.add_child(order)
-	management.add_child(order_row)
-	content.add_child(management)
 	var pager := HBoxContainer.new()
 	var previous := UI.button("‹ ỨNG VIÊN TRƯỚC", false, UI.JADE)
 	previous.name = "PreviousCandidate"
@@ -380,7 +393,9 @@ func _candidate_portrait(candidate: Dictionary) -> Control:
 	stack.custom_minimum_size = Vector2(156,210)
 	stack.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	stack.add_child(VIS_QUALITY.wrap_portrait(portrait,Vector2(156,188),VIS_QUALITY.id_from_name(str(candidate.get("quality","")))))
-	var caption := UI.label("AS-CHAR · CHỜ DUYỆT MỸ THUẬT" if available else "CHƯA CÓ ẢNH AS-CHAR",9,UI.GOLD if available else UI.MUTED,true)
+	var caption_text := "AS-CHAR · CHỜ DUYỆT MỸ THUẬT" if available else ("CHƯA CÓ ỨNG VIÊN" if candidate.is_empty() else "CHƯA CÓ ẢNH AS-CHAR")
+	var caption := UI.label(caption_text,9,UI.GOLD if available else UI.MUTED,true)
+	caption.name = "CandidatePortraitStatus"
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caption.tooltip_text = "Ảnh ứng viên AS-CHAR thật; chưa phải artwork được duyệt." if available else "Chưa tìm được frame AS-CHAR của ứng viên; đang dùng hình trung tính."
 	stack.add_child(caption)
