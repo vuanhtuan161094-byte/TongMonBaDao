@@ -603,6 +603,25 @@ func _load_verified_source_art() -> void:
                 continue
         var rel := "env01_assets/vegetation/%s.png" % str(item["id"])
         var vegetation := source_art.texture_for(rel)
+        if pve_landscape:
+            # The topology's density roll was also used as a species roll,
+            # making every accepted prop a normal tree. Keep the exact saved
+            # obstacle grid and choose a separate display-only species.
+            var species_roll := posmod(tile.x*7919+tile.y*104729+tile.x*tile.y*31,100)
+            var species: Array = PVE_TREE_ASSETS
+            if species_roll >= 47 and species_roll < 74:
+                species = PVE_BAMBOO_ASSETS
+            elif species_roll >= 74 and species_roll < 86:
+                species = PVE_ROCK_ASSETS
+            elif species_roll >= 86 and species_roll < 94:
+                species = PVE_RARE_AUTUMN_ASSETS
+            elif species_roll >= 94:
+                species = PVE_RARE_BLOSSOM_ASSETS
+            var alternative := "env01_assets/vegetation/%s.png" % str(species[posmod(tile.x*31+tile.y*17,species.size())])
+            var alternative_texture := source_art.texture_for(alternative)
+            if alternative_texture != null:
+                vegetation = alternative_texture
+                rel = alternative
         if vegetation != null:
             render_art[rel] = vegetation
             var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
@@ -1293,11 +1312,16 @@ func _pve_ground_color(cell: Vector2i) -> Color:
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
     slow += cos(float(cell.y)*0.16-float(cell.x)*0.09)*0.30
     var tint := clampf(slow*0.05,-0.05,0.05)
-    var ground := Color(0.285+tint,0.405+tint,0.330+tint*0.7)
+    var ground := Color(0.335+tint,0.46+tint,0.345+tint*0.7)
+    var biome := sin(float(cell.x)*0.044+float(cell.y)*0.033)+cos(float(cell.y)*0.049-float(cell.x)*0.021)
+    if biome > 0.55:
+        ground = ground.lerp(Color(0.47,0.50,0.32),clampf((biome-0.55)*0.40,0.0,0.5))
+    elif biome < -0.35:
+        ground = ground.lerp(Color(0.25,0.42,0.36),clampf((-biome-0.35)*0.40,0.0,0.5))
     if pve_path_cells.has(cell):
-        ground = ground.blend(Color("877a54",0.55))
+        ground = ground.blend(Color("ad986d",0.65))
     if absf(float(cell.x)-pve_stream_center_x(float(cell.y))) < 5.5:
-        ground = ground.blend(Color("365d57",0.50))
+        ground = ground.blend(Color("52746a",0.50))
     return ground
 
 # Small diegetic district labels, on the real isometric surface. They never
@@ -1351,7 +1375,7 @@ func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
     # Visibility still uses the original active_chunks and the existing camera.
     for chunk_id in active_chunks:
-        draw_mesh(_ground_mesh_for_chunk(chunk_id),R2_GROUND if not pve_landscape else null)
+        draw_mesh(_ground_mesh_for_chunk(chunk_id),R2_GROUND)
     # Scenic water/reeds/rock-garden accents are original unapproved
     # view-only candidates and cannot act as a gameplay resource node.
     if pve_landscape:
@@ -1524,9 +1548,18 @@ func _draw_pve_stream() -> void:
         points.append(project(Vector2(pve_stream_center_x(float(y)),float(y))))
     if points.size() < 2:
         return
-    draw_polyline(points,Color(0.39,0.49,0.39,0.97),64.0,true)
-    draw_polyline(points,Color(0.22,0.53,0.57,0.98),36.0,true)
-    draw_polyline(points,Color(0.70,0.86,0.80,0.60),2.4,true)
+    draw_polyline(points,Color(0.25,0.37,0.31,0.92),72.0,true)
+    draw_polyline(points,Color(0.63,0.63,0.44,0.96),61.0,true)
+    draw_polyline(points,Color(0.16,0.41,0.44,0.99),46.0,true)
+    draw_polyline(points,Color(0.31,0.63,0.62,0.85),29.0,true)
+    # Broken current highlights follow the real river instead of a single
+    # artificial bright centerline. Navigation and bridges are unchanged.
+    for i in range(1,points.size()-1,3):
+        var direction := (points[i+1]-points[i-1]).normalized()
+        var normal := direction.orthogonal()
+        var p := points[i]+normal*float((i%5-2)*4)
+        draw_line(p-direction*8,p+direction*9,Color(0.78,0.90,0.82,0.48),1.7,true)
+        draw_line(p-direction*4+normal*6,p+direction*6+normal*6,Color(0.58,0.82,0.76,0.32),1.1,true)
 
 func selected_actor_ring_radius_screen(actor_id: String) -> float:
     if camera == null or pve_battle == null or not pve_selected_actor_ids.has(actor_id):
@@ -1623,6 +1656,20 @@ func _draw_pve_actor(data: Dictionary) -> void:
         draw_rect(Rect2(bar_at,Vector2(bar_width*hp_ratio,5.0)),Color("85d884") if side == "disciple" else Color("e88372"))
         if tier == "boss":
             draw_rect(Rect2(bar_at-Vector2(1,1),Vector2(bar_width+2,7)),Color("e7bb72"),false,1.0)
+    # Persistent guard/poison cues are driven only by the live actor status.
+    # Keep distant ordinary mobs uncluttered; approved spell sprites still
+    # own the cast/release/contact phases.
+    if alive and (camera.zoom.x >= 0.55 or pve_selected_actor_ids.has(id) or tier == "boss"):
+        var statuses: Dictionary = actor.get("status_effects",{})
+        var poisoned := false
+        for stack in statuses.get("v63_poison",[]):
+            if stack is Dictionary and float(stack.get("expires_at",0.0)) > pve_battle.now:
+                poisoned = true
+                break
+        if poisoned:
+            draw_arc(foot+Vector2(0,3),15.0,0.0,TAU,24,Color(0.66,0.87,0.30,0.75),1.6,true)
+        if float(actor.get("learned_guard_until",-1.0)) > pve_battle.now:
+            draw_arc(foot+Vector2(0,3),20.0,0.0,TAU,24,Color(0.43,0.83,0.98,0.78),1.6,true)
     if side == "disciple" and pve_selected_actor_ids.size() == 1 and pve_selected_actor_ids.has(id):
         var font := ThemeDB.fallback_font
         if font != null:
