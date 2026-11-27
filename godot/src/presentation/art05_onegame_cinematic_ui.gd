@@ -620,7 +620,7 @@ func _r2_profile_skin(panel: Panel,tab_name: String) -> void:
             var node_name := str(button.name)
             if node_name.begins_with("DeepDiscipleTab_"):
                 var index := int(node_name.trim_prefix("DeepDiscipleTab_"))
-                var active := index >= 0 and index < names.size() and names[index] == tab_name
+                var active: bool = index >= 0 and index < names.size() and names[index] == tab_name
                 button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD if active else ART05_JADE,ART05_GOLD if active else ART05_MUTE,1,8))
                 button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
                 button.add_theme_color_override("font_hover_color",ART05_WHITE)
