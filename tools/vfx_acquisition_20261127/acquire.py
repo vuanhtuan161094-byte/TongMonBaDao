@@ -1,5 +1,5 @@
 """Pinned external VFX acquisition; no combat or export changes."""
-import csv, hashlib, json, os, re, time, urllib.request
+import csv, hashlib, json, os, re, time, urllib.request, zipfile
 from pathlib import Path
 from PIL import Image, ImageDraw
 ROOT = Path("outputs/external_vfx_acquisition")
@@ -83,7 +83,12 @@ def main():
     for name in ANIMS:
         rel="animations/powers/"+name+".txt";p=ROOT/"flare"/rel
         try:
-            get(FLARE+"mods/fantasycore/"+rel,p); image,sections=parse_flare(p)
+            get(FLARE+"mods/fantasycore/"+rel,p)
+            include=next((ln.split(maxsplit=1)[1] for ln in p.read_text(encoding="utf-8").splitlines() if ln.startswith("INCLUDE ")),None)
+            if include:
+                if include!="animations/powers/freeze.txt": raise ValueError("unexpected include: "+include)
+                image,sections=parse_flare(ROOT/"flare"/include)
+            else: image,sections=parse_flare(p)
             if image not in byimage: raise ValueError("unresolved image: "+str(image))
             rec=byimage[image]; W,H=rec["size"]
             for sec in sections:
@@ -92,6 +97,27 @@ def main():
                     if x<0 or y<0 or w<=0 or h<=0 or x+w>W or y+h>H:raise ValueError("frame outside atlas")
                 sec["source_animation"]=rel;rec["animations"].append(sec)
         except Exception as e:errors.append({"file":rel,"error":str(e)})
+    # Two verified CC0 ZIP sources. Inspect images without executing or blindly extracting files.
+    supplemental=[]
+    for pack,url,page in [
+      ("mikodrak","https://lpc.opengameart.org/sites/default/files/FX.zip","https://lpc.opengameart.org/content/2d-spell-effects"),
+      ("cethiel","https://opengameart.org/sites/default/files/LightEffects.zip","https://opengameart.org/content/light-magic-effect")]:
+        p=ROOT/"oga"/(pack+".zip")
+        try:
+            get(url,p)
+            with zipfile.ZipFile(p) as z:
+                members=[m for m in z.infolist() if not m.is_dir() and m.filename.lower().endswith((".png",".webp",".gif"))]
+                if len(members)>10000 or sum(m.file_size for m in members)>128*1024*1024:raise ValueError("archive limits")
+                supplemental.append({"id":pack,"status":"ACQUIRED","license":"CC0","source":page,"sha256":digest(p),"image_members":len(members)})
+                for m in members:
+                    with z.open(m) as data, Image.open(data) as im:
+                        im.load()
+                        if im.width*im.height>16000000:raise ValueError("oversized image")
+            put_json(ROOT/"oga"/(pack+".source.json"),supplemental[-1])
+        except Exception as e:
+            p.unlink(missing_ok=True)
+            supplemental.append({"id":pack,"status":"HOLD","source":page,"error":str(e)})
+    put_json(ROOT/"supplemental_sources.json",supplemental)
     # Conditional asset license: index only, no raw redistribution in an acquisition artifact.
     for a in catalog["assets"]:
         records.append({"id":a["id"],"source":"kana","status":"CONDITIONAL_LICENSE_INDEX_ONLY","license":catalog["license"]["assets"],"source_url":KANA+"assets/"+a["element"]+"/"+a["id"]+"/"+a["id"]+".png","metadata":a})
@@ -103,6 +129,6 @@ def main():
     put_json(ROOT/"candidate_skill_queue.json",queue)
     put_json(ROOT/"inventory.json",{"records":records,"errors":errors,"flare_png_count":len(byimage),"kana_index_count":len(catalog["assets"]),"human_queue_count":len(queue),"runtime_integration":"NOT_PERFORMED"})
     sheet(records)
-    print(json.dumps({"flare":len(byimage),"kana_index":len(catalog["assets"]),"human_queue":len(queue),"errors":errors},ensure_ascii=False))
+    print(json.dumps({"flare":len(byimage),"kana_index":len(catalog["assets"]),"human_queue":len(queue),"supplemental":supplemental,"errors":errors},ensure_ascii=False))
     if len(byimage)!=len(PNGS) or len(queue)!=204 or errors:raise SystemExit(1)
 if __name__=="__main__":main()
