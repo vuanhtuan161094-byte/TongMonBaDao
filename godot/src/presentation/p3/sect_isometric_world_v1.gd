@@ -20,8 +20,8 @@ const MAP01_LANDMARKS := {
     "gate":preload("res://art/onegame_world_r2/map01_gate.svg")
 }
 const MAP01_LANDMARK_SIZES := {
-    "cultivation":Vector2(154,126),"ren_than_duong":Vector2(146,120),
-    "medicine":Vector2(146,120),"gate":Vector2(162,133)
+    "cultivation":Vector2(180,135),"ren_than_duong":Vector2(172,129),
+    "medicine":Vector2(172,129),"gate":Vector2(180,135)
 }
 const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
@@ -643,12 +643,17 @@ func _load_verified_source_art() -> void:
                 continue
             var marker_clear := true
             for raw_anchor in anchors_for_layout().values():
-                if (tile-Vector2i(raw_anchor)).length_squared() <= 2:
+                if (tile-Vector2i(raw_anchor)).length_squared() <= 9:
                     marker_clear = false
                     break
             if not marker_clear or COURTYARD_RECT.has_point(tile):
                 continue
-        var rel := "env01_assets/vegetation/%s.png" % str(item["id"])
+        var art_id := str(item["id"])
+        # Existing brightly colored crystal and floating spire sprites
+        # belong to combat scenery, not the everyday sect production yard.
+        if not pve_landscape and art_id in ["570073","570144","570399","570397"]:
+            art_id = str(PVE_TREE_ASSETS[posmod(tile.x+tile.y,PVE_TREE_ASSETS.size())])
+        var rel := "env01_assets/vegetation/%s.png" % art_id
         var vegetation := source_art.texture_for(rel)
         if pve_landscape:
             # The topology's density roll was also used as a species roll,
@@ -677,7 +682,7 @@ func _load_verified_source_art() -> void:
             (decoration_items_by_chunk[chunk] as Array).append({
                 "world":project(Vector2(tile)+(Vector2(0.5,0.5) if pve_landscape else Vector2.ZERO)),
                 "texture":vegetation,
-                "scale":float(item["scale"]),
+                "scale":float(item["scale"]) if pve_landscape else minf(0.35,float(item["scale"])*0.82),
                 "cell":tile
             })
     if not pve_landscape and map_layout_version >= 2:
@@ -711,7 +716,7 @@ func _load_verified_source_art() -> void:
                 var tree := source_art.texture_for("env01_assets/vegetation/%s.png" % tree_id)
                 if tree != null:
                     texture = tree
-                    art_scale = 0.48 + float(posmod(tile.x,3))*0.04
+                    art_scale = 0.33 + float(posmod(tile.x,3))*0.035
             var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
             if not decoration_items_by_chunk.has(chunk):
                 decoration_items_by_chunk[chunk] = []
@@ -1529,7 +1534,8 @@ func _draw() -> void:
         _draw_pve_damage_feedback()
         return
     _draw_masterplan_lots()
-    _draw_masterplan_district_signs()
+    # District navigation already names each area. Avoid duplicate labels
+    # obscuring the roof silhouettes; the building captions are sufficient.
     # Sort all decorations with building art by actual projected ground depth.
     # One draw surface and one depth queue prevent large roofs from showing
     # behind trees which should occlude them.
@@ -1577,6 +1583,8 @@ func _draw() -> void:
         if str(entry["kind"]) == "vegetation":
             var tex: Texture2D = item["texture"]
             var scaled := tex.get_size()*float(item["scale"])
+            var shadow_width := clampf(scaled.x*0.35,12.0,38.0)
+            draw_colored_polygon(PackedVector2Array([place+Vector2(-shadow_width,1),place+Vector2(-shadow_width*0.4,-7),place+Vector2(shadow_width*0.7,-5),place+Vector2(shadow_width,2),place+Vector2(shadow_width*0.3,8),place+Vector2(-shadow_width*0.5,8)]),Color(0.09,0.17,0.10,0.28))
             draw_texture_rect(tex,Rect2(place-Vector2(scaled.x*0.5,
                 scaled.y-4.0),scaled),false)
         else:

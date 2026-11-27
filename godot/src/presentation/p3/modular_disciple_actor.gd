@@ -142,16 +142,16 @@ func set_baked_visual(packed: PackedScene) -> bool:
     baked_sprite.position = DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
     # The baked scene offset encodes the manifest's foot anchor. Scale by
     # its real cropped frame height so differently sized rigs share a map
-    # height near 67 px at zoom 1 without moving the ground contact.
+    # height near 52 px at zoom 1 without moving the ground contact.
     var stand_frame := baked_sprite.sprite_frames.get_frame_texture(&"stand",0)
     var frame_height := float(stand_frame.get_height()) if stand_frame != null else 192.0
     # A high-resolution atlas can have transparent margins. Read a PILOT-ONLY
     # visual-height metadata value when supplied, without altering older Source A.
     var native_height := frame_height
-    var screen_height := 67.0
+    var screen_height := 52.0
     if baked_sprite.has_meta("visible_height_px") and baked_sprite.has_meta("pilot_only"):
         native_height = maxf(1.0, float(baked_sprite.get_meta("visible_height_px")))
-        screen_height = 75.0
+        screen_height = 55.0
     baked_sprite.scale = Vector2.ONE * (screen_height / maxf(native_height, 1.0))
     baked_sprite.z_index = 1
     # Keep the interactive area over the body, not the surrounding building.

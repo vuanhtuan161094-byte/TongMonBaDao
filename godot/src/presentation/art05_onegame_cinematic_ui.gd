@@ -26,6 +26,7 @@ func _ready() -> void:
     _r2_skin_party_picker()
     _art05_build_sect_master_dock()
     _art05_refresh_sect_master_dock()
+    _art05_sync_map_chrome()
     var aura := ART06_WORLD.new()
     aura.name = "Art06WorldAtmosphere"
     aura.position = Vector2(0,72)
@@ -1087,7 +1088,14 @@ func _art05_refresh_district_links(destination: String) -> void:
             break
     # A one-link district already has its manage button. Do not waste a
     # line on a disabled duplicate. Short districts use a smaller card.
-    var shown := links.size() if links.size() > 1 else 0
+    # Keep only alternative destinations: the current site already has
+    # its primary manage action, so no dead duplicate buttons.
+    var alternatives: Array = []
+    for entry in links:
+        if str(entry[0]) != destination:
+            alternatives.append(entry)
+    links = alternatives
+    var shown := links.size()
     var shortcut_rows := ceili(float(shown)/2.0)
     var action_y := 224.0+float(shortcut_rows)*28.0
     _art05_dock_manage.position.y = action_y
@@ -1099,7 +1107,7 @@ func _art05_refresh_district_links(destination: String) -> void:
             var entry: Array = links[index]
             shortcut.text = str(entry[1])
             shortcut.set_meta("destination",str(entry[0]))
-            shortcut.disabled = str(entry[0]) == destination
+            shortcut.disabled = false
 
 func _art05_collapse_dock() -> void:
     _art05_dock_collapsed = true
@@ -1178,8 +1186,8 @@ func _art05_refresh_sect_master_dock() -> void:
             source = VIS08_ORIGINAL_BUILDINGS.texture_for(_art05_dock_destination)
         if source == null and SectIsometricWorldV1.MAP01_LANDMARKS.has(dest):
             source = SectIsometricWorldV1.MAP01_LANDMARKS[dest]
-        if source == null and preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd").supported(_art05_dock_destination):
-            source = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd").texture_for(_art05_dock_destination,&"A",false)
+        if source == null and ART05_BUILDING_VARIANT.supported(_art05_dock_destination):
+            source = ART05_BUILDING_VARIANT.texture_for(_art05_dock_destination,&"A",false)
         _art05_dock_portrait.texture = source
 
 

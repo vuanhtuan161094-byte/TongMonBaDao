@@ -33,12 +33,12 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
     slow += cos(float(cell.y)*0.16-float(cell.x)*0.09)*0.30
     var ridge := sin(float(cell.x)*0.075-float(cell.y)*0.057)*0.5+cos(float(cell.y)*0.09)*0.5
     var tint := clampf(slow*0.038+ridge*0.038,-0.07,0.07)
-    var ground := Color(0.245+tint,0.365+tint,0.285+tint*0.7)
+    var ground := Color(0.27+tint,0.395+tint,0.29+tint*0.7)
     if not within:
         return ground.darkened(0.025)
     var edge_distance := minf(minf(float(cell.x-starter.position.x),float(starter.end.x-1-cell.x)),minf(float(cell.y-starter.position.y),float(starter.end.y-1-cell.y)))
     var interior := smoothstep(0.0,8.0,edge_distance)
-    ground = ground.lerp(Color(0.37+tint,0.50+tint,0.35+tint*0.75),interior)
+    ground = ground.lerp(Color(0.43+tint,0.54+tint,0.36+tint*0.75),interior)
     # Broad falloffs instead of the visibly rectangular district bands.
     # Only ground material changes; the masterplan remains authoritative.
     if layout_version >= 2:
@@ -49,7 +49,7 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
         var civic := (1.0-smoothstep(3.0,12.0,point.distance_to(Vector2(89,96))))*interior
         ground = ground.lerp(Color(0.35,0.53,0.37),residence*0.45)
         ground = ground.lerp(Color(0.32,0.48,0.45),cultivation*0.38)
-        ground = ground.lerp(Color(0.52,0.49,0.34),production*0.43)
+        ground = ground.lerp(Color(0.55,0.50,0.34),production*0.52)
         ground = ground.lerp(Color(0.54,0.55,0.40),civic*0.30)
     elif cell.x < 84 and cell.y >= 100:
         ground = ground.blend(Color(0.31,0.47,0.36,0.44))
