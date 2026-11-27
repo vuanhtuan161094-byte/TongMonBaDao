@@ -163,6 +163,16 @@ func _run() -> void:
 	if iso.sect_paving_cell(iso.STARTER.position-Vector2i.ONE) or iso.sect_paving_cell(iso.STARTER.end):
 		_fail("paving exceeds the sect boundary")
 		return
+	# The visual parallelogram must contain every canonical building cell;
+	# visual expansion must not become new construction authority.
+	for y in range(iso.STARTER.position.y,iso.STARTER.end.y):
+		for x in range(iso.STARTER.position.x,iso.STARTER.end.x):
+			if iso.sect_estate_distance(iso.project(Vector2(x,y))) > 0.0:
+				_fail("visual perimeter clips canonical lot")
+				return
+	if iso.sect_estate_distance(Vector2(0,-1000)) <= 0.0:
+		_fail("visual estate boundary unbounded")
+		return
 	var road_used: Dictionary = {}
 	for raw_cell in iso.preview_roads.keys():
 		var cell: Vector2i = raw_cell

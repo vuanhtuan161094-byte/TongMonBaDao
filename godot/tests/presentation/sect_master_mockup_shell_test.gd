@@ -59,7 +59,7 @@ func _run() -> void:
         _fail("expected exactly five existing game navigation actions")
         return
     for i in range(buttons.size()):
-        if buttons[i].text != ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Quái"][i]:
+        if buttons[i].text != ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Yêu"][i]:
             _fail("bottom navigation lost its canonical action order")
             return
         var bounds := Rect2(buttons[i].position,buttons[i].size)

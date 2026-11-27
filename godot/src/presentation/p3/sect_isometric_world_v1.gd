@@ -694,11 +694,14 @@ func _load_verified_source_art() -> void:
     if not pve_landscape:
         # MAP01: dense exterior woodland, never interior construction tiles.
         # Deterministic spacing keeps the silhouette coherent on every load.
-        var forest_bounds := STARTER.grow(8)
+        var forest_bounds := STARTER.grow(32)
         for y in range(forest_bounds.position.y,forest_bounds.end.y,2):
             for x in range(forest_bounds.position.x,forest_bounds.end.x,2):
                 var tile := Vector2i(x,y)
-                if STARTER.has_point(tile) or not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
+                if not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
+                    continue
+                var distance := sect_estate_distance(project(Vector2(tile)))
+                if distance < 46.0 or distance > 340.0:
                     continue
                 if posmod(x*17+y*31+x*y,7) == 0:
                     continue
@@ -1397,9 +1400,44 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
     ground_chunk_meshes[chunk_id] = mesh
     return mesh
 
-# One batched stone mesh per visible chunk; no per-tile draw calls.
+# Presentation boundary only. The saved 48x48 buildable grid remains intact.
+# Horizontal top/bottom, gently sloping sides, full coverage of all saved lots.
+const SECT_ESTATE_MID_Y := 2483.0
+const SECT_ESTATE_HALF_WIDTH := 1220.0
+const SECT_ESTATE_HALF_HEIGHT := 635.0
+const SECT_ESTATE_SHEAR := 0.28
+
 static func sect_paving_cell(cell: Vector2i) -> bool:
     return STARTER.has_point(cell)
+
+static func sect_estate_distance(point: Vector2) -> float:
+    var dy := point.y-SECT_ESTATE_MID_Y
+    var dx := point.x-dy*SECT_ESTATE_SHEAR
+    return maxf(absf(dx)-SECT_ESTATE_HALF_WIDTH,absf(dy)-SECT_ESTATE_HALF_HEIGHT)
+
+# Clip each isometric stone to the straight perimeter, rather than rounding
+# the outline to whole diamonds. UVs are calculated from its original tile.
+static func _clip_estate_plane(poly: PackedVector2Array,normal: Vector2,limit: float) -> PackedVector2Array:
+    var result := PackedVector2Array()
+    if poly.is_empty():
+        return result
+    var previous := poly[poly.size()-1]
+    var prev_dist := normal.dot(previous)-limit
+    for current in poly:
+        var dist := normal.dot(current)-limit
+        if (dist <= 0.0) != (prev_dist <= 0.0):
+            result.append(previous.lerp(current,prev_dist/(prev_dist-dist)))
+        if dist <= 0.0:
+            result.append(current)
+        previous = current
+        prev_dist = dist
+    return result
+
+static func _clip_estate_tile(poly: PackedVector2Array) -> PackedVector2Array:
+    poly = _clip_estate_plane(poly,Vector2(0,1),SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT)
+    poly = _clip_estate_plane(poly,Vector2(0,-1),-SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT)
+    poly = _clip_estate_plane(poly,Vector2(1,-SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH-SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
+    return _clip_estate_plane(poly,Vector2(-1,SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH+SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
 
 func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
     if sect_paving_meshes.has(chunk_id):
@@ -1412,23 +1450,26 @@ func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
     for y in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
         for x in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
             var cell := Vector2i(x,y)
-            if not sect_paving_cell(cell):
-                continue
             var center := project(Vector2(cell))
-            var base := vertices.size()
-            vertices.append_array(PackedVector2Array([
+            if sect_estate_distance(center) > 40.0:
+                continue
+            var points := PackedVector2Array([
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
                 center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
-            ]))
-            uvs.append_array(PackedVector2Array([Vector2(0.5,0),Vector2(1,0.5),Vector2(0.5,1),Vector2(0,0.5)]))
+            ])
+            if sect_estate_distance(center) > -40.0:
+                points = _clip_estate_tile(points)
+            if points.size() < 3:
+                continue
+            var base := vertices.size()
             var tint := 0.94+float(posmod(x*17+y*23+x*y,7))*0.009
-            var edge := mini(mini(x-STARTER.position.x,STARTER.end.x-1-x),mini(y-STARTER.position.y,STARTER.end.y-1-y))
             var tone := Color(tint,tint,tint,1.0)
-            if edge == 0:
-                tone = Color(0.77,0.76,0.72,1.0)
-            for _corner in range(4):
+            for point in points:
+                vertices.append(point)
+                uvs.append(Vector2(0.5+(point.x-center.x)/(2.0*HALF_W),0.5+(point.y-center.y)/(2.0*HALF_H)))
                 colors.append(tone)
-            indices.append_array(PackedInt32Array([base,base+1,base+2,base,base+2,base+3]))
+            for index in range(1,points.size()-1):
+                indices.append_array(PackedInt32Array([base,base+index,base+index+1]))
     var mesh := ArrayMesh.new()
     if not vertices.is_empty():
         var arrays := []
@@ -1440,6 +1481,18 @@ func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
         mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays,[],{},Mesh.ARRAY_FLAG_USE_2D_VERTICES)
     sect_paving_meshes[chunk_id] = mesh
     return mesh
+
+func _draw_sect_estate_border() -> void:
+    var top := SECT_ESTATE_MID_Y-SECT_ESTATE_HALF_HEIGHT
+    var bottom := SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT
+    var offset := SECT_ESTATE_HALF_HEIGHT*SECT_ESTATE_SHEAR
+    var w := SECT_ESTATE_HALF_WIDTH
+    var border := PackedVector2Array([
+        Vector2(-w-offset,top),Vector2(w-offset,top),
+        Vector2(w+offset,bottom),Vector2(-w+offset,bottom),Vector2(-w-offset,top)
+    ])
+    draw_polyline(border,Color("5d6054"),12.0,true)
+    draw_polyline(border,Color("c6c0ab"),4.0,true)
 
 func _pve_ground_color(cell: Vector2i) -> Color:
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
@@ -1525,6 +1578,7 @@ func _draw() -> void:
             var paving := _sect_paving_mesh(chunk_id)
             if paving.get_surface_count() > 0:
                 draw_mesh(paving,SECT_FLAGSTONE)
+        _draw_sect_estate_border()
     else:
         _draw_pve_stream()
         for chunk_id in active_chunks:
