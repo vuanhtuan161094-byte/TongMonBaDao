@@ -179,8 +179,6 @@ func _capture_all_facilities(out: String) -> bool:
         [SectMapPresentation.DEST_CULTIVATION,"cultivation"],
         [SectMapPresentation.DEST_BODY_TRAINING,"training"],
         [SectMapPresentation.DEST_MEDICINE,"medicine"],
-        [SectMapPresentation.DEST_RESIDENCE,"residence"],
-        [SectMapPresentation.DEST_GUIDANCE,"guidance"],
         [SectMapPresentation.DEST_GATE,"gate"]
     ]
     for item in destinations:
@@ -198,6 +196,16 @@ func _capture_all_facilities(out: String) -> bool:
             await process_frame
             if not await _capture(out.path_join("facility_%s_%d.png" % [str(item[1]),tab_index])):
                 return false
+    for special in [[SectMapPresentation.DEST_RESIDENCE,"residence","DaiDienScreenV1"],
+            [SectMapPresentation.DEST_GUIDANCE,"guidance","DanTienScreenV2"]]:
+        screen.call("_open_player_building",StringName(special[0]))
+        for _i in range(3):
+            await process_frame
+        var full_screen := screen.get_node_or_null(str(special[2])) as Control
+        if full_screen == null or not full_screen.is_visible_in_tree() or full_screen.size.distance_to(Vector2(1280,720)) > 2.0:
+            return _fail("Specialized facility did not replace floating panel: "+str(special[1]))
+        if not await _capture(out.path_join("facility_%s_0.png" % str(special[1]))):
+            return false
     return true
 
 func _verify_full_hall() -> bool:

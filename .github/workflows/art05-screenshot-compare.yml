@@ -115,7 +115,7 @@ jobs:
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/facility-fullscreen-evidence"
           LIBGL_ALWAYS_SOFTWARE=1 TMB_FACILITIES_ONLY=1 xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 -s res://tests/presentation/eco07_virtual_gui_playtest_capture.gd -- "$GITHUB_WORKSPACE/facility-fullscreen-evidence"
-          test "$(find facility-fullscreen-evidence -name 'facility_*.png' | wc -l)" -eq 36
+          test "$(find facility-fullscreen-evidence -name 'facility_*.png' | wc -l)" -eq 32
           printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > facility-fullscreen-evidence/source-sha.txt
       - name: Upload twelve full-screen facility captures before lengthy regressions
         if: always()

@@ -1167,8 +1167,14 @@ func _clear_pointer_state() -> void:
 # and internal transaction/regression probes, but is not a visible Hall screen.
 func _open_player_building(destination: StringName, instance_id: StringName = &"") -> void:
     _open_building(destination,instance_id)
-    if destination == SectMapPresentation.DEST_MAIN_HALL:
-        _open_dai_dien_screen_v1()
+    match destination:
+        SectMapPresentation.DEST_MAIN_HALL:
+            _open_dai_dien_screen_v1()
+        SectMapPresentation.DEST_RESIDENCE:
+            _open_dai_dien_housing_v1()
+        SectMapPresentation.DEST_GUIDANCE:
+            _hide_building_operation_panel()
+            _open_dan_tien_screen_v2()
 
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     if build_mode_active:
@@ -5036,14 +5042,19 @@ func _build_dan_tien_upgrade_controls() -> void:
 func _open_dan_tien_screen_v2() -> void:
     if state == null:
         return
-    if get_node_or_null("DanTienScreenV2") != null:
-        return
+    var prior := get_node_or_null("DanTienScreenV2")
+    if prior != null:
+        if not prior.is_queued_for_deletion():
+            return
+        remove_child(prior)
+    _hide_building_operation_panel()
     var screen := DanTienScreenV2.new()
     screen.name = "DanTienScreenV2"
     screen.z_index = 250
     screen.z_as_relative = false
     screen.attach_state(state, recruitment_system)
     screen.state_changed.connect(_on_dan_tien_screen_v2_changed)
+    screen.closed.connect(func(): _close_building_operation_panel(true))
     add_child(screen)
     screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     _attach_tri_b1_screen(screen, "guidance")
