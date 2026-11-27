@@ -1,0 +1,266 @@
+{
+  "archive_sha256": "163eb4e4d41385f3b888e7176c6da077d0e7fa7c101da96bbaa4645a2ec9d673",
+  "source_page": "https://opengameart.org/content/weapon-slash-effect",
+  "clips": {
+    "purple_2": {
+      "source_members": [
+        "Alternative 1/2/Alternative_1_07.png",
+        "Alternative 1/2/Alternative_1_08.png",
+        "Alternative 1/2/Alternative_1_09.png",
+        "Alternative 1/2/Alternative_1_10.png",
+        "Alternative 1/2/Alternative_1_11.png",
+        "Alternative 1/2/Alternative_1_12.png"
+      ],
+      "frame_sha256": [
+        "db1dbda87d0f1e231e5057b6a868e3ec84f18ebe3cbfc8e43814b714b958c05b",
+        "ee81c66a880f9d5aa11dde87b38fcbf4df917b27ab1f0e99cc0331a8f4b0ae0b",
+        "f970ee33489603359f25971b6f43ecc3be404197443d122449e20517cb72726e",
+        "10969033080eb1ace6005342b908683d77d36d4fbe4c36caac1f4b654951b9c7",
+        "1454d2b6b12a1170092547a35c98bafda458048de8e83427b6cbf5fee3279507",
+        "8557849918da3037a492f66a26fd2ac51f04c4c3b4f1017d1bd93d76db251878"
+      ],
+      "atlas_sha256": "67616360361b61be5010c952eb1e205df2ce343d73e69a46ef9a1e6ef3446d81",
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          152
+        ],
+        [
+          128,
+          0,
+          128,
+          152
+        ],
+        [
+          256,
+          0,
+          128,
+          152
+        ],
+        [
+          384,
+          0,
+          128,
+          152
+        ],
+        [
+          512,
+          0,
+          128,
+          152
+        ],
+        [
+          640,
+          0,
+          128,
+          152
+        ]
+      ],
+      "fps": 18,
+      "pivot": [
+        64,
+        76
+      ],
+      "license": "CC0",
+      "source": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "author": "Cethiel"
+    },
+    "blue_3": {
+      "source_members": [
+        "Alternative 2/3/Alternative_2_13.png",
+        "Alternative 2/3/Alternative_2_14.png",
+        "Alternative 2/3/Alternative_2_15.png",
+        "Alternative 2/3/Alternative_2_16.png",
+        "Alternative 2/3/Alternative_2_17.png",
+        "Alternative 2/3/Alternative_2_18.png"
+      ],
+      "frame_sha256": [
+        "f3d49c24dee23d0a31b5f4c87ff305081cf4e14f1eff57da091f519a38f1e5d0",
+        "03764f87ac45e926fc2d1289ecab625b9e36f8d09958900a84d37c8c85046c13",
+        "1ad85a5e9515b17ac3468ecaf11d1ccd6c2097e6a789715f41c1f8ab2b225c36",
+        "57ff7a702548b97330fb9f321296e1e140e26519bc9272c72cdc240a21b2b6c9",
+        "186f92c6a13d756953cea1b3d7f581923a41fcaf23b728bdab6421142a0ed2f5",
+        "8418d88dd6f869ca22ed194e0662b903b09c8a7a82684efec74cf74bea7f1cb0"
+      ],
+      "atlas_sha256": "dca7526020177e118b528c3e9e7aeaff0bba8ee58f33ea3bf8a993f890dbb3f7",
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          152
+        ],
+        [
+          128,
+          0,
+          128,
+          152
+        ],
+        [
+          256,
+          0,
+          128,
+          152
+        ],
+        [
+          384,
+          0,
+          128,
+          152
+        ],
+        [
+          512,
+          0,
+          128,
+          152
+        ],
+        [
+          640,
+          0,
+          128,
+          152
+        ]
+      ],
+      "fps": 18,
+      "pivot": [
+        64,
+        76
+      ],
+      "license": "CC0",
+      "source": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "author": "Cethiel"
+    },
+    "blue_5": {
+      "source_members": [
+        "Alternative 2/5/Alternative_2_25.png",
+        "Alternative 2/5/Alternative_2_26.png",
+        "Alternative 2/5/Alternative_2_27.png",
+        "Alternative 2/5/Alternative_2_28.png",
+        "Alternative 2/5/Alternative_2_29.png",
+        "Alternative 2/5/Alternative_2_30.png"
+      ],
+      "frame_sha256": [
+        "9f6d534f10a62e115859cc7ffcb7920dd4eae8bcf1ac51493ce69468916c6fb5",
+        "42e3c7212b1c54c576be754c7750f631c556a2b6ae7ad6888109d15c25a183e7",
+        "cce0b75006d4bef1e3145d1d059e8f5b974a26384dd0a589be06cf22a32da635",
+        "10403e692b3f5889d6c3f75654a1a6407a72cc24564a2b3dda86dbc88ab0acf3",
+        "5744ce1a080a50ac67fda80d0c288d71a7a66ddf096e9ada7fa1cf849ba977df",
+        "74974941159c94edb2042ab51f2979df85e586adface038a7a518f00f0730e8a"
+      ],
+      "atlas_sha256": "603815df8f54a5327e3d32a224900e8fe8b72a3f6875ab78803a83216c7b2ef4",
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          152
+        ],
+        [
+          128,
+          0,
+          128,
+          152
+        ],
+        [
+          256,
+          0,
+          128,
+          152
+        ],
+        [
+          384,
+          0,
+          128,
+          152
+        ],
+        [
+          512,
+          0,
+          128,
+          152
+        ],
+        [
+          640,
+          0,
+          128,
+          152
+        ]
+      ],
+      "fps": 18,
+      "pivot": [
+        64,
+        76
+      ],
+      "license": "CC0",
+      "source": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "author": "Cethiel"
+    },
+    "fire_1": {
+      "source_members": [
+        "Alternative 3/1/Alternative_3_01.png",
+        "Alternative 3/1/Alternative_3_02.png",
+        "Alternative 3/1/Alternative_3_03.png",
+        "Alternative 3/1/Alternative_3_04.png",
+        "Alternative 3/1/Alternative_3_05.png",
+        "Alternative 3/1/Alternative_3_06.png"
+      ],
+      "frame_sha256": [
+        "33ca5b84c55de959d0a0fb2276c333ad5312f49bda4304d2fb7149f3071f9b9a",
+        "06f5d2d748c98dd29dd9730c7f991bfbf5e08a97952c2ee1f4b85d615b98a055",
+        "a32224f71b8ed5837a400d35856da4665131bc7ecb70522e67b0c7088d16dfa3",
+        "bb6ff26052f66e1c9a4865794a7460b9e1d6859fdf2494b70519ca08c7d2ec7b",
+        "299b0e2b03bea9e46189fed987492ac7c9ff0c86eafe7ae905a4a2f22423e271",
+        "01483a35393aafb1b791586830a3125f309a1b7c25d48c140171c63fc89cf0fd"
+      ],
+      "atlas_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "rects": [
+        [
+          0,
+          0,
+          128,
+          152
+        ],
+        [
+          128,
+          0,
+          128,
+          152
+        ],
+        [
+          256,
+          0,
+          128,
+          152
+        ],
+        [
+          384,
+          0,
+          128,
+          152
+        ],
+        [
+          512,
+          0,
+          128,
+          152
+        ],
+        [
+          640,
+          0,
+          128,
+          152
+        ]
+      ],
+      "fps": 18,
+      "pivot": [
+        64,
+        76
+      ],
+      "license": "CC0",
+      "source": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "author": "Cethiel"
+    }
+  }
+}

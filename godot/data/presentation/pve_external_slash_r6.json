@@ -1,0 +1,1286 @@
+{
+  "schema": "tmb.external_slash_r6.v1",
+  "scope": "exact positive hit receipt contact accent only; default preview off; does not replace skill choreography",
+  "bindings": {
+    "tmb.skill.blade.tram_phach_dao.active_02.human": {
+      "school": "blade",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 3,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "blue_5",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "603815df8f54a5327e3d32a224900e8fe8b72a3f6875ab78803a83216c7b2ef4",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0.785398
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.blade.tran_dao.active_02.human": {
+      "school": "blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "fire_1",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.blade.tran_dao.active_04.human": {
+      "school": "blade",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 2,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "blue_5",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "603815df8f54a5327e3d32a224900e8fe8b72a3f6875ab78803a83216c7b2ef4",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_5.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0.785398
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.anh_nhan.active_03.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "purple_2",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "67616360361b61be5010c952eb1e205df2ce343d73e69a46ef9a1e6ef3446d81",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.anh_nhan.active_04.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "purple_2",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "67616360361b61be5010c952eb1e205df2ce343d73e69a46ef9a1e6ef3446d81",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.anh_nhan.ultimate.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "purple_2",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "67616360361b61be5010c952eb1e205df2ce343d73e69a46ef9a1e6ef3446d81",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/purple_2.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.huyet_nguyet.active_01.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "fire_1",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.huyet_nguyet.active_02.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "fire_1",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.huyet_nguyet.active_03.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "fire_1",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.huyet_nguyet.active_04.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "fire_1",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.huyet_nguyet.ultimate.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "fire_1",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "2267538de6150fb32925613a6839e7d53427a346deac6dc2a00005b6275228ac",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/fire_1.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.lien_hoan.active_01.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "blue_3",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "dca7526020177e118b528c3e9e7aeaff0bba8ee58f33ea3bf8a993f890dbb3f7",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.lien_hoan.active_02.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "blue_3",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "dca7526020177e118b528c3e9e7aeaff0bba8ee58f33ea3bf8a993f890dbb3f7",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.lien_hoan.active_03.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "blue_3",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "dca7526020177e118b528c3e9e7aeaff0bba8ee58f33ea3bf8a993f890dbb3f7",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.lien_hoan.active_04.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "blue_3",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "dca7526020177e118b528c3e9e7aeaff0bba8ee58f33ea3bf8a993f890dbb3f7",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    },
+    "tmb.skill.dual_blade.lien_hoan.ultimate.human": {
+      "school": "dual_blade",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "blue_3",
+      "source_credit": "Cethiel / CC0",
+      "source_url": "https://opengameart.org/sites/default/files/Everything_0.zip",
+      "source_sha256": "dca7526020177e118b528c3e9e7aeaff0bba8ee58f33ea3bf8a993f890dbb3f7",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                0,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                128,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                256,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                384,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                512,
+                0,
+                128,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_slash_r6/blue_3.png",
+              "region": [
+                640,
+                0,
+                128,
+                152
+              ]
+            }
+          ],
+          "fps": 18,
+          "loop": false,
+          "width": 110,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "v63_skill_hit": "contact"
+      },
+      "status": "CONTACT_ACCENT_ONLY_OWNER_ART_PENDING"
+    }
+  }
+}
