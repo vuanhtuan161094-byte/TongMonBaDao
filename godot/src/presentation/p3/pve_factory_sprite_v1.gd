@@ -2,6 +2,8 @@ extends RefCounted
 ## Source-backed, receipt-driven PvE candidate atlas player. No authority over
 ## combat, learning, status duration, targeting or saves. Never emits receipts.
 const INDEX := "res://data/presentation/pve_factory_r2.json"
+const EXTERNAL_INDEX := "res://data/presentation/pve_external_auxiliary_v1.json"
+const EXTERNAL_PREVIEW_SETTING := "runtime/external_auxiliary_vfx_preview"
 const MAX_CUES := 80
 const MAX_TEXTURES := 36
 var _entries: Dictionary = {}
@@ -22,7 +24,14 @@ func _ensure_index() -> void:
         return
     var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(INDEX))
     if raw is Dictionary:
-        _entries = raw.get("bindings",{})
+        _entries = raw.get("bindings",{}).duplicate(true)
+    # Separate preview gate; never replace the existing 58 source bindings.
+    if bool(ProjectSettings.get_setting(EXTERNAL_PREVIEW_SETTING,false)):
+        var external: Variant = JSON.parse_string(FileAccess.get_file_as_string(EXTERNAL_INDEX))
+        if external is Dictionary:
+            for id in external.get("bindings",{}):
+                if not _entries.has(id):
+                    _entries[id] = external["bindings"][id]
 
 func _binding(id: String) -> Dictionary:
     if _entries.has(id):
@@ -38,7 +47,7 @@ func _binding(id: String) -> Dictionary:
             master = ".".join(parts.slice(0,i))+".human"
             break
     var source: Dictionary = _entries.get(master,{})
-    if not source.is_empty():
+    if not source.is_empty() and not bool(source.get("external_auxiliary",false)):
         var definition := V63HumanSkillCombatSystem.skill_definition(id)
         if str(definition.get("effect","")) == str(source.get("effect","")) and str(definition.get("shape","")) == str(source.get("shape","")) and int(definition.get("target_limit",0)) == int(source.get("limit",-1)):
             _resolved[id] = source
@@ -52,6 +61,17 @@ static func resolve_receipt_phase(phases: Dictionary, requested: String) -> Stri
     if requested == "release" and phases.has("flight"):
         return "flight"
     return ""
+
+static func external_receipt_allowed(entry: Dictionary,event: Dictionary) -> bool:
+    var effect := str(entry.get("effect",""))
+    var kind := str(event.get("type",""))
+    if effect == "heal":
+        return kind == "heal" and float(event.get("amount",0.0)) > 0.0
+    if effect == "guard":
+        return kind == "status_applied" and str(event.get("status","")) in ["guard","capacity_shield"]
+    if effect == "cleanse":
+        return kind == "cleanse" and int(event.get("removed_debuff_count",0)) > 0
+    return false
 
 func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
     if battle == null:
@@ -80,6 +100,8 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
         var receipt := str(event.get("event_id",""))
         var allowed: Dictionary = entry.get("receipts",{})
         if receipt.is_empty() or not allowed.has(kind):
+            continue
+        if bool(entry.get("external_auxiliary",false)) and not external_receipt_allowed(entry,event):
             continue
         var cast_id := str(event.get("cast_id",""))
         var cast_key := "cast|"+owner+"|"+id+"|"+cast_id
@@ -130,7 +152,8 @@ func observe(events: Array[Dictionary],battle: MapBattleV2) -> void:
             var where: Vector2 = event.get("target_position",victim.get("position",at)) if tid == target else victim.get("position",at)
             var source: Dictionary = phases[phase]
             var frames: Array = source.get("frames",[])
-            var duration := clampf(float(frames.size())/maxf(1.0,float(source.get("fps",12))),0.14,0.85)
+            var max_duration := 1.2 if bool(entry.get("external_auxiliary",false)) else 0.85
+            var duration := clampf(float(frames.size())/maxf(1.0,float(source.get("fps",12))),0.14,max_duration)
             var expiry := float(event.get("until",event.get("expires_at",event.get("evasion_until",0.0))))
             if str(event.get("status","")) == "poison":
                 var stacks: Array = victim.get("status_effects",{}).get("v63_poison",[])
@@ -243,6 +266,14 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
             if str(entry.get("mechanic","")) in ["projectile","melee","line"]:
                 var from: Vector2 = projection.call(cue["origin"])
                 angle = (at-from).angle()
+        if bool(entry.get("external_auxiliary",false)):
+            # FLARE atlas offsets share an explicit foot pivot; preserve native pose proportions.
+            var offset: Array = frame.get("source_offset",[])
+            if offset.size() == 2:
+                var scale_factor := float(source.get("source_pixel_scale",0.5))
+                var pivot := Vector2(float(offset[0]),float(offset[1]))*scale_factor
+                canvas.draw_texture_rect_region(texture,Rect2(at-pivot,region.size*scale_factor),region,Color(1,1,1,opacity))
+                continue
         if str(entry.get("mechanic","")) not in ["circle_aoe","formation"]:
             at += Vector2(0,-30)
         var width := float(source.get("width",110))

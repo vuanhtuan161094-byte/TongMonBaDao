@@ -1,0 +1,40 @@
+name: External VFX auxiliary receipt contract
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/assets/p3/vfx/external_auxiliary_v1/**'
+      - 'godot/data/presentation/pve_external_auxiliary_v1.json'
+      - 'godot/src/presentation/p3/pve_factory_sprite_v1.gd'
+      - 'godot/tests/presentation/pve_external_auxiliary_vfx_test.gd'
+      - '.github/workflows/tmb-vfx-external-auxiliary.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.7.2
+        run: |
+          curl -fL --retry 3 -o /tmp/godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum -c -
+          unzip -oq /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+      - name: Existing and new source / receipt contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          G=/tmp/Godot_v4.7.2-stable_linux.x86_64
+          mkdir -p "$RUNNER_TEMP/external-aux"
+          "$G" --headless --path godot --editor --import 2>&1 | tee "$RUNNER_TEMP/external-aux/import.log"
+          "$G" --headless --path godot --script res://tests/presentation/pve_factory_r2_source_contract_test.gd 2>&1 | tee "$RUNNER_TEMP/external-aux/factory.log"
+          "$G" --headless --path godot --script res://tests/presentation/pve_external_auxiliary_vfx_test.gd 2>&1 | tee "$RUNNER_TEMP/external-aux/aux.log"
+          grep -q EXTERNAL_AUX_CONTRACT_PASS "$RUNNER_TEMP/external-aux/aux.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: external-aux-contract-${{ github.sha }}
+          path: ${{ runner.temp }}/external-aux/

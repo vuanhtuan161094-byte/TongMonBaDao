@@ -1,0 +1,2036 @@
+{
+  "schema": "tmb.pve.external_auxiliary.v1",
+  "scope": "receipt-bound supplemental activation effects only; preview off by default; no independent skill art",
+  "source_license": "CC BY-SA 3.0",
+  "credits": "FLARE contributors https://github.com/flareteam/flare-game",
+  "bindings": {
+    "tmb.skill.bow.linh_tien.active_02.human": {
+      "school": "bow",
+      "effect": "heal",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "heal",
+      "source_sha256": "6b45f9b796b46ed7b12cdf547436479f9ebdc817349ff25dcb01556ef2ce8e92",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/heal.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                163,
+                322,
+                163,
+                117
+              ],
+              "source_offset": [
+                82,
+                117
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                176,
+                170,
+                146
+              ],
+              "source_offset": [
+                88,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                0,
+                184,
+                176
+              ],
+              "source_offset": [
+                88,
+                186
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                0,
+                184,
+                180
+              ],
+              "source_offset": [
+                88,
+                191
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                180,
+                163,
+                146
+              ],
+              "source_offset": [
+                67,
+                192
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                326,
+                158,
+                107
+              ],
+              "source_offset": [
+                67,
+                187
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "heal": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.blade.tran_dao.active_01.human": {
+      "school": "blade",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.blade.tran_dao.active_03.human": {
+      "school": "blade",
+      "effect": "guard",
+      "shape": "circle",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.blade.tran_dao.ultimate.human": {
+      "school": "blade",
+      "effect": "guard",
+      "shape": "circle",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.spear.ho_quan_thuong.active_01.human": {
+      "school": "spear",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.spear.ho_quan_thuong.active_03.human": {
+      "school": "spear",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.spear.ho_quan_thuong.ultimate.human": {
+      "school": "spear",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.palm.hoi_phong_chuong.active_01.human": {
+      "school": "palm",
+      "effect": "heal",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "heal",
+      "source_sha256": "6b45f9b796b46ed7b12cdf547436479f9ebdc817349ff25dcb01556ef2ce8e92",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/heal.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                163,
+                322,
+                163,
+                117
+              ],
+              "source_offset": [
+                82,
+                117
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                176,
+                170,
+                146
+              ],
+              "source_offset": [
+                88,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                0,
+                184,
+                176
+              ],
+              "source_offset": [
+                88,
+                186
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                0,
+                184,
+                180
+              ],
+              "source_offset": [
+                88,
+                191
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                180,
+                163,
+                146
+              ],
+              "source_offset": [
+                67,
+                192
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                326,
+                158,
+                107
+              ],
+              "source_offset": [
+                67,
+                187
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "heal": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.palm.hoi_phong_chuong.active_02.human": {
+      "school": "palm",
+      "effect": "heal",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "heal",
+      "source_sha256": "6b45f9b796b46ed7b12cdf547436479f9ebdc817349ff25dcb01556ef2ce8e92",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/heal.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                163,
+                322,
+                163,
+                117
+              ],
+              "source_offset": [
+                82,
+                117
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                176,
+                170,
+                146
+              ],
+              "source_offset": [
+                88,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                0,
+                184,
+                176
+              ],
+              "source_offset": [
+                88,
+                186
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                0,
+                184,
+                180
+              ],
+              "source_offset": [
+                88,
+                191
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                180,
+                163,
+                146
+              ],
+              "source_offset": [
+                67,
+                192
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                326,
+                158,
+                107
+              ],
+              "source_offset": [
+                67,
+                187
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "heal": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.palm.hoi_phong_chuong.active_03.human": {
+      "school": "palm",
+      "effect": "cleanse",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "sparkle",
+      "source_sha256": "573a3a18fde583d818723694ddf5567550cfe4d6a107b9e240b44585b9aa21f4",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/sparkle.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                140,
+                134,
+                154,
+                97
+              ],
+              "source_offset": [
+                71,
+                84
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                294,
+                132,
+                154,
+                109
+              ],
+              "source_offset": [
+                70,
+                121
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                139,
+                231,
+                147,
+                121
+              ],
+              "source_offset": [
+                68,
+                124
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                592,
+                223,
+                111,
+                153
+              ],
+              "source_offset": [
+                32,
+                127
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                599,
+                0,
+                115,
+                130
+              ],
+              "source_offset": [
+                33,
+                106
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                286,
+                326,
+                115,
+                128
+              ],
+              "source_offset": [
+                34,
+                107
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                588,
+                130,
+                110,
+                93
+              ],
+              "source_offset": [
+                31,
+                112
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                428,
+                244,
+                164,
+                91
+              ],
+              "source_offset": [
+                86,
+                115
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                286,
+                241,
+                142,
+                85
+              ],
+              "source_offset": [
+                88,
+                118
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                401,
+                335,
+                164,
+                65
+              ],
+              "source_offset": [
+                89,
+                102
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                440,
+                0,
+                159,
+                122
+              ],
+              "source_offset": [
+                84,
+                105
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                139,
+                352,
+                142,
+                104
+              ],
+              "source_offset": [
+                67,
+                90
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                0,
+                300,
+                139,
+                130
+              ],
+              "source_offset": [
+                65,
+                111
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                290,
+                0,
+                150,
+                132
+              ],
+              "source_offset": [
+                75,
+                116
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                140,
+                0,
+                150,
+                134
+              ],
+              "source_offset": [
+                74,
+                120
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                0,
+                0,
+                140,
+                150
+              ],
+              "source_offset": [
+                73,
+                119
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                0,
+                150,
+                139,
+                150
+              ],
+              "source_offset": [
+                73,
+                121
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                448,
+                122,
+                140,
+                122
+              ],
+              "source_offset": [
+                74,
+                95
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                401,
+                400,
+                152,
+                55
+              ],
+              "source_offset": [
+                75,
+                99
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                565,
+                376,
+                156,
+                62
+              ],
+              "source_offset": [
+                77,
+                103
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 20,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "cleanse": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.palm.hoi_phong_chuong.active_04.human": {
+      "school": "palm",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield",
+      "source_sha256": "d56ccd2ab9544f67697168acc0cd7da9f19ba5c9c15583cf262844fa66775b99",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.palm.hoi_phong_chuong.ultimate.human": {
+      "school": "palm",
+      "effect": "heal",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "heal",
+      "source_sha256": "6b45f9b796b46ed7b12cdf547436479f9ebdc817349ff25dcb01556ef2ce8e92",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/heal.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                163,
+                322,
+                163,
+                117
+              ],
+              "source_offset": [
+                82,
+                117
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                176,
+                170,
+                146
+              ],
+              "source_offset": [
+                88,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                0,
+                184,
+                176
+              ],
+              "source_offset": [
+                88,
+                186
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                0,
+                184,
+                180
+              ],
+              "source_offset": [
+                88,
+                191
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                180,
+                163,
+                146
+              ],
+              "source_offset": [
+                67,
+                192
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                326,
+                158,
+                107
+              ],
+              "source_offset": [
+                67,
+                187
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "heal": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.curse.ho_menh_chu.active_01.human": {
+      "school": "curse",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield",
+      "source_sha256": "d56ccd2ab9544f67697168acc0cd7da9f19ba5c9c15583cf262844fa66775b99",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.curse.ho_menh_chu.active_02.human": {
+      "school": "curse",
+      "effect": "heal",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "heal",
+      "source_sha256": "6b45f9b796b46ed7b12cdf547436479f9ebdc817349ff25dcb01556ef2ce8e92",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/heal.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                163,
+                322,
+                163,
+                117
+              ],
+              "source_offset": [
+                82,
+                117
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                176,
+                170,
+                146
+              ],
+              "source_offset": [
+                88,
+                152
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                184,
+                0,
+                184,
+                176
+              ],
+              "source_offset": [
+                88,
+                186
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                0,
+                184,
+                180
+              ],
+              "source_offset": [
+                88,
+                191
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                180,
+                163,
+                146
+              ],
+              "source_offset": [
+                67,
+                192
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/heal.png",
+              "region": [
+                0,
+                326,
+                158,
+                107
+              ],
+              "source_offset": [
+                67,
+                187
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "heal": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.curse.ho_menh_chu.active_03.human": {
+      "school": "curse",
+      "effect": "cleanse",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "sparkle",
+      "source_sha256": "573a3a18fde583d818723694ddf5567550cfe4d6a107b9e240b44585b9aa21f4",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/sparkle.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                140,
+                134,
+                154,
+                97
+              ],
+              "source_offset": [
+                71,
+                84
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                294,
+                132,
+                154,
+                109
+              ],
+              "source_offset": [
+                70,
+                121
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                139,
+                231,
+                147,
+                121
+              ],
+              "source_offset": [
+                68,
+                124
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                592,
+                223,
+                111,
+                153
+              ],
+              "source_offset": [
+                32,
+                127
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                599,
+                0,
+                115,
+                130
+              ],
+              "source_offset": [
+                33,
+                106
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                286,
+                326,
+                115,
+                128
+              ],
+              "source_offset": [
+                34,
+                107
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                588,
+                130,
+                110,
+                93
+              ],
+              "source_offset": [
+                31,
+                112
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                428,
+                244,
+                164,
+                91
+              ],
+              "source_offset": [
+                86,
+                115
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                286,
+                241,
+                142,
+                85
+              ],
+              "source_offset": [
+                88,
+                118
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                401,
+                335,
+                164,
+                65
+              ],
+              "source_offset": [
+                89,
+                102
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                440,
+                0,
+                159,
+                122
+              ],
+              "source_offset": [
+                84,
+                105
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                139,
+                352,
+                142,
+                104
+              ],
+              "source_offset": [
+                67,
+                90
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                0,
+                300,
+                139,
+                130
+              ],
+              "source_offset": [
+                65,
+                111
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                290,
+                0,
+                150,
+                132
+              ],
+              "source_offset": [
+                75,
+                116
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                140,
+                0,
+                150,
+                134
+              ],
+              "source_offset": [
+                74,
+                120
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                0,
+                0,
+                140,
+                150
+              ],
+              "source_offset": [
+                73,
+                119
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                0,
+                150,
+                139,
+                150
+              ],
+              "source_offset": [
+                73,
+                121
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                448,
+                122,
+                140,
+                122
+              ],
+              "source_offset": [
+                74,
+                95
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                401,
+                400,
+                152,
+                55
+              ],
+              "source_offset": [
+                75,
+                99
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/sparkle.png",
+              "region": [
+                565,
+                376,
+                156,
+                62
+              ],
+              "source_offset": [
+                77,
+                103
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.58,
+          "fps": 20,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "cleanse": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.curse.ho_menh_chu.ultimate.human": {
+      "school": "curse",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield",
+      "source_sha256": "d56ccd2ab9544f67697168acc0cd7da9f19ba5c9c15583cf262844fa66775b99",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.summon.khoi_loi_ho_phap.active_03.human": {
+      "school": "summon",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.summon.kiem_linh.active_03.human": {
+      "school": "summon",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    },
+    "tmb.skill.summon.linh_thu.active_03.human": {
+      "school": "summon",
+      "effect": "guard",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "external_auxiliary",
+      "external_auxiliary": true,
+      "source_id": "shield_orange",
+      "source_sha256": "4eb515d898ac039da3ada7ee6f61167e1c8dad021a30269f255e86f2f53ce4db",
+      "source_credit": "FLARE contributors; CC BY-SA 3.0",
+      "source_url": "https://raw.githubusercontent.com/flareteam/flare-game/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers/shield_orange.png",
+      "phases": {
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                268,
+                307,
+                261,
+                300
+              ],
+              "source_offset": [
+                131,
+                231
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                269,
+                0,
+                265,
+                307
+              ],
+              "source_offset": [
+                135,
+                234
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                304,
+                268,
+                302
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_auxiliary_v1/shield_orange.png",
+              "region": [
+                0,
+                0,
+                269,
+                304
+              ],
+              "source_offset": [
+                133,
+                233
+              ]
+            }
+          ],
+          "source_pixel_scale": 0.42,
+          "fps": 10,
+          "loop": false
+        }
+      },
+      "receipts": {
+        "status_applied": "contact"
+      },
+      "status": "PVE_AUXILIARY_CANDIDATE_NOT_HERO_ART_APPROVAL",
+      "owner_art": "PENDING"
+    }
+  }
+}
