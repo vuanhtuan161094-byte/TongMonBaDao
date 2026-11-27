@@ -84,7 +84,7 @@ func _refresh_building_operation_art() -> void:
         return
     var site := _selected_operation_building()
     var direction := &"B" if site != null and site.instance_index % 2 == 0 else &"A"
-    var active := site != null and state != null and ART05_BUILDING_VARIANT.is_canonical_working(site,state.tick)
+    var active: bool = site != null and state != null and ART05_BUILDING_VARIANT.is_canonical_working(site,state.tick)
     var tex := ART05_BUILDING_VARIANT.texture_for(selected_building,direction,active)
     if tex == null and active:
         tex = ART05_BUILDING_VARIANT.texture_for(selected_building,direction,false)
