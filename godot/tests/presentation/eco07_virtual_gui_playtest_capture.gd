@@ -39,6 +39,24 @@ func _run() -> void:
     var cap := await _capture(out.path_join("00_map_1280x720.png"))
     if not cap:
         return
+    if OS.get_environment("TMB_MAP01_ONLY") == "1":
+        # Two real views of the same screen; no fake resources or UI mockup.
+        screen.call("_art05_focus_masterplan_district","forge",true)
+        for _frame in range(24):
+            await process_frame
+        if not await _capture(out.path_join("01_map_production_focus_1280x720.png")):
+            return
+        screen.call("_art05_collapse_dock")
+        await process_frame
+        if not await _capture(out.path_join("02_map_clear_view_1280x720.png")):
+            return
+        screen.set("runtime_ready",false)
+        screen.queue_free()
+        await process_frame
+        _cleanup()
+        print("MAP01 REAL_GODOT_CAPTURE PASS")
+        quit(0)
+        return
     var extended := OS.get_environment("TMB_PLAYBOOK_CAPTURE") == "1"
     if extended and not await _capture_playbook(out):
         return

@@ -10,6 +10,8 @@ const STARTER := Rect2i(72,72,48,48)
 const HALF_W := 25.0
 const HALF_H := 13.0
 const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.svg")
+const MAP01_MEADOW: Texture2D = preload("res://art/onegame_world_r2/map01_meadow.svg")
+const MAP01_PAVING: Texture2D = preload("res://art/onegame_world_r2/map01_paving.svg")
 const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
 const R2_COURT: Texture2D = preload("res://art/onegame_world_r2/jade_court.svg")
@@ -675,12 +677,21 @@ func _load_verified_source_art() -> void:
             if not clear:
                 continue
             var texture: Texture2D = R3_SCENERY[str(row["art"])]
+            var art_scale := float(row["scale"])
+            # Match the existing detailed architecture and vegetation instead
+            # of the chunky concept pine asset. Reuse verified Source A trees.
+            if str(row["art"]) == "pine":
+                var tree_id := str(PVE_TREE_ASSETS[posmod(tile.x+tile.y,PVE_TREE_ASSETS.size())])
+                var tree := source_art.texture_for("env01_assets/vegetation/%s.png" % tree_id)
+                if tree != null:
+                    texture = tree
+                    art_scale = 0.48 + float(posmod(tile.x,3))*0.04
             var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
             if not decoration_items_by_chunk.has(chunk):
                 decoration_items_by_chunk[chunk] = []
             (decoration_items_by_chunk[chunk] as Array).append({
                 "world":project(Vector2(tile)),"texture":texture,
-                "scale":float(row["scale"]),"cell":tile
+                "scale":art_scale,"cell":tile
             })
     _cache_static_overlays()
     pve_static_queue_dirty = true
@@ -1293,6 +1304,7 @@ func _cache_static_overlays() -> void:
             if not road_overlays_by_chunk.has(chunk):
                 road_overlays_by_chunk[chunk] = []
             (road_overlays_by_chunk[chunk] as Array).append({
+                "center":center,
                 "texture":render_art[road_key],
                 "rect":Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
                     Vector2(HALF_W*2.2,HALF_H*2.3)),
@@ -1411,20 +1423,23 @@ func _draw_masterplan_district_signs() -> void:
         var ground := project(Vector2(row["cell"]))
         if not _visible_world(ground):
             continue
-        var plaque := Rect2(ground-Vector2(94.0,42.0),Vector2(188.0,32.0))
+        # Smaller map labels, no floating rectangular signboards over roofs.
+        # Suppress labels beneath the top chrome instead of showing clipped text.
+        var screen_point := get_canvas_transform()*ground
+        if screen_point.y < 72.0 or screen_point.y > 525.0:
+            continue
+        var caption := str(row["label"])
         var accent: Color = row["tone"]
-        draw_rect(Rect2(plaque.position+Vector2(2,3),plaque.size),Color(0.02,0.06,0.06,0.52),true)
-        draw_rect(plaque,Color(0.035,0.13,0.14,0.94),true)
-        draw_rect(plaque,Color(accent.r,accent.g,accent.b,0.90),false,1.6)
-        draw_rect(Rect2(plaque.position+Vector2(4,4),Vector2(3,24)),accent,true)
-        draw_string(font,plaque.position+Vector2(9.0,22.0),str(row["label"]),
-            HORIZONTAL_ALIGNMENT_CENTER,plaque.size.x-16.0,14,accent)
+        var label_width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
+        var baseline := ground+Vector2(-label_width*0.5,-13)
+        draw_string_outline(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,4,Color(0.10,0.17,0.13,0.95))
+        draw_string(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,accent)
 
 func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
     # Visibility still uses the original active_chunks and the existing camera.
     for chunk_id in active_chunks:
-        draw_mesh(_ground_mesh_for_chunk(chunk_id),R2_GROUND)
+        draw_mesh(_ground_mesh_for_chunk(chunk_id),R2_GROUND if pve_landscape else MAP01_MEADOW)
     # Scenic water/reeds/rock-garden accents are original unapproved
     # view-only candidates and cannot act as a gameplay resource node.
     if pve_landscape:
@@ -1459,8 +1474,13 @@ func _draw() -> void:
         var road_rows: Array = road_overlays_by_chunk.get(chunk_id,[])
         for row in road_rows:
             draw_colored_polygon(row["shoulder"],row["shoulder_color"])
-            draw_texture_rect(row["texture"],row["rect"],false,
-                Color(0.96,0.95,0.88,0.96))
+            if pve_landscape:
+                draw_texture_rect(row["texture"],row["rect"],false,Color(0.96,0.95,0.88,0.96))
+            else:
+                # A full, tessellating stone diamond, no transparent gaps
+                # between the road cells or checkerboard of disconnected art.
+                var center: Vector2 = row["center"]
+                draw_texture_rect(MAP01_PAVING,Rect2(center-Vector2(HALF_W,HALF_H),Vector2(HALF_W*2,HALF_H*2)),false)
     if pve_landscape:
         # Render a real crossing at each existing navigation bridge, below
         # characters; the illustration never creates a walkable cell.

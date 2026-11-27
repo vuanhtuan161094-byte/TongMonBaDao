@@ -862,22 +862,23 @@ func _art05_install_mockup_shell() -> void:
     _refresh_top_bar()
     # The first-minute card should guide without masking a full district.
     if gp1_guide_panel != null:
-        gp1_guide_panel.position = Vector2(18,144)
-        gp1_guide_panel.size = Vector2(308,136)
+        gp1_guide_panel.position = Vector2(16,128)
+        gp1_guide_panel.size = Vector2(260,124)
         if gp1_guide_title != null:
             gp1_guide_title.position = Vector2(12,9)
-            gp1_guide_title.size = Vector2(271,27)
+            gp1_guide_title.size = Vector2(222,27)
             gp1_guide_title.add_theme_font_size_override("font_size",15)
         if gp1_guide_description != null:
             gp1_guide_description.position = Vector2(12,39)
-            gp1_guide_description.size = Vector2(280,49)
+            gp1_guide_description.size = Vector2(236,44)
+            gp1_guide_description.add_theme_font_size_override("font_size",12)
         if gp1_guide_button != null:
-            gp1_guide_button.position = Vector2(12,94)
-            gp1_guide_button.size = Vector2(284,34)
+            gp1_guide_button.position = Vector2(12,83)
+            gp1_guide_button.size = Vector2(236,32)
             gp1_guide_button.add_theme_font_size_override("font_size",13)
         var guide_close := gp1_guide_panel.get_node_or_null("Gp1GuideDismiss") as Button
         if guide_close != null:
-            guide_close.position = Vector2(272,5)
+            guide_close.position = Vector2(226,5)
             guide_close.size = Vector2(30,29)
 
     var bottom := get_node_or_null("PlayerBottomBar") as Panel
@@ -925,17 +926,20 @@ func _art05_install_mockup_shell() -> void:
                     glyph.set("tint",ART05_DEEP if active else ART05_GOLD)
                     glyph.queue_redraw()
                 button.pressed.connect(Callable(self,"_art05_activate_nav").bind(i))
-    # All five district shortcuts stay inside the unobstructed map area.
+    # Narrow horizontal navigation ribbon leaves more of the terrain visible.
+    if build_mode_button != null:
+        build_mode_button.position = Vector2(16,80)
+        build_mode_button.size = Vector2(144,36)
     for i in range(MASTERPLAN_DISTRICT_TABS.size()):
         var key := str(MASTERPLAN_DISTRICT_TABS[i]["key"])
         var tab := get_node_or_null("MasterplanDistrict_"+key) as Button
         if tab != null:
-            tab.position = Vector2(188+i*159,92)
-            tab.size = Vector2(148,44)
+            tab.position = Vector2(168+i*131,80)
+            tab.size = Vector2(123,36)
             tab.add_theme_font_size_override("font_size",12)
             tab.clip_text = true
     if camera_controls_panel != null:
-        camera_controls_panel.position = Vector2(924,323)
+        camera_controls_panel.position = Vector2(18,365)
         camera_controls_panel.size = Vector2(58,252)
         camera_controls_panel.add_theme_stylebox_override("panel",_art05_style(
             Color(0.032,0.15,0.16,0.96),ART05_GOLD,1,12))
@@ -949,10 +953,10 @@ func _art05_install_mockup_shell() -> void:
                 (c as Label).add_theme_color_override("font_color",ART05_WHITE)
     var camera_help := get_node_or_null("CameraHintBackground") as Control
     if camera_help != null:
-        camera_help.position = Vector2(482,602)
-        camera_help.size = Vector2(440,31)
+        camera_help.position = Vector2(382,604)
+        camera_help.size = Vector2(440,28)
     if camera_hint != null:
-        camera_hint.position = Vector2(493,606)
+        camera_hint.position = Vector2(393,606)
         camera_hint.size = Vector2(422,24)
 
 func _art05_activate_nav(index: int) -> void:
@@ -992,8 +996,8 @@ func _art05_dock_label(parent: Control, content: String, at: Vector2,
 func _art05_build_sect_master_dock() -> void:
     _art05_dock_panel = Panel.new()
     _art05_dock_panel.name = "SectMasterOverviewDock"
-    _art05_dock_panel.position = Vector2(992,144)
-    _art05_dock_panel.size = Vector2(274,481)
+    _art05_dock_panel.position = Vector2(1000,128)
+    _art05_dock_panel.size = Vector2(264,362)
     _art05_dock_panel.z_index = 31
     _art05_dock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
     _art05_dock_panel.add_theme_stylebox_override("panel",_art05_style(
@@ -1002,25 +1006,25 @@ func _art05_build_sect_master_dock() -> void:
     _art05_dock_portrait = TextureRect.new()
     _art05_dock_portrait.name = "SectMasterBuildingPortrait"
     _art05_dock_portrait.position = Vector2(11,12)
-    _art05_dock_portrait.size = Vector2(94,85)
+    _art05_dock_portrait.size = Vector2(78,68)
     _art05_dock_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     _art05_dock_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
     _art05_dock_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
     _art05_dock_panel.add_child(_art05_dock_portrait)
     _art05_dock_heading = _art05_dock_label(_art05_dock_panel,"ĐẠI ĐIỆN",
-        Vector2(108,15),Vector2(158,51),21,ART05_GOLD)
+        Vector2(91,13),Vector2(142,48),19,ART05_GOLD)
     _art05_dock_status = _art05_dock_label(_art05_dock_panel,"",
-        Vector2(14,112),Vector2(246,72),15,ART05_WHITE)
+        Vector2(14,82),Vector2(236,48),14,ART05_WHITE)
     var section1 := _art05_dock_label(_art05_dock_panel,"CHỨC NĂNG",
-        Vector2(14,190),Vector2(248,24),15,ART05_GOLD)
+        Vector2(14,137),Vector2(236,19),13,ART05_GOLD)
     section1.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
     _art05_dock_body = _art05_dock_label(_art05_dock_panel,"",
-        Vector2(14,216),Vector2(248,68),13,ART05_WHITE)
+        Vector2(14,158),Vector2(236,62),12,ART05_WHITE)
     for index in range(6):
         var shortcut := Button.new()
         shortcut.name = "A2DistrictLink%d" % index
-        shortcut.position = Vector2(14+(index%2)*126,287+floori(float(index)/2.0)*34)
-        shortcut.size = Vector2(120,30)
+        shortcut.position = Vector2(14+(index%2)*120,224+floori(float(index)/2.0)*28)
+        shortcut.size = Vector2(114,25)
         shortcut.add_theme_font_size_override("font_size",12)
         shortcut.add_theme_color_override("font_color",ART05_WHITE)
         shortcut.add_theme_stylebox_override("normal",_art05_style(Color(0.055,0.20,0.19,0.99),ART05_MUTE,1,7))
@@ -1032,8 +1036,8 @@ func _art05_build_sect_master_dock() -> void:
     _art05_dock_manage = Button.new()
     _art05_dock_manage.name = "SectMasterManage"
     _art05_dock_manage.text = "QUẢN LÝ"
-    _art05_dock_manage.position = Vector2(30,399)
-    _art05_dock_manage.size = Vector2(212,53)
+    _art05_dock_manage.position = Vector2(14,310)
+    _art05_dock_manage.size = Vector2(236,40)
     _art05_dock_manage.add_theme_font_size_override("font_size",18)
     _art05_dock_manage.add_theme_color_override("font_color",ART05_DEEP)
     _art05_dock_manage.add_theme_stylebox_override("normal",_art05_style(
@@ -1045,7 +1049,7 @@ func _art05_build_sect_master_dock() -> void:
     var close := Button.new()
     close.name = "SectMasterDockClose"
     close.text = "×"
-    close.position = Vector2(234,7)
+    close.position = Vector2(227,6)
     close.size = Vector2(31,30)
     close.tooltip_text = "Ẩn thẻ thông tin. Chọn một khu để mở lại."
     close.add_theme_font_size_override("font_size",18)
@@ -1071,9 +1075,16 @@ func _art05_refresh_district_links(destination: String) -> void:
                 break
         if not links.is_empty():
             break
+    # A one-link district already has its manage button. Do not waste a
+    # line on a disabled duplicate. Short districts use a smaller card.
+    var shown := links.size() if links.size() > 1 else 0
+    var shortcut_rows := ceili(float(shown)/2.0)
+    var action_y := 224.0+float(shortcut_rows)*28.0
+    _art05_dock_manage.position.y = action_y
+    _art05_dock_panel.size.y = action_y+52.0
     for index in range(_art05_district_links.size()):
         var shortcut := _art05_district_links[index]
-        shortcut.visible = index < links.size()
+        shortcut.visible = index < shown
         if shortcut.visible:
             var entry: Array = links[index]
             shortcut.text = str(entry[1])

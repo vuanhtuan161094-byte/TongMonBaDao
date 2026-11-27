@@ -91,6 +91,26 @@ jobs:
       - name: Strict parse ECO-07 virtual GUI test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/eco07_virtual_gui_playtest_capture.gd
 
+      - name: MAP01 capture actual sect map before full-screen regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/map01-evidence"
+          export LIBGL_ALWAYS_SOFTWARE=1
+          export TMB_MAP01_ONLY=1
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
+            --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 \
+            -s res://tests/presentation/eco07_virtual_gui_playtest_capture.gd \
+            -- "$GITHUB_WORKSPACE/map01-evidence"
+          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > map01-evidence/source-sha.txt
+      - name: Upload MAP01 actual Godot views immediately
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: map01-real-godot-${{ github.sha }}
+          path: map01-evidence/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Render real OneGame GUI 1280x720, 10 PNGs and navigation movie
         shell: bash
         run: |
