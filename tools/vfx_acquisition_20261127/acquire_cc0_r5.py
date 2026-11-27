@@ -37,18 +37,20 @@ def main():
                         s=line[7:].replace("\\","/")
                         if s.startswith("/") or ".." in s.split("/") or ":" in s:raise ValueError("unsafe path")
                 subprocess.run(["7z","x","-y","-o"+str(d),str(a),"*.png","*.webp","*.gif","*.jpg","*.jpeg","*.tga","-r"],check=True,stdout=subprocess.DEVNULL)
-            images=[]
+            images=[]; rejected=[]
             for p in sorted(d.rglob("*")):
                 if not p.is_file() or p.is_symlink() or p.suffix.lower() not in (".png",".webp",".gif",".jpg",".jpeg",".tga"):continue
-                with Image.open(p) as im:
-                    if im.width*im.height>16777216:raise ValueError("pixel cap")
-                    im.load();rgba=im.convert("RGBA");lo,hi=rgba.getchannel("A").getextrema()
-                    sha=digest(p);images.append({"path":str(p.relative_to(d)),"sha256":sha,"size":list(im.size),"alpha":lo<255,"nonempty":hi>0,"duplicate_of":seen.get(sha)})
-                    seen.setdefault(sha,name+"/"+str(p.relative_to(d)))
-                    if len(preview)<80 and (name=="slash" or len(images)%10==1):
-                        rgba.thumbnail((140,100));preview.append((name,p.name,rgba.copy()))
-            if not images:raise ValueError("no images")
-            row.update(status="ACQUIRED",bytes=a.stat().st_size,sha256=digest(a),images=len(images),entries=images)
+                try:
+                    with Image.open(p) as im:
+                        if im.width*im.height>16777216:raise ValueError("pixel cap")
+                        im.load();rgba=im.convert("RGBA");lo,hi=rgba.getchannel("A").getextrema()
+                        sha=digest(p);images.append({"path":str(p.relative_to(d)),"sha256":sha,"size":list(im.size),"alpha":lo<255,"nonempty":hi>0,"duplicate_of":seen.get(sha)})
+                        seen.setdefault(sha,name+"/"+str(p.relative_to(d)))
+                        if len(preview)<80 and (name=="slash" or len(images)%10==1):
+                            rgba.thumbnail((140,100));preview.append((name,p.name,rgba.copy()))
+                except Exception as e:rejected.append({"path":str(p.relative_to(d)),"error":str(e)})
+            if not images:raise ValueError("no decoded images")
+            row.update(status="ACQUIRED_WITH_REJECTIONS" if rejected else "ACQUIRED",bytes=a.stat().st_size,sha256=digest(a),images=len(images),entries=images,rejected=rejected)
         except Exception as e:row.update(status="HOLD",error=str(e))
         report.append(row);print(json.dumps({k:v for k,v in row.items() if k!="entries"}),flush=True)
     (ROOT/"cc0_inventory.json").write_text(json.dumps(report,indent=2))
@@ -57,5 +59,5 @@ def main():
         for i,(pack,n,im) in enumerate(preview):
             x=i%6*160;y=i//6*140;s.paste(im,(x+(160-im.width)//2,y+2),im);draw.text((x+4,y+104),pack,fill="white");draw.text((x+4,y+119),n[:23],fill="white")
         s.save(ROOT/"contact_sheet.jpg",quality=90)
-    if not any(r["status"]=="ACQUIRED" for r in report):raise SystemExit(1)
+    if not any(r["status"].startswith("ACQUIRED") for r in report):raise SystemExit(1)
 if __name__=="__main__":main()
