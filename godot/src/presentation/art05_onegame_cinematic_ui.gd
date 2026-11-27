@@ -1231,6 +1231,8 @@ func _art05_manage_selected_district() -> void:
         _art05_activate_nav(3)
         return
     _open_building(_art05_dock_destination)
+    if _art05_dock_destination == SectMapPresentation.DEST_MAIN_HALL:
+        _open_dai_dien_screen_v1()
 
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     _art05_dock_destination = destination

@@ -1310,6 +1310,8 @@ func _try_iso_map_pick(screen_point: Vector2) -> bool:
         return false
     var building_id := StringName(picked.get("building_id",""))
     _open_building(destination,building_id)
+    if destination == SectMapPresentation.DEST_MAIN_HALL:
+        _open_dai_dien_screen_v1()
     get_viewport().set_input_as_handled()
     return true
 
@@ -4370,6 +4372,7 @@ func _open_dai_dien_screen_v1() -> void:
     screen.name = "DaiDienScreenV1"
     screen.attach_state(state)
     screen.state_changed.connect(_on_dai_dien_state_changed)
+    screen.closed.connect(func(): _close_building_operation_panel(true))
     screen.z_index = 120
     add_child(screen)
     screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

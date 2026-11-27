@@ -58,6 +58,9 @@ func show_mode(mode: String) -> void:
 func _render() -> void:
     if _host == null or _state == null or not is_inside_tree():
         return
+    var previous_tab := 0
+    if _mode == "hall" and is_instance_valid(_active_view) and _active_view.has_method("get_tab_index"):
+        previous_tab = int(_active_view.call("get_tab_index"))
     for child in get_children():
         remove_child(child)
         child.queue_free()
@@ -70,6 +73,7 @@ func _render() -> void:
             view.connect("promotion_requested", Callable(self, "_promote_hall"))
             view.connect("hall_upgrade_requested", Callable(self, "_upgrade_hall"))
             view.connect("office_dismissal_requested", Callable(self, "_dismiss_office"))
+            view.connect("hall_action_requested", Callable(self, "_hall_action"))
             view.connect("closed", Callable(self, "_close_host"))
         "residence":
             view = HOUSE_B1.new()
@@ -107,6 +111,8 @@ func _render() -> void:
         "guidance":
             model = _guidance_model()
     view.call("bind_view_model", model)
+    if _mode == "hall":
+        view.call("set_tab_index",previous_tab)
     if _mode == "hall" and not _office_picker_role.is_empty():
         add_child(_build_office_picker())
 
@@ -173,11 +179,22 @@ func _hall_model() -> Dictionary:
         var material_name := "Linh Thạch" if key == "spirit_stones" else equipment.material_name(StringName(key))
         costs.append({
             "name":material_name, "amount":str(int(raw_cost[raw_key])),
+            "available":str(_state.sect.spirit_stones if key == "spirit_stones" else WarehouseSystem.new().available_quantity(_state,StringName(key))),
             "icon":"gold" if key == "spirit_stones" else ("leaf" if key == str(BuildingSystem.MATERIAL_WOOD) else "resource")
         })
     var upgrade: Dictionary = BuildingSystem.new().can_start_upgrade(_state, hall.id)
-    return {
+    var extra := _hall_extra_model()
+    var rank_rows: Array[Dictionary] = []
+    for entry in [["Cấp Đại Điện","hall_level","hall_need"],["Đệ tử","roster","roster_need"],["Đệ tử đủ cảnh giới","realm","realm_need"],["Mẻ sản xuất","production","production_need"],["Uy danh","prestige","prestige_need"]]:
+        rank_rows.append({"name":entry[0],"value":"%s / %s" % [str(rank_check.get(entry[1],"—")),str(rank_check.get(entry[2],"—"))]})
+    var model := {
         "building_level":hall.level, "rank_step":rank,
+        "rank_label":SectHallSystemV1.rank_label(rank),
+        "prestige":int(_state.sect.hall_governance.get("prestige",0)),
+        "treasury":str(_state.sect.treasury),
+        "rank_rows":rank_rows if rank < 27 else [],
+        "promotion_costs":_cost_rows(rank_check.get("cost",{})),
+        "upgrade_status":("Đang nâng cấp · %.0f / %.0f" % [hall.upgrade_progress,hall.upgrade_required_work]) if hall.is_upgrading() else ("Đã đạt tối đa" if hall.level >= hall.max_level else "Thời gian: %.0f nhịp" % BuildingSystem.new().upgrade_required_work(hall)),
         "population_label":"%d / %d" % [_state.disciples.size(),SectResidenceSystemV1.current_limit(_state)],
         "spirit_stones":str(_state.sect.spirit_stones),
         "rank_progress":float(rank) / 27.0,
@@ -186,6 +203,68 @@ func _hall_model() -> Dictionary:
         "can_upgrade":bool(upgrade.get("ok", false)),
         "upgrade_costs":costs, "offices":offices, "feedback":_feedback
     }
+    model.merge(extra,true)
+    return model
+
+func _hall_extra_model() -> Dictionary:
+    var owner := _host.get_parent()
+    var connected := owner != null and owner.has_method("_economy_a_enable_from_ui")
+    var policy: Dictionary = _state.sect.economy_a_policy
+    var economic: Array[Dictionary] = []
+    var settings: Array[Dictionary] = []
+    var workers: Array[Dictionary] = []
+    var cash := str(owner.call("_eco06_cashflow_text")) if connected else "Sổ thu chi chỉ có trong lượt chơi thật."
+    if not _state.sect.economy_a_enabled:
+        economic.append({"label":"Bật kinh tế V1","action":"enable","disabled":not connected})
+    else:
+        var vein := Eco01OriginVein.new()
+        var snapshot := vein.snapshot(_state)
+        if bool(snapshot.get("busy",false)):
+            economic.append({"label":"Hủy Linh Mạch · còn %d phút" % int(snapshot.get("remaining_ticks",0)),"action":"vein_cancel","disabled":not connected})
+        elif bool(snapshot.get("ready",false)) and connected:
+            for id in vein.eligible_workers(_state):
+                workers.append({"id":str(id),"name":(_state.disciples[id] as DiscipleState).display_name})
+            cash += "\nLinh Mạch: 1.000 LT gộp / 60 phút · "+("chọn đệ tử rảnh" if not workers.is_empty() else "chưa có đệ tử rảnh")
+        else:
+            cash += "\nLinh Mạch: còn %d phút tới lượt tiếp theo" % int(snapshot.get("remaining_ticks",0))
+        var unpaid := maxi(0,int(EconomySystem.new().unpaid_work_wages(_state).get("total",0)))
+        economic.append({"label":"Trả nợ lương · %d LT" % unpaid,"action":"arrears","disabled":not connected or unpaid <= 0 or _state.sect.spirit_stones <= maxi(0,int(policy.get("sect_pay_reserve",0)))})
+        var bulk := BuildingSystem.new().sx_v55_bulk_enabled(_state)
+        settings.append({"label":"Sản xuất lớn: "+("ĐÃ BẬT" if bulk else "BẬT 60/90/180 phút"),"action":"bulk","disabled":not connected or bulk})
+        settings.append({"label":"Tự chữa HP: "+("BẬT" if bool(policy.get("auto_hp_service",false)) else "TẮT"),"action":"heal","disabled":not connected})
+        settings.append({"label":"Hạn mức chữa trị: %d LT/ngày" % int(policy.get("auto_hp_daily_stone_limit",6)),"action":"limit","disabled":not connected})
+    return {"cashflow":cash,"economy_actions":economic,"vein_workers":workers,"policy_actions":settings,"policy_groups":[
+        {"name":"Lao động","action":"work","current":str(_state.sect.work_policy),"choices":[{"name":"Cân bằng","value":WorkforceSystem.POLICY_BALANCED},{"name":"Sản xuất","value":WorkforceSystem.POLICY_PRODUCTION},{"name":"Tu luyện","value":WorkforceSystem.POLICY_CULTIVATION}]},
+        {"name":"Hậu cần","action":"needs","current":str(_state.sect.needs_priority),"choices":[{"name":"Cân bằng","value":NeedsSystem.PRIORITY_BALANCED},{"name":"Thuốc","value":NeedsSystem.PRIORITY_MEDICINE},{"name":"Vật tư","value":NeedsSystem.PRIORITY_SUPPLIES}]},
+        {"name":"Trang bị","action":"equipment","current":str(_state.sect.equipment_policy),"choices":[{"name":"Cân bằng","value":EquipmentSystem.POLICY_BALANCED},{"name":"Chiến đấu","value":EquipmentSystem.POLICY_COMBAT},{"name":"Tiết kiệm","value":EquipmentSystem.POLICY_FRUGAL}]}
+    ]}
+
+func _hall_action(action: String,value: String) -> void:
+    var owner := _host.get_parent()
+    if owner == null or not owner.has_method("_economy_a_enable_from_ui"):
+        return
+    match action:
+        "work": owner.call("_set_work_policy_from_building",StringName(value))
+        "needs": owner.call("_set_needs_priority_from_building",StringName(value))
+        "equipment": owner.call("_set_equipment_policy_from_building",StringName(value))
+        "enable": owner.call("_economy_a_enable_from_ui")
+        "arrears": owner.call("_economy_a_pay_arrears_from_ui")
+        "bulk": owner.call("_sx_v55_enable_bulk_from_ui")
+        "heal": owner.call("_economy_a_toggle_heal_from_ui")
+        "limit": owner.call("_economy_a_cycle_spend_limit_from_ui")
+        "vein_cancel":
+            var snapshot := Eco01OriginVein.new().snapshot(_state)
+            owner.call("_eco01_cancel_from_ui",StringName(str(snapshot.get("worker_id",""))),str(snapshot.get("job_id","")))
+        "vein_start":
+            var selection := OptionButton.new()
+            selection.add_item(value)
+            selection.set_item_metadata(0,value)
+            selection.select(0)
+            owner.call("_eco01_start_selected_from_ui",selection)
+            selection.free()
+        _: return
+    _feedback = str(owner.get("building_management_feedback"))
+    _render()
 
 func _house_model() -> Dictionary:
     var houses: Array = SectResidenceSystemV1.all_houses(_state)
