@@ -136,9 +136,9 @@ func _verify_bottom_bar_has_only_real_entries() -> bool:
         if child is Button:
             labels.append((child as Button).text)
 
-    # The actual production bottom entry is the compact Săn Quái label;
-    # keep its connected, real PvE action; avoid pinning obsolete verbose text.
-    var expected: Array[String] = ["Tông Môn", "Đệ Tử", "Kho", "Thế Giới", "Săn Quái"]
+    # MAP01 uses the compact player-facing Săn Yêu label; its real action
+    # must still be connected to the canonical PvE entry below.
+    var expected: Array[String] = ["Tông Môn", "Đệ Tử", "Kho", "Thế Giới", "Săn Yêu"]
     if labels != expected:
         return _fail("Bottom bar differs from canonical live actions: %s" % str(labels))
     var hunt: Button = bottom.find_child("PveHuntQuickEntry", false, false) as Button

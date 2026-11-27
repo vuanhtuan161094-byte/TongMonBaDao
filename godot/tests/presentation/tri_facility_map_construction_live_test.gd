@@ -86,7 +86,7 @@ func _run() -> void:
         return
     var target := Vector2i(game.get("build_mode_site"))
     var confirm := _find_button(game,"ConfirmMapConstruction")
-    if not SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES.has(target) \
+    if not SectResidenceSiteV1.annex_sites(state.sect.world_layout_version).has(target) \
             or not bool(SectResidenceSiteV1.check(state,target).get("ok",false)) \
             or not str(game.call("_residence_site_actor_conflict_reason",target)).is_empty() \
             or confirm == null or confirm.disabled:

@@ -233,8 +233,31 @@ func _build_building_operation_panel() -> void:
 func _refresh_building_operation_content(rebuild_management_controls: bool = true) -> void:
     super._refresh_building_operation_content(rebuild_management_controls)
     if _building_operation_is_open():
+        if selected_building == SectMapPresentation.DEST_MAIN_HALL:
+            # Keep canonical details in the live column, not twice in the header.
+            building_operation_body.text = "TRUNG TÂM QUẢN TRỊ TÔNG MÔN\nNâng cấp, điều hành và đặt chính sách phát triển." + ("\n" + building_management_feedback if not building_management_feedback.is_empty() else "")
         _art05_reflow()
         _art05_tint()
+
+func _refresh_building_operation_metrics() -> void:
+    if selected_building != SectMapPresentation.DEST_MAIN_HALL or state == null:
+        super._refresh_building_operation_metrics()
+        return
+    for child in building_operation_metrics.get_children():
+        building_operation_metrics.remove_child(child)
+        child.queue_free()
+    var hall := SectHallSystemV1.hall(state)
+    var rows: Array = [
+        ["ĐẠI ĐIỆN", "Lv%d" % hall.level if hall != null else "—", "upgrade"],
+        ["ĐỆ TỬ / SỨC CHỨA", "%d / %d" % [state.disciples.size(),state.sect.disciple_capacity], "worker"],
+        ["NGÂN KHỐ", str(state.sect.treasury), "resource"],
+        ["LINH THẠCH", str(state.sect.spirit_stones), "resource"]
+    ]
+    for entry in rows:
+        var card := SECT_UI_THEME.metric_card(str(entry[0]),str(entry[1]),str(entry[2]),ART05_GOLD)
+        card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        card.custom_minimum_size = Vector2(0,66)
+        building_operation_metrics.add_child(card)
 
 func _art05_accent() -> Color:
     match selected_building:
@@ -350,8 +373,9 @@ func _art05_reflow() -> void:
     if building_operation_live_content != null:
         building_operation_live_content.custom_minimum_size.x = 370
     _art05_repack_galleries()
-    _r2_operation_caption("R2ActionCaption","ĐIỀU PHỐI NHÂN SỰ",Vector2(18,304),Vector2(355,20))
-    _r2_operation_caption("R2LiveCaption","HOẠT ĐỘNG THỰC TẾ",Vector2(405,304),Vector2(397,20))
+    var hall_open := selected_building == SectMapPresentation.DEST_MAIN_HALL
+    _r2_operation_caption("R2ActionCaption","QUẢN TRỊ & CHÍNH SÁCH" if hall_open else "ĐIỀU PHỐI NHÂN SỰ",Vector2(18,304),Vector2(355,20))
+    _r2_operation_caption("R2LiveCaption","TÌNH HÌNH TÔNG MÔN" if hall_open else "HOẠT ĐỘNG THỰC TẾ",Vector2(405,304),Vector2(397,20))
     if building_operation_scroll != null:
         building_operation_scroll.clip_contents = true
     if building_operation_live_panel != null:

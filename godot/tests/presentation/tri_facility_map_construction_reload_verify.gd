@@ -47,7 +47,7 @@ func _run() -> void:
         return
     var move_receipts: Dictionary = state.sect.hall_governance.get("residence_move_receipts",{})
     if not _check(bool(expected.get("fixed_masterplan",false))
-            and SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES.has(expected_site)
+            and SectResidenceSiteV1.annex_sites(state.sect.world_layout_version).has(expected_site)
             and move_receipts.size() == int(expected.get("move_receipt_count",-1))
             and move_receipts.is_empty(),
             "fixed MASTERPLAN Save/Reload allowed retired relocation receipts"):
