@@ -702,9 +702,11 @@ func _load_verified_source_art() -> void:
     if not pve_landscape:
         # MAP01: dense exterior woodland, never interior construction tiles.
         # Deterministic spacing keeps the silhouette coherent on every load.
-        var forest_bounds := STARTER.grow(32)
-        for y in range(forest_bounds.position.y,forest_bounds.end.y,2):
-            for x in range(forest_bounds.position.x,forest_bounds.end.x,2):
+        var angled := map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT
+        var forest_bounds := SectResidenceSiteV1.construction_bounds(map_layout_version).grow(20) if angled else STARTER.grow(32)
+        var stride := 3 if angled else 2
+        for y in range(forest_bounds.position.y,forest_bounds.end.y,stride):
+            for x in range(forest_bounds.position.x,forest_bounds.end.x,stride):
                 var tile := Vector2i(x,y)
                 if not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
                     continue
@@ -720,7 +722,23 @@ func _load_verified_source_art() -> void:
                     continue
                 if posmod(x*17+y*31+x*y,7) == 0:
                     continue
-                var tree_id := str(PVE_TREE_ASSETS[posmod(x*7+y*11,PVE_TREE_ASSETS.size())])
+                var species: Array = PVE_TREE_ASSETS
+                if angled:
+                    # Woodland groves and open clearings, not a uniform belt of
+                    # identical crowns. All art is from the existing registry.
+                    var density := sin(float(x)*0.19+float(y)*0.12)+cos(float(x)*0.11-float(y)*0.16)
+                    if density < -0.5 and posmod(x*13+y*7,4) != 0:
+                        continue
+                    var selector := posmod(x*17+y*31+x*y,19)
+                    if selector < 3:
+                        species = PVE_ROCK_ASSETS
+                    elif selector < 7:
+                        species = PVE_BAMBOO_ASSETS
+                    elif selector == 7:
+                        species = PVE_RARE_AUTUMN_ASSETS
+                    elif selector == 8:
+                        species = PVE_RARE_BLOSSOM_ASSETS
+                var tree_id := str(species[posmod(x*7+y*11,species.size())])
                 var rel := "env01_assets/vegetation/%s.png" % tree_id
                 var tree := source_art.texture_for(rel)
                 if tree == null:
@@ -730,9 +748,15 @@ func _load_verified_source_art() -> void:
                 if not decoration_items_by_chunk.has(chunk):
                     decoration_items_by_chunk[chunk] = []
                 var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.33,float(posmod(x*11+y*3,5)-2)*0.33)
+                var extent_scale := 0.32+float(posmod(x*3+y*5,9))*0.035
+                if angled:
+                    jitter *= 1.35
+                    extent_scale = 0.37+float(posmod(x*3+y*5,9))*0.038
+                    if distance < 100.0:
+                        extent_scale *= 0.78
                 (decoration_items_by_chunk[chunk] as Array).append({
                     "world":project(Vector2(tile)+jitter),"texture":tree,
-                    "scale":0.32+float(posmod(x*3+y*5,9))*0.035,"cell":tile
+                    "scale":extent_scale,"cell":tile
                 })
     _cache_static_overlays()
     pve_static_queue_dirty = true
@@ -1672,14 +1696,25 @@ func _draw_sect_civic_axis() -> void:
     if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
         # The path follows the same 26-27 degree axis as the stairs/roofs.
         # All four corners are projected grid coordinates, never screen rectangles.
-        var a := project(Vector2(83,83))
-        var b := project(Vector2(134,83))
-        var c := project(Vector2(134,89))
-        var d := project(Vector2(83,89))
-        var axis := PackedVector2Array([a,b,c,d])
-        draw_colored_polygon(axis,Color(0.82,0.79,0.68,0.52))
-        axis.append(a)
-        draw_polyline(axis,Color("aa9b7c"),3.0,true)
+        # Use the same stone texture inside and outside the boundary. Each
+        # diamond is projected in the same coordinate space as the building
+        # foundations; never leave a plain screen-space strip beyond the gate.
+        for x in range(83,137):
+            for y in range(84,89):
+                var point := project(Vector2(x,y))
+                var corners := PackedVector2Array([
+                    point+Vector2(0,-HALF_H),point+Vector2(HALF_W,0),
+                    point+Vector2(0,HALF_H),point+Vector2(-HALF_W,0)])
+                if x >= 126:
+                    draw_colored_polygon(corners,Color("b0ab96"))
+                    draw_texture_rect(SECT_FLAGSTONE,Rect2(point-Vector2(HALF_W,HALF_H),Vector2(HALF_W*2,HALF_H*2)),false)
+                else:
+                    draw_colored_polygon(corners,Color(0.87,0.83,0.71,0.24))
+        for y in [83.5,88.5]:
+            var edge_a := project(Vector2(83,float(y)))
+            var edge_b := project(Vector2(136,float(y)))
+            draw_line(edge_a,edge_b,Color("a69a80"),3.0,true)
+            draw_line(edge_a+Vector2(0,3),edge_b+Vector2(0,3),Color("ded1b5"),1.5,true)
         var court := project(Vector2(SectResidenceSiteV1.junction_for_layout(map_layout_version)))
         var extent := Vector2(250,130)
         draw_texture_rect(R2_COURT,Rect2(court-extent*0.5,extent),false)
@@ -1772,13 +1807,21 @@ func _draw_masterplan_district_signs() -> void:
             ["SẢN XUẤT",Vector2(0.775,0.075)],
             ["TU LUYỆN",Vector2(0.425,0.47)],
             ["SƠN MÔN",Vector2(0.425,0.94)]]
+        if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+            # Titles are placed in the unbuilt commons instead of over roofs.
+            titles = [
+                ["ĐỆ TỬ XÁ",Vector2(0.14,0.65)],
+                ["ĐẠI ĐIỆN",Vector2(0.39,0.24)],
+                ["SẢN XUẤT",Vector2(0.89,0.40)],
+                ["TU LUYỆN",Vector2(0.39,0.62)],
+                ["SƠN MÔN",Vector2(0.47,0.89)]]
         for row in titles:
             var at := _map01_estate_point(Vector2(row[1]))
             var title := str(row[0])
             var width := font.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
             draw_set_transform(at,0.0,Vector2.ONE/maxf(camera.zoom.x,0.25))
-            draw_string_outline(font,Vector2(-width*0.5,0),title,HORIZONTAL_ALIGNMENT_LEFT,-1,14,2,Color(0.84,0.81,0.73,0.92))
-            draw_string(font,Vector2(-width*0.5,0),title,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("414b42"))
+            draw_string_outline(font,Vector2(-width*0.5,0),title,HORIZONTAL_ALIGNMENT_LEFT,-1,14,3,Color(0.88,0.84,0.75,0.9))
+            draw_string(font,Vector2(-width*0.5,0),title,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("3d4c42"))
             draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
         return
 
