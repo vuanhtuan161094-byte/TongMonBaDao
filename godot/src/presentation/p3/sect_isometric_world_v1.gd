@@ -1299,6 +1299,11 @@ func pick_at_screen(screen: Vector2) -> Dictionary:
         var radius := SectEndgameVisualBudgetV1.pick_radius(
             camera.zoom.x,bool(item["managed"]))
         var roof_bias := 36.0 if not bool(item["managed"]) or camera.zoom.x >= SectEndgameVisualBudgetV1.COMPACT_SITE_ZOOM else 5.0
+        if not pve_landscape and map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
+            var art_scale := _map01_art_scale(str(item["destination"]),str(item["building_id"]))
+            if art_scale > 1.0:
+                radius = Vector2(maxf(radius.x,42.0*art_scale),maxf(radius.y,49.0*art_scale))
+                roof_bias = 36.0
         var normalized := Vector2(offset.x/radius.x,(offset.y+roof_bias)/radius.y)
         var distance := normalized.length()
         if distance <= 1.0 and distance < best_distance:
@@ -1479,15 +1484,15 @@ func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
             if points.size() < 3:
                 continue
             var base := vertices.size()
-            var tint := 0.94+float(posmod(x*17+y*23+x*y,7))*0.009
+            var tint := 0.96+float(posmod(x*17+y*23+x*y,7))*0.005
             var tone := Color(tint,tint,tint,1.0)
             if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
                 match SectResidenceSiteV1.estate_zone(center):
-                    "residence": tone *= Color(0.90,0.96,0.91)
-                    "production": tone *= Color(1.0,0.95,0.85)
-                    "hall": tone *= Color(1.0,0.99,0.94)
-                    "cultivation": tone *= Color(0.89,0.95,0.98)
-                    "court": tone *= Color(0.96,0.96,0.95)
+                    "residence": tone *= Color(0.97,0.99,0.97)
+                    "production": tone *= Color(1.0,0.98,0.94)
+                    "hall": tone *= Color(1.0,1.0,0.97)
+                    "cultivation": tone *= Color(0.96,0.99,1.0)
+                    "court": tone *= Color(0.99,0.99,0.98)
             for point in points:
                 vertices.append(point)
                 uvs.append(Vector2(0.5+(point.x-center.x)/(2.0*HALF_W),0.5+(point.y-center.y)/(2.0*HALF_H)))
@@ -1542,18 +1547,33 @@ func _draw_sect_estate_border() -> void:
     _draw_wall_span(bl,Vector2(gate_x-110,bottom))
     _draw_wall_span(Vector2(gate_x+110,bottom),br)
 
+# Architectural inlays mark the two future expansion wings without
+# drawing empty construction slots in everyday play.
 func _draw_approved_district_inlays() -> void:
-    # Low-contrast stone borders delineate the exact land allocation.
     for u in [0.30,0.55]:
-        var a := SectResidenceSiteV1.estate_point(Vector2(float(u),0.0))
-        var b := SectResidenceSiteV1.estate_point(Vector2(float(u),1.0))
-        draw_line(a,b,Color("77786c"),7.0,true)
-        draw_line(a,b,Color("c4bba3"),2.0,true)
-    for v in [0.32,0.72]:
-        var a := SectResidenceSiteV1.estate_point(Vector2(0.30,float(v)))
-        var b := SectResidenceSiteV1.estate_point(Vector2(0.55,float(v)))
-        draw_line(a,b,Color("77786c"),6.0,true)
-        draw_line(a,b,Color("c4bba3"),2.0,true)
+        var a := SectResidenceSiteV1.estate_point(Vector2(float(u),0.03))
+        var b := SectResidenceSiteV1.estate_point(Vector2(float(u),0.97))
+        draw_line(a,b,Color(0.59,0.57,0.51,0.48),3.0,true)
+        draw_line(a+Vector2(5,0),b+Vector2(5,0),Color(0.79,0.76,0.65,0.52),1.2,true)
+    # Stone perimeter walkway and carved corner details occupy only the
+    # existing paved surface; no new collision or construction authority.
+    var rim := PackedVector2Array([
+        SectResidenceSiteV1.estate_point(Vector2(0.018,0.025)),
+        SectResidenceSiteV1.estate_point(Vector2(0.982,0.025)),
+        SectResidenceSiteV1.estate_point(Vector2(0.982,0.975)),
+        SectResidenceSiteV1.estate_point(Vector2(0.018,0.975)),
+        SectResidenceSiteV1.estate_point(Vector2(0.018,0.025))])
+    draw_polyline(rim,Color("ada18b"),16.0,true)
+    draw_polyline(rim,Color("d9cbb0"),3.0,true)
+
+func _draw_map01_platform(p: Vector2,extent: Vector2,tone: Color) -> void:
+    # Inlaid stone directly below an actual landmark, not a separate shadow.
+    var r := extent*0.5
+    var corners := PackedVector2Array([p+Vector2(-r.x,-r.y),p+Vector2(r.x,-r.y),
+        p+Vector2(r.x+12,r.y),p+Vector2(-r.x+12,r.y)])
+    draw_colored_polygon(corners,tone)
+    corners.append(corners[0])
+    draw_polyline(corners,Color("b7a98c"),2.0,true)
 
 func _draw_sect_civic_axis() -> void:
     if map_layout_version < 2:
@@ -1561,22 +1581,22 @@ func _draw_sect_civic_axis() -> void:
     var hall := project(visual_anchor(&"main_hall",anchor_for(&"main_hall")))
     var gate := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
     var center_x := (hall.x+gate.x)*0.5
-    # The existing stone surface remains continuous. A narrow inlaid
-    # ceremonial spine and bronze seal mark the gathering court.
-    var top := hall.y+35.0
-    var bottom := gate.y-22.0
+    var top := hall.y+42.0
+    var bottom := gate.y-32.0
     if bottom <= top:
         return
-    draw_rect(Rect2(center_x-49,top,98,bottom-top),Color(0.82,0.77,0.65,0.20))
+    # Distinct ceremonial stone path, warm border and an engraved jade court.
+    draw_rect(Rect2(center_x-73,top,146,bottom-top),Color(0.78,0.75,0.66,0.42))
     for side in [-1.0,1.0]:
-        var x: float = center_x+float(side)*49.0
-        draw_line(Vector2(x,top),Vector2(x,bottom),Color("b9aa87"),2.0,true)
+        var x: float = center_x+float(side)*73.0
+        draw_line(Vector2(x,top),Vector2(x,bottom),Color("a99b7e"),3.0,true)
+        draw_line(Vector2(x+float(side)*5.0,top),Vector2(x+float(side)*5.0,bottom),Color("d5c5a3"),2.0,true)
     var court := project(Vector2(ROADS_JUNCTION))
-    draw_circle(court,34.0,Color(0.36,0.43,0.39,0.28))
-    draw_arc(court,34.0,0.0,TAU,64,Color("ded0ad"),2.0,true)
-    draw_arc(court,27.0,0.0,TAU,64,Color("817e6d"),1.5,true)
-    var seal := PackedVector2Array([court+Vector2(0,-15),court+Vector2(15,0),court+Vector2(0,15),court+Vector2(-15,0)])
-    draw_colored_polygon(seal,Color("b6aa85"))
+    var court_size := Vector2(230,120)
+    draw_texture_rect(R2_COURT,Rect2(court-court_size*0.5,court_size),false,Color(1.0,1.0,1.0,0.83))
+    if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
+        _draw_map01_platform(hall+Vector2(0,5),Vector2(305,92),Color(0.73,0.70,0.62,0.45))
+        _draw_map01_platform(gate+Vector2(0,4),Vector2(215,70),Color(0.73,0.70,0.62,0.45))
 
 func _pve_ground_color(cell: Vector2i) -> Color:
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
@@ -1630,38 +1650,26 @@ func _draw_masterplan_district_signs() -> void:
         return
     # Small, legible wayfinding plaques in open ground. Their screen size
     # stays stable as the camera zooms; they never consume pointer events.
-    var inverse_zoom := 1.0/maxf(camera.zoom.x,0.25)
-    var signs: Array = MASTERPLAN_DISTRICT_SIGNS
+    # At overview show restrained section titles only; close-up uses
+    # architecture and the existing district navigation. No floating cards.
     if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
-        signs = [
-            {"label":"ĐỆ TỬ XÁ","detail":"30% · Nội viện","uv":Vector2(0.15,0.15),"tone":Color("9bc8a1")},
-            {"label":"SẢN XUẤT","detail":"45% · Mở rộng","uv":Vector2(0.775,0.045),"tone":Color("e2ad78")},
-            {"label":"ĐẠI ĐIỆN","detail":"Quản trị","uv":Vector2(0.425,0.06),"tone":Color("dfb96f")},
-            {"label":"TU LUYỆN","detail":"Tu vi · Rèn thân","uv":Vector2(0.425,0.39),"tone":Color("86d6d8")},
-            {"label":"SƠN MÔN","detail":"Xuất chinh · Săn yêu","uv":Vector2(0.425,0.94),"tone":Color("e49c88")}
-        ]
-    for row in signs:
-        var ground: Vector2
-        if row.has("uv"):
-            ground = SectResidenceSiteV1.estate_point(Vector2(row["uv"]))
-        else:
-            ground = project(Vector2(row["cell"]))
-        var screen_point := get_canvas_transform()*ground
-        if screen_point.x < 145.0 or screen_point.x > 1140.0 or screen_point.y < 40.0 or screen_point.y > 528.0:
-            continue
-        var caption := str(row["label"])
-        var detail := str(row["detail"])
-        var accent: Color = row["tone"]
-        var width := maxf(font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x,font.get_string_size(detail,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x)+34.0
-        draw_set_transform(ground,0.0,Vector2.ONE*inverse_zoom)
-        var plaque := PackedVector2Array([Vector2(-width*0.5+7,-18),Vector2(width*0.5-7,-18),Vector2(width*0.5,-11),Vector2(width*0.5,12),Vector2(width*0.5-7,19),Vector2(-width*0.5+7,19),Vector2(-width*0.5,12),Vector2(-width*0.5,-11)])
-        draw_colored_polygon(plaque,Color(0.045,0.11,0.105,0.94))
-        plaque.append(plaque[0])
-        draw_polyline(plaque,accent,1.1,true)
-        draw_colored_polygon(PackedVector2Array([Vector2(-width*0.5+10,-5),Vector2(-width*0.5+14,0),Vector2(-width*0.5+10,5),Vector2(-width*0.5+6,0)]),accent)
-        draw_string(font,Vector2(-width*0.5+20,-2),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,accent)
-        draw_string(font,Vector2(-width*0.5+20,12),detail,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("ece8d8"))
-        draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
+        if camera.zoom.x > 0.62:
+            return
+        var titles := [
+            ["ĐỆ TỬ XÁ",Vector2(0.15,0.18)],
+            ["ĐẠI ĐIỆN",Vector2(0.425,0.075)],
+            ["SẢN XUẤT",Vector2(0.775,0.075)],
+            ["TU LUYỆN",Vector2(0.425,0.47)],
+            ["SƠN MÔN",Vector2(0.425,0.96)]]
+        for row in titles:
+            var at := SectResidenceSiteV1.estate_point(Vector2(row[1]))
+            var title := str(row[0])
+            var width := font.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
+            draw_set_transform(at,0.0,Vector2.ONE/maxf(camera.zoom.x,0.25))
+            draw_string_outline(font,Vector2(-width*0.5,0),title,HORIZONTAL_ALIGNMENT_LEFT,-1,14,2,Color(0.84,0.81,0.73,0.92))
+            draw_string(font,Vector2(-width*0.5,0),title,HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("414b42"))
+            draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
+        return
 
 func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
@@ -2133,6 +2141,21 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
             draw_line(p+Vector2(dx,3),p+Vector2(dx+2,-4),detail,1.5,true)
 
 
+func _map01_art_scale(kind: String,building_id: String = "") -> float:
+    if pve_landscape or map_layout_version < SectResidenceSiteV1.APPROVED_LAYOUT:
+        return 1.0
+    if kind == "main_hall":
+        return 1.60
+    if kind == "gate":
+        return 1.85
+    if kind in ["cultivation","ren_than_duong","medicine"]:
+        return 1.48
+    if kind == "residence":
+        return 1.33 if building_id.ends_with("_001") else 1.08
+    if kind in ["guidance","warehouse","forge"]:
+        return 1.28
+    return 1.18 if building_id.ends_with("_001") else 1.0
+
 func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool = true,
         building_id: String = "", view_direction: String = "A") -> void:
     var chosen_view := view_direction
@@ -2170,7 +2193,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
             selected_v3 = V3_ART.sprite_path(StringName(kind),StringName(chosen_view),false)
             image_v3 = variant_v3_textures.get(selected_v3) as Texture2D
         if image_v3 != null:
-            var target_v3 := V3_ART.display_size(StringName(kind))
+            var target_v3 := V3_ART.display_size(StringName(kind))*_map01_art_scale(kind,building_id)
             draw_texture_rect(image_v3,
                 Rect2(p + Vector2(0,-target_v3.y*0.28)-target_v3*0.5,target_v3),false)
             return
@@ -2183,7 +2206,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
             var new_house := VIS11_AB.texture_for(StringName(kind),StringName(chosen_view))
             if new_house != null:
                 image = new_house
-            var target: Vector2 = HOUSE_SIZES[kind]
+            var target: Vector2 = HOUSE_SIZES[kind]*_map01_art_scale(kind,building_id)
             var offset := Vector2(0.0,-target.y*0.28)
             draw_texture_rect(image,Rect2(p+offset-target*0.5,target),false)
             return
@@ -2196,7 +2219,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
             var new_mine_view := VIS11_AB.texture_for(&"mine",StringName(chosen_view))
             if new_mine_view != null:
                 vignette = new_mine_view
-        var size: Vector2 = MAP_D2_SITE_SIZE[kind]
+        var size: Vector2 = MAP_D2_SITE_SIZE[kind]*_map01_art_scale(kind,building_id)
         draw_texture_rect(vignette,
             Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
         var candidate_font := ThemeDB.fallback_font
@@ -2209,7 +2232,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         return
     if not pve_landscape and MAP01_LANDMARKS.has(kind):
         var art: Texture2D = MAP01_LANDMARKS[kind]
-        var size: Vector2 = MAP01_LANDMARK_SIZES[kind]
+        var size: Vector2 = MAP01_LANDMARK_SIZES[kind]*_map01_art_scale(kind,building_id)
         draw_texture_rect(art,Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
         var captions := {"cultivation":"TU LUYỆN","ren_than_duong":"RÈN THÂN","medicine":"Y QUÁN","gate":"CỔNG TÔNG MÔN"}
         var caption := str(captions[kind])

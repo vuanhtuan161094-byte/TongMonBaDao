@@ -226,7 +226,7 @@ func _run() -> void:
 		_fail("visual spine misaligned: gate=%s courtyard=%s hall=%s" % [str(gate),str(court),str(hall)])
 		return
 	if not SectMapCamera.is_map_screen_point(gate) or not SectMapCamera.is_map_screen_point(hall):
-		_fail("gate or Hall focal anchor is outside the default map viewport")
+		_fail("gate or Hall focal anchor is outside the default map viewport: gate=%s hall=%s zoom=%.2f center=%s" % [str(gate),str(hall),iso.camera.zoom.x,str(iso.camera.position)])
 		return
 	# Real Mine/Forest/Field rows preserve unique canonical IDs and still open
 	# the actual existing worksite management panel from their map hit targets.

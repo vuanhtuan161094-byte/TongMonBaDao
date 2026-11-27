@@ -25,6 +25,10 @@ func _ready() -> void:
         return
     _art05_style_global_hud()
     _art05_install_mockup_shell()
+    if state != null and int(state.sect.world_layout_version) >= SectResidenceSiteV1.APPROVED_LAYOUT:
+        # Default to the unobstructed compound. District tabs still open
+        # the real contextual management card; Help remains in the top bar.
+        _art05_dock_collapsed = true
     _r2_skin_party_picker()
     _art05_build_sect_master_dock()
     _art05_refresh_sect_master_dock()
@@ -959,12 +963,9 @@ func _art05_install_mockup_shell() -> void:
                 (c as Label).add_theme_color_override("font_color",ART05_WHITE)
     var camera_help := get_node_or_null("CameraHintBackground") as Control
     if camera_help != null:
-        camera_help.position = Vector2(382,604)
-        camera_help.size = Vector2(440,28)
+        camera_help.visible = false
     if camera_hint != null:
-        camera_hint.position = Vector2(393,606)
-        camera_hint.size = Vector2(422,24)
-        camera_hint.text = "Kéo bản đồ · Cuộn để zoom · Chạm công trình để quản lý"
+        camera_hint.visible = false
 
 func _map01_texture_style(texture: Texture2D) -> StyleBoxTexture:
     var result := StyleBoxTexture.new()

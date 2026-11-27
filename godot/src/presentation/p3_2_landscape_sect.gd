@@ -989,6 +989,11 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
     else:
         map_layer.scale = target_scale
         map_layer.position = target_position
+        # The real SubViewport and picking camera must agree before the
+        # first rendered frame or the first input, not one process frame later.
+        if iso_world != null and iso_world.set_legacy_transform(map_zoom,target_position):
+            if iso_viewport != null:
+                iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
     _refresh_world_actor_visibility()
     _refresh_zoom_readout()

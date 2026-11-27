@@ -70,8 +70,21 @@ func _run() -> void:
             _fail("bottom navigation collision")
             return
     var dock := scene.find_child("SectMasterOverviewDock",true,false) as Panel
-    if dock == null or not dock.visible or dock.position.x < 990 or dock.position.x+dock.size.x > 1280:
+    if dock == null or dock.position.x < 990 or dock.position.x+dock.size.x > 1280:
         _fail("Sect Master contextual dock absent or clipped")
+        return
+    if int(state.sect.world_layout_version) >= SectResidenceSiteV1.APPROVED_LAYOUT:
+        if dock.visible:
+            _fail("approved overview is obscured by default dock")
+            return
+        var hall_tab := scene.find_child("MasterplanDistrict_main_hall",true,false) as Button
+        if hall_tab == null:
+            _fail("Hall navigation missing")
+            return
+        hall_tab.pressed.emit()
+        await process_frame
+    if not dock.visible:
+        _fail("contextual management dock failed to open")
         return
     var action := dock.find_child("SectMasterManage",true,false) as Button
     if action == null:
