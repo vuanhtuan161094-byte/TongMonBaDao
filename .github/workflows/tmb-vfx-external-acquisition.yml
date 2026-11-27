@@ -1,0 +1,31 @@
+name: TMB external VFX acquisition
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/vfx_acquisition_20261127/**'
+      - '.github/workflows/tmb-vfx-external-acquisition.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acquisition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image validation
+        run: python -m pip install Pillow==11.3.0
+      - name: Acquire and index pinned VFX sources
+        run: python tools/vfx_acquisition_20261127/acquire.py
+      - name: Upload actual source and QA inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmb-external-vfx-${{ github.sha }}
+          path: outputs/external_vfx_acquisition/
+          if-no-files-found: error
+          retention-days: 14
