@@ -18,6 +18,8 @@ const VIS07_APPROVED = preload("res://src/presentation/p3/tmb_approved_building_
 const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original_building_art_v5.gd")
 const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
 const VIS11_AB = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
+const FACILITY_SCENERY = preload("res://art/onegame_world_r2/map01_meadow.svg")
+var _facility_tab_index := 0
 
 func _ready() -> void:
     super._ready()
@@ -228,6 +230,7 @@ func _build_building_operation_panel() -> void:
     var previous := building_operation_panel.get_node_or_null("Art04CultivationFrame")
     if previous != null:
         previous.visible = false
+    _facility_make_shell()
     _art05_reflow()
 
 func _refresh_building_operation_content(rebuild_management_controls: bool = true) -> void:
@@ -238,6 +241,7 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
             building_operation_body.text = "TRUNG TÂM QUẢN TRỊ TÔNG MÔN\nNâng cấp, điều hành và đặt chính sách phát triển." + ("\n" + building_management_feedback if not building_management_feedback.is_empty() else "")
         _art05_reflow()
         _art05_tint()
+        _facility_update()
 
 func _refresh_building_operation_metrics() -> void:
     if state == null or selected_building not in [SectMapPresentation.DEST_MAIN_HALL,SectMapPresentation.DEST_WAREHOUSE]:
@@ -412,6 +416,214 @@ func _art05_reflow() -> void:
         building_operation_scroll.clip_contents = true
     if building_operation_live_panel != null:
         building_operation_live_panel.clip_contents = true
+    _facility_fullscreen_reflow()
+
+
+# Common full-viewport facility shell for all ordinary worksite destinations.
+# Preserves the actual live actor, action buttons, resources and Save writers:
+# the surface switches views but never duplicates or reimplements mutations.
+func _facility_make_shell() -> void:
+    if building_operation_panel == null or building_operation_panel.has_node("FacilityStandardNav"):
+        return
+    var scenery := TextureRect.new()
+    scenery.name = "FacilityStandardScenery"
+    scenery.texture = FACILITY_SCENERY
+    scenery.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    scenery.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    scenery.modulate = Color(0.57,0.72,0.67,0.12)
+    scenery.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    scenery.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    building_operation_panel.add_child(scenery)
+    building_operation_panel.move_child(scenery,0)
+    var line := ColorRect.new()
+    line.name = "FacilityHeaderRule"
+    line.color = Color(0.92,0.75,0.43,0.35)
+    line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_panel.add_child(line)
+    var nav := VBoxContainer.new()
+    nav.name = "FacilityStandardNav"
+    nav.add_theme_constant_override("separation",10)
+    building_operation_panel.add_child(nav)
+    for index in range(3):
+        var button := Button.new()
+        button.name = "FacilityTab_%d" % index
+        button.text = ["TỔNG QUAN","ĐIỀU HÀNH","TÌNH TRẠNG"][index]
+        button.custom_minimum_size = Vector2(155,48)
+        button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+        button.add_theme_font_size_override("font_size",14)
+        button.add_theme_color_override("font_color",ART05_WHITE)
+        button.add_theme_stylebox_override("normal",_art05_style(Color(0.045,0.135,0.147),Color(0.38,0.52,0.48,0.5),1,7))
+        button.add_theme_stylebox_override("hover",_art05_style(Color(0.12,0.27,0.28),ART05_GOLD,1,7))
+        button.pressed.connect(_facility_set_tab.bind(index))
+        nav.add_child(button)
+    var title := Label.new()
+    title.name = "FacilitySectionTitle"
+    title.add_theme_font_size_override("font_size",19)
+    title.add_theme_color_override("font_color",ART05_GOLD)
+    title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_panel.add_child(title)
+    var caption := Label.new()
+    caption.name = "FacilityArtworkCaption"
+    caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    caption.add_theme_font_size_override("font_size",15)
+    caption.add_theme_color_override("font_color",ART05_GOLD)
+    caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_panel.add_child(caption)
+    var note := Label.new()
+    note.name = "FacilitySectionHint"
+    note.text = "Dữ liệu từ hoạt động thực tế · Chọn chức năng ở thanh trái"
+    note.add_theme_font_size_override("font_size",12)
+    note.add_theme_color_override("font_color",ART05_MUTE)
+    note.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_panel.add_child(note)
+
+func _facility_set_tab(index: int) -> void:
+    _facility_tab_index = clampi(index,0,2)
+    _facility_apply_tab()
+
+func _facility_apply_tab() -> void:
+    if building_operation_panel == null:
+        return
+    var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as VBoxContainer
+    if nav == null:
+        return
+    for index in range(nav.get_child_count()):
+        var button := nav.get_child(index) as Button
+        var active := index == _facility_tab_index
+        button.add_theme_stylebox_override("normal",_art05_style(
+            Color(0.18,0.31,0.30) if active else Color(0.045,0.135,0.147),
+            ART05_GOLD if active else Color(0.38,0.52,0.48,0.5),1,7))
+        button.add_theme_color_override("font_color",ART05_GOLD if active else ART05_WHITE)
+    var overview := _facility_tab_index == 0
+    var actions := _facility_tab_index == 1
+    building_operation_body.visible = overview
+    building_operation_scroll.visible = actions
+    building_operation_live_panel.visible = _facility_tab_index == 2
+    var picker := building_operation_panel.get_node_or_null("MineOreHero") as Control
+    if picker != null:
+        picker.visible = actions and selected_building in [
+            SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST
+        ] and picker.get_child_count() > 0
+    for caption_name in ["R2ActionCaption","R2LiveCaption"]:
+        var old_caption := building_operation_panel.get_node_or_null(caption_name)
+        if old_caption != null:
+            old_caption.visible = false
+    var title := building_operation_panel.get_node_or_null("FacilitySectionTitle") as Label
+    if title != null:
+        var label := _building_name(selected_building)
+        match _facility_tab_index:
+            0: title.text = "KHÁI QUÁT · " + label.to_upper()
+            1: title.text = "ĐIỀU HÀNH · " + label.to_upper()
+            2: title.text = "TÌNH TRẠNG · " + label.to_upper()
+
+func _facility_update() -> void:
+    if building_operation_panel == null or selected_building == &"":
+        return
+    var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
+    if caption != null:
+        var building := _selected_operation_building()
+        caption.text = "%s  ·  Lv%d" % [_building_name(selected_building),building.level] if building != null else _building_name(selected_building)
+    _facility_apply_tab()
+
+func _facility_fullscreen_reflow() -> void:
+    if building_operation_panel == null:
+        return
+    # Common 1280x720 foundation: no floating 832px modal, no map bleed
+    # through the worksite. Hero artwork and commands remain separate.
+    building_operation_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+    building_operation_panel.position = Vector2.ZERO
+    building_operation_panel.size = Vector2(1280,720)
+    building_operation_panel.add_theme_stylebox_override("panel",_art05_style(
+        Color(0.025,0.086,0.102,1.0),_art05_accent(),1,0))
+    var ornament := building_operation_panel.get_node_or_null("Art05PremiumJadeFrame")
+    if ornament != null:
+        ornament.visible = false
+    building_operation_title.position = Vector2(30,13)
+    building_operation_title.size = Vector2(980,42)
+    building_operation_title.add_theme_font_size_override("font_size",26)
+    building_operation_title.add_theme_color_override("font_color",ART05_GOLD)
+    for child in building_operation_panel.get_children():
+        if child is Label and child not in [
+            building_operation_title,building_operation_body,
+            building_operation_panel.get_node_or_null("FacilitySectionTitle"),
+            building_operation_panel.get_node_or_null("FacilityArtworkCaption"),
+            building_operation_panel.get_node_or_null("FacilitySectionHint"),
+            building_operation_panel.get_node_or_null("R2ActionCaption"),
+            building_operation_panel.get_node_or_null("R2LiveCaption")
+        ]:
+            child.position = Vector2(30,57)
+            child.size = Vector2(920,18)
+    var rule := building_operation_panel.get_node_or_null("FacilityHeaderRule") as ColorRect
+    if rule != null:
+        rule.position = Vector2(24,82)
+        rule.size = Vector2(1230,1)
+    var close := building_operation_panel.get_node_or_null("CloseBuildingOperation") as Button
+    if close != null:
+        close.text = "‹  Về bản đồ"
+        close.position = Vector2(1060,18)
+        close.size = Vector2(190,44)
+        close.add_theme_font_size_override("font_size",15)
+    var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as VBoxContainer
+    if nav != null:
+        nav.position = Vector2(23,192)
+        nav.size = Vector2(165,240)
+    if building_operation_metrics != null:
+        building_operation_metrics.position = Vector2(203,99)
+        building_operation_metrics.size = Vector2(1044,76)
+        building_operation_metrics.add_theme_constant_override("separation",10)
+        var count := maxi(1,building_operation_metrics.get_child_count())
+        var width := floorf((1044.0-float(count-1)*10.0)/float(count))
+        for metric in building_operation_metrics.get_children():
+            if metric is Control:
+                metric.custom_minimum_size.x = width
+    var art := building_operation_panel.get_node_or_null("BuildingOperationArtFrame") as Panel
+    if art != null:
+        art.position = Vector2(205,208)
+        art.size = Vector2(421,352)
+        art.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.04,0.125,0.14),_art05_accent(),1,10))
+    var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
+    if caption != null:
+        caption.position = Vector2(211,572)
+        caption.size = Vector2(410,32)
+    var section := building_operation_panel.get_node_or_null("FacilitySectionTitle") as Label
+    if section != null:
+        section.position = Vector2(659,205)
+        section.size = Vector2(565,30)
+    var hint := building_operation_panel.get_node_or_null("FacilitySectionHint") as Label
+    if hint != null:
+        hint.position = Vector2(659,642)
+        hint.size = Vector2(560,25)
+    building_operation_body.position = Vector2(660,258)
+    building_operation_body.size = Vector2(558,335)
+    building_operation_body.add_theme_font_size_override("font_size",17)
+    building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    var picker := building_operation_panel.get_node_or_null("MineOreHero") as HBoxContainer
+    var has_picker := selected_building in [
+        SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST
+    ] and picker != null and picker.get_child_count() > 0
+    if picker != null:
+        picker.position = Vector2(660,248)
+        picker.size = Vector2(561,83)
+    if building_operation_scroll != null:
+        building_operation_scroll.position = Vector2(658,338 if has_picker else 251)
+        building_operation_scroll.size = Vector2(570,270 if has_picker else 370)
+        building_operation_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    if building_operation_content != null:
+        building_operation_content.custom_minimum_size.x = 542
+    if building_management_container != null:
+        building_management_container.custom_minimum_size.x = 542
+    if building_operation_live_panel != null:
+        building_operation_live_panel.position = Vector2(655,244)
+        building_operation_live_panel.size = Vector2(579,379)
+        building_operation_live_panel.add_theme_stylebox_override("panel",_art05_style(
+            Color(0.043,0.14,0.152),Color(0.40,0.60,0.54,0.6),1,10))
+    if building_operation_live_scroll != null:
+        building_operation_live_scroll.position = Vector2(12,12)
+        building_operation_live_scroll.size = Vector2(551,354)
+    if building_operation_live_content != null:
+        building_operation_live_content.custom_minimum_size.x = 521
+    _facility_apply_tab()
 
 func _art05_repack_galleries() -> void:
     if building_operation_live_content == null:
@@ -1233,6 +1445,8 @@ func _art05_manage_selected_district() -> void:
     _open_player_building(_art05_dock_destination)
 
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
+    if destination != selected_building:
+        _facility_tab_index = 0
     _art05_dock_destination = destination
     _art05_dock_collapsed = false
     super._open_building(destination,instance_id)

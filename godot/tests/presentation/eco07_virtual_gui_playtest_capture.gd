@@ -39,6 +39,16 @@ func _run() -> void:
     var cap := await _capture(out.path_join("00_map_1280x720.png"))
     if not cap:
         return
+    if OS.get_environment("TMB_FACILITIES_ONLY") == "1":
+        if not await _capture_all_facilities(out):
+            return
+        screen.set("runtime_ready",false)
+        screen.queue_free()
+        await process_frame
+        _cleanup()
+        print("FACILITY FULLSCREEN STANDARD_CAPTURE PASS")
+        quit(0)
+        return
     if OS.get_environment("TMB_HALL_ONLY") == "1":
         if not await _capture_full_hall(out):
             return
@@ -157,6 +167,38 @@ func _run() -> void:
     _cleanup()
     print("ECO07 VIRTUAL_GODOT_GUI_CAPTURE PASS ",JSON.stringify(metrics))
     quit(0)
+
+func _capture_all_facilities(out: String) -> bool:
+    var destinations := [
+        [SectMapPresentation.DEST_MINE,"mine"],
+        [SectMapPresentation.DEST_LINH_FOREST,"forest"],
+        [SectMapPresentation.DEST_SPIRIT_FIELD,"field"],
+        [SectMapPresentation.DEST_WAREHOUSE,"warehouse"],
+        [SectMapPresentation.DEST_ALCHEMY_HALL,"alchemy"],
+        [SectMapPresentation.DEST_FORGE,"forge"],
+        [SectMapPresentation.DEST_CULTIVATION,"cultivation"],
+        [SectMapPresentation.DEST_BODY_TRAINING,"training"],
+        [SectMapPresentation.DEST_MEDICINE,"medicine"],
+        [SectMapPresentation.DEST_RESIDENCE,"residence"],
+        [SectMapPresentation.DEST_GUIDANCE,"guidance"],
+        [SectMapPresentation.DEST_GATE,"gate"]
+    ]
+    for item in destinations:
+        screen.call("_open_player_building",StringName(item[0]))
+        for _i in range(3):
+            await process_frame
+        var panel := screen.find_child("BuildingOperationPanel",true,false) as Control
+        if panel == null or not panel.is_visible_in_tree() or panel.size.distance_to(Vector2(1280,720)) > 2.0:
+            return _fail("Facility is not full-screen: "+str(item[1]))
+        for tab_index in range(3):
+            var button := panel.find_child("FacilityTab_%d" % tab_index,true,false) as Button
+            if button == null:
+                return _fail("Missing common facility tab: "+str(item[1]))
+            button.pressed.emit()
+            await process_frame
+            if not await _capture(out.path_join("facility_%s_%d.png" % [str(item[1]),tab_index])):
+                return false
+    return true
 
 func _verify_full_hall() -> bool:
     var hall := screen.get_node_or_null("DaiDienScreenV1") as Control

@@ -27,24 +27,30 @@ func _run() -> void:
             await process_frame
         var panel := game.find_child("BuildingOperationPanel",true,false) as Control
         assert(panel != null and panel.visible,"Management panel should remain open")
-        assert(panel.position.x >= 400.0 and panel.size.x <= 850.0,
-            "Screenshot regression: management modal hides actual world")
-        assert(panel.position.x+panel.size.x <= 1280.0 and panel.position.y+panel.size.y < 645.0,
-            "Management panel clipped 1280x720 navigation")
+        assert(panel.position.distance_to(Vector2.ZERO) < 1.0 and panel.size.distance_to(Vector2(1280,720)) < 2.0,
+            "Facility must occupy the full game viewport, not a floating management window")
         assert(panel.find_child("Art05PremiumJadeFrame",true,false) != null,
             "Cohesive decorative frame not integrated in real OneGame")
         var action_scroll := panel.find_child("BuildingOperationScroll",true,false) as ScrollContainer
         var live_scroll := panel.find_child("BuildingOperationLiveScroll",true,false) as ScrollContainer
         assert(action_scroll != null and live_scroll != null,"Real actions must be reachable by scroll")
-        assert(action_scroll.size.x >= 350.0 and live_scroll.size.x >= 380.0,
-            "Touch management columns must remain operable")
+        assert(action_scroll.size.x >= 540.0 and live_scroll.size.x >= 530.0,
+            "Each shared full-screen facility tab must have a usable command and status width")
+        for index in range(3):
+            var facility_tab := panel.find_child("FacilityTab_%d" % index,true,false) as Button
+            assert(facility_tab != null and facility_tab.get_global_rect().end.x <= 200.0,
+                "Missing common facility navigation or rail overlaps artwork")
+        var scene_art := panel.find_child("BuildingOperationArtFrame",true,false) as Control
+        assert(scene_art != null and scene_art.size.x >= 400.0 and scene_art.size.y >= 340.0,
+            "Shared facility hero asset must remain prominent on every tab")
         var action_caption := panel.get_node_or_null("R2ActionCaption") as Label
         var live_caption := panel.get_node_or_null("R2LiveCaption") as Label
         assert(action_caption != null and live_caption != null,"Readable operation headings must be mounted")
-        assert(action_caption.get_global_rect().end.y <= action_scroll.get_global_rect().position.y,
-            "Action heading overlaps real controls")
-        assert(live_caption.get_global_rect().end.y <= live_scroll.get_global_rect().position.y,
-            "Live heading overlaps real production details")
+        assert(not action_caption.visible and not live_caption.visible,
+            "Old floating-modal captions must not overlay the full-screen view")
+        var section := panel.find_child("FacilitySectionTitle",true,false) as Label
+        assert(section != null and section.get_global_rect().end.y < action_scroll.get_global_rect().position.y,
+            "Shared full-screen facility section heading must not overlap controls")
         var host := panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
         assert(host != null,"Real building art host missing")
         var before_count := host.get_child_count()
@@ -54,7 +60,7 @@ func _run() -> void:
         if destination == SectMapPresentation.DEST_WAREHOUSE:
             var stock := panel.find_child("Art02WarehouseStockGallery",true,false) as GridContainer
             if stock != null:
-                assert(stock.columns == 2,"Warehouse gallery must fit compact dock")
+                assert(stock.columns == 2,"Warehouse gallery must preserve its inventory grouping")
         if destination == SectMapPresentation.DEST_ALCHEMY_HALL:
             assert(panel.find_child("Art02AlchemyIngredientGallery",true,false) is GridContainer,
                 "Alchemy recipe items should wrap without horizontal clipping")
