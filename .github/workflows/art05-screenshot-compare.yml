@@ -20,6 +20,7 @@ on:
       - 'godot/src/presentation/p3/sect_map_d2_landscape.gd'
       - 'godot/src/simulation/governance/sect_residence_site_v1.gd'
       - 'godot/tests/presentation/sect_map_d1b_layout_contract_test.gd'
+      - 'godot/art/onegame_world_r2/**'
       - 'godot/art/reimagined_source_a_v1/**'
       - 'godot/art/reimagined_source_a_v3/**'
       - 'godot/art/tmb_approved_v4/**'
@@ -104,6 +105,7 @@ jobs:
             -- "$GITHUB_WORKSPACE/map01-evidence"
           printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > map01-evidence/source-sha.txt
       - name: Upload MAP01 actual Godot views immediately
+        id: map01_upload
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -146,6 +148,7 @@ jobs:
           mkdir -p eco07-virtual-gui-evidence
           printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > eco07-virtual-gui-evidence/source-sha.txt
       - name: Publish early real OneGame image and video evidence
+        id: ui_upload
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -176,6 +179,7 @@ jobs:
           printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > onegame-pve-evidence/source-sha.txt
           exit "$capture_status"
       - name: Upload native PvE evidence before long regressions
+        id: pve_upload
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -183,6 +187,28 @@ jobs:
           path: onegame-pve-evidence/
           if-no-files-found: warn
           retention-days: 14
+      - name: Publish exact-SHA visual evidence links
+        if: always()
+        env:
+          MAP_URL: ${{ steps.map01_upload.outputs.artifact-url }}
+          UI_URL: ${{ steps.ui_upload.outputs.artifact-url }}
+          PVE_URL: ${{ steps.pve_upload.outputs.artifact-url }}
+        shell: bash
+        run: |
+          {
+            echo "## Visual evidence (not artistic approval)"
+            echo "Source: $GITHUB_SHA"
+            for kind in MAP UI PVE; do
+              key="${kind}_URL"
+              url="${!key}"
+              if [[ -n "$url" ]]; then
+                echo "- [$kind artifact]($url)"
+              else
+                echo "- $kind artifact unavailable"
+              fi
+            done
+            echo "Inspect actual screenshots before marking visual acceptance."
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Validate exact copied Factory atlas imports and canonical skill contracts
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/pve_factory_r2_source_contract_test.gd
 
