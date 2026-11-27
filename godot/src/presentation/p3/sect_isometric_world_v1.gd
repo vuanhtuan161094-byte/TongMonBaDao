@@ -700,64 +700,71 @@ func _load_verified_source_art() -> void:
                 "cell":tile
             })
     if not pve_landscape:
-        # MAP01: dense exterior woodland, never interior construction tiles.
-        # Deterministic spacing keeps the silhouette coherent on every load.
+        # MAP01: restrained perimeter landscaping. Keep the view open,
+        # with no forest belt or vegetation over construction plots.
         var angled := map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT
         var forest_bounds := SectResidenceSiteV1.construction_bounds(map_layout_version).grow(20) if angled else STARTER.grow(32)
-        var stride := 3 if angled else 2
-        for y in range(forest_bounds.position.y,forest_bounds.end.y,stride):
-            for x in range(forest_bounds.position.x,forest_bounds.end.x,stride):
-                var tile := Vector2i(x,y)
-                if not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
+        var stride := 2
+        # Curated exterior positions: 16 main accents, not a procedural forest.
+        var landscape_sites: Array[Vector2i] = []
+        if angled:
+            landscape_sites.assign([
+                Vector2i(64,60),Vector2i(65,76),Vector2i(65,94),Vector2i(64,108),
+                Vector2i(132,61),Vector2i(131,72),Vector2i(132,101),Vector2i(130,112),
+                Vector2i(77,50),Vector2i(92,51),Vector2i(108,50),Vector2i(121,51),
+                Vector2i(74,118),Vector2i(88,117),Vector2i(103,118),Vector2i(119,117)
+            ])
+        else:
+            for y in range(forest_bounds.position.y,forest_bounds.end.y,stride):
+                for x in range(forest_bounds.position.x,forest_bounds.end.x,stride):
+                    landscape_sites.append(Vector2i(x,y))
+        for tile in landscape_sites:
+            var x := tile.x
+            var y := tile.y
+            if not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
+                continue
+            var distance := sect_estate_distance(project(Vector2(tile)),map_layout_version)
+            if distance < 48.0 or distance > 420.0:
+                continue
+            var tree_point := project(Vector2(tile))
+            var gate_point := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
+            if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+                if tile.x >= 123 and absi(tile.y-86) <= 4:
                     continue
-                var distance := sect_estate_distance(project(Vector2(tile)),map_layout_version)
-                if distance < 48.0 or distance > 420.0:
-                    continue
-                var tree_point := project(Vector2(tile))
-                var gate_point := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
-                if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
-                    if tile.x >= 123 and absi(tile.y-86) <= 4:
-                        continue
-                elif map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and tree_point.y > SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT-25.0 and absf(tree_point.x-gate_point.x) < 145.0:
-                    continue
-                if posmod(x*17+y*31+x*y,7) == 0:
-                    continue
-                var species: Array = PVE_TREE_ASSETS
-                if angled:
-                    # Woodland groves and open clearings, not a uniform belt of
-                    # identical crowns. All art is from the existing registry.
-                    var density := sin(float(x)*0.19+float(y)*0.12)+cos(float(x)*0.11-float(y)*0.16)
-                    if density < -0.5 and posmod(x*13+y*7,4) != 0:
-                        continue
-                    var selector := posmod(x*17+y*31+x*y,19)
-                    if selector < 3:
-                        species = PVE_ROCK_ASSETS
-                    elif selector < 7:
-                        species = PVE_BAMBOO_ASSETS
-                    elif selector == 7:
-                        species = PVE_RARE_AUTUMN_ASSETS
-                    elif selector == 8:
-                        species = PVE_RARE_BLOSSOM_ASSETS
-                var tree_id := str(species[posmod(x*7+y*11,species.size())])
-                var rel := "env01_assets/vegetation/%s.png" % tree_id
-                var tree := source_art.texture_for(rel)
-                if tree == null:
-                    continue
-                render_art[rel] = tree
-                var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
-                if not decoration_items_by_chunk.has(chunk):
-                    decoration_items_by_chunk[chunk] = []
-                var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.33,float(posmod(x*11+y*3,5)-2)*0.33)
-                var extent_scale := 0.32+float(posmod(x*3+y*5,9))*0.035
-                if angled:
-                    jitter *= 1.35
-                    extent_scale = 0.37+float(posmod(x*3+y*5,9))*0.038
-                    if distance < 100.0:
-                        extent_scale *= 0.78
-                (decoration_items_by_chunk[chunk] as Array).append({
-                    "world":project(Vector2(tile)+jitter),"texture":tree,
-                    "scale":extent_scale,"cell":tile
-                })
+            elif map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and tree_point.y > SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT-25.0 and absf(tree_point.x-gate_point.x) < 145.0:
+                continue
+            if not angled and posmod(x*17+y*31+x*y,7) == 0:
+                continue
+            var species: Array = PVE_TREE_ASSETS
+            if angled:
+                # A few small rocks and bamboo accents among the trees.
+                var selector := posmod(x*17+y*31+x*y,11)
+                if selector < 2:
+                    species = PVE_ROCK_ASSETS
+                elif selector < 4:
+                    species = PVE_BAMBOO_ASSETS
+                elif selector == 4:
+                    species = PVE_RARE_BLOSSOM_ASSETS
+            var tree_id := str(species[posmod(x*7+y*11,species.size())])
+            var rel := "env01_assets/vegetation/%s.png" % tree_id
+            var tree := source_art.texture_for(rel)
+            if tree == null:
+                continue
+            render_art[rel] = tree
+            var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
+            if not decoration_items_by_chunk.has(chunk):
+                decoration_items_by_chunk[chunk] = []
+            var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.33,float(posmod(x*11+y*3,5)-2)*0.33)
+            var extent_scale := 0.32+float(posmod(x*3+y*5,9))*0.035
+            if angled:
+                jitter *= 1.35
+                extent_scale = 0.35+float(posmod(x*3+y*5,5))*0.03
+                if distance < 100.0:
+                    extent_scale *= 0.78
+            (decoration_items_by_chunk[chunk] as Array).append({
+                "world":project(Vector2(tile)+jitter),"texture":tree,
+                "scale":extent_scale,"cell":tile
+            })
     _cache_static_overlays()
     pve_static_queue_dirty = true
     art_source_status = source_art.status()
