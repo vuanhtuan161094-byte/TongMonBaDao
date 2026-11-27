@@ -171,7 +171,7 @@ func _art05_style_global_hud() -> void:
                 Color(0.05,0.19,0.21,0.03),ART05_GOLD,2,10))
             var icon := SECT_UI_ICON.new()
             icon.name = "Art05NavigationGlyph"
-            icon.kind = "gate" if hunting else ["hall","person","resource","map"][mini(idx,3)]
+            icon.kind = "hunt" if hunting else ["hall","person","resource","map"][mini(idx,3)]
             icon.tint = ART05_GOLD
             icon.position = Vector2(10,11)
             icon.size = Vector2(30,30)
@@ -559,7 +559,7 @@ const MASTERPLAN_DISTRICT_TABS := [
     {"name":"NỘI VIỆN","key":"residence","hint":"Đệ Tử Xá, Dẫn Tiên và chăm sóc"},
     {"name":"TU LUYỆN","key":"cultivation","hint":"Tu luyện và rèn thân"},
     {"name":"SẢN XUẤT","key":"forge","hint":"Kho, luyện khí, luyện đan và tài nguyên"},
-    {"name":"XUẤT CHINH","key":"gate","hint":"Cổng tông môn và đường ra thế giới"}
+    {"name":"SĂN YÊU","key":"gate","hint":"Cổng xuất chinh · Ra thế giới săn yêu"}
 ]
 
 func _build_construction_ui() -> void:
@@ -905,7 +905,7 @@ func _art05_install_mockup_shell() -> void:
                 var active := i == 0
                 button.position = Vector2(218+i*172,6)
                 button.size = Vector2(156,62)
-                button.text = ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Quái"][i]
+                button.text = ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Yêu"][i]
                 button.tooltip_text = [
                     "Về bản đồ tông môn và quản lý công trình",
                     "Xem tư chất, linh căn, công pháp và trang bị đệ tử",

@@ -209,11 +209,11 @@ const V9_P2_SPELL_VFX = preload("res://src/presentation/p3/pve_v9_p2_spell_vfx.g
 # Signs are presentation wayfinding, not constructed buildings, loot nodes or
 # fake facilities. Coordinates follow the fixed V2 masterplan in SectResidenceSiteV1.
 const MASTERPLAN_DISTRICT_SIGNS := [
-    {"label":"TRUNG TÂM · ĐẠI ĐIỆN","cell":Vector2i(86,96),"tone":Color(0.92,0.75,0.42)},
-    {"label":"NỘI VIỆN · ĐỆ TỬ","cell":Vector2i(74,94),"tone":Color(0.67,0.86,0.70)},
-    {"label":"KHU TU LUYỆN","cell":Vector2i(87,76),"tone":Color(0.55,0.83,0.91)},
-    {"label":"KHU SẢN XUẤT","cell":Vector2i(103,86),"tone":Color(0.91,0.74,0.50)},
-    {"label":"CỔNG XUẤT CHINH","cell":Vector2i(92,104),"tone":Color(0.76,0.84,0.72)}
+    {"label":"ĐẠI ĐIỆN","detail":"Điều hành tông môn","cell":Vector2i(85,94),"tone":Color("dfb96f")},
+    {"label":"NỘI VIỆN","detail":"Đệ tử · Dẫn Tiên","cell":Vector2i(79,100),"tone":Color("9bc8a1")},
+    {"label":"KHU TU LUYỆN","detail":"Tu vi · Rèn thân","cell":Vector2i(85,82),"tone":Color("86d6d8")},
+    {"label":"KHU SẢN XUẤT","detail":"Linh điền · Chế tạo","cell":Vector2i(101,90),"tone":Color("e2ad78")},
+    {"label":"SĂN YÊU · XUẤT CHINH","detail":"Cổng ra thế giới","cell":Vector2i(96,106),"tone":Color("e49c88")}
 ]
 const PRODUCER_ROUTE_APPROACH := {
     "mine":Vector2i(0,1),
@@ -711,10 +711,10 @@ func _load_verified_source_art() -> void:
                 var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
                 if not decoration_items_by_chunk.has(chunk):
                     decoration_items_by_chunk[chunk] = []
-                var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.13,float(posmod(x*11+y*3,5)-2)*0.13)
+                var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.33,float(posmod(x*11+y*3,5)-2)*0.33)
                 (decoration_items_by_chunk[chunk] as Array).append({
                     "world":project(Vector2(tile)+jitter),"texture":tree,
-                    "scale":0.37+float(posmod(x*3+y*5,5))*0.025,"cell":tile
+                    "scale":0.33+float(posmod(x*3+y*5,5))*0.035,"cell":tile
                 })
     _cache_static_overlays()
     pve_static_queue_dirty = true
@@ -1486,26 +1486,32 @@ func _draw_masterplan_lots() -> void:
             draw_string(font,center+Vector2(-30,4),"LÔ %02d" % (index+1),HORIZONTAL_ALIGNMENT_CENTER,60,12,Color(1.0,0.91,0.68))
 
 func _draw_masterplan_district_signs() -> void:
-    if map_layout_version != 2 or pve_landscape:
+    if map_layout_version != 2 or pve_landscape or masterplan_plots_visible:
         return
     var font := ThemeDB.fallback_font
     if font == null:
         return
+    # Small, legible wayfinding plaques in open ground. Their screen size
+    # stays stable as the camera zooms; they never consume pointer events.
+    var inverse_zoom := 1.0/maxf(camera.zoom.x,0.25)
     for row in MASTERPLAN_DISTRICT_SIGNS:
         var ground := project(Vector2(row["cell"]))
-        if not _visible_world(ground):
-            continue
-        # Smaller map labels, no floating rectangular signboards over roofs.
-        # Suppress labels beneath the top chrome instead of showing clipped text.
         var screen_point := get_canvas_transform()*ground
-        if screen_point.y < 72.0 or screen_point.y > 525.0:
+        if screen_point.x < 145.0 or screen_point.x > 1140.0 or screen_point.y < 40.0 or screen_point.y > 528.0:
             continue
         var caption := str(row["label"])
+        var detail := str(row["detail"])
         var accent: Color = row["tone"]
-        var label_width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
-        var baseline := ground+Vector2(-label_width*0.5,-13)
-        draw_string_outline(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,4,Color(0.10,0.17,0.13,0.95))
-        draw_string(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,accent)
+        var width := maxf(font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x,font.get_string_size(detail,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x)+34.0
+        draw_set_transform(ground,0.0,Vector2.ONE*inverse_zoom)
+        var plaque := PackedVector2Array([Vector2(-width*0.5+7,-18),Vector2(width*0.5-7,-18),Vector2(width*0.5,-11),Vector2(width*0.5,12),Vector2(width*0.5-7,19),Vector2(-width*0.5+7,19),Vector2(-width*0.5,12),Vector2(-width*0.5,-11)])
+        draw_colored_polygon(plaque,Color(0.045,0.11,0.105,0.94))
+        plaque.append(plaque[0])
+        draw_polyline(plaque,accent,1.1,true)
+        draw_colored_polygon(PackedVector2Array([Vector2(-width*0.5+10,-5),Vector2(-width*0.5+14,0),Vector2(-width*0.5+10,5),Vector2(-width*0.5+6,0)]),accent)
+        draw_string(font,Vector2(-width*0.5+20,-2),caption,HORIZONTAL_ALIGNMENT_LEFT,-1,14,accent)
+        draw_string(font,Vector2(-width*0.5+20,12),detail,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("ece8d8"))
+        draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
 
 func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
@@ -1595,14 +1601,14 @@ func _draw() -> void:
         if str(entry["kind"]) == "vegetation":
             var tex: Texture2D = item["texture"]
             var scaled := tex.get_size()*float(item["scale"])
-            var shadow_width := clampf(scaled.x*0.35,12.0,38.0)
-            draw_colored_polygon(PackedVector2Array([place+Vector2(-shadow_width,1),place+Vector2(-shadow_width*0.4,-7),place+Vector2(shadow_width*0.7,-5),place+Vector2(shadow_width,2),place+Vector2(shadow_width*0.3,8),place+Vector2(-shadow_width*0.5,8)]),Color(0.09,0.17,0.10,0.28))
+            # Remove disconnected miniature polygon shadows; retain sprite bases.
             draw_texture_rect(tex,Rect2(place-Vector2(scaled.x*0.5,
                 scaled.y-4.0),scaled),false)
         else:
             _draw_building(place,str(item["destination"]),bool(item["managed"]),
                 detailed.has(str(item["building_id"])),
                 str(item["building_id"]),str(item.get("view_direction","A")))
+    _draw_masterplan_district_signs()
     _draw_placement_preview()
 
 func _ensure_pve_static_draw_queue() -> void:

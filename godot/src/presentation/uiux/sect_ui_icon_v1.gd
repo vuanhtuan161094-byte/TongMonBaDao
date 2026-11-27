@@ -102,6 +102,15 @@ func _draw_fallback_glyph() -> void:
 			draw_rect(Rect2(4, 10, 16, 12), tint)
 			draw_arc(Vector2(12, 10), 5.5, PI, TAU, 20, pale, 1.8, true)
 			draw_circle(Vector2(12, 15), 1.2, dark)
+		"hunt":
+			# Crossed blades: a distinct combat destination, not the hall atlas cell.
+			for direction in [-1.0, 1.0]:
+				var tip := Vector2(12.0+direction*8.5,3.0)
+				var grip := Vector2(12.0-direction*7.0,19.0)
+				var normal := Vector2(direction*0.72,0.72)
+				draw_line(grip,tip,pale,2.6,true)
+				draw_line(grip-normal*3.5,grip+normal*3.5,tint,2.0,true)
+				draw_line(grip,grip+Vector2(-direction*2.0,2.0),tint,2.8,true)
 		"flame":
 			draw_colored_polygon(PackedVector2Array([Vector2(12, 2), Vector2(18, 10), Vector2(21, 15), Vector2(17, 21), Vector2(9, 22), Vector2(4, 17), Vector2(6, 10)]), tint)
 			draw_colored_polygon(PackedVector2Array([Vector2(12, 11), Vector2(15, 16), Vector2(12, 20), Vector2(9, 17)]), pale)
