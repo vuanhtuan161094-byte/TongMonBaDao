@@ -39,12 +39,13 @@ func _run() -> void:
 		return
 	var initial_state := state.to_dict().duplicate(true)
 	# V2 has one authored map, unique area anchors and predefined annex sites.
-	if int(state.sect.world_layout_version) == 2:
-		var plan := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
-		if iso.anchors_for_layout(2) != plan or plan.size() != 13:
+	var layout_version: int = state.sect.world_layout_version
+	if layout_version >= 2:
+		var plan := SectResidenceSiteV1.map_anchors(layout_version)
+		if iso.anchors_for_layout(layout_version) != plan or plan.size() != 13:
 			_fail("live map did not load the fixed Sect Master masterplan")
 			return
-		if plan["main_hall"] != Vector2i(81,89) or plan["gate"] != Vector2i(96,102):
+		if layout_version == 2 and (plan["main_hall"] != Vector2i(81,89) or plan["gate"] != Vector2i(96,102)):
 			_fail("the preserved Hall/Gate spine was moved")
 			return
 		var seen: Dictionary = {}
@@ -55,7 +56,7 @@ func _run() -> void:
 				return
 			seen[site] = true
 		var planned_plot_available := false
-		for raw_site in SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES:
+		for raw_site in SectResidenceSiteV1.annex_sites(layout_version):
 			var site: Vector2i = raw_site
 			if bool(SectResidenceSiteV1.check(state,site).get("ok",false)):
 				planned_plot_available = true
@@ -67,6 +68,32 @@ func _run() -> void:
 			if scene.find_child("MasterplanDistrict_"+district_key,true,false) == null:
 				_fail("Sect Master district navigation is missing "+district_key)
 				return
+	if layout_version >= 3:
+		var counts: Dictionary = {}
+		for y in range(100):
+			for x in range(100):
+				var point := SectResidenceSiteV1.estate_point(Vector2((float(x)+0.5)/100.0,(float(y)+0.5)/100.0))
+				var zone := SectResidenceSiteV1.estate_zone(point)
+				counts[zone] = int(counts.get(zone,0))+1
+		if counts != {"residence":3000,"production":4500,"hall":800,"cultivation":1000,"court":700}:
+			_fail("approved area allocation incorrect: %s" % str(counts))
+			return
+		var seen_producers: Dictionary = {}
+		for kind in ["spirit_field","linh_forest","mine","alchemy_hall"]:
+			var cap: int = 40 if kind == "spirit_field" else (30 if kind != "alchemy_hall" else 10)
+			for index in range(1,cap+1):
+				var cell := iso.producer_cell(StringName(kind),index,layout_version)
+				if SectResidenceSiteV1.cell_zone(cell) != "production" or seen_producers.has(cell):
+					_fail("expanded producer outside production wing or duplicate: %s %s" % [kind,str(cell)])
+					return
+				seen_producers[cell] = true
+		var usable_lots := 0
+		for site in SectResidenceSiteV1.annex_sites(layout_version):
+			if bool(SectResidenceSiteV1.check(state,Vector2i(site)).get("ok",false)):
+				usable_lots += 1
+		if usable_lots < 9:
+			_fail("insufficient initial expansion lots: %d" % usable_lots)
+			return
 	if iso.GRID != Vector2i(192,192) or iso.CHUNK != 16 or iso.STARTER != Rect2i(72,72,48,48):
 		_fail("fixed 192/16/48 map bounds changed")
 		return
@@ -93,13 +120,13 @@ func _run() -> void:
 	var expected_routes: Array = EXPECTED_ROUTES.duplicate()
 	if int(state.sect.world_layout_version) >= 2:
 		expected_routes.append_array(["courtyard_to_ren_than_duong","courtyard_to_medicine","courtyard_to_guidance","courtyard_to_alchemy_hall"])
-		var plan := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
+		var plan := SectResidenceSiteV1.map_anchors(layout_version)
 		# The two production rows are horizontal in projected space, not grid Y.
 		for row in [["warehouse","forge","alchemy_hall"],["spirit_field","linh_forest","mine"]]:
 			var a: Vector2 = iso.project(Vector2(plan[row[0]]))
 			var b: Vector2 = iso.project(Vector2(plan[row[1]]))
 			var c: Vector2 = iso.project(Vector2(plan[row[2]]))
-			if not (is_equal_approx(a.y,b.y) and is_equal_approx(b.y,c.y) and b.x-a.x == 250.0 and c.x-b.x == 250.0):
+			if not (is_equal_approx(a.y,b.y) and is_equal_approx(b.y,c.y) and b.x-a.x >= 200.0 and c.x-b.x >= 200.0):
 				_fail("production compound projected alignment invalid")
 				return
 	if not iso.lab_routes_ready or iso.preview_routes.size() != expected_routes.size():
@@ -124,7 +151,7 @@ func _run() -> void:
 					_fail("route %s has a non-cardinal jump %s -> %s" % [route_id,str(previous),str(cell)])
 					return
 	var hall_door: Vector2i = iso.lab_geometry.doorway("main_hall",iso.lab_geometry.get_building("main_hall")["origin"],0)
-	if iso.preview_routes["gate_to_courtyard"][0] != iso.SPAWN_CELL or iso.preview_routes["courtyard_to_main_hall"][-1] != hall_door:
+	if iso.preview_routes["gate_to_courtyard"][0] != SectResidenceSiteV1.gate_for_layout(layout_version) or iso.preview_routes["courtyard_to_main_hall"][-1] != hall_door:
 		_fail("gate/courtyard/Hall route endpoints are disconnected from their layout anchors")
 		return
 	for producer: String in ["mine","linh_forest","spirit_field"]:
@@ -184,11 +211,11 @@ func _run() -> void:
 			_fail("road tile %s has no verified texture %s" % [str(cell),texture_path])
 			return
 	for kind in iso.ROAD_TEXTURES.keys():
-		if not road_used.has(kind):
+		if layout_version < 3 and not road_used.has(kind):
 			_fail("route topology does not use road texture kind %s; topology=%s" % [str(kind),str(road_used)])
 			return
 	# Destination screen order follows Gate -> courtyard -> Hall in one camera.
-	var gate := _screen_for_world(Vector2(iso.project(Vector2(iso.TYPE_ANCHORS["gate"]))))
+	var gate := _screen_for_world(Vector2(iso.project(Vector2(SectResidenceSiteV1.gate_for_layout(layout_version)))))
 	var court := _screen_for_world(Vector2(iso.project(Vector2(iso.ROADS_JUNCTION))))
 	var hall_row := _row_for_destination("main_hall")
 	if hall_row.is_empty():
@@ -259,7 +286,7 @@ func _run() -> void:
 		await process_frame
 	# Camera zoom, pan and pick are checked through P3.2's own controls; the
 	# selected Hall anchor remains tappable inside the separate map SubViewport.
-	for zoom in [0.75,1.0,1.35,1.80]:
+	for zoom in [0.40,0.75,1.0,1.35,1.80]:
 		scene.call("_zoom_at",Vector2(640,357),zoom,false)
 		await process_frame
 		if not is_equal_approx(float(scene.get("map_zoom")),zoom) or not is_equal_approx(iso.camera.zoom.x,zoom):

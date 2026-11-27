@@ -70,6 +70,7 @@ const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
 const CENTER_CELL := Vector2(90,92)
 const NEW_GAME_FOCUS_CELL := Vector2(94,94)
+const APPROVED_FOCUS_CELL := Vector2(96.2,94.8)
 # Option B is a presentation-only layout seed in the existing 48x48 starter.
 # The model's route origin is the reserved gate point; no actor spawn or
 # SimulationState field is changed by this map-only coordinate.
@@ -335,11 +336,11 @@ const PVE_BRIDGE_ROWS := [32,92,150]
 func configure_map_layout_version(version: int) -> void:
     # This must be called before add_child(), because _ready() seeds its road
     # presentation from the same layout version as the canonical save marker.
-    map_layout_version = version if version == 2 else 0
+    map_layout_version = version if version in [2,3] else 0
 
 func anchors_for_layout(version: int = -1) -> Dictionary:
     var resolved := map_layout_version if version < 0 else version
-    return TYPE_ANCHORS_NEW_GAME if resolved == 2 else TYPE_ANCHORS
+    return SectResidenceSiteV1.map_anchors(resolved)
 
 func anchor_for(destination: StringName, version: int = -1) -> Vector2i:
     return Vector2i(anchors_for_layout(version).get(str(destination),Vector2i(90,92)))
@@ -509,7 +510,8 @@ static func _pve_minimap_texture(navigation: Dictionary,path_cells: Dictionary =
 # owns ONLY procedural visual roads in the SubViewport, never player layout
 # or paid construction. It is rebuilt from static content, never saved.
 func _seed_env02a_geometry() -> void:
-    lab_geometry = SectIsoMapModelV1.new(GRID,SPAWN_CELL)
+    var spawn := SectResidenceSiteV1.gate_for_layout(map_layout_version)
+    lab_geometry = SectIsoMapModelV1.new(GRID,spawn)
     var anchors := anchors_for_layout()
     for kind in ["main_hall","warehouse","forge"]:
         var origin: Vector2i = anchors[kind]
@@ -526,7 +528,7 @@ func _seed_env02a_geometry() -> void:
     var sdoor: Vector2i = lab_geometry.doorway("warehouse",store["origin"],0)
     var fdoor: Vector2i = lab_geometry.doorway("forge",forge["origin"],0)
     var segments := [
-        {"id":"gate_to_courtyard","from":SPAWN_CELL,"to":ROADS_JUNCTION},
+        {"id":"gate_to_courtyard","from":spawn,"to":ROADS_JUNCTION},
         {"id":"courtyard_to_main_hall","from":ROADS_JUNCTION,"to":hdoor},
         {"id":"courtyard_to_warehouse","from":ROADS_JUNCTION,"to":sdoor},
         {"id":"courtyard_to_forge","from":ROADS_JUNCTION,"to":fdoor},
@@ -552,7 +554,7 @@ func _seed_env02a_geometry() -> void:
     for kind in ["main_hall","warehouse","forge"]:
         var placed: Dictionary = lab_geometry.get_building(kind)
         var door: Vector2i = lab_geometry.doorway(kind,placed["origin"],0)
-        if route_navigation.is_point_solid(SPAWN_CELL) or route_navigation.is_point_solid(door) or route_navigation.get_id_path(SPAWN_CELL,door).is_empty():
+        if route_navigation.is_point_solid(spawn) or route_navigation.is_point_solid(door) or route_navigation.get_id_path(spawn,door).is_empty():
             lab_routes_ready = false
     queue_redraw()
 
@@ -809,10 +811,23 @@ static func virtual_legacy_point(destination: StringName, building_id: StringNam
 static func producer_cell(destination: StringName, instance_index: int,
         layout_version: int = 0) -> Vector2i:
     var key := str(destination)
-    var anchors: Dictionary = TYPE_ANCHORS_NEW_GAME if layout_version == 2 else TYPE_ANCHORS
+    var anchors: Dictionary = SectResidenceSiteV1.map_anchors(layout_version)
     var anchor: Vector2i = anchors.get(key,Vector2i(90,92))
     if instance_index <= 1 or not PRODUCER_DISTRICTS.has(key):
         return anchor
+    if layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and key in ["mine","linh_forest","spirit_field","alchemy_hall"]:
+        # All live expanded producers use the same reserved production wing.
+        # Slot rows remain separate from fixed landmarks; IDs never change.
+        var slot_index := instance_index-2
+        var uv := Vector2.ZERO
+        if key == "alchemy_hall":
+            uv = Vector2(0.575+float(slot_index%10)*0.041,0.08+float(slot_index/10)*0.053)
+        else:
+            var band: int = ["spirit_field","linh_forest","mine"].find(key)
+            uv = Vector2(0.55+float(band)*0.15+0.023+float(slot_index%4)*0.034,0.56+float(slot_index/4)*0.043)
+        var point := SectResidenceSiteV1.estate_point(uv)
+        var raw := inverse(point)
+        return Vector2i(roundi(raw.x),roundi(raw.y))
     var district: Dictionary = PRODUCER_DISTRICTS[key]
     var slot := instance_index - 2
     var columns := int(district["columns"])
@@ -989,7 +1004,7 @@ func set_selected_visual_site(id: StringName) -> void:
 func set_legacy_transform(zoom: float, legacy_position: Vector2) -> bool:
     if camera == null:
         return false
-    var z := clampf(zoom,0.75,1.80)
+    var z := SectMapCamera.clamp_zoom(zoom)
     # Match the legacy Control actor overlay and the isometric camera.
     var legacy_center := MAP_SCREEN_OFFSET+VIEW_SIZE*0.5
     var next_position := project(CENTER_CELL)-(
@@ -1403,17 +1418,18 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
 
 # Presentation boundary only. The saved 48x48 buildable grid remains intact.
 # Horizontal top/bottom, gently sloping sides, full coverage of all saved lots.
-const SECT_ESTATE_MID_Y := 2483.0
-const SECT_ESTATE_HALF_WIDTH := 1220.0
-const SECT_ESTATE_HALF_HEIGHT := 635.0
-const SECT_ESTATE_SHEAR := 0.28
+const SECT_ESTATE_MID_Y := SectResidenceSiteV1.ESTATE_CENTER.y
+const SECT_ESTATE_MID_X := SectResidenceSiteV1.ESTATE_CENTER.x
+const SECT_ESTATE_HALF_WIDTH := SectResidenceSiteV1.ESTATE_HALF_WIDTH
+const SECT_ESTATE_HALF_HEIGHT := SectResidenceSiteV1.ESTATE_HALF_HEIGHT
+const SECT_ESTATE_SHEAR := SectResidenceSiteV1.ESTATE_SHEAR
 
 static func sect_paving_cell(cell: Vector2i) -> bool:
     return STARTER.has_point(cell)
 
 static func sect_estate_distance(point: Vector2) -> float:
     var dy := point.y-SECT_ESTATE_MID_Y
-    var dx := point.x-dy*SECT_ESTATE_SHEAR
+    var dx := point.x-SECT_ESTATE_MID_X-dy*SECT_ESTATE_SHEAR
     return maxf(absf(dx)-SECT_ESTATE_HALF_WIDTH,absf(dy)-SECT_ESTATE_HALF_HEIGHT)
 
 # Clip each isometric stone to the straight perimeter, rather than rounding
@@ -1437,8 +1453,8 @@ static func _clip_estate_plane(poly: PackedVector2Array,normal: Vector2,limit: f
 static func _clip_estate_tile(poly: PackedVector2Array) -> PackedVector2Array:
     poly = _clip_estate_plane(poly,Vector2(0,1),SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT)
     poly = _clip_estate_plane(poly,Vector2(0,-1),-SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT)
-    poly = _clip_estate_plane(poly,Vector2(1,-SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH-SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
-    return _clip_estate_plane(poly,Vector2(-1,SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH+SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
+    poly = _clip_estate_plane(poly,Vector2(1,-SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH+SECT_ESTATE_MID_X-SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
+    return _clip_estate_plane(poly,Vector2(-1,SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH-SECT_ESTATE_MID_X+SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
 
 func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
     if sect_paving_meshes.has(chunk_id):
@@ -1465,6 +1481,13 @@ func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
             var base := vertices.size()
             var tint := 0.94+float(posmod(x*17+y*23+x*y,7))*0.009
             var tone := Color(tint,tint,tint,1.0)
+            if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
+                match SectResidenceSiteV1.estate_zone(center):
+                    "residence": tone *= Color(0.90,0.96,0.91)
+                    "production": tone *= Color(1.0,0.95,0.85)
+                    "hall": tone *= Color(1.0,0.99,0.94)
+                    "cultivation": tone *= Color(0.89,0.95,0.98)
+                    "court": tone *= Color(0.96,0.96,0.95)
             for point in points:
                 vertices.append(point)
                 uvs.append(Vector2(0.5+(point.x-center.x)/(2.0*HALF_W),0.5+(point.y-center.y)/(2.0*HALF_H)))
@@ -1507,23 +1530,36 @@ func _draw_sect_estate_border() -> void:
     var bottom := SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT
     var offset := SECT_ESTATE_HALF_HEIGHT*SECT_ESTATE_SHEAR
     var w := SECT_ESTATE_HALF_WIDTH
-    var tl := Vector2(-w-offset,top)
-    var tr := Vector2(w-offset,top)
-    var br := Vector2(w+offset,bottom)
-    var bl := Vector2(-w+offset,bottom)
+    var tl := Vector2(SECT_ESTATE_MID_X-w-offset,top)
+    var tr := Vector2(SECT_ESTATE_MID_X+w-offset,top)
+    var br := Vector2(SECT_ESTATE_MID_X+w+offset,bottom)
+    var bl := Vector2(SECT_ESTATE_MID_X-w+offset,bottom)
     _draw_wall_span(tl,tr)
     _draw_wall_span(tl,bl)
     _draw_wall_span(tr,br)
     # The southern wall has a clear ceremonial opening aligned with the gate.
-    var gate_x := project(Vector2(SPAWN_CELL)).x
+    var gate_x := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version))).x
     _draw_wall_span(bl,Vector2(gate_x-110,bottom))
     _draw_wall_span(Vector2(gate_x+110,bottom),br)
+
+func _draw_approved_district_inlays() -> void:
+    # Low-contrast stone borders delineate the exact land allocation.
+    for u in [0.30,0.55]:
+        var a := SectResidenceSiteV1.estate_point(Vector2(float(u),0.0))
+        var b := SectResidenceSiteV1.estate_point(Vector2(float(u),1.0))
+        draw_line(a,b,Color("77786c"),7.0,true)
+        draw_line(a,b,Color("c4bba3"),2.0,true)
+    for v in [0.32,0.72]:
+        var a := SectResidenceSiteV1.estate_point(Vector2(0.30,float(v)))
+        var b := SectResidenceSiteV1.estate_point(Vector2(0.55,float(v)))
+        draw_line(a,b,Color("77786c"),6.0,true)
+        draw_line(a,b,Color("c4bba3"),2.0,true)
 
 func _draw_sect_civic_axis() -> void:
     if map_layout_version < 2:
         return
     var hall := project(visual_anchor(&"main_hall",anchor_for(&"main_hall")))
-    var gate := project(Vector2(SPAWN_CELL))
+    var gate := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
     var center_x := (hall.x+gate.x)*0.5
     # The existing stone surface remains continuous. A narrow inlaid
     # ceremonial spine and bronze seal mark the gathering court.
@@ -1561,10 +1597,10 @@ func _pve_ground_color(cell: Vector2i) -> Color:
 # Small diegetic district labels, on the real isometric surface. They never
 # intercept a tap, block the verified artwork, or affect the AStar road graph.
 func _draw_masterplan_lots() -> void:
-    if not masterplan_plots_visible or map_layout_version != 2 or pve_landscape:
+    if not masterplan_plots_visible or map_layout_version < 2 or pve_landscape:
         return
     var font := ThemeDB.fallback_font
-    var lots := SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES
+    var lots := SectResidenceSiteV1.annex_sites(map_layout_version)
     for index in range(lots.size()):
         var origin: Vector2i = lots[index]
         if origin == Vector2i(placement_preview.get("site",SectResidenceSiteV1.UNSELECTED)):
@@ -1587,7 +1623,7 @@ func _draw_masterplan_lots() -> void:
             draw_string(font,center+Vector2(-30,4),"LÔ %02d" % (index+1),HORIZONTAL_ALIGNMENT_CENTER,60,12,Color(1.0,0.91,0.68))
 
 func _draw_masterplan_district_signs() -> void:
-    if map_layout_version != 2 or pve_landscape or masterplan_plots_visible:
+    if map_layout_version < 2 or pve_landscape or masterplan_plots_visible:
         return
     var font := ThemeDB.fallback_font
     if font == null:
@@ -1595,8 +1631,21 @@ func _draw_masterplan_district_signs() -> void:
     # Small, legible wayfinding plaques in open ground. Their screen size
     # stays stable as the camera zooms; they never consume pointer events.
     var inverse_zoom := 1.0/maxf(camera.zoom.x,0.25)
-    for row in MASTERPLAN_DISTRICT_SIGNS:
-        var ground := project(Vector2(row["cell"]))
+    var signs: Array = MASTERPLAN_DISTRICT_SIGNS
+    if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
+        signs = [
+            {"label":"ĐỆ TỬ XÁ","detail":"30% · Nội viện","uv":Vector2(0.15,0.15),"tone":Color("9bc8a1")},
+            {"label":"SẢN XUẤT","detail":"45% · Mở rộng","uv":Vector2(0.775,0.045),"tone":Color("e2ad78")},
+            {"label":"ĐẠI ĐIỆN","detail":"Quản trị","uv":Vector2(0.425,0.06),"tone":Color("dfb96f")},
+            {"label":"TU LUYỆN","detail":"Tu vi · Rèn thân","uv":Vector2(0.425,0.39),"tone":Color("86d6d8")},
+            {"label":"SƠN MÔN","detail":"Xuất chinh · Săn yêu","uv":Vector2(0.425,0.94),"tone":Color("e49c88")}
+        ]
+    for row in signs:
+        var ground: Vector2
+        if row.has("uv"):
+            ground = SectResidenceSiteV1.estate_point(Vector2(row["uv"]))
+        else:
+            ground = project(Vector2(row["cell"]))
         var screen_point := get_canvas_transform()*ground
         if screen_point.x < 145.0 or screen_point.x > 1140.0 or screen_point.y < 40.0 or screen_point.y > 528.0:
             continue
@@ -1627,6 +1676,8 @@ func _draw() -> void:
             if paving.get_surface_count() > 0:
                 draw_mesh(paving,SECT_FLAGSTONE)
         _draw_sect_estate_border()
+        if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
+            _draw_approved_district_inlays()
         _draw_sect_civic_axis()
     else:
         _draw_pve_stream()
@@ -2091,6 +2142,9 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     # paint 100 huge candidate buildings in a far overview. This is view LOD,
     # not reducing valid BuildingState instances or workers.
     if managed and (MAP_D2_CANDIDATE_SITES.has(kind) or V3_ART.supported(StringName(kind))):
+        if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and not pve_landscape and not building_id.ends_with("_001") and building_id != selected_visual_site_id:
+            _draw_compact_producer(p,kind,true)
+            return
         var level := SectEndgameVisualBudgetV1.site_level(camera.zoom.x)
         # Show authentic new architecture for each primary site and selected
         # instance even at normal zoom; distant extra sites keep cheap LOD.

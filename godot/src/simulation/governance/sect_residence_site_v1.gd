@@ -76,8 +76,79 @@ const MASTERPLAN_ANNEX_SITES := [
     Vector2i(92,114),Vector2i(98,114),Vector2i(104,114)
 ]
 
+# Owner-approved MAP01: one estate, 30% residential / 45% production /
+# middle 25% divided into Hall (8%), cultivation (10%) and court (7%).
+# V3 is an internal layout discriminator, not a new game or release.
+const APPROVED_LAYOUT := 3
+const ESTATE_CENTER := Vector2(35.0,2483.0)
+const ESTATE_HALF_WIDTH := 1260.0
+const ESTATE_HALF_HEIGHT := 635.0
+const ESTATE_SHEAR := 0.12
+const EXPANDED_BUILD_BOUNDS := Rect2i(60,60,76,76)
+const APPROVED_MAP_ANCHORS := {
+    "main_hall":Vector2i(81,87), "warehouse":Vector2i(95,85),
+    "forge":Vector2i(100,80), "residence":Vector2i(76,97),
+    "cultivation":Vector2i(89,101), "ren_than_duong":Vector2i(96,94),
+    "medicine":Vector2i(87,108), "alchemy_hall":Vector2i(107,73),
+    "mine":Vector2i(114,76), "linh_forest":Vector2i(108,82),
+    "spirit_field":Vector2i(99,91), "guidance":Vector2i(78,107),
+    "gate":Vector2i(107,113)
+}
+const APPROVED_RESIDENCE_LOTS := [
+    Vector2i(72,102),Vector2i(66,102),Vector2i(66,108),
+    Vector2i(72,108),Vector2i(78,114),Vector2i(84,114),
+    Vector2i(90,114),Vector2i(78,120),Vector2i(84,120),
+    Vector2i(90,120),Vector2i(96,120),Vector2i(90,126),
+    Vector2i(96,126),Vector2i(102,126),Vector2i(60,90),
+    Vector2i(60,96),Vector2i(66,96),Vector2i(60,102)
+]
+
 static func map_anchors(world_layout_version: int) -> Dictionary:
+    if world_layout_version >= APPROVED_LAYOUT:
+        return APPROVED_MAP_ANCHORS
     return NEW_GAME_MAP_ANCHORS if world_layout_version >= 2 else LEGACY_MAP_ANCHORS
+
+static func gate_for_layout(version: int) -> Vector2i:
+    return Vector2i(map_anchors(version)["gate"])
+
+static func construction_bounds(version: int) -> Rect2i:
+    return EXPANDED_BUILD_BOUNDS if version >= APPROVED_LAYOUT else STARTER
+
+static func annex_sites(version: int) -> Array:
+    return APPROVED_RESIDENCE_LOTS if version >= APPROVED_LAYOUT else MASTERPLAN_ANNEX_SITES
+
+static func estate_uv(point: Vector2) -> Vector2:
+    var dy := point.y-ESTATE_CENTER.y
+    return Vector2((point.x-ESTATE_CENTER.x-dy*ESTATE_SHEAR+ESTATE_HALF_WIDTH)/(2.0*ESTATE_HALF_WIDTH),
+        (dy+ESTATE_HALF_HEIGHT)/(2.0*ESTATE_HALF_HEIGHT))
+
+static func estate_point(uv: Vector2) -> Vector2:
+    var dy := (uv.y*2.0-1.0)*ESTATE_HALF_HEIGHT
+    return ESTATE_CENTER+Vector2((uv.x*2.0-1.0)*ESTATE_HALF_WIDTH+dy*ESTATE_SHEAR,dy)
+
+static func estate_zone(point: Vector2) -> String:
+    var uv := estate_uv(point)
+    if uv.x < 0.0 or uv.x > 1.0 or uv.y < 0.0 or uv.y > 1.0:
+        return "outside"
+    if uv.x < 0.30:
+        return "residence"
+    if uv.x >= 0.55:
+        return "production"
+    if uv.y < 0.32:
+        return "hall"
+    if uv.y < 0.72:
+        return "cultivation"
+    return "court"
+
+static func cell_zone(cell: Vector2i) -> String:
+    return estate_zone(Vector2(float(cell.x-cell.y)*25.0,float(cell.x+cell.y)*13.0))
+
+static func _residence_plot_in_zone(origin: Vector2i) -> bool:
+    for y in range(origin.y-1,origin.y+HOUSE_FOOTPRINT.y+1):
+        for x in range(origin.x-1,origin.x+HOUSE_FOOTPRINT.x+1):
+            if cell_zone(Vector2i(x,y)) != "residence":
+                return false
+    return true
 
 static func historical_origin(index: int) -> Vector2i:
     if index <= 1:
@@ -128,7 +199,7 @@ static func _mark_rect(navigation: AStarGrid2D, rectangle: Rect2i) -> void:
     for y in range(rectangle.position.y,rectangle.end.y):
         for x in range(rectangle.position.x,rectangle.end.x):
             var cell := Vector2i(x,y)
-            if STARTER.has_point(cell):
+            if navigation.region.has_point(cell):
                 navigation.set_point_solid(cell,true)
 
 static func _map_footprints(state: SimulationState, roof_clearance: bool = true) -> Array[Rect2i]:
@@ -151,7 +222,7 @@ static func _protected_road_cells(state: SimulationState) -> Dictionary:
         return roads
     # Same starter-map path graph and segment order as the live renderer.
     var navigation := AStarGrid2D.new()
-    navigation.region = STARTER
+    navigation.region = construction_bounds(state.sect.world_layout_version)
     navigation.cell_size = Vector2.ONE
     navigation.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
     navigation.update()
@@ -162,8 +233,9 @@ static func _protected_road_cells(state: SimulationState) -> Dictionary:
     var hall_door: Vector2i = anchors["main_hall"]+Vector2i(3,-1)
     var warehouse_door: Vector2i = anchors["warehouse"]+Vector2i(1,-1)
     var forge_door: Vector2i = anchors["forge"]+Vector2i(1,-1)
+    var spawn := gate_for_layout(state.sect.world_layout_version)
     var segments := [
-        {"from":PATH_SPAWN,"to":ROAD_JUNCTION},
+        {"from":spawn,"to":ROAD_JUNCTION},
         {"from":ROAD_JUNCTION,"to":hall_door},
         {"from":ROAD_JUNCTION,"to":warehouse_door},
         {"from":ROAD_JUNCTION,"to":forge_door},
@@ -190,15 +262,16 @@ static func _path_navigation(state: SimulationState, ignore_id: String = "") -> 
     if state == null:
         return null
     var navigation := AStarGrid2D.new()
-    navigation.region = STARTER
+    navigation.region = construction_bounds(state.sect.world_layout_version)
     navigation.cell_size = Vector2.ONE
     navigation.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
     navigation.update()
     for footprint in _map_footprints(state,true):
         _mark_rect(navigation,footprint)
-    for cell in MAP_DECOR_CELLS:
-        if STARTER.has_point(cell):
-            navigation.set_point_solid(cell,true)
+    if state.sect.world_layout_version < APPROVED_LAYOUT:
+        for cell in MAP_DECOR_CELLS:
+            if navigation.region.has_point(cell):
+                navigation.set_point_solid(cell,true)
     for row in state.buildings.values():
         if not (row is BuildingState) or row.building_type != HOUSE_TYPE \
                 or str(row.id) == ignore_id:
@@ -211,22 +284,29 @@ static func _path_navigation(state: SimulationState, ignore_id: String = "") -> 
 static func path_to_door(state: SimulationState, origin: Vector2i,
         ignore_id: String = "", navigation: AStarGrid2D = null) -> Array[Vector2i]:
     var empty_path: Array[Vector2i] = []
-    if state == null or not STARTER.has_point(PATH_SPAWN):
+    if state == null:
+        return empty_path
+    var spawn := gate_for_layout(state.sect.world_layout_version)
+    var bounds := construction_bounds(state.sect.world_layout_version)
+    if not bounds.has_point(spawn):
         return empty_path
     var door := doorway(origin)
-    if not STARTER.has_point(door):
+    if not bounds.has_point(door):
         return empty_path
     if navigation == null:
         navigation = _path_navigation(state,ignore_id)
-    if navigation == null or navigation.is_point_solid(PATH_SPAWN) or navigation.is_point_solid(door):
+    if navigation == null or navigation.is_point_solid(spawn) or navigation.is_point_solid(door):
         return empty_path
-    return navigation.get_id_path(PATH_SPAWN,door)
+    return navigation.get_id_path(spawn,door)
 
 static func _candidate_occupied(state: SimulationState, origin: Vector2i,
         ignore_id: String, roads: Dictionary) -> String:
     var footprint := Rect2i(origin,HOUSE_FOOTPRINT)
     var entrance := doorway(origin)
-    if not STARTER.encloses(footprint) or not STARTER.has_point(entrance):
+    var bounds := construction_bounds(state.sect.world_layout_version)
+    if not bounds.encloses(footprint) or not bounds.has_point(entrance):
+        return "house_plot_outside_open_area"
+    if state.sect.world_layout_version >= APPROVED_LAYOUT and not _residence_plot_in_zone(origin):
         return "house_plot_outside_open_area"
     if roads.is_empty():
         return "house_map_routes_unavailable"
@@ -270,12 +350,12 @@ static func check(state: SimulationState, origin: Vector2i,
     return {"ok":true,"origin":origin,"door":doorway(origin),
         "path_length":path.size(),"path_cells":path}
 
-static func _reachable_cells(navigation: AStarGrid2D) -> Dictionary:
+static func _reachable_cells(navigation: AStarGrid2D, spawn: Vector2i = PATH_SPAWN) -> Dictionary:
     var reachable: Dictionary = {}
-    if navigation == null or navigation.is_point_solid(PATH_SPAWN):
+    if navigation == null or navigation.is_point_solid(spawn):
         return reachable
-    var queue: Array[Vector2i] = [PATH_SPAWN]
-    reachable[PATH_SPAWN] = true
+    var queue: Array[Vector2i] = [spawn]
+    reachable[spawn] = true
     var index := 0
     var offsets: Array[Vector2i] = [Vector2i(1,0),Vector2i(-1,0),Vector2i(0,1),Vector2i(0,-1)]
     while index < queue.size():
@@ -283,7 +363,7 @@ static func _reachable_cells(navigation: AStarGrid2D) -> Dictionary:
         index += 1
         for offset in offsets:
             var next: Vector2i = cell+offset
-            if not STARTER.has_point(next) or reachable.has(next) or navigation.is_point_solid(next):
+            if not navigation.region.has_point(next) or reachable.has(next) or navigation.is_point_solid(next):
                 continue
             reachable[next] = true
             queue.append(next)
@@ -299,9 +379,10 @@ static func available_plots(state: SimulationState) -> Array[Vector2i]:
     var navigation := _path_navigation(state)
     if navigation == null:
         return result
-    var reachable := _reachable_cells(navigation)
-    for y in range(STARTER.position.y,STARTER.end.y-HOUSE_FOOTPRINT.y+1):
-        for x in range(STARTER.position.x,STARTER.end.x-HOUSE_FOOTPRINT.x+1):
+    var reachable := _reachable_cells(navigation,gate_for_layout(state.sect.world_layout_version))
+    var bounds := construction_bounds(state.sect.world_layout_version)
+    for y in range(bounds.position.y,bounds.end.y-HOUSE_FOOTPRINT.y+1):
+        for x in range(bounds.position.x,bounds.end.x-HOUSE_FOOTPRINT.x+1):
             var origin := Vector2i(x,y)
             if _candidate_occupied(state,origin,"",roads) != "":
                 continue

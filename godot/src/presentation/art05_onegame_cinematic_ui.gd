@@ -564,7 +564,7 @@ const MASTERPLAN_DISTRICT_TABS := [
 
 func _build_construction_ui() -> void:
     super._build_construction_ui()
-    if state == null or int(state.sect.world_layout_version) != 2:
+    if state == null or int(state.sect.world_layout_version) < 2:
         return
     if build_mode_button != null:
         build_mode_button.text = "QUY HOẠCH"
@@ -665,7 +665,7 @@ func _art05_focus_masterplan_district(destination: String, close_panels: bool = 
 
 func _enter_build_mode() -> void:
     super._enter_build_mode()
-    if iso_world != null and state != null and int(state.sect.world_layout_version) == 2:
+    if iso_world != null and state != null and int(state.sect.world_layout_version) >= 2:
         iso_world.set_masterplan_plots_visible(true)
         if iso_viewport != null:
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
@@ -676,17 +676,17 @@ func _leave_build_mode(clear_selection: bool = true) -> void:
     super._leave_build_mode(clear_selection)
 
 func _focus_buildable_residence_area() -> void:
-    if state == null or int(state.sect.world_layout_version) != 2:
+    if state == null or int(state.sect.world_layout_version) < 2:
         super._focus_buildable_residence_area()
         return
     _art05_focus_masterplan_district("residence",false)
 
 func _begin_residence_construction() -> void:
     super._begin_residence_construction()
-    if state == null or int(state.sect.world_layout_version) != 2:
+    if state == null or int(state.sect.world_layout_version) < 2:
         return
     var chosen := SectResidenceSiteV1.UNSELECTED
-    for raw_site in SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES:
+    for raw_site in SectResidenceSiteV1.annex_sites(int(state.sect.world_layout_version)):
         var site: Vector2i = raw_site
         if not bool(SectResidenceSiteV1.check(state,site).get("ok",false)):
             continue
@@ -704,13 +704,13 @@ func _begin_residence_construction() -> void:
     super._select_build_mode_site(chosen)
 
 func _select_build_mode_site(site: Vector2i) -> void:
-    if state != null and int(state.sect.world_layout_version) == 2 and build_mode_active:
+    if state != null and int(state.sect.world_layout_version) >= 2 and build_mode_active:
         # The user cannot override the planned plot by tapping arbitrary terrain.
         return
     super._select_build_mode_site(site)
 
 func _begin_residence_relocation(house_id: StringName) -> void:
-    if state != null and int(state.sect.world_layout_version) == 2:
+    if state != null and int(state.sect.world_layout_version) >= 2:
         if build_mode_feedback != null:
             build_mode_feedback.text = "Chế độ quy hoạch cố định chưa hỗ trợ di dời nhà."
         return
@@ -718,7 +718,7 @@ func _begin_residence_relocation(house_id: StringName) -> void:
 
 func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
     super._refresh_build_mode_panel(last_check)
-    if state == null or int(state.sect.world_layout_version) != 2 or build_mode_panel == null:
+    if state == null or int(state.sect.world_layout_version) < 2 or build_mode_panel == null:
         return
     var build_house := build_mode_panel.get_node_or_null("BuildCatalogResidence") as Button
     if build_house != null:
