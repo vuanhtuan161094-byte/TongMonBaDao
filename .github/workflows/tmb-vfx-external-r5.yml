@@ -1,0 +1,65 @@
+name: TMB external VFX R5 source and combat movie
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'tools/vfx_acquisition_20261127/acquire_cc0_r5.py'
+      - 'godot/labs/combat_lab/external_vfx_library_20261127/combat_review*'
+      - '.github/workflows/tmb-vfx-external-r5.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          python -m pip install Pillow==11.3.0
+          sudo apt-get update -qq
+          sudo apt-get install -y p7zip-full
+          python tools/vfx_acquisition_20261127/acquire_cc0_r5.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: external-r5-cc0-source-${{ github.sha }}
+          path: |
+            outputs/external_vfx_r5/*.zip
+            outputs/external_vfx_r5/*.7z
+            outputs/external_vfx_r5/*.json
+            outputs/external_vfx_r5/*.jpg
+          retention-days: 14
+  combat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Godot native prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth ffmpeg libgl1-mesa-dri
+          curl -fL --retry 3 -o /tmp/godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum -c -
+          unzip -oq /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+      - name: Real receipt-driven Godot battle fixture capture
+        run: |
+          set -euo pipefail
+          G=/tmp/Godot_v4.7.2-stable_linux.x86_64
+          O="$RUNNER_TEMP/combat"
+          mkdir -p "$O"
+          "$G" --headless --path godot --editor --import 2>&1 | tee "$O/import.log"
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "$G" --path godot --resolution 1280x720 --audio-driver Dummy --fixed-fps 20 --write-movie "$O/combat.avi" res://labs/combat_lab/external_vfx_library_20261127/combat_review.tscn -- "$O/receipts.json" 2>&1 | tee "$O/capture.log"
+          ffmpeg -y -v error -i "$O/combat.avi" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$O/combat.mp4"
+          rm "$O/combat.avi"
+          python -c 'import json,sys; a=json.load(open(sys.argv[1])); print("REAL_RECEIPTS",sum(x["real_visual_receipt"] for x in a),"/",len(a)); assert len(a)==19; assert all(x["real_visual_receipt"] and x["actor_draw_ok"] and x["synthetic_events"]==0 for x in a)' "$O/receipts.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: external-r5-combat-${{ github.sha }}
+          path: ${{ runner.temp }}/combat/
+          retention-days: 14
