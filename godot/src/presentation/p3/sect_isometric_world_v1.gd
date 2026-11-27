@@ -15,14 +15,14 @@ const MAP01_PAVING: Texture2D = preload("res://art/onegame_world_r2/map01_paving
 const SECT_FLAGSTONE: Texture2D = preload("res://art/onegame_world_r2/map01_sect_flagstone.svg")
 # Original visual candidates for existing navigable landmarks; no new buildings.
 const MAP01_LANDMARKS := {
-    "cultivation":preload("res://art/onegame_world_r2/map01_cultivation.svg"),
-    "ren_than_duong":preload("res://art/onegame_world_r2/map01_ren_than_duong.svg"),
-    "medicine":preload("res://art/onegame_world_r2/map01_medicine.svg"),
-    "gate":preload("res://art/onegame_world_r2/map01_gate.svg")
+    "cultivation":preload("res://art/onegame_world_r2/map01_final_cultivation.svg"),
+    "ren_than_duong":preload("res://art/onegame_world_r2/map01_final_training.svg"),
+    "medicine":preload("res://art/onegame_world_r2/map01_final_medicine.svg"),
+    "gate":preload("res://art/onegame_world_r2/map01_final_gate.svg")
 }
 const MAP01_LANDMARK_SIZES := {
-    "cultivation":Vector2(180,135),"ren_than_duong":Vector2(172,129),
-    "medicine":Vector2(172,129),"gate":Vector2(180,135)
+    "cultivation":Vector2(205,146),"ren_than_duong":Vector2(205,146),
+    "medicine":Vector2(205,146),"gate":Vector2(224,160)
 }
 const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
@@ -705,6 +705,10 @@ func _load_verified_source_art() -> void:
                     continue
                 var distance := sect_estate_distance(project(Vector2(tile)))
                 if distance < 46.0 or distance > 340.0:
+                    continue
+                var tree_point := project(Vector2(tile))
+                var gate_point := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
+                if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and tree_point.y > SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT-25.0 and absf(tree_point.x-gate_point.x) < 145.0:
                     continue
                 if posmod(x*17+y*31+x*y,7) == 0:
                     continue
@@ -1597,6 +1601,13 @@ func _draw_sect_civic_axis() -> void:
     if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
         _draw_map01_platform(hall+Vector2(0,5),Vector2(305,92),Color(0.73,0.70,0.62,0.45))
         _draw_map01_platform(gate+Vector2(0,4),Vector2(215,70),Color(0.73,0.70,0.62,0.45))
+        # Connect the real gate to the opening through the exterior woodland.
+        var edge := SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT
+        var walk_top := gate.y+6.0
+        draw_rect(Rect2(gate.x-76,walk_top,152,edge+150.0-walk_top),Color("b7ae97"))
+        for side in [-1.0,1.0]:
+            var edge_x: float = gate.x+float(side)*76.0
+            draw_line(Vector2(edge_x,walk_top),Vector2(edge_x,edge+150.0),Color("8f8c7c"),3.0,true)
 
 func _pve_ground_color(cell: Vector2i) -> Color:
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
@@ -2237,7 +2248,7 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         var captions := {"cultivation":"TU LUYỆN","ren_than_duong":"RÈN THÂN","medicine":"Y QUÁN","gate":"CỔNG TÔNG MÔN"}
         var caption := str(captions[kind])
         var font := ThemeDB.fallback_font
-        if font != null:
+        if font != null and (map_layout_version < SectResidenceSiteV1.APPROVED_LAYOUT or camera.zoom.x > 0.62):
             var width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x
             var baseline := p+Vector2(-width*0.5,24)
             draw_string_outline(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13,3,Color(0.08,0.15,0.12,0.94))
