@@ -69,7 +69,7 @@ const VIEW_SIZE := Vector2(1280,570)
 const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
 const CENTER_CELL := Vector2(90,92)
-const NEW_GAME_FOCUS_CELL := Vector2(93,91)
+const NEW_GAME_FOCUS_CELL := Vector2(94,94)
 # Option B is a presentation-only layout seed in the existing 48x48 starter.
 # The model's route origin is the reserved gate point; no actor spawn or
 # SimulationState field is changed by this map-only coordinate.
@@ -209,11 +209,12 @@ const V9_P2_SPELL_VFX = preload("res://src/presentation/p3/pve_v9_p2_spell_vfx.g
 # Signs are presentation wayfinding, not constructed buildings, loot nodes or
 # fake facilities. Coordinates follow the fixed V2 masterplan in SectResidenceSiteV1.
 const MASTERPLAN_DISTRICT_SIGNS := [
-    {"label":"ĐẠI ĐIỆN","detail":"Điều hành tông môn","cell":Vector2i(85,94),"tone":Color("dfb96f")},
-    {"label":"NỘI VIỆN","detail":"Đệ tử · Dẫn Tiên","cell":Vector2i(79,100),"tone":Color("9bc8a1")},
-    {"label":"KHU TU LUYỆN","detail":"Tu vi · Rèn thân","cell":Vector2i(85,82),"tone":Color("86d6d8")},
-    {"label":"KHU SẢN XUẤT","detail":"Linh điền · Chế tạo","cell":Vector2i(101,90),"tone":Color("e2ad78")},
-    {"label":"SĂN YÊU · XUẤT CHINH","detail":"Cổng ra thế giới","cell":Vector2i(96,106),"tone":Color("e49c88")}
+    {"label":"ĐẠI ĐIỆN","detail":"Điều hành tông môn","cell":Vector2i(86,94),"tone":Color("dfb96f")},
+    {"label":"NỘI VIỆN","detail":"Đệ tử · Y quán","cell":Vector2i(79,103),"tone":Color("9bc8a1")},
+    {"label":"KHU TU LUYỆN","detail":"Tu vi · Rèn thân","cell":Vector2i(101,83),"tone":Color("86d6d8")},
+    {"label":"KHU CHẾ TẠO","detail":"Kho · Luyện khí · Luyện đan","cell":Vector2i(90,108),"tone":Color("e2ad78")},
+    {"label":"KHU TÀI NGUYÊN","detail":"Linh điền · Linh lâm · Mỏ","cell":Vector2i(108,94),"tone":Color("b6cf9b")},
+    {"label":"SĂN YÊU · XUẤT CHINH","detail":"Cổng ra thế giới","cell":Vector2i(99,105),"tone":Color("e49c88")}
 ]
 const PRODUCER_ROUTE_APPROACH := {
     "mine":Vector2i(0,1),
@@ -1482,17 +1483,64 @@ func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
     sect_paving_meshes[chunk_id] = mesh
     return mesh
 
+# Architectural low wall, not a new collision boundary. Stone base and
+# continuous dark jade roof, with repeated masonry joints and posts.
+func _draw_wall_span(a: Vector2,b: Vector2) -> void:
+    var span := b-a
+    var length := span.length()
+    if length < 1.0:
+        return
+    var n := Vector2(0,-22)
+    draw_colored_polygon(PackedVector2Array([a,b,b+n,a+n]),Color("878579"))
+    draw_line(a,b,Color("6c6b60"),3.0,true)
+    draw_line(a+n,b+n,Color("d0c6ac"),3.0,true)
+    draw_line(a+n+Vector2(0,-4),b+n+Vector2(0,-4),Color("3c5752"),9.0,true)
+    draw_line(a+n+Vector2(0,-8),b+n+Vector2(0,-8),Color("63796d"),2.0,true)
+    var count := maxi(1,ceili(length/100.0))
+    for index in range(count+1):
+        var foot := a.lerp(b,float(index)/float(count))
+        draw_rect(Rect2(foot+Vector2(-5,-27),Vector2(10,28)),Color("9a9583"))
+        draw_rect(Rect2(foot+Vector2(-7,-30),Vector2(14,5)),Color("485e54"))
+
 func _draw_sect_estate_border() -> void:
     var top := SECT_ESTATE_MID_Y-SECT_ESTATE_HALF_HEIGHT
     var bottom := SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT
     var offset := SECT_ESTATE_HALF_HEIGHT*SECT_ESTATE_SHEAR
     var w := SECT_ESTATE_HALF_WIDTH
-    var border := PackedVector2Array([
-        Vector2(-w-offset,top),Vector2(w-offset,top),
-        Vector2(w+offset,bottom),Vector2(-w+offset,bottom),Vector2(-w-offset,top)
-    ])
-    draw_polyline(border,Color("5d6054"),12.0,true)
-    draw_polyline(border,Color("c6c0ab"),4.0,true)
+    var tl := Vector2(-w-offset,top)
+    var tr := Vector2(w-offset,top)
+    var br := Vector2(w+offset,bottom)
+    var bl := Vector2(-w+offset,bottom)
+    _draw_wall_span(tl,tr)
+    _draw_wall_span(tl,bl)
+    _draw_wall_span(tr,br)
+    # The southern wall has a clear ceremonial opening aligned with the gate.
+    var gate_x := project(Vector2(SPAWN_CELL)).x
+    _draw_wall_span(bl,Vector2(gate_x-110,bottom))
+    _draw_wall_span(Vector2(gate_x+110,bottom),br)
+
+func _draw_sect_civic_axis() -> void:
+    if map_layout_version < 2:
+        return
+    var hall := project(visual_anchor(&"main_hall",anchor_for(&"main_hall")))
+    var gate := project(Vector2(SPAWN_CELL))
+    var center_x := (hall.x+gate.x)*0.5
+    # The existing stone surface remains continuous. A narrow inlaid
+    # ceremonial spine and bronze seal mark the gathering court.
+    var top := hall.y+35.0
+    var bottom := gate.y-22.0
+    if bottom <= top:
+        return
+    draw_rect(Rect2(center_x-49,top,98,bottom-top),Color(0.82,0.77,0.65,0.20))
+    for side in [-1.0,1.0]:
+        var x := center_x+side*49.0
+        draw_line(Vector2(x,top),Vector2(x,bottom),Color("b9aa87"),2.0,true)
+    var court := project(Vector2(ROADS_JUNCTION))
+    draw_circle(court,34.0,Color(0.36,0.43,0.39,0.28))
+    draw_arc(court,34.0,0.0,TAU,64,Color("ded0ad"),2.0,true)
+    draw_arc(court,27.0,0.0,TAU,64,Color("817e6d"),1.5,true)
+    var seal := PackedVector2Array([court+Vector2(0,-15),court+Vector2(15,0),court+Vector2(0,15),court+Vector2(-15,0)])
+    draw_colored_polygon(seal,Color("b6aa85"))
 
 func _pve_ground_color(cell: Vector2i) -> Color:
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
@@ -1579,6 +1627,7 @@ func _draw() -> void:
             if paving.get_surface_count() > 0:
                 draw_mesh(paving,SECT_FLAGSTONE)
         _draw_sect_estate_border()
+        _draw_sect_civic_axis()
     else:
         _draw_pve_stream()
         for chunk_id in active_chunks:
@@ -2046,14 +2095,14 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
         # Show authentic new architecture for each primary site and selected
         # instance even at normal zoom; distant extra sites keep cheap LOD.
         var v3_showcase := V3_ART.supported(StringName(kind)) and (
-            (building_id.ends_with("_001") and camera.zoom.x >= 0.65)
+            (building_id.ends_with("_001") and (not pve_landscape or camera.zoom.x >= 0.65))
             or (not building_id.is_empty() and building_id == selected_visual_site_id))
         # One genuine Owner-approved Mine landmark remains visible at default
         # map zoom; other 99 possible sites retain cheap LOD unless selected.
         var owner_mine_showcase := kind == "mine" and vis07_mine_owner_art_loaded and (
-            (building_id.ends_with("_001") and camera.zoom.x >= 0.65)
+            (building_id.ends_with("_001") and (not pve_landscape or camera.zoom.x >= 0.65))
             or (not building_id.is_empty() and building_id == selected_visual_site_id))
-        var primary_worksite := building_id.ends_with("_001") and camera.zoom.x >= 0.65 and candidate_site_art.has(kind)
+        var primary_worksite := building_id.ends_with("_001") and (not pve_landscape or camera.zoom.x >= 0.65) and candidate_site_art.has(kind)
         if (level < 2 or not allow_detail) and not v3_showcase and not owner_mine_showcase and not primary_worksite:
             _draw_compact_producer(p,kind,level == 0)
             return

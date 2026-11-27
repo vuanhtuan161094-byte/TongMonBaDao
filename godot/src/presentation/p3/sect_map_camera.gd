@@ -8,7 +8,7 @@ const WORLD_SIZE := Vector2(9800.0, 5200.0)
 const WORLD_END := WORLD_ORIGIN + WORLD_SIZE
 const VIEW_RECT := Rect2(Vector2(0.0, 72.0), Vector2(1280.0, 570.0))
 
-const MIN_ZOOM := 0.75
+const MIN_ZOOM := 0.40
 const DEFAULT_ZOOM := 1.0
 const MAX_ZOOM := 1.80
 const FOCUS_ZOOM := 1.35

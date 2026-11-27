@@ -28,14 +28,15 @@ const LEGACY_MAP_ANCHORS := {
 }
 # Fixed Sect Master districts for the currently released New Game (layout V2).
 # Source of truth for map art, map-hit origins and the protected roads graph.
-# The Main Hall, founding Residence and Sect Gate retain their original sites.
+# A+B compound: hall/gate spine, left residence and manufacture wings,
+# right cultivation and resource wings. The founding residence stays saved.
 const NEW_GAME_MAP_ANCHORS := {
-    "main_hall":Vector2i(81,89), "warehouse":Vector2i(95,85),
-    "forge":Vector2i(103,85), "residence":Vector2i(76,97),
-    "cultivation":Vector2i(82,78), "ren_than_duong":Vector2i(90,78),
-    "medicine":Vector2i(74,105), "alchemy_hall":Vector2i(111,85),
-    "mine":Vector2i(111,94), "linh_forest":Vector2i(103,94),
-    "spirit_field":Vector2i(95,94), "guidance":Vector2i(82,101),
+    "main_hall":Vector2i(81,89), "warehouse":Vector2i(81,109),
+    "forge":Vector2i(86,104), "residence":Vector2i(76,97),
+    "cultivation":Vector2i(95,83), "ren_than_duong":Vector2i(102,76),
+    "medicine":Vector2i(82,99), "alchemy_hall":Vector2i(91,99),
+    "mine":Vector2i(110,84), "linh_forest":Vector2i(105,89),
+    "spirit_field":Vector2i(100,94), "guidance":Vector2i(77,104),
     "gate":Vector2i(96,102)
 }
 
@@ -69,8 +70,8 @@ const ANNEX_SITES := [
 # older user-chosen House origins and the original placement transaction are
 # preserved for backward-compatible Save loading and existing construction.
 const MASTERPLAN_ANNEX_SITES := [
-    Vector2i(84,105),Vector2i(89,109),Vector2i(94,112),
-    Vector2i(86,108),Vector2i(92,108),Vector2i(98,108),
+    Vector2i(75,112),Vector2i(82,115),Vector2i(94,112),
+    Vector2i(89,115),Vector2i(92,108),Vector2i(98,108),
     Vector2i(104,108),Vector2i(110,108),Vector2i(86,114),
     Vector2i(92,114),Vector2i(98,114),Vector2i(104,114)
 ]

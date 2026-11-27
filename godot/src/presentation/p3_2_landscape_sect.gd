@@ -962,7 +962,7 @@ func _reset_camera(animate: bool = true) -> void:
         var focus_delta: Vector2 = SectIsometricWorldV1.project(SectIsometricWorldV1.NEW_GAME_FOCUS_CELL) \
             - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
         var focus_world := SectIsometricWorldV1.LEGACY_ANCHOR+focus_delta
-        var layout_transform := SectMapCamera.focus_transform(focus_world,0.75)
+        var layout_transform := SectMapCamera.focus_transform(focus_world,0.56)
         _apply_camera(float(layout_transform["zoom"]),layout_transform["position"],animate)
         return
     var transform := SectMapCamera.reset_transform()

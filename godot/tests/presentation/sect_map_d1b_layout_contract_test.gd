@@ -94,12 +94,13 @@ func _run() -> void:
 	if int(state.sect.world_layout_version) >= 2:
 		expected_routes.append_array(["courtyard_to_ren_than_duong","courtyard_to_medicine","courtyard_to_guidance","courtyard_to_alchemy_hall"])
 		var plan := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
+		# The two production rows are horizontal in projected space, not grid Y.
 		for row in [["warehouse","forge","alchemy_hall"],["spirit_field","linh_forest","mine"]]:
-			var a: Vector2i = plan[row[0]]
-			var b: Vector2i = plan[row[1]]
-			var c: Vector2i = plan[row[2]]
-			if a.y != b.y or b.y != c.y or b.x-a.x != 8 or c.x-b.x != 8:
-				_fail("production compound alignment invalid")
+			var a: Vector2 = iso.project(Vector2(plan[row[0]]))
+			var b: Vector2 = iso.project(Vector2(plan[row[1]]))
+			var c: Vector2 = iso.project(Vector2(plan[row[2]]))
+			if not (is_equal_approx(a.y,b.y) and is_equal_approx(b.y,c.y) and b.x-a.x == 250.0 and c.x-b.x == 250.0):
+				_fail("production compound projected alignment invalid")
 				return
 	if not iso.lab_routes_ready or iso.preview_routes.size() != expected_routes.size():
 		_fail("AStar route seed incomplete: ready=%s routes=%d expected=%d" % [str(iso.lab_routes_ready),iso.preview_routes.size(),expected_routes.size()])
