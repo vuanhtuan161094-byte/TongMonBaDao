@@ -21,6 +21,9 @@ var done:=false
 var skill:=""
 var school:=""
 var font: Font=ThemeDB.fallback_font
+var slash_mode:=false
+var enemy_base:=Vector2(5,2)
+var release_delay:=0.7
 func _actor(id: String,side: String,position: Vector2) -> Dictionary:
     var resistances: Dictionary = {}
     for element in CombatStatsV2.ELEMENTS:
@@ -29,7 +32,9 @@ func _actor(id: String,side: String,position: Vector2) -> Dictionary:
 
 func _ready() -> void:
     ProjectSettings.set_setting(FX.EXTERNAL_PREVIEW_SETTING,true)
-    var raw: Variant=JSON.parse_string(FileAccess.get_file_as_string(FX.EXTERNAL_INDEX))
+    slash_mode=OS.get_cmdline_user_args().has("--slash-r6")
+    var index_path: String=FX.EXTERNAL_SLASH_INDEX if slash_mode else FX.EXTERNAL_INDEX
+    var raw: Variant=JSON.parse_string(FileAccess.get_file_as_string(index_path))
     if not raw is Dictionary:
         get_tree().quit(1)
         return
@@ -58,24 +63,30 @@ func _next() -> void:
     battle.active=true
     battle.outcome="fighting"
     var caster:=_actor("caster","disciple",Vector2(2,2))
-    var enemy:=_actor("enemy","monster",Vector2(5,2))
-    var ally:=_actor("ally","disciple",Vector2(3,2))
+    enemy_base=Vector2(3,2) if slash_mode else Vector2(5,2)
+    var enemy:=_actor("enemy","monster",enemy_base)
+    var ally:=_actor("ally","disciple",Vector2(2.5,3.5))
     caster["party_id"]="test";ally["party_id"]="test"
     caster["v63_"+school+"_combat_enabled"]=true
     caster["v63_combat_branch_id"]=str(definition.get("branch",""))
     caster["v63_skill_loadout"]=[skill]
     caster["v63_combat_lineage"]="base"
+    if slash_mode:
+        caster["hp"]=1800.0; enemy["hp"]=2000.0
+        caster["role"]="melee"
+        caster["stats"]["attack"]=100.0
     battle.actors["caster"]=caster;battle.actors["ally"]=ally;battle.actors["enemy"]=enemy
     fx=FX.new();cursor=CURSOR.new()
     fx.observe(cursor.observe_snapshot(battle),battle)
     cast_ok=V63HumanSkillCombatSystem.try_cast(battle,caster,enemy,false)
+    release_delay=clampf(float(caster.get("v63_pending_cast",{}).get("ready",0.7)),0.2,1.7)
     fx.observe(cursor.observe_snapshot(battle),battle)
 func _process(delta: float) -> void:
     if done or battle==null:return
     elapsed+=delta;total+=delta
     var enemy: Dictionary=battle.actors["enemy"]
-    enemy["position"]=Vector2(5.0+0.4*sin(elapsed*2.0),2.0+0.2*sin(elapsed))
-    if not released and elapsed>=0.7:
+    enemy["position"]=enemy_base+Vector2(0.12*sin(elapsed*2.0),0.12*sin(elapsed))
+    if not released and elapsed>=release_delay:
         released=true
         if cast_ok:
             var caster: Dictionary=battle.actors["caster"]
@@ -86,9 +97,11 @@ func _process(delta: float) -> void:
             accepted=not fx._cues.is_empty() and battle.events==snapshot
     fx.advance(delta)
     queue_redraw()
-    if elapsed>=2.4:_next()
+    if elapsed>=maxf(2.4,release_delay+1.1):_next()
 func _project(p: Vector2) -> Vector2:
-    return Vector2(220+p.x*112,382+p.y*42)
+    if slash_mode:
+        return Vector2(30+p.x*190,340+p.y*66)
+    return Vector2(120+p.x*145,340+p.y*66)
 func _draw() -> void:
     draw_rect(Rect2(0,0,1280,720),Color("#1b2829"))
     draw_rect(Rect2(24,108,1232,500),Color("#44554b") if index%2==0 else Color("#85958a"))
@@ -100,10 +113,10 @@ func _draw() -> void:
         positions[id]=world
         var foot:=_project(world)
         if id=="enemy":
-            monsters.draw_actor(self,"monster_1113031_1","walk",foot,Vector2.LEFT,elapsed,1.0)
+            monsters.draw_actor(self,"monster_1113031_1","walk",foot,Vector2.LEFT,elapsed,1.7)
         else:
-            var action: String="cast" if id=="caster" and not released else "idle"
-            var ok: bool=ASCHAR.draw_actor(self,school,"male",action,foot,Vector2.RIGHT,elapsed,ASCHAR.game_view_scale(1.0),0.7,{})
+            var action: String=("attack" if slash_mode else "cast") if id=="caster" and not released else "idle"
+            var ok: bool=ASCHAR.draw_actor(self,school,"male",action,foot,Vector2.RIGHT,elapsed,ASCHAR.game_view_scale(1.7),release_delay,{})
             actor_ok=actor_ok or ok
         var health:=clampf(float(a["hp"])/float(a["max_hp"]),0,1)
         draw_rect(Rect2(foot+Vector2(-27,-104),Vector2(54,4)),Color("#24302e"))
@@ -112,4 +125,4 @@ func _draw() -> void:
     draw_string(font,Vector2(32,38),"TMB / VFX AUXILIARY COMBAT REVIEW",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color.WHITE)
     draw_string(font,Vector2(32,72),skill,HORIZONTAL_ALIGNMENT_LEFT,-1,17,Color("#c2d2c8"))
     draw_string(font,Vector2(32,656),"REAL MAPBATTLE FIXTURE | %d/%d | cast %s | receipt %s | owner pending" % [index+1,ids.size(),str(cast_ok),str(accepted)],HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color.WHITE)
-    draw_string(font,Vector2(32,684),"Source: FLARE contributors / CC BY-SA 3.0; no simulated receipts; preview only",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("#c2d2c8"))
+    draw_string(font,Vector2(32,684),("Source: Cethiel / CC0; contact accent; 1.7x review zoom" if slash_mode else "Source: FLARE contributors / CC BY-SA 3.0; 1.7x review zoom"),HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("#c2d2c8"))
