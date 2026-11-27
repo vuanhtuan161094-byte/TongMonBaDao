@@ -3,6 +3,7 @@ extends RefCounted
 ## combat, learning, status duration, targeting or saves. Never emits receipts.
 const INDEX := "res://data/presentation/pve_factory_r2.json"
 const EXTERNAL_INDEX := "res://data/presentation/pve_external_auxiliary_v1.json"
+const EXTERNAL_SLASH_INDEX := "res://data/presentation/pve_external_slash_r6.json"
 const EXTERNAL_PREVIEW_SETTING := "runtime/external_auxiliary_vfx_preview"
 const MAX_CUES := 80
 const MAX_TEXTURES := 36
@@ -27,11 +28,14 @@ func _ensure_index() -> void:
         _entries = raw.get("bindings",{}).duplicate(true)
     # Separate preview gate; never replace the existing 58 source bindings.
     if bool(ProjectSettings.get_setting(EXTERNAL_PREVIEW_SETTING,false)):
-        var external: Variant = JSON.parse_string(FileAccess.get_file_as_string(EXTERNAL_INDEX))
-        if external is Dictionary:
-            for id in external.get("bindings",{}):
-                if not _entries.has(id):
-                    _entries[id] = external["bindings"][id]
+        for index_path in [EXTERNAL_INDEX,EXTERNAL_SLASH_INDEX]:
+            if not FileAccess.file_exists(index_path):
+                continue
+            var external: Variant = JSON.parse_string(FileAccess.get_file_as_string(index_path))
+            if external is Dictionary:
+                for id in external.get("bindings",{}):
+                    if not _entries.has(id):
+                        _entries[id] = external["bindings"][id]
 
 func _binding(id: String) -> Dictionary:
     if _entries.has(id):
@@ -65,6 +69,8 @@ static func resolve_receipt_phase(phases: Dictionary, requested: String) -> Stri
 static func external_receipt_allowed(entry: Dictionary,event: Dictionary) -> bool:
     var effect := str(entry.get("effect",""))
     var kind := str(event.get("type",""))
+    if effect == "damage":
+        return kind == "v63_skill_hit" and str(event.get("effect","")) == "damage" and float(event.get("damage",0.0)) > 0.0
     if effect == "heal":
         return kind == "heal" and float(event.get("amount",0.0)) > 0.0
     if effect == "guard":
@@ -283,7 +289,7 @@ func draw_on(canvas: CanvasItem,positions: Dictionary,projection: Callable) -> v
         if accent_contact:
             width *= 1.12
         var dims := Vector2(width,width*region.size.y/region.size.x)
-        canvas.draw_set_transform(at,angle)
+        canvas.draw_set_transform(at,angle+float(source.get("angle_offset",0.0)))
         if accent_contact:
             var halo_dims := dims*1.18
             canvas.draw_texture_rect_region(texture,Rect2(-halo_dims*0.5,halo_dims),region,Color(1,1,1,opacity*0.22))
