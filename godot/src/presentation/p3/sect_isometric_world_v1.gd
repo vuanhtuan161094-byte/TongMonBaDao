@@ -14,15 +14,18 @@ const MAP01_MEADOW: Texture2D = preload("res://art/onegame_world_r2/map01_meadow
 const MAP01_PAVING: Texture2D = preload("res://art/onegame_world_r2/map01_paving.svg")
 const SECT_FLAGSTONE: Texture2D = preload("res://art/onegame_world_r2/map01_sect_flagstone.svg")
 # Original visual candidates for existing navigable landmarks; no new buildings.
+# Reuse actual raster illustrations from the coherent original VIS08 family.
+# These are provisional visual roles, not newly authored or approved masters.
+# The practice court uses actual stone terrain artwork, not a fake house.
 const MAP01_LANDMARKS := {
-    "cultivation":preload("res://art/onegame_world_r2/map01_final_cultivation.svg"),
-    "ren_than_duong":preload("res://art/onegame_world_r2/map01_final_training.svg"),
-    "medicine":preload("res://art/onegame_world_r2/map01_final_medicine.svg"),
-    "gate":preload("res://art/onegame_world_r2/map01_final_gate.svg")
+    "cultivation":preload("res://art/tmb_original_buildings_v5/hall_original_1x.png"),
+    "ren_than_duong":preload("res://art/source_a_env02a/env01_assets/terrain/stone_runes.png"),
+    "medicine":preload("res://art/tmb_original_buildings_v5/residence_original_1x.png"),
+    "gate":preload("res://art/tmb_original_buildings_v5/guidance_original_1x.png")
 }
 const MAP01_LANDMARK_SIZES := {
-    "cultivation":Vector2(205,146),"ren_than_duong":Vector2(205,146),
-    "medicine":Vector2(205,146),"gate":Vector2(224,160)
+    "cultivation":Vector2(228,153),"ren_than_duong":Vector2(166,86),
+    "medicine":Vector2(192,149),"gate":Vector2(166,185)
 }
 const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
@@ -704,7 +707,7 @@ func _load_verified_source_art() -> void:
                 if not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
                     continue
                 var distance := sect_estate_distance(project(Vector2(tile)))
-                if distance < 46.0 or distance > 340.0:
+                if distance < 48.0 or distance > 420.0:
                     continue
                 var tree_point := project(Vector2(tile))
                 var gate_point := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
@@ -724,7 +727,7 @@ func _load_verified_source_art() -> void:
                 var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.33,float(posmod(x*11+y*3,5)-2)*0.33)
                 (decoration_items_by_chunk[chunk] as Array).append({
                     "world":project(Vector2(tile)+jitter),"texture":tree,
-                    "scale":0.33+float(posmod(x*3+y*5,5))*0.035,"cell":tile
+                    "scale":0.32+float(posmod(x*3+y*5,9))*0.035,"cell":tile
                 })
     _cache_static_overlays()
     pve_static_queue_dirty = true
@@ -1553,22 +1556,63 @@ func _draw_sect_estate_border() -> void:
 
 # Architectural inlays mark the two future expansion wings without
 # drawing empty construction slots in everyday play.
+# Courtyard composition: architecture, paved commons and reserved wings.
+# Static cached ground texture stays separate from real instance depth queue.
+# All decoration is flat and traversable, so no build capacity is consumed.
+func _map01_ground_quad(uv_a: Vector2,uv_b: Vector2,tint: Color) -> void:
+    var points := PackedVector2Array([
+        SectResidenceSiteV1.estate_point(uv_a),
+        SectResidenceSiteV1.estate_point(Vector2(uv_b.x,uv_a.y)),
+        SectResidenceSiteV1.estate_point(uv_b),
+        SectResidenceSiteV1.estate_point(Vector2(uv_a.x,uv_b.y))])
+    draw_colored_polygon(points,tint)
+
+func _map01_court_frame(a: Vector2,b: Vector2,tone: Color) -> void:
+    _map01_ground_quad(a,b,tone)
+    var outline := PackedVector2Array([
+        SectResidenceSiteV1.estate_point(a),
+        SectResidenceSiteV1.estate_point(Vector2(b.x,a.y)),
+        SectResidenceSiteV1.estate_point(b),
+        SectResidenceSiteV1.estate_point(Vector2(a.x,b.y)),
+        SectResidenceSiteV1.estate_point(a)])
+    draw_polyline(outline,Color(0.47,0.48,0.42,0.48),5.0,true)
+    var inset := Vector2(0.006,0.012)
+    var inside_a := a+inset
+    var inside_b := b-inset
+    var inner := PackedVector2Array([
+        SectResidenceSiteV1.estate_point(inside_a),
+        SectResidenceSiteV1.estate_point(Vector2(inside_b.x,inside_a.y)),
+        SectResidenceSiteV1.estate_point(inside_b),
+        SectResidenceSiteV1.estate_point(Vector2(inside_a.x,inside_b.y)),
+        SectResidenceSiteV1.estate_point(inside_a)])
+    draw_polyline(inner,Color(0.92,0.87,0.72,0.72),3.0,true)
+
 func _draw_approved_district_inlays() -> void:
-    for u in [0.30,0.55]:
-        var a := SectResidenceSiteV1.estate_point(Vector2(float(u),0.03))
-        var b := SectResidenceSiteV1.estate_point(Vector2(float(u),0.97))
-        draw_line(a,b,Color(0.59,0.57,0.51,0.48),3.0,true)
-        draw_line(a+Vector2(5,0),b+Vector2(5,0),Color(0.79,0.76,0.65,0.52),1.2,true)
-    # Stone perimeter walkway and carved corner details occupy only the
-    # existing paved surface; no new collision or construction authority.
-    var rim := PackedVector2Array([
-        SectResidenceSiteV1.estate_point(Vector2(0.018,0.025)),
-        SectResidenceSiteV1.estate_point(Vector2(0.982,0.025)),
-        SectResidenceSiteV1.estate_point(Vector2(0.982,0.975)),
-        SectResidenceSiteV1.estate_point(Vector2(0.018,0.975)),
-        SectResidenceSiteV1.estate_point(Vector2(0.018,0.025))])
-    draw_polyline(rim,Color("ada18b"),16.0,true)
-    draw_polyline(rim,Color("d9cbb0"),3.0,true)
+    # Broad finished courtyards and a common transverse promenade rather than
+    # one uniform slab. The rectangles designate whole district courts,
+    # not empty building slots or fabricated production.
+    _map01_court_frame(Vector2(0.024,0.05),Vector2(0.283,0.43),Color(0.75,0.79,0.71,0.22))
+    _map01_court_frame(Vector2(0.024,0.51),Vector2(0.283,0.94),Color(0.69,0.76,0.69,0.23))
+    _map01_court_frame(Vector2(0.316,0.045),Vector2(0.535,0.35),Color(0.91,0.81,0.64,0.29))
+    _map01_court_frame(Vector2(0.316,0.40),Vector2(0.535,0.69),Color(0.69,0.78,0.75,0.28))
+    _map01_court_frame(Vector2(0.568,0.05),Vector2(0.976,0.43),Color(0.86,0.78,0.62,0.26))
+    _map01_court_frame(Vector2(0.568,0.51),Vector2(0.976,0.94),Color(0.80,0.74,0.59,0.24))
+    _map01_ground_quad(Vector2(0.024,0.443),Vector2(0.976,0.494),Color(0.91,0.85,0.73,0.54))
+    # Use SHA-checked original road/terrain art already in the game. Keep
+    # all underlying surfaces paved and retain actual route endpoints.
+    for chunk_id in active_chunks:
+        for row in road_overlays_by_chunk.get(chunk_id,[]):
+            var center: Vector2 = row["center"]
+            if sect_estate_distance(center) > -20.0:
+                continue
+            draw_texture_rect(row["texture"],row["rect"],false,Color(0.95,0.94,0.87,0.60))
+    # Stone detailing at court corners using existing game texture.
+    var marker: Texture2D = render_art.get("env01_assets/terrain/stone_runes.png") as Texture2D
+    if marker != null:
+        for uv in [Vector2(0.04,0.07),Vector2(0.266,0.07),Vector2(0.04,0.92),Vector2(0.266,0.92),
+                Vector2(0.588,0.07),Vector2(0.957,0.07),Vector2(0.588,0.92),Vector2(0.957,0.92)]:
+            var point := SectResidenceSiteV1.estate_point(Vector2(uv))
+            draw_texture_rect(marker,Rect2(point-Vector2(30,16),Vector2(60,32)),false,Color(0.95,0.94,0.87,0.75))
 
 func _draw_map01_platform(p: Vector2,extent: Vector2,tone: Color) -> void:
     # Inlaid stone directly below an actual landmark, not a separate shadow.
@@ -2158,9 +2202,9 @@ func _map01_art_scale(kind: String,building_id: String = "") -> float:
     if kind == "main_hall":
         return 1.60
     if kind == "gate":
-        return 1.85
+        return 1.37
     if kind in ["cultivation","ren_than_duong","medicine"]:
-        return 1.48
+        return 1.22
     if kind == "residence":
         return 1.33 if building_id.ends_with("_001") else 1.08
     if kind in ["guidance","warehouse","forge"]:
@@ -2244,11 +2288,20 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
     if not pve_landscape and MAP01_LANDMARKS.has(kind):
         var art: Texture2D = MAP01_LANDMARKS[kind]
         var size: Vector2 = MAP01_LANDMARK_SIZES[kind]*_map01_art_scale(kind,building_id)
-        draw_texture_rect(art,Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
+        if kind == "ren_than_duong":
+            # Open training court: actual pavement texture in a small tiled
+            # yard, readable as a functional outdoor landmark at overview.
+            var tile_size := Vector2(86.0,45.0)
+            for iy in range(-1,2):
+                for ix in range(-1,2):
+                    var center := p+Vector2(float(ix-iy)*43.0,float(ix+iy)*22.5)
+                    draw_texture_rect(art,Rect2(center-tile_size*0.5,tile_size),false)
+        else:
+            draw_texture_rect(art,Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
         var captions := {"cultivation":"TU LUYỆN","ren_than_duong":"RÈN THÂN","medicine":"Y QUÁN","gate":"CỔNG TÔNG MÔN"}
         var caption := str(captions[kind])
         var font := ThemeDB.fallback_font
-        if font != null and (map_layout_version < SectResidenceSiteV1.APPROVED_LAYOUT or camera.zoom.x > 0.62):
+        if font != null and (kind == "ren_than_duong" or map_layout_version < SectResidenceSiteV1.APPROVED_LAYOUT or camera.zoom.x > 0.62):
             var width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x
             var baseline := p+Vector2(-width*0.5,24)
             draw_string_outline(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13,3,Color(0.08,0.15,0.12,0.94))
