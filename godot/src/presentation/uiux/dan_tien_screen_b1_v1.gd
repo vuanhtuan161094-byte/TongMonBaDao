@@ -77,7 +77,7 @@ func _make_shell() -> MarginContainer:
 	var building_art: Control = FACILITY_ART.new()
 	building_art.name = "GuidanceFacilityArt"
 	building_art.set("facility_kind", "guidance")
-	building_art.custom_minimum_size = Vector2(142, 100)
+	building_art.custom_minimum_size = Vector2(108, 74)
 	building_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	header.add_child(building_art)
 	var stack := VBoxContainer.new()
@@ -92,7 +92,7 @@ func _make_shell() -> MarginContainer:
 		_rebuild()
 	)
 	header.add_child(reduce)
-	var close_button := UI.button("ĐÓNG", false, UI.GOLD)
+	var close_button := UI.button("‹  VỀ BẢN ĐỒ", false, UI.GOLD)
 	close_button.pressed.connect(func(): closed.emit())
 	header.add_child(close_button)
 	column.add_child(header)
