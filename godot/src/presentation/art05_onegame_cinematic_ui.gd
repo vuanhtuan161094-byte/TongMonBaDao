@@ -3,6 +3,8 @@ extends "res://src/presentation/art02_onegame_visual_layer.gd"
 ## Pure presentation. Real BuildingSystem/Warehouse/Save/UI buttons are inherited unchanged.
 ## The 7 virtual GUI captures at d48d8d21 are the BEFORE visual baseline.
 const ART05_GOLD := Color(0.97,0.79,0.43)
+const MAP01_HUD_TOP = preload("res://art/onegame_world_r2/map01_hud_top.svg")
+const MAP01_HUD_BOTTOM = preload("res://art/onegame_world_r2/map01_hud_bottom.svg")
 const ART05_WHITE := Color(0.96,0.94,0.86)
 const ART05_MUTE := Color(0.73,0.82,0.78)
 const ART05_DEEP := Color(0.025,0.09,0.108)
@@ -808,8 +810,10 @@ func _art05_sync_map_chrome() -> void:
         if tab != null:
             tab.visible = not modal
             var active := str(entry["key"]) == str(_art05_dock_destination)
-            tab.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
-            tab.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD if active else Color(0.035,0.15,0.16,0.95),ART05_GOLD if active else ART05_MUTE,1,8))
+            tab.add_theme_color_override("font_color",ART05_GOLD if active else ART05_WHITE)
+            var tab_style := _map01_nav_style(active)
+            tab_style.bg_color = Color(0.025,0.065,0.072,0.80) if not active else Color(0.12,0.17,0.15,0.94)
+            tab.add_theme_stylebox_override("normal",tab_style)
     if gp1_guide_panel != null and (modal or _art05_dock_destination != &"main_hall" or _art05_dock_collapsed):
         gp1_guide_panel.visible = false
 
@@ -830,34 +834,30 @@ func _art05_install_mockup_shell() -> void:
         return
     var top := resource_label.get_parent() as Panel
     if top != null:
-        top.add_theme_stylebox_override("panel",_art05_style(
-            Color(0.021,0.115,0.111,0.99),ART05_GOLD,1,0))
+        top.add_theme_stylebox_override("panel",_map01_texture_style(MAP01_HUD_TOP))
         for child in top.get_children():
             if not (child is Label):
                 continue
             var label := child as Label
             if label.text == "TÔNG MÔN BÁ ĐẠO":
-                label.position = Vector2(21,9)
+                label.position = Vector2(78,9)
                 label.size = Vector2(420,34)
-                label.add_theme_font_size_override("font_size",24)
+                label.add_theme_font_size_override("font_size",25)
                 label.add_theme_color_override("font_color",ART05_GOLD)
             elif label.text == "TÔNG SƯ":
-                label.position = Vector2(455,12)
-                label.size = Vector2(166,45)
-                label.add_theme_font_size_override("font_size",21)
-                label.add_theme_color_override("font_color",ART05_GOLD)
-        time_label.position = Vector2(23,43)
+                label.visible = false
+        time_label.position = Vector2(80,43)
         time_label.size = Vector2(435,22)
         time_label.add_theme_color_override("font_color",ART05_MUTE)
         var playbook := Button.new()
         playbook.name = "OneGamePlaybookButton"
-        playbook.text = "CÁCH CHƠI"
+        playbook.text = "Hướng dẫn"
         playbook.tooltip_text = "Mở lộ trình phát triển tông môn bất cứ lúc nào"
-        playbook.position = Vector2(632,16)
-        playbook.size = Vector2(188,42)
+        playbook.position = Vector2(709,18)
+        playbook.size = Vector2(114,36)
         playbook.add_theme_font_size_override("font_size",16)
         playbook.add_theme_color_override("font_color",ART05_WHITE)
-        playbook.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,10))
+        playbook.add_theme_stylebox_override("normal",_map01_nav_style(false))
         playbook.add_theme_stylebox_override("hover",_art05_style(Color(0.16,0.30,0.25),ART05_GOLD,2,10))
         playbook.pressed.connect(_art05_open_playbook)
         top.add_child(playbook)
@@ -870,7 +870,7 @@ func _art05_install_mockup_shell() -> void:
     _refresh_top_bar()
     # The first-minute card should guide without masking a full district.
     if gp1_guide_panel != null:
-        gp1_guide_panel.position = Vector2(16,128)
+        gp1_guide_panel.position = Vector2(144,82)
         gp1_guide_panel.size = Vector2(260,124)
         if gp1_guide_title != null:
             gp1_guide_title.position = Vector2(12,9)
@@ -891,8 +891,7 @@ func _art05_install_mockup_shell() -> void:
 
     var bottom := get_node_or_null("PlayerBottomBar") as Panel
     if bottom != null:
-        bottom.add_theme_stylebox_override("panel",_art05_style(
-            Color(0.017,0.092,0.101,0.99),ART05_GOLD,1,0))
+        bottom.add_theme_stylebox_override("panel",_map01_texture_style(MAP01_HUD_BOTTOM))
         var old_mark := bottom.get_node_or_null("Art05SectSignature") as Control
         if old_mark != null:
             old_mark.visible = false
@@ -904,8 +903,8 @@ func _art05_install_mockup_shell() -> void:
             for i in range(ordered.size()):
                 var button := ordered[i]
                 var active := i == 0
-                button.position = Vector2(43+i*245,10)
-                button.size = Vector2(214,56)
+                button.position = Vector2(218+i*172,6)
+                button.size = Vector2(156,62)
                 button.text = ["Tông Môn","Đệ Tử","Kho","Thế Giới","Săn Quái"][i]
                 button.tooltip_text = [
                     "Về bản đồ tông môn và quản lý công trình",
@@ -914,36 +913,33 @@ func _art05_install_mockup_shell() -> void:
                     "Chọn khu vực lịch luyện và đường ra ngoài",
                     "Lập đội và vào bãi săn Thanh Trúc Lâm"
                 ][i]
-                button.add_theme_font_size_override("font_size",17)
-                button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
+                button.add_theme_font_size_override("font_size",15)
+                button.add_theme_color_override("font_color",ART05_GOLD if active else ART05_WHITE)
                 button.add_theme_color_override("font_hover_color",ART05_GOLD)
-                button.add_theme_color_override("font_pressed_color",ART05_DEEP)
-                button.add_theme_stylebox_override("normal",_art05_style(
-                    Color(0.97,0.87,0.65,1.0) if active else Color(0.045,0.17,0.17,0.99),
-                    ART05_GOLD if active else Color(0.58,0.67,0.53,0.75),2 if active else 1,12))
-                button.add_theme_stylebox_override("hover",_art05_style(
-                    Color(0.12,0.27,0.26,0.99),ART05_GOLD,2,12))
-                button.add_theme_stylebox_override("pressed",_art05_style(
-                    Color(0.90,0.76,0.50,0.99),ART05_GOLD,2,12))
+                button.add_theme_color_override("font_pressed_color",ART05_GOLD)
+                button.add_theme_stylebox_override("normal",_map01_nav_style(active,true))
+                button.add_theme_stylebox_override("hover",_map01_nav_style(true,true))
+                button.add_theme_stylebox_override("pressed",_map01_nav_style(true,true))
                 button.add_theme_stylebox_override("focus",_art05_style(
                     Color(0.02,0.15,0.16,0.05),ART05_GOLD,2,12))
                 var glyph := button.get_node_or_null("Art05NavigationGlyph") as Control
                 if glyph != null:
-                    glyph.position = Vector2(14,13)
-                    glyph.size = Vector2(29,29)
-                    glyph.set("tint",ART05_DEEP if active else ART05_GOLD)
+                    glyph.position = Vector2(10,12)
+                    glyph.size = Vector2(34,34)
+                    glyph.set("tint",ART05_GOLD if active else ART05_MUTE)
                     glyph.queue_redraw()
                 button.pressed.connect(Callable(self,"_art05_activate_nav").bind(i))
     # Narrow horizontal navigation ribbon leaves more of the terrain visible.
     if build_mode_button != null:
-        build_mode_button.position = Vector2(16,80)
-        build_mode_button.size = Vector2(144,36)
+        build_mode_button.position = Vector2(16,82)
+        build_mode_button.size = Vector2(116,33)
+        build_mode_button.add_theme_stylebox_override("normal",_map01_nav_style(false))
     for i in range(MASTERPLAN_DISTRICT_TABS.size()):
         var key := str(MASTERPLAN_DISTRICT_TABS[i]["key"])
         var tab := get_node_or_null("MasterplanDistrict_"+key) as Button
         if tab != null:
-            tab.position = Vector2(168+i*131,80)
-            tab.size = Vector2(123,36)
+            tab.position = Vector2(16,124+i*33)
+            tab.size = Vector2(116,30)
             tab.add_theme_font_size_override("font_size",12)
             tab.clip_text = true
     if camera_controls_panel != null:
@@ -970,6 +966,21 @@ func _art05_install_mockup_shell() -> void:
         camera_hint.size = Vector2(422,24)
         camera_hint.text = "Kéo bản đồ · Cuộn để zoom · Chạm công trình để quản lý"
 
+func _map01_texture_style(texture: Texture2D) -> StyleBoxTexture:
+    var result := StyleBoxTexture.new()
+    result.texture = texture
+    return result
+
+func _map01_nav_style(active: bool, icon_button: bool = false) -> StyleBoxFlat:
+    var result := StyleBoxFlat.new()
+    result.bg_color = Color(0.15,0.20,0.17,0.65) if active else Color(0.025,0.065,0.07,0.20)
+    result.border_color = ART05_GOLD if active else Color(0.0,0.0,0.0,0.0)
+    result.border_width_bottom = 2 if active else 0
+    result.set_corner_radius_all(4)
+    result.content_margin_left = 40.0 if icon_button else 4.0
+    result.content_margin_right = 4.0
+    return result
+
 func _art05_activate_nav(index: int) -> void:
     _art05_active_nav = ["home","disciples","warehouse","world","hunt"][clampi(index,0,4)]
     var bottom := get_node_or_null("PlayerBottomBar") as Panel
@@ -981,13 +992,11 @@ func _art05_activate_nav(index: int) -> void:
             continue
         var active := i == index
         var button := child as Button
-        button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
-        button.add_theme_stylebox_override("normal",_art05_style(
-            Color(0.97,0.87,0.65,1) if active else Color(0.045,0.17,0.17,0.99),
-            ART05_GOLD if active else Color(0.58,0.67,0.53,0.75),2 if active else 1,12))
+        button.add_theme_color_override("font_color",ART05_GOLD if active else ART05_WHITE)
+        button.add_theme_stylebox_override("normal",_map01_nav_style(active,true))
         var glyph := button.get_node_or_null("Art05NavigationGlyph") as Control
         if glyph != null:
-            glyph.set("tint",ART05_DEEP if active else ART05_GOLD)
+            glyph.set("tint",ART05_GOLD if active else ART05_MUTE)
             glyph.queue_redraw()
         i += 1
 

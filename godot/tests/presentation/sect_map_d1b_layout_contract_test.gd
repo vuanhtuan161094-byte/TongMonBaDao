@@ -90,10 +90,21 @@ func _run() -> void:
 	if iso.SPAWN_CELL != iso.TYPE_ANCHORS["gate"]:
 		_fail("presentation route seed no longer begins at the reserved Gate marker")
 		return
-	if not iso.lab_routes_ready or iso.preview_routes.size() != EXPECTED_ROUTES.size():
-		_fail("AStar route seed incomplete: ready=%s routes=%d expected=%d" % [str(iso.lab_routes_ready),iso.preview_routes.size(),EXPECTED_ROUTES.size()])
+	var expected_routes: Array = EXPECTED_ROUTES.duplicate()
+	if int(state.sect.world_layout_version) >= 2:
+		expected_routes.append_array(["courtyard_to_ren_than_duong","courtyard_to_medicine","courtyard_to_guidance","courtyard_to_alchemy_hall"])
+		var plan := SectResidenceSiteV1.NEW_GAME_MAP_ANCHORS
+		for row in [["warehouse","forge","alchemy_hall"],["spirit_field","linh_forest","mine"]]:
+			var a: Vector2i = plan[row[0]]
+			var b: Vector2i = plan[row[1]]
+			var c: Vector2i = plan[row[2]]
+			if a.y != b.y or b.y != c.y or b.x-a.x != 8 or c.x-b.x != 8:
+				_fail("production compound alignment invalid")
+				return
+	if not iso.lab_routes_ready or iso.preview_routes.size() != expected_routes.size():
+		_fail("AStar route seed incomplete: ready=%s routes=%d expected=%d" % [str(iso.lab_routes_ready),iso.preview_routes.size(),expected_routes.size()])
 		return
-	for route_id: String in EXPECTED_ROUTES:
+	for route_id: String in expected_routes:
 		if not iso.preview_routes.has(route_id):
 			_fail("missing route %s" % route_id)
 			return

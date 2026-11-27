@@ -30,12 +30,12 @@ const LEGACY_MAP_ANCHORS := {
 # Source of truth for map art, map-hit origins and the protected roads graph.
 # The Main Hall, founding Residence and Sect Gate retain their original sites.
 const NEW_GAME_MAP_ANCHORS := {
-    "main_hall":Vector2i(81,89), "warehouse":Vector2i(93,90),
-    "forge":Vector2i(99,91), "residence":Vector2i(76,97),
-    "cultivation":Vector2i(86,78), "ren_than_duong":Vector2i(91,81),
-    "medicine":Vector2i(74,105), "alchemy_hall":Vector2i(101,84),
-    "mine":Vector2i(107,89), "linh_forest":Vector2i(108,94),
-    "spirit_field":Vector2i(100,99), "guidance":Vector2i(80,104),
+    "main_hall":Vector2i(81,89), "warehouse":Vector2i(95,85),
+    "forge":Vector2i(103,85), "residence":Vector2i(76,97),
+    "cultivation":Vector2i(82,78), "ren_than_duong":Vector2i(90,78),
+    "medicine":Vector2i(74,105), "alchemy_hall":Vector2i(111,85),
+    "mine":Vector2i(111,94), "linh_forest":Vector2i(103,94),
+    "spirit_field":Vector2i(95,94), "guidance":Vector2i(82,101),
     "gate":Vector2i(96,102)
 }
 
@@ -172,6 +172,9 @@ static func _protected_road_cells(state: SimulationState) -> Dictionary:
         {"from":ROAD_JUNCTION,"to":anchors["residence"]},
         {"from":ROAD_JUNCTION,"to":anchors["cultivation"]}
     ]
+    if state.sect.world_layout_version >= 2:
+        for kind in ["ren_than_duong","medicine","guidance","alchemy_hall"]:
+            segments.append({"from":ROAD_JUNCTION,"to":anchors[kind]+Vector2i(0,2)})
     for segment in segments:
         var path: Array[Vector2i] = navigation.get_id_path(segment["from"],segment["to"])
         if path.is_empty():

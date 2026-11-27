@@ -44,8 +44,8 @@ static func ground_color(cell: Vector2i, starter: Rect2i, roads: Dictionary, lay
     if layout_version >= 2:
         var point := Vector2(cell)
         var residence := (1.0-smoothstep(4.0,14.0,point.distance_to(Vector2(80,101))))*interior
-        var cultivation := (1.0-smoothstep(4.0,13.0,point.distance_to(Vector2(88,82))))*interior
-        var production := (1.0-smoothstep(5.0,16.0,point.distance_to(Vector2(103,94))))*interior
+        var cultivation := (1.0-smoothstep(4.0,13.0,point.distance_to(Vector2(86,78))))*interior
+        var production := (1.0-smoothstep(5.0,16.0,point.distance_to(Vector2(103,90))))*interior
         var civic := (1.0-smoothstep(3.0,12.0,point.distance_to(Vector2(89,96))))*interior
         ground = ground.lerp(Color(0.35,0.53,0.37),residence*0.45)
         ground = ground.lerp(Color(0.32,0.48,0.45),cultivation*0.38)

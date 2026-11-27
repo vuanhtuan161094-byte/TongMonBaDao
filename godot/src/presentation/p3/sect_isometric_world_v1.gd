@@ -68,7 +68,7 @@ const VIEW_SIZE := Vector2(1280,570)
 const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
 const CENTER_CELL := Vector2(90,92)
-const NEW_GAME_FOCUS_CELL := Vector2(92,96)
+const NEW_GAME_FOCUS_CELL := Vector2(93,91)
 # Option B is a presentation-only layout seed in the existing 48x48 starter.
 # The model's route origin is the reserved gate point; no actor spawn or
 # SimulationState field is changed by this map-only coordinate.
@@ -199,6 +199,7 @@ const ROADS_JUNCTION := Vector2i(89,96)
 const COURTYARD_RECT := Rect2i(85,93,8,6)
 const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
 const PRODUCTION_APRON_RECT := Rect2i(94,92,5,6)
+const MAP01_PRODUCTION_PLAZA := preload("res://art/onegame_world_r2/map01_production_plaza.svg")
 const PVE_JX_VFX_ADAPTER_SCRIPT := preload("res://src/presentation/p3/pve_jx_sword_vfx_adapter_v1.gd")
 const A3_SWORD_VFX = preload("res://src/presentation/p3/pve_a3_sword_vfx.gd")
 const V8_BLADE_VFX = preload("res://src/presentation/p3/pve_v8_blade_vfx.gd")
@@ -538,6 +539,9 @@ func _seed_env02a_geometry() -> void:
     # road becomes available. This is equivalent to rebuilding from roads,
     # but avoids 11 redundant rebuilds and duplicate geometry traversal.
     var route_navigation: AStarGrid2D = lab_geometry._navigation()
+    if map_layout_version >= 2:
+        for kind in ["ren_than_duong","medicine","guidance","alchemy_hall"]:
+            segments.append({"id":"courtyard_to_"+kind,"from":ROADS_JUNCTION,"to":anchors[kind]+Vector2i(0,2)})
     for segment in segments:
         if not _record_preview_route(str(segment["id"]),segment["from"],segment["to"],route_navigation):
             lab_routes_ready = false
@@ -1493,11 +1497,18 @@ func _draw() -> void:
         if _visible_world(court_center):
             var court_extent := Vector2(350,182)
             draw_texture_rect(R2_COURT,Rect2(court_center-court_extent*0.5,court_extent),false)
+    if not pve_landscape and map_layout_version >= 2:
+        var plaza_center := project(Vector2(103.5,90.5))
+        if _visible_world(plaza_center):
+            var extent := Vector2(650,342)
+            draw_texture_rect(MAP01_PRODUCTION_PLAZA,Rect2(plaza_center-extent*0.5,extent),false)
     if not pve_landscape:
         # Add authored ground detail below existing productive buildings.
         # Do not change picking, collision or add artificial production sites.
         for item in display_instances:
             var kind := str(item.get("destination",""))
+            if map_layout_version >= 2 and str(item.get("building_id","")).ends_with("_001"):
+                continue
             if not bool(item.get("managed",false)) or not R2_PRODUCERS.has(kind):
                 continue
             var foot: Vector2 = item["world"]
