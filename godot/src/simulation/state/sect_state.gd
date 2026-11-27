@@ -367,7 +367,7 @@ static func from_dict(data: Dictionary) -> SectState:
     var layout_version_valid := raw_layout_version is int
     if raw_layout_version is float:
         layout_version_valid = not is_nan(raw_layout_version) and not is_inf(raw_layout_version) and float(raw_layout_version) == float(int(raw_layout_version))
-    if layout_version_valid and int(raw_layout_version) >= 0 and int(raw_layout_version) <= 3:
+    if layout_version_valid and int(raw_layout_version) >= 0 and int(raw_layout_version) <= 4:
         state.world_layout_version = int(raw_layout_version)
     else:
         state.world_layout_version = -1

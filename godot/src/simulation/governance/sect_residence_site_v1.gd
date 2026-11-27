@@ -80,6 +80,27 @@ const MASTERPLAN_ANNEX_SITES := [
 # middle 25% divided into Hall (8%), cultivation (10%) and court (7%).
 # V3 is an internal layout discriminator, not a new game or release.
 const APPROVED_LAYOUT := 3
+const ISOMETRIC_LAYOUT := 4
+# Both estate axes use exactly the same 25:13 slope as the artwork bases.
+# Preserve all legacy layouts, including saved version 3 houses.
+const ISO_ESTATE_BOUNDS := Rect2i(70,56,56,56)
+const ISO_ESTATE_ANCHORS := {
+    "main_hall":Vector2i(76,84), "warehouse":Vector2i(76,74),
+    "forge":Vector2i(76,64), "residence":Vector2i(76,97),
+    "cultivation":Vector2i(94,86), "ren_than_duong":Vector2i(102,87),
+    "medicine":Vector2i(90,103), "guidance":Vector2i(84,104),
+    "alchemy_hall":Vector2i(88,68), "mine":Vector2i(112,63),
+    "linh_forest":Vector2i(105,67), "spirit_field":Vector2i(97,75),
+    "gate":Vector2i(123,86)
+}
+const ISO_RESIDENCE_LOTS := [
+    Vector2i(72,104),Vector2i(78,104),Vector2i(96,104),
+    Vector2i(102,104),Vector2i(108,104),Vector2i(114,104),
+    Vector2i(120,104),Vector2i(72,98),Vector2i(84,98),
+    Vector2i(96,98),Vector2i(102,98),Vector2i(108,98),
+    Vector2i(114,98),Vector2i(120,98),Vector2i(72,108),
+    Vector2i(96,108),Vector2i(108,108),Vector2i(120,108)
+]
 const ESTATE_CENTER := Vector2(35.0,2483.0)
 const ESTATE_HALF_WIDTH := 1260.0
 const ESTATE_HALF_HEIGHT := 635.0
@@ -104,6 +125,8 @@ const APPROVED_RESIDENCE_LOTS := [
 ]
 
 static func map_anchors(world_layout_version: int) -> Dictionary:
+    if world_layout_version >= ISOMETRIC_LAYOUT:
+        return ISO_ESTATE_ANCHORS
     if world_layout_version >= APPROVED_LAYOUT:
         return APPROVED_MAP_ANCHORS
     return NEW_GAME_MAP_ANCHORS if world_layout_version >= 2 else LEGACY_MAP_ANCHORS
@@ -111,23 +134,36 @@ static func map_anchors(world_layout_version: int) -> Dictionary:
 static func gate_for_layout(version: int) -> Vector2i:
     return Vector2i(map_anchors(version)["gate"])
 
+static func junction_for_layout(version: int) -> Vector2i:
+    return Vector2i(110,89) if version >= ISOMETRIC_LAYOUT else ROAD_JUNCTION
+
 static func construction_bounds(version: int) -> Rect2i:
+    if version >= ISOMETRIC_LAYOUT:
+        return ISO_ESTATE_BOUNDS
     return EXPANDED_BUILD_BOUNDS if version >= APPROVED_LAYOUT else STARTER
 
 static func annex_sites(version: int) -> Array:
+    if version >= ISOMETRIC_LAYOUT:
+        return ISO_RESIDENCE_LOTS
     return APPROVED_RESIDENCE_LOTS if version >= APPROVED_LAYOUT else MASTERPLAN_ANNEX_SITES
 
-static func estate_uv(point: Vector2) -> Vector2:
+static func estate_uv(point: Vector2,version: int = APPROVED_LAYOUT) -> Vector2:
+    if version >= ISOMETRIC_LAYOUT:
+        var cell := Vector2((point.x/25.0+point.y/13.0)*0.5,(point.y/13.0-point.x/25.0)*0.5)
+        return Vector2((112.0-cell.y)/56.0,(cell.x-70.0)/56.0)
     var dy := point.y-ESTATE_CENTER.y
     return Vector2((point.x-ESTATE_CENTER.x-dy*ESTATE_SHEAR+ESTATE_HALF_WIDTH)/(2.0*ESTATE_HALF_WIDTH),
         (dy+ESTATE_HALF_HEIGHT)/(2.0*ESTATE_HALF_HEIGHT))
 
-static func estate_point(uv: Vector2) -> Vector2:
+static func estate_point(uv: Vector2,version: int = APPROVED_LAYOUT) -> Vector2:
+    if version >= ISOMETRIC_LAYOUT:
+        var cell := Vector2(70.0+uv.y*56.0,112.0-uv.x*56.0)
+        return Vector2((cell.x-cell.y)*25.0,(cell.x+cell.y)*13.0)
     var dy := (uv.y*2.0-1.0)*ESTATE_HALF_HEIGHT
     return ESTATE_CENTER+Vector2((uv.x*2.0-1.0)*ESTATE_HALF_WIDTH+dy*ESTATE_SHEAR,dy)
 
-static func estate_zone(point: Vector2) -> String:
-    var uv := estate_uv(point)
+static func estate_zone(point: Vector2,version: int = APPROVED_LAYOUT) -> String:
+    var uv := estate_uv(point,version)
     if uv.x < 0.0 or uv.x > 1.0 or uv.y < 0.0 or uv.y > 1.0:
         return "outside"
     if uv.x < 0.30:
@@ -140,13 +176,13 @@ static func estate_zone(point: Vector2) -> String:
         return "cultivation"
     return "court"
 
-static func cell_zone(cell: Vector2i) -> String:
-    return estate_zone(Vector2(float(cell.x-cell.y)*25.0,float(cell.x+cell.y)*13.0))
+static func cell_zone(cell: Vector2i,version: int = APPROVED_LAYOUT) -> String:
+    return estate_zone(Vector2(float(cell.x-cell.y)*25.0,float(cell.x+cell.y)*13.0),version)
 
-static func _residence_plot_in_zone(origin: Vector2i) -> bool:
+static func _residence_plot_in_zone(origin: Vector2i,version: int) -> bool:
     for y in range(origin.y-1,origin.y+HOUSE_FOOTPRINT.y+1):
         for x in range(origin.x-1,origin.x+HOUSE_FOOTPRINT.x+1):
-            if cell_zone(Vector2i(x,y)) != "residence":
+            if cell_zone(Vector2i(x,y),version) != "residence":
                 return false
     return true
 
@@ -234,20 +270,21 @@ static func _protected_road_cells(state: SimulationState) -> Dictionary:
     var warehouse_door: Vector2i = anchors["warehouse"]+Vector2i(1,-1)
     var forge_door: Vector2i = anchors["forge"]+Vector2i(1,-1)
     var spawn := gate_for_layout(state.sect.world_layout_version)
+    var junction := junction_for_layout(state.sect.world_layout_version)
     var segments := [
-        {"from":spawn,"to":ROAD_JUNCTION},
-        {"from":ROAD_JUNCTION,"to":hall_door},
-        {"from":ROAD_JUNCTION,"to":warehouse_door},
-        {"from":ROAD_JUNCTION,"to":forge_door},
-        {"from":ROAD_JUNCTION,"to":anchors["mine"]+Vector2i(0,1)},
-        {"from":ROAD_JUNCTION,"to":anchors["linh_forest"]+Vector2i(1,0)},
-        {"from":ROAD_JUNCTION,"to":anchors["spirit_field"]+Vector2i(-1,0)},
-        {"from":ROAD_JUNCTION,"to":anchors["residence"]},
-        {"from":ROAD_JUNCTION,"to":anchors["cultivation"]}
+        {"from":spawn,"to":junction},
+        {"from":junction,"to":hall_door},
+        {"from":junction,"to":warehouse_door},
+        {"from":junction,"to":forge_door},
+        {"from":junction,"to":anchors["mine"]+Vector2i(0,1)},
+        {"from":junction,"to":anchors["linh_forest"]+Vector2i(1,0)},
+        {"from":junction,"to":anchors["spirit_field"]+Vector2i(-1,0)},
+        {"from":junction,"to":anchors["residence"]},
+        {"from":junction,"to":anchors["cultivation"]}
     ]
     if state.sect.world_layout_version >= 2:
         for kind in ["ren_than_duong","medicine","guidance","alchemy_hall"]:
-            segments.append({"from":ROAD_JUNCTION,"to":anchors[kind]+Vector2i(0,2)})
+            segments.append({"from":junction,"to":anchors[kind]+Vector2i(0,2)})
     for segment in segments:
         var path: Array[Vector2i] = navigation.get_id_path(segment["from"],segment["to"])
         if path.is_empty():
@@ -306,7 +343,7 @@ static func _candidate_occupied(state: SimulationState, origin: Vector2i,
     var bounds := construction_bounds(state.sect.world_layout_version)
     if not bounds.encloses(footprint) or not bounds.has_point(entrance):
         return "house_plot_outside_open_area"
-    if state.sect.world_layout_version >= APPROVED_LAYOUT and not _residence_plot_in_zone(origin):
+    if state.sect.world_layout_version >= APPROVED_LAYOUT and not _residence_plot_in_zone(origin,state.sect.world_layout_version):
         return "house_plot_outside_open_area"
     if roads.is_empty():
         return "house_map_routes_unavailable"

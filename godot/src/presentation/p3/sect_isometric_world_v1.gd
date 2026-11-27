@@ -339,7 +339,7 @@ const PVE_BRIDGE_ROWS := [32,92,150]
 func configure_map_layout_version(version: int) -> void:
     # This must be called before add_child(), because _ready() seeds its road
     # presentation from the same layout version as the canonical save marker.
-    map_layout_version = version if version in [2,3] else 0
+    map_layout_version = version if version in [2,3,4] else 0
 
 func anchors_for_layout(version: int = -1) -> Dictionary:
     var resolved := map_layout_version if version < 0 else version
@@ -514,6 +514,7 @@ static func _pve_minimap_texture(navigation: Dictionary,path_cells: Dictionary =
 # or paid construction. It is rebuilt from static content, never saved.
 func _seed_env02a_geometry() -> void:
     var spawn := SectResidenceSiteV1.gate_for_layout(map_layout_version)
+    var junction := SectResidenceSiteV1.junction_for_layout(map_layout_version)
     lab_geometry = SectIsoMapModelV1.new(GRID,spawn)
     var anchors := anchors_for_layout()
     for kind in ["main_hall","warehouse","forge"]:
@@ -531,15 +532,15 @@ func _seed_env02a_geometry() -> void:
     var sdoor: Vector2i = lab_geometry.doorway("warehouse",store["origin"],0)
     var fdoor: Vector2i = lab_geometry.doorway("forge",forge["origin"],0)
     var segments := [
-        {"id":"gate_to_courtyard","from":spawn,"to":ROADS_JUNCTION},
-        {"id":"courtyard_to_main_hall","from":ROADS_JUNCTION,"to":hdoor},
-        {"id":"courtyard_to_warehouse","from":ROADS_JUNCTION,"to":sdoor},
-        {"id":"courtyard_to_forge","from":ROADS_JUNCTION,"to":fdoor},
-        {"id":"courtyard_to_mine","from":ROADS_JUNCTION,"to":anchors["mine"]+PRODUCER_ROUTE_APPROACH["mine"]},
-        {"id":"courtyard_to_linh_forest","from":ROADS_JUNCTION,"to":anchors["linh_forest"]+PRODUCER_ROUTE_APPROACH["linh_forest"]},
-        {"id":"courtyard_to_spirit_field","from":ROADS_JUNCTION,"to":anchors["spirit_field"]+PRODUCER_ROUTE_APPROACH["spirit_field"]},
-        {"id":"courtyard_to_residence","from":ROADS_JUNCTION,"to":anchors["residence"]},
-        {"id":"courtyard_to_cultivation","from":ROADS_JUNCTION,"to":anchors["cultivation"]}
+        {"id":"gate_to_courtyard","from":spawn,"to":junction},
+        {"id":"courtyard_to_main_hall","from":junction,"to":hdoor},
+        {"id":"courtyard_to_warehouse","from":junction,"to":sdoor},
+        {"id":"courtyard_to_forge","from":junction,"to":fdoor},
+        {"id":"courtyard_to_mine","from":junction,"to":anchors["mine"]+PRODUCER_ROUTE_APPROACH["mine"]},
+        {"id":"courtyard_to_linh_forest","from":junction,"to":anchors["linh_forest"]+PRODUCER_ROUTE_APPROACH["linh_forest"]},
+        {"id":"courtyard_to_spirit_field","from":junction,"to":anchors["spirit_field"]+PRODUCER_ROUTE_APPROACH["spirit_field"]},
+        {"id":"courtyard_to_residence","from":junction,"to":anchors["residence"]},
+        {"id":"courtyard_to_cultivation","from":junction,"to":anchors["cultivation"]}
     ]
     # The previous seed rebuilt a full 192x192 AStarGrid2D for each of
     # nine road routes, then three more times to recheck the doorways.
@@ -549,7 +550,7 @@ func _seed_env02a_geometry() -> void:
     var route_navigation: AStarGrid2D = lab_geometry._navigation()
     if map_layout_version >= 2:
         for kind in ["ren_than_duong","medicine","guidance","alchemy_hall"]:
-            segments.append({"id":"courtyard_to_"+kind,"from":ROADS_JUNCTION,"to":anchors[kind]+Vector2i(0,2)})
+            segments.append({"id":"courtyard_to_"+kind,"from":junction,"to":anchors[kind]+Vector2i(0,2)})
     for segment in segments:
         if not _record_preview_route(str(segment["id"]),segment["from"],segment["to"],route_navigation):
             lab_routes_ready = false
@@ -562,7 +563,8 @@ func _seed_env02a_geometry() -> void:
     queue_redraw()
 
 func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vector2i, shared_navigation: AStarGrid2D = null) -> bool:
-    if not STARTER.has_point(from_cell) or not STARTER.has_point(to_cell):
+    var bounds := SectResidenceSiteV1.construction_bounds(map_layout_version)
+    if not bounds.has_point(from_cell) or not bounds.has_point(to_cell):
         return false
     # Optional argument retains the old independent route probe contract.
     var navigation: AStarGrid2D = shared_navigation if shared_navigation != null else lab_geometry._navigation()
@@ -570,7 +572,7 @@ func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vecto
     if route.is_empty():
         return false
     for cell in route:
-        if not STARTER.has_point(cell) or lab_geometry.occupied(cell):
+        if not bounds.has_point(cell) or lab_geometry.occupied(cell):
             return false
     preview_routes[route_id] = route.duplicate()
     for cell in route:
@@ -706,12 +708,15 @@ func _load_verified_source_art() -> void:
                 var tile := Vector2i(x,y)
                 if not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
                     continue
-                var distance := sect_estate_distance(project(Vector2(tile)))
+                var distance := sect_estate_distance(project(Vector2(tile)),map_layout_version)
                 if distance < 48.0 or distance > 420.0:
                     continue
                 var tree_point := project(Vector2(tile))
                 var gate_point := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
-                if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and tree_point.y > SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT-25.0 and absf(tree_point.x-gate_point.x) < 145.0:
+                if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+                    if tile.x >= 123 and absi(tile.y-86) <= 4:
+                        continue
+                elif map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT and tree_point.y > SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT-25.0 and absf(tree_point.x-gate_point.x) < 145.0:
                     continue
                 if posmod(x*17+y*31+x*y,7) == 0:
                     continue
@@ -826,6 +831,16 @@ static func producer_cell(destination: StringName, instance_index: int,
         # All live expanded producers use the same reserved production wing.
         # Slot rows remain separate from fixed landmarks; IDs never change.
         var slot_index := instance_index-2
+        if layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+            match key:
+                "spirit_field":
+                    return Vector2i(96+2*(slot_index%13),76+2*int(slot_index/13))
+                "linh_forest":
+                    return Vector2i(94+2*(slot_index%15),69+2*int(slot_index/15))
+                "mine":
+                    return Vector2i(94+2*(slot_index%15),59+2*int(slot_index/15))
+                "alchemy_hall":
+                    return Vector2i(82+2*(slot_index%5),60+2*int(slot_index/5))
         var uv := Vector2.ZERO
         if key == "alchemy_hall":
             uv = Vector2(0.575+float(slot_index%10)*0.041,0.08+float(slot_index/10)*0.053)
@@ -1329,7 +1344,7 @@ func pick_at_screen(screen: Vector2) -> Dictionary:
 func _cache_static_overlays() -> void:
     terrain_overlays_by_chunk.clear()
     road_overlays_by_chunk.clear()
-    var overlay_rect := Rect2i(Vector2i.ZERO,GRID) if pve_landscape else STARTER
+    var overlay_rect := Rect2i(Vector2i.ZERO,GRID) if pve_landscape else SectResidenceSiteV1.construction_bounds(map_layout_version)
     for iy in range(overlay_rect.position.y,overlay_rect.end.y):
         for ix in range(overlay_rect.position.x,overlay_rect.end.x):
             var cell := Vector2i(ix,iy)
@@ -1439,7 +1454,10 @@ const SECT_ESTATE_SHEAR := SectResidenceSiteV1.ESTATE_SHEAR
 static func sect_paving_cell(cell: Vector2i) -> bool:
     return STARTER.has_point(cell)
 
-static func sect_estate_distance(point: Vector2) -> float:
+static func sect_estate_distance(point: Vector2,version: int = SectResidenceSiteV1.APPROVED_LAYOUT) -> float:
+    if version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+        var uv := SectResidenceSiteV1.estate_uv(point,version)
+        return maxf(absf(uv.x-0.5)-0.5,absf(uv.y-0.5)-0.5)*1350.0
     var dy := point.y-SECT_ESTATE_MID_Y
     var dx := point.x-SECT_ESTATE_MID_X-dy*SECT_ESTATE_SHEAR
     return maxf(absf(dx)-SECT_ESTATE_HALF_WIDTH,absf(dy)-SECT_ESTATE_HALF_HEIGHT)
@@ -1462,7 +1480,15 @@ static func _clip_estate_plane(poly: PackedVector2Array,normal: Vector2,limit: f
         prev_dist = dist
     return result
 
-static func _clip_estate_tile(poly: PackedVector2Array) -> PackedVector2Array:
+static func _clip_estate_tile(poly: PackedVector2Array,version: int = SectResidenceSiteV1.APPROVED_LAYOUT) -> PackedVector2Array:
+    if version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+        # x/y cell half-planes, exactly aligned to 25:13 terrain projection.
+        var nx := Vector2(1.0/50.0,1.0/26.0)
+        var ny := Vector2(-1.0/50.0,1.0/26.0)
+        poly = _clip_estate_plane(poly,nx,126.0)
+        poly = _clip_estate_plane(poly,-nx,-70.0)
+        poly = _clip_estate_plane(poly,ny,112.0)
+        return _clip_estate_plane(poly,-ny,-56.0)
     poly = _clip_estate_plane(poly,Vector2(0,1),SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT)
     poly = _clip_estate_plane(poly,Vector2(0,-1),-SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT)
     poly = _clip_estate_plane(poly,Vector2(1,-SECT_ESTATE_SHEAR),SECT_ESTATE_HALF_WIDTH+SECT_ESTATE_MID_X-SECT_ESTATE_SHEAR*SECT_ESTATE_MID_Y)
@@ -1480,21 +1506,21 @@ func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
         for x in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
             var cell := Vector2i(x,y)
             var center := project(Vector2(cell))
-            if sect_estate_distance(center) > 40.0:
+            if sect_estate_distance(center,map_layout_version) > 40.0:
                 continue
             var points := PackedVector2Array([
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
                 center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
             ])
-            if sect_estate_distance(center) > -40.0:
-                points = _clip_estate_tile(points)
+            if sect_estate_distance(center,map_layout_version) > -40.0:
+                points = _clip_estate_tile(points,map_layout_version)
             if points.size() < 3:
                 continue
             var base := vertices.size()
             var tint := 0.96+float(posmod(x*17+y*23+x*y,7))*0.005
             var tone := Color(tint,tint,tint,1.0)
             if map_layout_version >= SectResidenceSiteV1.APPROVED_LAYOUT:
-                match SectResidenceSiteV1.estate_zone(center):
+                match SectResidenceSiteV1.estate_zone(center,map_layout_version):
                     "residence": tone *= Color(0.97,0.99,0.97)
                     "production": tone *= Color(1.0,0.98,0.94)
                     "hall": tone *= Color(1.0,1.0,0.97)
@@ -1538,6 +1564,18 @@ func _draw_wall_span(a: Vector2,b: Vector2) -> void:
         draw_rect(Rect2(foot+Vector2(-7,-30),Vector2(14,5)),Color("485e54"))
 
 func _draw_sect_estate_border() -> void:
+    if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+        var tl := _map01_estate_point(Vector2(0,0))
+        var tr := _map01_estate_point(Vector2(1,0))
+        var br := _map01_estate_point(Vector2(1,1))
+        var bl := _map01_estate_point(Vector2(0,1))
+        _draw_wall_span(tl,tr)
+        _draw_wall_span(tr,br)
+        _draw_wall_span(tl,bl)
+        # Opening along actual x-axis forward approach (constant grid Y).
+        _draw_wall_span(bl,_map01_estate_point(Vector2(0.39,1)))
+        _draw_wall_span(_map01_estate_point(Vector2(0.54,1)),br)
+        return
     var top := SECT_ESTATE_MID_Y-SECT_ESTATE_HALF_HEIGHT
     var bottom := SECT_ESTATE_MID_Y+SECT_ESTATE_HALF_HEIGHT
     var offset := SECT_ESTATE_HALF_HEIGHT*SECT_ESTATE_SHEAR
@@ -1559,32 +1597,35 @@ func _draw_sect_estate_border() -> void:
 # Courtyard composition: architecture, paved commons and reserved wings.
 # Static cached ground texture stays separate from real instance depth queue.
 # All decoration is flat and traversable, so no build capacity is consumed.
+func _map01_estate_point(uv: Vector2) -> Vector2:
+    return SectResidenceSiteV1.estate_point(uv,map_layout_version)
+
 func _map01_ground_quad(uv_a: Vector2,uv_b: Vector2,tint: Color) -> void:
     var points := PackedVector2Array([
-        SectResidenceSiteV1.estate_point(uv_a),
-        SectResidenceSiteV1.estate_point(Vector2(uv_b.x,uv_a.y)),
-        SectResidenceSiteV1.estate_point(uv_b),
-        SectResidenceSiteV1.estate_point(Vector2(uv_a.x,uv_b.y))])
+        _map01_estate_point(uv_a),
+        _map01_estate_point(Vector2(uv_b.x,uv_a.y)),
+        _map01_estate_point(uv_b),
+        _map01_estate_point(Vector2(uv_a.x,uv_b.y))])
     draw_colored_polygon(points,tint)
 
 func _map01_court_frame(a: Vector2,b: Vector2,tone: Color) -> void:
     _map01_ground_quad(a,b,tone)
     var outline := PackedVector2Array([
-        SectResidenceSiteV1.estate_point(a),
-        SectResidenceSiteV1.estate_point(Vector2(b.x,a.y)),
-        SectResidenceSiteV1.estate_point(b),
-        SectResidenceSiteV1.estate_point(Vector2(a.x,b.y)),
-        SectResidenceSiteV1.estate_point(a)])
+        _map01_estate_point(a),
+        _map01_estate_point(Vector2(b.x,a.y)),
+        _map01_estate_point(b),
+        _map01_estate_point(Vector2(a.x,b.y)),
+        _map01_estate_point(a)])
     draw_polyline(outline,Color(0.47,0.48,0.42,0.48),5.0,true)
     var inset := Vector2(0.006,0.012)
     var inside_a := a+inset
     var inside_b := b-inset
     var inner := PackedVector2Array([
-        SectResidenceSiteV1.estate_point(inside_a),
-        SectResidenceSiteV1.estate_point(Vector2(inside_b.x,inside_a.y)),
-        SectResidenceSiteV1.estate_point(inside_b),
-        SectResidenceSiteV1.estate_point(Vector2(inside_a.x,inside_b.y)),
-        SectResidenceSiteV1.estate_point(inside_a)])
+        _map01_estate_point(inside_a),
+        _map01_estate_point(Vector2(inside_b.x,inside_a.y)),
+        _map01_estate_point(inside_b),
+        _map01_estate_point(Vector2(inside_a.x,inside_b.y)),
+        _map01_estate_point(inside_a)])
     draw_polyline(inner,Color(0.92,0.87,0.72,0.72),3.0,true)
 
 func _draw_approved_district_inlays() -> void:
@@ -1603,7 +1644,7 @@ func _draw_approved_district_inlays() -> void:
     for chunk_id in active_chunks:
         for row in road_overlays_by_chunk.get(chunk_id,[]):
             var center: Vector2 = row["center"]
-            if sect_estate_distance(center) > -20.0:
+            if sect_estate_distance(center,map_layout_version) > -20.0:
                 continue
             draw_texture_rect(row["texture"],row["rect"],false,Color(0.95,0.94,0.87,0.60))
     # Stone detailing at court corners using existing game texture.
@@ -1611,7 +1652,7 @@ func _draw_approved_district_inlays() -> void:
     if marker != null:
         for uv in [Vector2(0.04,0.07),Vector2(0.266,0.07),Vector2(0.04,0.92),Vector2(0.266,0.92),
                 Vector2(0.588,0.07),Vector2(0.957,0.07),Vector2(0.588,0.92),Vector2(0.957,0.92)]:
-            var point := SectResidenceSiteV1.estate_point(Vector2(uv))
+            var point := _map01_estate_point(Vector2(uv))
             draw_texture_rect(marker,Rect2(point-Vector2(30,16),Vector2(60,32)),false,Color(0.95,0.94,0.87,0.75))
 
 func _draw_map01_platform(p: Vector2,extent: Vector2,tone: Color) -> void:
@@ -1628,6 +1669,21 @@ func _draw_sect_civic_axis() -> void:
         return
     var hall := project(visual_anchor(&"main_hall",anchor_for(&"main_hall")))
     var gate := project(Vector2(SectResidenceSiteV1.gate_for_layout(map_layout_version)))
+    if map_layout_version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+        # The path follows the same 26-27 degree axis as the stairs/roofs.
+        # All four corners are projected grid coordinates, never screen rectangles.
+        var a := project(Vector2(83,83))
+        var b := project(Vector2(134,83))
+        var c := project(Vector2(134,89))
+        var d := project(Vector2(83,89))
+        var axis := PackedVector2Array([a,b,c,d])
+        draw_colored_polygon(axis,Color(0.82,0.79,0.68,0.52))
+        axis.append(a)
+        draw_polyline(axis,Color("aa9b7c"),3.0,true)
+        var court := project(Vector2(SectResidenceSiteV1.junction_for_layout(map_layout_version)))
+        var extent := Vector2(250,130)
+        draw_texture_rect(R2_COURT,Rect2(court-extent*0.5,extent),false)
+        return
     var center_x := (hall.x+gate.x)*0.5
     var top := hall.y+42.0
     var bottom := gate.y-32.0
@@ -1711,13 +1767,13 @@ func _draw_masterplan_district_signs() -> void:
         if camera.zoom.x > 0.62:
             return
         var titles := [
-            ["ĐỆ TỬ XÁ",Vector2(0.15,0.18)],
+            ["ĐỆ TỬ XÁ",Vector2(0.13,0.24)],
             ["ĐẠI ĐIỆN",Vector2(0.425,0.075)],
             ["SẢN XUẤT",Vector2(0.775,0.075)],
             ["TU LUYỆN",Vector2(0.425,0.47)],
-            ["SƠN MÔN",Vector2(0.425,0.96)]]
+            ["SƠN MÔN",Vector2(0.425,0.94)]]
         for row in titles:
-            var at := SectResidenceSiteV1.estate_point(Vector2(row[1]))
+            var at := _map01_estate_point(Vector2(row[1]))
             var title := str(row[0])
             var width := font.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,14).x
             draw_set_transform(at,0.0,Vector2.ONE/maxf(camera.zoom.x,0.25))
@@ -2120,7 +2176,7 @@ func _is_road(cell: Vector2i) -> bool:
     var in_world := cell.x >= 0 and cell.y >= 0 and cell.x < GRID.x and cell.y < GRID.y
     if pve_landscape:
         return in_world and pve_bridge_at(cell) and preview_roads.has(cell)
-    return STARTER.has_point(cell) and preview_roads.has(cell)
+    return SectResidenceSiteV1.construction_bounds(map_layout_version).has_point(cell) and preview_roads.has(cell)
 
 func _draw_placement_preview() -> void:
     if placement_preview.is_empty():

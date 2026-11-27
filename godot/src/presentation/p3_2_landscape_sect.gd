@@ -960,11 +960,12 @@ func _refresh_focus_readout() -> void:
 func _reset_camera(animate: bool = true) -> void:
     if state != null and int(state.sect.world_layout_version) >= 2:
         var approved := int(state.sect.world_layout_version) >= SectResidenceSiteV1.APPROVED_LAYOUT
-        var focus_cell := SectIsometricWorldV1.APPROVED_FOCUS_CELL if approved else SectIsometricWorldV1.NEW_GAME_FOCUS_CELL
+        var angled := int(state.sect.world_layout_version) >= SectResidenceSiteV1.ISOMETRIC_LAYOUT
+        var focus_cell := Vector2(98,84) if angled else (SectIsometricWorldV1.APPROVED_FOCUS_CELL if approved else SectIsometricWorldV1.NEW_GAME_FOCUS_CELL)
         var focus_delta: Vector2 = SectIsometricWorldV1.project(focus_cell) \
             - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
         var focus_world := SectIsometricWorldV1.LEGACY_ANCHOR+focus_delta
-        var layout_transform := SectMapCamera.focus_transform(focus_world,0.40 if approved else 0.56)
+        var layout_transform := SectMapCamera.focus_transform(focus_world,0.35 if angled else (0.40 if approved else 0.56))
         _apply_camera(float(layout_transform["zoom"]),layout_transform["position"],animate)
         return
     var transform := SectMapCamera.reset_transform()

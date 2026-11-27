@@ -51,7 +51,7 @@ func _run() -> void:
 		var seen: Dictionary = {}
 		for raw_dest in plan.keys():
 			var site: Vector2i = plan[raw_dest]
-			if not iso.STARTER.has_point(site) or seen.has(site):
+			if not SectResidenceSiteV1.construction_bounds(layout_version).has_point(site) or seen.has(site):
 				_fail("fixed plan has overlapping or external landmark %s" % str(raw_dest))
 				return
 			seen[site] = true
@@ -72,8 +72,8 @@ func _run() -> void:
 		var counts: Dictionary = {}
 		for y in range(100):
 			for x in range(100):
-				var point := SectResidenceSiteV1.estate_point(Vector2((float(x)+0.5)/100.0,(float(y)+0.5)/100.0))
-				var zone := SectResidenceSiteV1.estate_zone(point)
+				var point := SectResidenceSiteV1.estate_point(Vector2((float(x)+0.5)/100.0,(float(y)+0.5)/100.0),layout_version)
+				var zone := SectResidenceSiteV1.estate_zone(point,layout_version)
 				counts[zone] = int(counts.get(zone,0))+1
 		if counts != {"residence":3000,"production":4500,"hall":800,"cultivation":1000,"court":700}:
 			_fail("approved area allocation incorrect: %s" % str(counts))
@@ -83,7 +83,7 @@ func _run() -> void:
 			var cap: int = 40 if kind == "spirit_field" else (30 if kind != "alchemy_hall" else 10)
 			for index in range(1,cap+1):
 				var cell := iso.producer_cell(StringName(kind),index,layout_version)
-				if SectResidenceSiteV1.cell_zone(cell) != "production" or seen_producers.has(cell):
+				if SectResidenceSiteV1.cell_zone(cell,layout_version) != "production" or seen_producers.has(cell):
 					_fail("expanded producer outside production wing or duplicate: %s %s" % [kind,str(cell)])
 					return
 				seen_producers[cell] = true
@@ -122,7 +122,7 @@ func _run() -> void:
 		expected_routes.append_array(["courtyard_to_ren_than_duong","courtyard_to_medicine","courtyard_to_guidance","courtyard_to_alchemy_hall"])
 		var plan := SectResidenceSiteV1.map_anchors(layout_version)
 		# The two production rows are horizontal in projected space, not grid Y.
-		for row in [["warehouse","forge","alchemy_hall"],["spirit_field","linh_forest","mine"]]:
+		for row in ([] if layout_version >= 4 else [["warehouse","forge","alchemy_hall"],["spirit_field","linh_forest","mine"]]):
 			var a: Vector2 = iso.project(Vector2(plan[row[0]]))
 			var b: Vector2 = iso.project(Vector2(plan[row[1]]))
 			var c: Vector2 = iso.project(Vector2(plan[row[2]]))
@@ -142,7 +142,7 @@ func _run() -> void:
 			return
 		for index in range(route.size()):
 			var cell: Vector2i = route[index]
-			if not iso.STARTER.has_point(cell) or iso.lab_geometry.occupied(cell) or not iso.preview_roads.has(cell):
+			if not SectResidenceSiteV1.construction_bounds(layout_version).has_point(cell) or iso.lab_geometry.occupied(cell) or not iso.preview_roads.has(cell):
 				_fail("route %s invalid at occupied/out-of-area cell %s" % [route_id,str(cell)])
 				return
 			if index > 0:
@@ -158,7 +158,7 @@ func _run() -> void:
 		var route_id: String = "courtyard_to_"+producer
 		var offset: Vector2i = iso.PRODUCER_ROUTE_APPROACH[producer]
 		var expected_end: Vector2i = iso.anchors_for_layout()[producer]+offset
-		if iso.preview_routes[route_id][-1] != expected_end or not iso.STARTER.has_point(expected_end):
+		if iso.preview_routes[route_id][-1] != expected_end or not SectResidenceSiteV1.construction_bounds(layout_version).has_point(expected_end):
 			_fail("%s route does not reach its accessible approach cell %s" % [producer,str(expected_end)])
 			return
 	# Actual static footprints are the only blockers in the map model. Verify
@@ -195,7 +195,7 @@ func _run() -> void:
 	# visual expansion must not become new construction authority.
 	for y in range(iso.STARTER.position.y,iso.STARTER.end.y):
 		for x in range(iso.STARTER.position.x,iso.STARTER.end.x):
-			if iso.sect_estate_distance(iso.project(Vector2(x,y))) > 0.0:
+			if layout_version < 4 and iso.sect_estate_distance(iso.project(Vector2(x,y))) > 0.0:
 				_fail("visual perimeter clips canonical lot")
 				return
 	if iso.sect_estate_distance(Vector2(0,-1000)) <= 0.0:
@@ -216,15 +216,26 @@ func _run() -> void:
 			return
 	# Destination screen order follows Gate -> courtyard -> Hall in one camera.
 	var gate := _screen_for_world(Vector2(iso.project(Vector2(SectResidenceSiteV1.gate_for_layout(layout_version)))))
-	var court := _screen_for_world(Vector2(iso.project(Vector2(iso.ROADS_JUNCTION))))
+	var court := _screen_for_world(Vector2(iso.project(Vector2(SectResidenceSiteV1.junction_for_layout(layout_version)))))
 	var hall_row := _row_for_destination("main_hall")
 	if hall_row.is_empty():
 		_fail("Main Hall Source A row missing")
 		return
 	var hall := _screen_for_world(hall_row["world"])
-	if not (gate.y > court.y and court.y > hall.y and absf(gate.x-hall.x) <= 80.0):
+	if layout_version < 4 and not (gate.y > court.y and court.y > hall.y and absf(gate.x-hall.x) <= 80.0):
 		_fail("visual spine misaligned: gate=%s courtyard=%s hall=%s" % [str(gate),str(court),str(hall)])
 		return
+	if layout_version >= 4:
+		var hall_origin: Vector2i = SectResidenceSiteV1.map_anchors(layout_version)["main_hall"]
+		var gate_origin := SectResidenceSiteV1.gate_for_layout(layout_version)
+		if gate_origin.x <= hall_origin.x or absi(gate_origin.y-hall_origin.y) > 3:
+			_fail("ceremonial spine no longer follows isometric building axis")
+			return
+		var u := SectResidenceSiteV1.estate_point(Vector2(1,0),layout_version)-SectResidenceSiteV1.estate_point(Vector2.ZERO,layout_version)
+		var v := SectResidenceSiteV1.estate_point(Vector2(0,1),layout_version)-SectResidenceSiteV1.estate_point(Vector2.ZERO,layout_version)
+		if not is_equal_approx(absf(u.y/u.x),13.0/25.0) or not is_equal_approx(absf(v.y/v.x),13.0/25.0):
+			_fail("estate perspective does not match art projection")
+			return
 	if not SectMapCamera.is_map_screen_point(gate) or not SectMapCamera.is_map_screen_point(hall):
 		_fail("gate or Hall focal anchor is outside the default map viewport: gate=%s hall=%s zoom=%.2f center=%s" % [str(gate),str(hall),iso.camera.zoom.x,str(iso.camera.position)])
 		return
