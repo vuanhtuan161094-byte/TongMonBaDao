@@ -7,11 +7,11 @@ on:
       - '.github/workflows/tmb-vfx-external-acquisition.yml'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   acquisition:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -21,6 +21,47 @@ jobs:
         run: python -m pip install Pillow==11.3.0
       - name: Acquire and index pinned VFX sources
         run: python tools/vfx_acquisition_20261127/acquire.py
+      - name: Persist verified source library outside game export
+        if: github.ref == 'refs/heads/integration/pve-p0-playable-ui-20261103'
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=source_art/external_vfx/flare_20261127
+          mkdir -p "$root" source_art/external_vfx/cc0_20261127
+          cp -a outputs/external_vfx_acquisition/flare/. "$root/"
+          cp -a outputs/external_vfx_acquisition/oga/. source_art/external_vfx/cc0_20261127/
+          cp outputs/external_vfx_acquisition/{inventory.json,candidate_skill_queue.json,supplemental_sources.json,flare_contact_sheet.jpg} source_art/external_vfx/
+          git add -- source_art/external_vfx/
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git fetch origin integration/pve-p0-playable-ui-20261103
+            test "$(git rev-parse FETCH_HEAD)" = "$GITHUB_SHA" || { echo "Concurrent HEAD change: no push"; exit 1; }
+            git commit -m "VFX source library: preserve verified FLARE and CC0 acquisition assets"
+            git push origin HEAD:refs/heads/integration/pve-p0-playable-ui-20261103
+          fi
+      - name: Prepare Godot native source review
+        run: python tools/vfx_acquisition_20261127/prepare_native_review.py
+      - name: Install Godot and capture dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth ffmpeg libgl1-mesa-dri
+          curl -fL --retry 3 -o /tmp/godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum -c -
+          unzip -oq /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+      - name: Native Godot library playback
+        run: |
+          set -euo pipefail
+          G=/tmp/Godot_v4.7.2-stable_linux.x86_64
+          O=outputs/external_vfx_acquisition
+          "$G" --headless --path godot --editor --import
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "$G" --path godot --resolution 1280x720 --audio-driver Dummy --fixed-fps 20 --write-movie "$GITHUB_WORKSPACE/$O/native_library.avi" res://labs/combat_lab/external_vfx_library_20261127/review.tscn 2>&1 | tee "$O/native.log"
+          grep -q EXTERNAL_VFX_NATIVE_LIBRARY_COMPLETE "$O/native.log"
+          ffmpeg -y -v error -i "$O/native_library.avi" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$O/native_library.mp4"
+          ffmpeg -v error -i "$O/native_library.mp4" -f null -
+          rm "$O/native_library.avi"
+          ffmpeg -y -v error -i "$O/native_library.mp4" -vf "fps=1/2.5" "$O/native_page_%02d.png"
       - name: Upload actual source and QA inventory
         if: always()
         uses: actions/upload-artifact@v4
