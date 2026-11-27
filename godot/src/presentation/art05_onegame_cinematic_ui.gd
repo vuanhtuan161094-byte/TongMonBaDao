@@ -240,7 +240,7 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
         _art05_tint()
 
 func _refresh_building_operation_metrics() -> void:
-    if selected_building != SectMapPresentation.DEST_MAIN_HALL or state == null:
+    if state == null or selected_building not in [SectMapPresentation.DEST_MAIN_HALL,SectMapPresentation.DEST_WAREHOUSE]:
         super._refresh_building_operation_metrics()
         return
     for child in building_operation_metrics.get_children():
@@ -253,6 +253,21 @@ func _refresh_building_operation_metrics() -> void:
         ["NGÂN KHỐ", str(state.sect.treasury), "resource"],
         ["LINH THẠCH", str(state.sect.spirit_stones), "resource"]
     ]
+    if selected_building == SectMapPresentation.DEST_WAREHOUSE:
+        var warehouse := WarehouseSystem.new()
+        var stock_types := 0
+        var available_types := 0
+        for resource_id in ResourceRegistry.new().all_resource_ids():
+            if warehouse.quantity(state,resource_id) > 0:
+                stock_types += 1
+            if warehouse.available_quantity(state,resource_id) > 0:
+                available_types += 1
+        rows = [
+            ["LOẠI VẬT TƯ",str(stock_types),"resource"],
+            ["LOẠI KHẢ DỤNG",str(available_types),"resource"],
+            ["NGÂN KHỐ",str(state.sect.treasury),"resource"],
+            ["LINH THẠCH",str(state.sect.spirit_stones),"resource"]
+        ]
     for entry in rows:
         var card := SECT_UI_THEME.metric_card(str(entry[0]),str(entry[1]),str(entry[2]),ART05_GOLD)
         card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -373,9 +388,26 @@ func _art05_reflow() -> void:
     if building_operation_live_content != null:
         building_operation_live_content.custom_minimum_size.x = 370
     _art05_repack_galleries()
-    var hall_open := selected_building == SectMapPresentation.DEST_MAIN_HALL
-    _r2_operation_caption("R2ActionCaption","QUẢN TRỊ & CHÍNH SÁCH" if hall_open else "ĐIỀU PHỐI NHÂN SỰ",Vector2(18,304),Vector2(355,20))
-    _r2_operation_caption("R2LiveCaption","TÌNH HÌNH TÔNG MÔN" if hall_open else "HOẠT ĐỘNG THỰC TẾ",Vector2(405,304),Vector2(397,20))
+    var action_caption := "PHÂN CÔNG & NÂNG CẤP"
+    var live_caption := "NHÂN SỰ & TIẾN ĐỘ"
+    match selected_building:
+        SectMapPresentation.DEST_MAIN_HALL:
+            action_caption = "QUẢN TRỊ & CHÍNH SÁCH"
+            live_caption = "TÌNH HÌNH TÔNG MÔN"
+        SectMapPresentation.DEST_WAREHOUSE:
+            action_caption = "PHƯỜNG THỊ & TRANG BỊ"
+            live_caption = "TỒN KHO THEO NHÓM"
+        SectMapPresentation.DEST_ALCHEMY_HALL:
+            action_caption = "ĐAN PHƯƠNG & NHÂN SỰ"
+            live_caption = "NGUYÊN LIỆU & MẺ LUYỆN"
+        SectMapPresentation.DEST_FORGE:
+            action_caption = "CHẾ TẠO & NHÂN SỰ"
+            live_caption = "VẬT LIỆU & TRANG BỊ"
+        SectMapPresentation.DEST_RESIDENCE:
+            action_caption = "QUẢN LÝ CƯ TRÚ"
+            live_caption = "SỨC CHỨA & PHÒNG Ở"
+    _r2_operation_caption("R2ActionCaption",action_caption,Vector2(18,304),Vector2(355,20))
+    _r2_operation_caption("R2LiveCaption",live_caption,Vector2(405,304),Vector2(397,20))
     if building_operation_scroll != null:
         building_operation_scroll.clip_contents = true
     if building_operation_live_panel != null:
@@ -481,6 +513,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     var panel := popup_layer.find_child("DiscipleDeepScreen", true, false) as Panel
     if panel == null:
         return
+    _r2_profile_skin(panel,tab_name)
     var quality := str((state.disciples[disciple_id] as DiscipleState).disciple_quality)
     var portrait := panel.find_child("ASCharProfilePortrait", true, false) as Control
     if portrait == null:
@@ -573,6 +606,44 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "T�
     panel.add_child(toggle)
     if tab_name == "Trang bị":
         VIS_EQUIPMENT.apply_profile(panel, state.disciples[disciple_id] as DiscipleState, state)
+
+func _r2_profile_skin(panel: Panel,tab_name: String) -> void:
+    # Actual 1280x720 profile capture showed the old parchment shell breaking
+    # the common jade/gold UI. Preserve specialized radar/equipment surfaces.
+    panel.add_theme_stylebox_override("panel",_art05_style(ART05_DEEP,ART05_GOLD,2,16))
+    var names := ["Tổng Quan","Thuộc tính","Công pháp","Trang bị","Huyết Mạch","Thể Chất","Quan hệ"]
+    for child in panel.get_children():
+        if child is Label:
+            child.add_theme_color_override("font_color",ART05_GOLD)
+        elif child is Button:
+            var button := child as Button
+            var node_name := str(button.name)
+            if node_name.begins_with("DeepDiscipleTab_"):
+                var index := int(node_name.trim_prefix("DeepDiscipleTab_"))
+                var active := index >= 0 and index < names.size() and names[index] == tab_name
+                button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD if active else ART05_JADE,ART05_GOLD if active else ART05_MUTE,1,8))
+                button.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
+                button.add_theme_color_override("font_hover_color",ART05_WHITE)
+                button.add_theme_stylebox_override("hover",_art05_style(Color(0.16,0.31,0.29),ART05_GOLD,1,8))
+            elif node_name in ["BackToMapContext","DeepQuickAssignment"] or button.text == "×":
+                button.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_MUTE,1,8))
+                button.add_theme_color_override("font_color",ART05_WHITE)
+    if tab_name in ["Tổng Quan","Thuộc tính","Trang bị"]:
+        return
+    var scroll := panel.find_child("DiscipleTabContentScroll",true,false) as ScrollContainer
+    if scroll == null:
+        return
+    var details := scroll.get_parent() as Panel
+    if details == null:
+        return
+    details.add_theme_stylebox_override("panel",_art05_style(Color(0.045,0.125,0.14),ART05_MUTE,1,10))
+    for node in details.find_children("*","Label",true,false):
+        var label := node as Label
+        label.add_theme_color_override("font_color",ART05_GOLD if label.get_parent() == details else ART05_WHITE)
+    for node in details.find_children("*","ProgressBar",true,false):
+        var bar := node as ProgressBar
+        bar.add_theme_stylebox_override("background",_art05_style(Color(0.12,0.20,0.20),ART05_MUTE,1,4))
+        bar.add_theme_stylebox_override("fill",_art05_style(ART05_GOLD if str(bar.name).contains("TU_VI") else Color(0.30,0.73,0.61),Color.TRANSPARENT,0,4))
 
 func _vis_toggle_profile_reduced(disciple_id: StringName, tab_name: String) -> void:
     VIS_QUALITY.cycle_mode()
@@ -1431,9 +1502,10 @@ func _art05_open_playbook() -> void:
         description.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
         var button := Button.new()
         button.name = "OneGamePlaybook_"+str(item[2])
-        button.text = "TUYỂN TRƯỚC" if recruit_first else "MỞ"
-        button.position = Vector2(298,82)
-        button.size = Vector2(125,30)
+        var action_labels := {"recruit":"CHIÊU MỘ","school":"MÔN PHÁI","production":"SẢN XUẤT","cultivation":"HỒ SƠ","hunt":"SĂN YÊU","craft":"LUYỆN ĐAN"}
+        button.text = "TUYỂN TRƯỚC" if recruit_first else str(action_labels.get(action,"MỞ"))
+        button.position = Vector2(264,82)
+        button.size = Vector2(159,30)
         button.add_theme_color_override("font_color",ART05_DEEP)
         button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD,ART05_GOLD,1,7))
         button.pressed.connect(_art05_playbook_action.bind("recruit" if recruit_first else action))

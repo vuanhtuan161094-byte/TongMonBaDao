@@ -178,6 +178,8 @@ func _hall_model() -> Dictionary:
     var upgrade: Dictionary = BuildingSystem.new().can_start_upgrade(_state, hall.id)
     return {
         "building_level":hall.level, "rank_step":rank,
+        "population_label":"%d / %d" % [_state.disciples.size(),SectResidenceSystemV1.current_limit(_state)],
+        "spirit_stones":str(_state.sect.spirit_stones),
         "rank_progress":float(rank) / 27.0,
         "rank_requirement":requirement,
         "can_promote":bool(rank_check.get("ok", false)),

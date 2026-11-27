@@ -94,6 +94,11 @@ func _build_progress_panel() -> Control:
 	metrics.add_child(UI.metric_card("CẤP CÔNG TRÌNH", str(_vm.get("building_level", 1)), "hall", UI.JADE))
 	metrics.add_child(UI.metric_card("BẬC MÔN PHÁI", "%02d / 27" % int(_vm.get("rank_step", 1)), "rank", UI.GOLD))
 	content.add_child(metrics)
+	if _vm.has("population_label") and _vm.has("spirit_stones"):
+		var overview := HBoxContainer.new()
+		overview.add_child(UI.metric_card("ĐỆ TỬ / SỨC CHỨA",str(_vm["population_label"]),"person",UI.JADE))
+		overview.add_child(UI.metric_card("LINH THẠCH",str(_vm["spirit_stones"]),"gold",UI.GOLD))
+		content.add_child(overview)
 	var progress := ProgressBar.new()
 	progress.name = "RankProgress"
 	progress.custom_minimum_size.y = 14

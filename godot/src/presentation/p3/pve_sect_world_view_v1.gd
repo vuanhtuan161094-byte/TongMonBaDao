@@ -471,6 +471,10 @@ func map_rect() -> Rect2:
 	return Rect2(Vector2.ZERO,size)
 
 func minimap_rect() -> Rect2:
+	# The full-screen world HUD occupies the upper right. Keep the minimap
+	# in the free left gutter, under zoom and hunt controls, above action buttons.
+	if size.x >= 1100.0 and size.y >= 620.0:
+		return Rect2(Vector2(12.0,size.y-230.0),Vector2(160.0,156.0))
 	return Rect2(Vector2(size.x-170.0,10.0),Vector2(160.0,156.0))
 
 func minimap_inner_rect() -> Rect2:
@@ -539,7 +543,7 @@ func _draw_overlay(canvas: CanvasItem) -> void:
 	canvas.draw_rect(frame,Color("d3c494"),false,1.0)
 	canvas.draw_rect(Rect2(frame.position+Vector2(1,1),Vector2(frame.size.x-2,18)),Color(0.035,0.075,0.072,0.92))
 	if font != null:
-		canvas.draw_string(font,frame.position+Vector2(5,14),"MINIMAP · THẾ GIỚI THẬT",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f1d488"))
+		canvas.draw_string(font,frame.position+Vector2(5,14),"BẢN ĐỒ NHỎ",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f1d488"))
 		var controls_rect := Rect2(Vector2(310.0,size.y-80.0),Vector2(368.0,20.0))
 		canvas.draw_rect(controls_rect,Color(0.03,0.07,0.06,0.84))
 		var controls_text := "Bấm đất: di chuyển · Kéo trái/phải: camera · Lăn / + −: zoom"
