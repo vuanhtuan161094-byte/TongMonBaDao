@@ -1,0 +1,43 @@
+name: TMB R7 elemental phase review
+on:
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
+    paths:
+      - 'godot/data/presentation/pve_external_element_r7.json'
+      - '.github/workflows/tmb-vfx-external-element-r7.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Godot native prerequisites
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth ffmpeg libgl1-mesa-dri
+          curl -fL --retry 3 -o /tmp/godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum -c -
+          unzip -oq /tmp/godot.zip -d /tmp
+          chmod +x /tmp/Godot_v4.7.2-stable_linux.x86_64
+      - name: Native real-cast phase review
+        run: |
+          set -euo pipefail
+          G=/tmp/Godot_v4.7.2-stable_linux.x86_64
+          O="$RUNNER_TEMP/element-r7"
+          mkdir -p "$O"
+          "$G" --headless --path godot --editor --import 2>&1 | tee "$O/import.log"
+          "$G" --headless --path godot --script res://tests/presentation/pve_factory_r2_source_contract_test.gd 2>&1 | tee "$O/factory.log"
+          "$G" --headless --path godot --script res://tests/presentation/pve_external_auxiliary_vfx_test.gd 2>&1 | tee "$O/aux.log"
+          LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" "$G" --path godot --resolution 1280x720 --audio-driver Dummy --fixed-fps 20 --write-movie "$O/element.avi" res://labs/combat_lab/external_vfx_library_20261127/combat_review.tscn -- "$O/receipts.json" --element-r7 2>&1 | tee "$O/capture.log"
+          ffmpeg -y -v error -i "$O/element.avi" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "$O/element.mp4"
+          rm "$O/element.avi"
+          python -c 'import json,sys; a=json.load(open(sys.argv[1])); print("R7_REAL_RECEIPTS",sum(x["real_visual_receipt"] and x["charge_seen"] and x["contact_seen"] for x in a),"/",len(a)); assert len(a)==32; assert all(x["real_visual_receipt"] and x["charge_seen"] and x["contact_seen"] and x["actor_draw_ok"] and x["synthetic_events"]==0 for x in a)' "$O/receipts.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: external-r7-native-${{ github.sha }}
+          path: ${{ runner.temp }}/element-r7/
+          retention-days: 14

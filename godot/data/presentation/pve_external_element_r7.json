@@ -1,0 +1,3908 @@
+{
+  "schema": "tmb.external_element_r7.v1",
+  "scope": "32 exact Human skill phase candidates; no owner approval or gate changes; no new creatures",
+  "bindings": {
+    "tmb.skill.bow.liep_anh.active_02.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                57,
+                135,
+                10
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                36,
+                135,
+                11
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                24,
+                135,
+                12
+              ]
+            }
+          ],
+          "width": 110,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.bow.liep_anh.active_03.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.liep_anh.active_04.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.liep_anh.ultimate.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.linh_tien.active_01.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                57,
+                135,
+                10
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                36,
+                135,
+                11
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                24,
+                135,
+                12
+              ]
+            }
+          ],
+          "width": 110,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.bow.linh_tien.active_03.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.linh_tien.active_04.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.linh_tien.ultimate.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.thien_vu.active_01.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                57,
+                135,
+                10
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                36,
+                135,
+                11
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                24,
+                135,
+                12
+              ]
+            }
+          ],
+          "width": 110,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.bow.thien_vu.active_02.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                57,
+                135,
+                10
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                36,
+                135,
+                11
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/arrows.png",
+              "region": [
+                0,
+                24,
+                135,
+                12
+              ]
+            }
+          ],
+          "width": 110,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.bow.thien_vu.active_03.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.thien_vu.active_04.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.bow.thien_vu.ultimate.human": {
+      "school": "bow",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_bow",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 86,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_blue.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.spear.ho_quan_thuong.active_02.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.ho_quan_thuong.active_04.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.long_thuong.active_02.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.long_thuong.active_03.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.long_thuong.active_04.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.long_thuong.ultimate.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 3,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.pha_tran_thuong.active_01.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 3,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.pha_tran_thuong.active_02.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.pha_tran_thuong.active_03.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.pha_tran_thuong.active_04.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 1,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.spear.pha_tran_thuong.ultimate.human": {
+      "school": "spear",
+      "effect": "damage",
+      "shape": "line",
+      "limit": 3,
+      "mechanic": "line",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_spear",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                16,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                341,
+                0,
+                192,
+                16
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                336,
+                65,
+                187,
+                49
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spear.png",
+              "region": [
+                149,
+                66,
+                187,
+                49
+              ]
+            }
+          ],
+          "width": 145,
+          "fps": 12,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.palm.liet_duong_chuong.active_01.human": {
+      "school": "palm",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_palm",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                316,
+                98,
+                145,
+                82
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                160,
+                162,
+                69
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                83,
+                166,
+                77
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                304,
+                252,
+                160,
+                66
+              ]
+            }
+          ],
+          "width": 104,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.palm.liet_duong_chuong.active_02.human": {
+      "school": "palm",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_palm",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                316,
+                98,
+                145,
+                82
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                160,
+                162,
+                69
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                83,
+                166,
+                77
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                304,
+                252,
+                160,
+                66
+              ]
+            }
+          ],
+          "width": 104,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.palm.liet_duong_chuong.active_03.human": {
+      "school": "palm",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_palm",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                316,
+                98,
+                145,
+                82
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                160,
+                162,
+                69
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                83,
+                166,
+                77
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                304,
+                252,
+                160,
+                66
+              ]
+            }
+          ],
+          "width": 104,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.palm.liet_duong_chuong.active_04.human": {
+      "school": "palm",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_palm",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        },
+        "flight": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                316,
+                98,
+                145,
+                82
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                160,
+                162,
+                69
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                150,
+                83,
+                166,
+                77
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/fireball.png",
+              "region": [
+                304,
+                252,
+                160,
+                66
+              ]
+            }
+          ],
+          "width": 104,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.palm.liet_duong_chuong.ultimate.human": {
+      "school": "palm",
+      "effect": "damage",
+      "shape": "circle",
+      "limit": 3,
+      "mechanic": "projectile",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_palm",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                190,
+                104,
+                52,
+                42
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                158,
+                171,
+                111,
+                98
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                171,
+                158,
+                138
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/spark_orange.png",
+              "region": [
+                0,
+                0,
+                190,
+                171
+              ]
+            }
+          ],
+          "width": 92,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Per confirmed hit only; dedicated circle choreography remains HOLD"
+    },
+    "tmb.skill.curse.ho_menh_chu.active_04.human": {
+      "school": "curse",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_curse",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                757,
+                230,
+                216,
+                169
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                757,
+                0,
+                276,
+                230
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                726,
+                399,
+                292,
+                299
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                364,
+                642,
+                309,
+                311
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                378,
+                322,
+                348,
+                320
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                384,
+                0,
+                373,
+                322
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                0,
+                384,
+                322
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                322,
+                378,
+                302
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                624,
+                364,
+                280
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                673,
+                698,
+                356,
+                264
+              ]
+            }
+          ],
+          "width": 115,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.curse.phe_linh_chu.active_03.human": {
+      "school": "curse",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_curse",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                757,
+                230,
+                216,
+                169
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                757,
+                0,
+                276,
+                230
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                726,
+                399,
+                292,
+                299
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                364,
+                642,
+                309,
+                311
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                378,
+                322,
+                348,
+                320
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                384,
+                0,
+                373,
+                322
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                0,
+                384,
+                322
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                322,
+                378,
+                302
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                624,
+                364,
+                280
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                673,
+                698,
+                356,
+                264
+              ]
+            }
+          ],
+          "width": 115,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    },
+    "tmb.skill.curse.tran_hon_chu.active_04.human": {
+      "school": "curse",
+      "effect": "damage",
+      "shape": "single_target",
+      "limit": 1,
+      "mechanic": "melee",
+      "external_auxiliary": true,
+      "source_id": "flare_r7_curse",
+      "source_credit": "FLARE contributors / CC BY-SA 3.0",
+      "source_url": "https://github.com/flareteam/flare-game/tree/c641d2ac2801617f6be3e327454de39250d489b9/mods/fantasycore/images/powers",
+      "phases": {
+        "charge": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                82,
+                0,
+                83,
+                56
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                0,
+                0,
+                82,
+                58
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                61,
+                232,
+                62,
+                57
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/channel.png",
+              "region": [
+                238,
+                210,
+                51,
+                51
+              ]
+            }
+          ],
+          "width": 96,
+          "fps": 15,
+          "loop": true,
+          "angle_offset": 0
+        },
+        "contact": {
+          "frames": [
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                757,
+                230,
+                216,
+                169
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                757,
+                0,
+                276,
+                230
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                726,
+                399,
+                292,
+                299
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                364,
+                642,
+                309,
+                311
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                378,
+                322,
+                348,
+                320
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                384,
+                0,
+                373,
+                322
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                0,
+                384,
+                322
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                322,
+                378,
+                302
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                0,
+                624,
+                364,
+                280
+              ]
+            },
+            {
+              "path": "res://assets/p3/vfx/external_element_r7/dark_mist.png",
+              "region": [
+                673,
+                698,
+                356,
+                264
+              ]
+            }
+          ],
+          "width": 115,
+          "fps": 14,
+          "loop": false,
+          "angle_offset": 0
+        }
+      },
+      "receipts": {
+        "skill_cast": "charge",
+        "v63_skill_hit": "contact"
+      },
+      "status": "PHASE_CANDIDATE_NOT_OWNER_APPROVAL",
+      "note": "Source-backed phase candidate; flight only when canonical projectile_speed > 0"
+    }
+  }
+}

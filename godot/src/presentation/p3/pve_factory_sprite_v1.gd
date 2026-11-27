@@ -4,6 +4,7 @@ extends RefCounted
 const INDEX := "res://data/presentation/pve_factory_r2.json"
 const EXTERNAL_INDEX := "res://data/presentation/pve_external_auxiliary_v1.json"
 const EXTERNAL_SLASH_INDEX := "res://data/presentation/pve_external_slash_r6.json"
+const EXTERNAL_ELEMENT_INDEX := "res://data/presentation/pve_external_element_r7.json"
 const EXTERNAL_PREVIEW_SETTING := "runtime/external_auxiliary_vfx_preview"
 const MAX_CUES := 80
 const MAX_TEXTURES := 36
@@ -28,7 +29,7 @@ func _ensure_index() -> void:
         _entries = raw.get("bindings",{}).duplicate(true)
     # Separate preview gate; never replace the existing 58 source bindings.
     if bool(ProjectSettings.get_setting(EXTERNAL_PREVIEW_SETTING,false)):
-        for index_path in [EXTERNAL_INDEX,EXTERNAL_SLASH_INDEX]:
+        for index_path in [EXTERNAL_INDEX,EXTERNAL_SLASH_INDEX,EXTERNAL_ELEMENT_INDEX]:
             if not FileAccess.file_exists(index_path):
                 continue
             var external: Variant = JSON.parse_string(FileAccess.get_file_as_string(index_path))
@@ -69,6 +70,8 @@ static func resolve_receipt_phase(phases: Dictionary, requested: String) -> Stri
 static func external_receipt_allowed(entry: Dictionary,event: Dictionary) -> bool:
     var effect := str(entry.get("effect",""))
     var kind := str(event.get("type",""))
+    if kind == "skill_cast":
+        return entry.get("phases",{}).has("charge") and str(event.get("effect","")) == effect
     if effect == "damage":
         return kind == "v63_skill_hit" and str(event.get("effect","")) == "damage" and float(event.get("damage",0.0)) > 0.0
     if effect == "heal":

@@ -22,6 +22,9 @@ var skill:=""
 var school:=""
 var font: Font=ThemeDB.fallback_font
 var slash_mode:=false
+var element_mode:=false
+var charge_seen:=false
+var contact_seen:=false
 var enemy_base:=Vector2(5,2)
 var release_delay:=0.7
 func _actor(id: String,side: String,position: Vector2) -> Dictionary:
@@ -33,7 +36,8 @@ func _actor(id: String,side: String,position: Vector2) -> Dictionary:
 func _ready() -> void:
     ProjectSettings.set_setting(FX.EXTERNAL_PREVIEW_SETTING,true)
     slash_mode=OS.get_cmdline_user_args().has("--slash-r6")
-    var index_path: String=FX.EXTERNAL_SLASH_INDEX if slash_mode else FX.EXTERNAL_INDEX
+    element_mode=OS.get_cmdline_user_args().has("--element-r7")
+    var index_path: String=FX.EXTERNAL_ELEMENT_INDEX if element_mode else (FX.EXTERNAL_SLASH_INDEX if slash_mode else FX.EXTERNAL_INDEX)
     var raw: Variant=JSON.parse_string(FileAccess.get_file_as_string(index_path))
     if not raw is Dictionary:
         get_tree().quit(1)
@@ -44,7 +48,7 @@ func _ready() -> void:
     _next()
 func _next() -> void:
     if index>=0 and index<ids.size():
-        report.append({"skill_id":skill,"real_cast":cast_ok,"real_visual_receipt":accepted,"actor_draw_ok":actor_ok,"synthetic_events":0})
+        report.append({"skill_id":skill,"real_cast":cast_ok,"real_visual_receipt":accepted,"actor_draw_ok":actor_ok,"charge_seen":charge_seen,"contact_seen":contact_seen,"synthetic_events":0})
     index+=1
     if index>=ids.size():
         done=true
@@ -55,7 +59,7 @@ func _next() -> void:
         print("EXTERNAL_COMBAT_CAPTURE ",JSON.stringify(report))
         get_tree().quit()
         return
-    elapsed=0.0;released=false;accepted=false;actor_ok=false
+    elapsed=0.0;released=false;accepted=false;actor_ok=false;charge_seen=false;contact_seen=false
     skill=str(ids[index]);school=str(entries[skill]["school"])
     var definition:=V63HumanSkillCombatSystem.skill_definition(skill)
     battle=MapBattleV2.new(761+index)
@@ -63,7 +67,7 @@ func _next() -> void:
     battle.active=true
     battle.outcome="fighting"
     var caster:=_actor("caster","disciple",Vector2(2,2))
-    enemy_base=Vector2(3,2) if slash_mode else Vector2(5,2)
+    enemy_base=Vector2(3,2) if slash_mode or (element_mode and school=="spear") else Vector2(2+minf(3.0,maxf(0.5,float(definition.get("range",1.0))*0.65)),2)
     var enemy:=_actor("enemy","monster",enemy_base)
     var ally:=_actor("ally","disciple",Vector2(2.5,3.5))
     caster["party_id"]="test";ally["party_id"]="test"
@@ -71,7 +75,7 @@ func _next() -> void:
     caster["v63_combat_branch_id"]=str(definition.get("branch",""))
     caster["v63_skill_loadout"]=[skill]
     caster["v63_combat_lineage"]="base"
-    if slash_mode:
+    if slash_mode or element_mode:
         caster["hp"]=1800.0; enemy["hp"]=2000.0
         caster["role"]="melee"
         caster["stats"]["attack"]=100.0
@@ -81,6 +85,8 @@ func _next() -> void:
     cast_ok=V63HumanSkillCombatSystem.try_cast(battle,caster,enemy,false)
     release_delay=clampf(float(caster.get("v63_pending_cast",{}).get("ready",0.7)),0.2,1.7)
     fx.observe(cursor.observe_snapshot(battle),battle)
+    for cue in fx._cues.values():
+        if str(cue.get("phase",""))=="charge":charge_seen=true
 func _process(delta: float) -> void:
     if done or battle==null:return
     elapsed+=delta;total+=delta
@@ -94,11 +100,15 @@ func _process(delta: float) -> void:
             battle._release_casts()
             var snapshot:=battle.events.duplicate(true)
             fx.observe(cursor.observe_snapshot(battle),battle)
-            accepted=not fx._cues.is_empty() and battle.events==snapshot
+            for cue in fx._cues.values():
+                if str(cue.get("phase",""))=="contact":contact_seen=true
+            accepted=contact_seen and battle.events==snapshot
     fx.advance(delta)
     queue_redraw()
     if elapsed>=maxf(2.4,release_delay+1.1):_next()
 func _project(p: Vector2) -> Vector2:
+    if element_mode:
+        return Vector2(80+p.x*180,325+p.y*72)
     if slash_mode:
         return Vector2(30+p.x*190,340+p.y*66)
     return Vector2(120+p.x*145,340+p.y*66)
@@ -115,7 +125,7 @@ func _draw() -> void:
         if id=="enemy":
             monsters.draw_actor(self,"monster_1113031_1","walk",foot,Vector2.LEFT,elapsed,1.7)
         else:
-            var action: String=("attack" if slash_mode else "cast") if id=="caster" and not released else "idle"
+            var action: String=("attack" if slash_mode or (element_mode and school in ["bow","spear"]) else "cast") if id=="caster" and not released else "idle"
             var ok: bool=ASCHAR.draw_actor(self,school,"male",action,foot,Vector2.RIGHT,elapsed,ASCHAR.game_view_scale(1.7),release_delay,{})
             actor_ok=actor_ok or ok
         var health:=clampf(float(a["hp"])/float(a["max_hp"]),0,1)
