@@ -153,18 +153,16 @@ func _run() -> void:
 	if not bool(iso.art_source_status.get("manifest_valid",false)) or int(iso.art_source_status.get("missing_count",0)) != 0 or int(iso.art_source_status.get("rejected_count",0)) != 0:
 		_fail("layout-used MAP25 textures failed their SHA gate: %s" % str(iso.art_source_status))
 		return
-	# The full four-texture palette and all six road variants must be represented
-	# by actual tiles in the B layout, not merely by filenames in a registry.
-	var terrain_used: Dictionary = {}
+	# The sect now has one continuous flagstone material. Verify coverage
+	# independently from the protected route graph and original art registry.
 	for y in range(iso.STARTER.position.y,iso.STARTER.end.y):
 		for x in range(iso.STARTER.position.x,iso.STARTER.end.x):
-			var key := iso._terrain_texture_key(Vector2i(x,y))
-			if not key.is_empty():
-				terrain_used[key] = int(terrain_used.get(key,0))+1
-	for key in ["stone_courtyard.png","stone_border.png","stone_runes.png","stone_variant.png"]:
-		if not terrain_used.has("env01_assets/terrain/"+key):
-			_fail("verified terrain texture has no layout role: %s" % key)
-			return
+			if not iso.sect_paving_cell(Vector2i(x,y)):
+				_fail("interior paving gap")
+				return
+	if iso.sect_paving_cell(iso.STARTER.position-Vector2i.ONE) or iso.sect_paving_cell(iso.STARTER.end):
+		_fail("paving exceeds the sect boundary")
+		return
 	var road_used: Dictionary = {}
 	for raw_cell in iso.preview_roads.keys():
 		var cell: Vector2i = raw_cell

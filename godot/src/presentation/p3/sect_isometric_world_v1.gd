@@ -12,6 +12,7 @@ const HALF_H := 13.0
 const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.svg")
 const MAP01_MEADOW: Texture2D = preload("res://art/onegame_world_r2/map01_meadow.svg")
 const MAP01_PAVING: Texture2D = preload("res://art/onegame_world_r2/map01_paving.svg")
+const SECT_FLAGSTONE: Texture2D = preload("res://art/onegame_world_r2/map01_sect_flagstone.svg")
 # Original visual candidates for existing navigable landmarks; no new buildings.
 const MAP01_LANDMARKS := {
     "cultivation":preload("res://art/onegame_world_r2/map01_cultivation.svg"),
@@ -238,6 +239,7 @@ var sect_draw_view_position := Vector2.ZERO
 var sect_draw_view_zoom := 1.0
 # Chunk-local immutable ArrayMesh, cached in memory; purely visual, no save data.
 var ground_chunk_meshes: Dictionary = {}
+var sect_paving_meshes: Dictionary = {}
 # View overlays are static once road topology and verified art are loaded.
 # Build them once rather than rescanning all 16x16 cells on every draw.
 var terrain_overlays_by_chunk: Dictionary = {}
@@ -636,7 +638,7 @@ func _load_verified_source_art() -> void:
             if not placed.is_empty():
                 for tile in lab_geometry.cells_for(landmark,placed["origin"],0):
                     occupied[tile] = true
-    var placement_rows: Array = pve_forest_layout() if pve_landscape else DECOR_LAYOUT
+    var placement_rows: Array = pve_forest_layout() if pve_landscape else []
     for item in placement_rows:
         var tile: Vector2i = item["cell"]
         if pve_landscape:
@@ -689,45 +691,31 @@ func _load_verified_source_art() -> void:
                 "scale":float(item["scale"]) if pve_landscape else minf(0.35,float(item["scale"])*0.82),
                 "cell":tile
             })
-    if not pve_landscape and map_layout_version >= 2:
-        # Scenic clusters fill previously empty edges; avoid protected roads,
-        # building anchors, the ceremonial court and planned residence lots.
-        for row in R3_SCENERY_CELLS:
-            var tile: Vector2i = row["cell"]
-            if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile) or COURTYARD_RECT.has_point(tile):
-                continue
-            var clear := true
-            for raw_anchor in anchors_for_layout().values():
-                if (tile-Vector2i(raw_anchor)).length_squared() <= 9:
-                    clear = false
-                    break
-            for lot in SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES:
-                if Rect2i(Vector2i(lot)-Vector2i.ONE,SectResidenceSiteV1.HOUSE_FOOTPRINT+Vector2i(2,2)).has_point(tile):
-                    clear = false
-                    break
-            if not clear:
-                continue
-            # Retire the mismatched flat gardens and stockpiles from the
-            # live landscape. Real buildings retain their own visual assets.
-            if str(row["art"]) != "pine":
-                continue
-            var texture: Texture2D = R3_SCENERY[str(row["art"])]
-            var art_scale := float(row["scale"])
-            # Match the existing detailed architecture and vegetation instead
-            # of the chunky concept pine asset. Reuse verified Source A trees.
-            if str(row["art"]) == "pine":
-                var tree_id := str(PVE_TREE_ASSETS[posmod(tile.x+tile.y,PVE_TREE_ASSETS.size())])
-                var tree := source_art.texture_for("env01_assets/vegetation/%s.png" % tree_id)
-                if tree != null:
-                    texture = tree
-                    art_scale = 0.33 + float(posmod(tile.x,3))*0.035
-            var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
-            if not decoration_items_by_chunk.has(chunk):
-                decoration_items_by_chunk[chunk] = []
-            (decoration_items_by_chunk[chunk] as Array).append({
-                "world":project(Vector2(tile)),"texture":texture,
-                "scale":art_scale,"cell":tile
-            })
+    if not pve_landscape:
+        # MAP01: dense exterior woodland, never interior construction tiles.
+        # Deterministic spacing keeps the silhouette coherent on every load.
+        var forest_bounds := STARTER.grow(8)
+        for y in range(forest_bounds.position.y,forest_bounds.end.y,2):
+            for x in range(forest_bounds.position.x,forest_bounds.end.x,2):
+                var tile := Vector2i(x,y)
+                if STARTER.has_point(tile) or not Rect2i(Vector2i.ZERO,GRID).has_point(tile):
+                    continue
+                if posmod(x*17+y*31+x*y,7) == 0:
+                    continue
+                var tree_id := str(PVE_TREE_ASSETS[posmod(x*7+y*11,PVE_TREE_ASSETS.size())])
+                var rel := "env01_assets/vegetation/%s.png" % tree_id
+                var tree := source_art.texture_for(rel)
+                if tree == null:
+                    continue
+                render_art[rel] = tree
+                var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
+                if not decoration_items_by_chunk.has(chunk):
+                    decoration_items_by_chunk[chunk] = []
+                var jitter := Vector2(float(posmod(x*13+y*7,5)-2)*0.13,float(posmod(x*11+y*3,5)-2)*0.13)
+                (decoration_items_by_chunk[chunk] as Array).append({
+                    "world":project(Vector2(tile)+jitter),"texture":tree,
+                    "scale":0.37+float(posmod(x*3+y*5,5))*0.025,"cell":tile
+                })
     _cache_static_overlays()
     pve_static_queue_dirty = true
     art_source_status = source_art.status()
@@ -938,6 +926,7 @@ func _refresh_residence_road_paths(state: SimulationState) -> void:
     # Player construction/relocation is infrequent. Rebuild cached ground and
     # Source A road/vegetation overlays only when a doorway route really moves.
     ground_chunk_meshes.clear()
+    sect_paving_meshes.clear()
     _load_verified_source_art()
 
 func _row(dest: StringName, instance_id: StringName, text_label: String, index: int,
@@ -1408,6 +1397,50 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
     ground_chunk_meshes[chunk_id] = mesh
     return mesh
 
+# One batched stone mesh per visible chunk; no per-tile draw calls.
+static func sect_paving_cell(cell: Vector2i) -> bool:
+    return STARTER.has_point(cell)
+
+func _sect_paving_mesh(chunk_id: Vector2i) -> ArrayMesh:
+    if sect_paving_meshes.has(chunk_id):
+        return sect_paving_meshes[chunk_id] as ArrayMesh
+    var vertices := PackedVector2Array()
+    var colors := PackedColorArray()
+    var uvs := PackedVector2Array()
+    var indices := PackedInt32Array()
+    var origin := chunk_id*CHUNK
+    for y in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
+        for x in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
+            var cell := Vector2i(x,y)
+            if not sect_paving_cell(cell):
+                continue
+            var center := project(Vector2(cell))
+            var base := vertices.size()
+            vertices.append_array(PackedVector2Array([
+                center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
+                center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
+            ]))
+            uvs.append_array(PackedVector2Array([Vector2(0.5,0),Vector2(1,0.5),Vector2(0.5,1),Vector2(0,0.5)]))
+            var tint := 0.94+float(posmod(x*17+y*23+x*y,7))*0.009
+            var edge := mini(mini(x-STARTER.position.x,STARTER.end.x-1-x),mini(y-STARTER.position.y,STARTER.end.y-1-y))
+            var tone := Color(tint,tint,tint,1.0)
+            if edge == 0:
+                tone = Color(0.77,0.76,0.72,1.0)
+            for _corner in range(4):
+                colors.append(tone)
+            indices.append_array(PackedInt32Array([base,base+1,base+2,base,base+2,base+3]))
+    var mesh := ArrayMesh.new()
+    if not vertices.is_empty():
+        var arrays := []
+        arrays.resize(Mesh.ARRAY_MAX)
+        arrays[Mesh.ARRAY_VERTEX] = vertices
+        arrays[Mesh.ARRAY_COLOR] = colors
+        arrays[Mesh.ARRAY_TEX_UV] = uvs
+        arrays[Mesh.ARRAY_INDEX] = indices
+        mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays,[],{},Mesh.ARRAY_FLAG_USE_2D_VERTICES)
+    sect_paving_meshes[chunk_id] = mesh
+    return mesh
+
 func _pve_ground_color(cell: Vector2i) -> Color:
     var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
     slow += cos(float(cell.y)*0.16-float(cell.x)*0.09)*0.30
@@ -1479,54 +1512,22 @@ func _draw() -> void:
     # Visibility still uses the original active_chunks and the existing camera.
     for chunk_id in active_chunks:
         draw_mesh(_ground_mesh_for_chunk(chunk_id),R2_GROUND if pve_landscape else MAP01_MEADOW)
-    # Scenic water/reeds/rock-garden accents are original unapproved
-    # view-only candidates and cannot act as a gameplay resource node.
-    if pve_landscape:
+    if not pve_landscape:
+        # Unified paved estate. Roads are still used by the simulation and
+        # construction checks, but are no longer painted as separate strips.
+        for chunk_id in active_chunks:
+            var paving := _sect_paving_mesh(chunk_id)
+            if paving.get_surface_count() > 0:
+                draw_mesh(paving,SECT_FLAGSTONE)
+    else:
         _draw_pve_stream()
-    # MAP01 no longer overlays unapproved flat scenic plates. The actual
-    # depth-sorted vegetation and landmark art own the sect scenery.
-    # Verified MAP25 terrain/road overlay source and connectivity were
-    # classified once at import. Pan/zoom only iterates cached visible rows.
-    for chunk_id in active_chunks:
-        var terrain_rows: Array = terrain_overlays_by_chunk.get(chunk_id,[])
-        for row in terrain_rows:
-            draw_texture_rect(row["texture"],row["rect"],false,row["tint"])
-    if not pve_landscape:
-        # Ground-only ceremonial paving under the existing hall district.
-        var court_center := project(Vector2(88.5,95.5))
-        if _visible_world(court_center):
-            var court_extent := Vector2(350,182)
-            draw_texture_rect(R2_COURT,Rect2(court_center-court_extent*0.5,court_extent),false)
-    if not pve_landscape and map_layout_version >= 2:
-        var plaza_center := project(Vector2(103.5,90.5))
-        if _visible_world(plaza_center):
-            var extent := Vector2(650,342)
-            draw_texture_rect(MAP01_PRODUCTION_PLAZA,Rect2(plaza_center-extent*0.5,extent),false)
-    if not pve_landscape:
-        # Add authored ground detail below existing productive buildings.
-        # Do not change picking, collision or add artificial production sites.
-        for item in display_instances:
-            var kind := str(item.get("destination",""))
-            if map_layout_version >= 2 and str(item.get("building_id","")).ends_with("_001"):
-                continue
-            if not bool(item.get("managed",false)) or not R2_PRODUCERS.has(kind):
-                continue
-            var foot: Vector2 = item["world"]
-            if _visible_world(foot):
-                var apron_extent := Vector2(146,76)
-                var tint := Color(1.0,0.92,0.78,0.84) if kind == "mine" else Color(0.90,1.0,0.88,0.82)
-                draw_texture_rect(R2_PRODUCER_APRON,Rect2(foot-apron_extent*0.5,apron_extent),false,tint)
-    for chunk_id in active_chunks:
-        var road_rows: Array = road_overlays_by_chunk.get(chunk_id,[])
-        for row in road_rows:
-            draw_colored_polygon(row["shoulder"],row["shoulder_color"])
-            if pve_landscape:
+        for chunk_id in active_chunks:
+            for row in terrain_overlays_by_chunk.get(chunk_id,[]):
+                draw_texture_rect(row["texture"],row["rect"],false,row["tint"])
+        for chunk_id in active_chunks:
+            for row in road_overlays_by_chunk.get(chunk_id,[]):
+                draw_colored_polygon(row["shoulder"],row["shoulder_color"])
                 draw_texture_rect(row["texture"],row["rect"],false,Color(0.96,0.95,0.88,0.96))
-            else:
-                # A full, tessellating stone diamond, no transparent gaps
-                # between the road cells or checkerboard of disconnected art.
-                var center: Vector2 = row["center"]
-                draw_texture_rect(MAP01_PAVING,Rect2(center-Vector2(HALF_W,HALF_H),Vector2(HALF_W*2,HALF_H*2)),false)
     if pve_landscape:
         # Render a real crossing at each existing navigation bridge, below
         # characters; the illustration never creates a walkable cell.
