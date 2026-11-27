@@ -50,6 +50,13 @@ func _run() -> void:
         await process_frame
         if not await _capture(out.path_join("02_map_clear_view_1280x720.png")):
             return
+        # Additional actual camera states, still the same map screen.
+        for district in ["cultivation","residence","gate"]:
+            screen.call("_art05_focus_masterplan_district",district,true)
+            for _frame in range(24):
+                await process_frame
+            if not await _capture(out.path_join("03_map_"+district+"_1280x720.png")):
+                return
         screen.set("runtime_ready",false)
         screen.queue_free()
         await process_frame

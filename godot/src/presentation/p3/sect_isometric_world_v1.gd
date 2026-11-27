@@ -12,6 +12,17 @@ const HALF_H := 13.0
 const R2_GROUND: Texture2D = preload("res://art/onegame_world_r2/terrain_grain.svg")
 const MAP01_MEADOW: Texture2D = preload("res://art/onegame_world_r2/map01_meadow.svg")
 const MAP01_PAVING: Texture2D = preload("res://art/onegame_world_r2/map01_paving.svg")
+# Original visual candidates for existing navigable landmarks; no new buildings.
+const MAP01_LANDMARKS := {
+    "cultivation":preload("res://art/onegame_world_r2/map01_cultivation.svg"),
+    "ren_than_duong":preload("res://art/onegame_world_r2/map01_ren_than_duong.svg"),
+    "medicine":preload("res://art/onegame_world_r2/map01_medicine.svg"),
+    "gate":preload("res://art/onegame_world_r2/map01_gate.svg")
+}
+const MAP01_LANDMARK_SIZES := {
+    "cultivation":Vector2(154,126),"ren_than_duong":Vector2(146,120),
+    "medicine":Vector2(146,120),"gate":Vector2(162,133)
+}
 const R2_PRODUCER_APRON: Texture2D = preload("res://art/onegame_world_r2/producer_apron.svg")
 const R2_BRIDGE: Texture2D = preload("res://art/onegame_world_r2/stone_bridge.svg")
 const R2_COURT: Texture2D = preload("res://art/onegame_world_r2/jade_court.svg")
@@ -33,7 +44,18 @@ const R3_SCENERY_CELLS := [
     {"cell":Vector2i(74,81),"art":"pine","scale":0.95},
     {"cell":Vector2i(76,110),"art":"garden","scale":0.85},
     {"cell":Vector2i(81,114),"art":"pine","scale":0.88},
-    {"cell":Vector2i(116,105),"art":"pine","scale":0.92}
+    {"cell":Vector2i(116,105),"art":"pine","scale":0.92},
+    {"cell":Vector2i(74,85),"art":"pine","scale":0.92},
+    {"cell":Vector2i(77,75),"art":"pine","scale":0.9},
+    {"cell":Vector2i(83,74),"art":"pine","scale":0.91},
+    {"cell":Vector2i(97,75),"art":"pine","scale":0.92},
+    {"cell":Vector2i(112,79),"art":"pine","scale":0.9},
+    {"cell":Vector2i(117,82),"art":"pine","scale":0.94},
+    {"cell":Vector2i(118,92),"art":"pine","scale":0.88},
+    {"cell":Vector2i(118,100),"art":"pine","scale":0.9},
+    {"cell":Vector2i(73,114),"art":"pine","scale":0.91},
+    {"cell":Vector2i(79,118),"art":"pine","scale":0.9},
+    {"cell":Vector2i(85,118),"art":"pine","scale":0.9}
 ]
 const R2_PRODUCERS := {
     "mine":preload("res://art/onegame_world_r2/mine_compact.svg"),
@@ -675,6 +697,10 @@ func _load_verified_source_art() -> void:
                     clear = false
                     break
             if not clear:
+                continue
+            # Retire the mismatched flat gardens and stockpiles from the
+            # live landscape. Real buildings retain their own visual assets.
+            if str(row["art"]) != "pine":
                 continue
             var texture: Texture2D = R3_SCENERY[str(row["art"])]
             var art_scale := float(row["scale"])
@@ -1344,15 +1370,19 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
                 uvs.append(Vector2(point.x/(CHUNK*HALF_W*2.0)+0.5,point.y/(CHUNK*HALF_H*2.0)+0.5))
             # Interpolate adjacent non-road material at corners to soften the
             # visible tile grid without changing routes or collision.
-            if pve_landscape or preview_roads.has(cell):
+            if pve_landscape:
                 for _vertex in range(4):
                     colors.append(tone)
             else:
-                var neighbors := [Vector2i(0,-1),Vector2i(1,0),Vector2i(0,1),Vector2i(-1,0)]
-                for offset in neighbors:
-                    var near_cell: Vector2i = cell+offset
-                    var near_tone := tone if preview_roads.has(near_cell) else SectMapD2Landscape.ground_color(near_cell,STARTER,preview_roads,map_layout_version)
-                    colors.append(tone.lerp(near_tone,0.34))
+                # A shared diamond corner has four identical cell samples
+                # regardless of which tile owns it. Remove diagonal seams.
+                for direction in [Vector2i(-1,-1),Vector2i(1,-1),Vector2i(1,1),Vector2i(-1,1)]:
+                    var d: Vector2i = direction
+                    var sum := tone
+                    for offset in [Vector2i(d.x,0),Vector2i(0,d.y),d]:
+                        var near_cell: Vector2i = cell+offset
+                        sum += SectMapD2Landscape.ground_color(near_cell,STARTER,preview_roads,map_layout_version)
+                    colors.append(sum*0.25)
             indices.append_array(PackedInt32Array([
                 base,base+1,base+2,base,base+2,base+3
             ]))
@@ -1444,8 +1474,8 @@ func _draw() -> void:
     # view-only candidates and cannot act as a gameplay resource node.
     if pve_landscape:
         _draw_pve_stream()
-    else:
-        SectMapD2Landscape.draw_scenic_accents(self,active_chunks,camera.position,VIEW_SIZE*0.5/camera.zoom.x+Vector2(170,175))
+    # MAP01 no longer overlays unapproved flat scenic plates. The actual
+    # depth-sorted vegetation and landmark art own the sect scenery.
     # Verified MAP25 terrain/road overlay source and connectivity were
     # classified once at import. Pan/zoom only iterates cached visible rows.
     for chunk_id in active_chunks:
@@ -1993,6 +2023,19 @@ func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool =
             var anchor := p+Vector2(-width*0.5,23)
             draw_string_outline(candidate_font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,2,Color(0.16,0.25,0.20))
             draw_string(candidate_font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.94,0.90,0.76))
+        return
+    if not pve_landscape and MAP01_LANDMARKS.has(kind):
+        var art: Texture2D = MAP01_LANDMARKS[kind]
+        var size: Vector2 = MAP01_LANDMARK_SIZES[kind]
+        draw_texture_rect(art,Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
+        var captions := {"cultivation":"TU LUYỆN","ren_than_duong":"RÈN THÂN","medicine":"Y QUÁN","gate":"CỔNG TÔNG MÔN"}
+        var caption := str(captions[kind])
+        var font := ThemeDB.fallback_font
+        if font != null:
+            var width := font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x
+            var baseline := p+Vector2(-width*0.5,24)
+            draw_string_outline(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13,3,Color(0.08,0.15,0.12,0.94))
+            draw_string(font,baseline,caption,HORIZONTAL_ALIGNMENT_LEFT,-1,13,Color("f6e8b8"))
         return
     # MAP25 visual-only fallback: a flat ground footprint, never a fake
     # 3D building. Actual producer rows retain BuildingState.id and tap hitbox.

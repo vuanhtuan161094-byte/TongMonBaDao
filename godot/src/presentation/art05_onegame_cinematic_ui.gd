@@ -653,8 +653,12 @@ func _art05_focus_masterplan_district(destination: String, close_panels: bool = 
     var world_point := SectIsometricWorldV1.LEGACY_ANCHOR \
         + SectIsometricWorldV1.project(Vector2(cell)) \
         - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+    # Shift the chosen landmark into the unobstructed center-left map area.
     var transform := SectMapCamera.focus_transform(world_point,0.88)
-    _apply_camera(float(transform["zoom"]),transform["position"],true)
+    var target: Vector2 = transform["position"]
+    target.x -= 78.0
+    _apply_camera(float(transform["zoom"]),SectMapCamera.clamp_position(target,float(transform["zoom"])),true)
+    _art05_sync_map_chrome()
 
 func _enter_build_mode() -> void:
     super._enter_build_mode()
@@ -802,7 +806,10 @@ func _art05_sync_map_chrome() -> void:
         var tab := get_node_or_null("MasterplanDistrict_"+str(entry["key"])) as Button
         if tab != null:
             tab.visible = not modal
-    if modal and gp1_guide_panel != null:
+            var active := str(entry["key"]) == str(_art05_dock_destination)
+            tab.add_theme_color_override("font_color",ART05_DEEP if active else ART05_WHITE)
+            tab.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD if active else Color(0.035,0.15,0.16,0.95),ART05_GOLD if active else ART05_MUTE,1,8))
+    if gp1_guide_panel != null and (modal or _art05_dock_destination != &"main_hall" or _art05_dock_collapsed):
         gp1_guide_panel.visible = false
 
 func _add_dim() -> void:
@@ -940,6 +947,8 @@ func _art05_install_mockup_shell() -> void:
             tab.clip_text = true
     if camera_controls_panel != null:
         camera_controls_panel.position = Vector2(18,365)
+        if focus_readout != null:
+            focus_readout.visible = false
         camera_controls_panel.size = Vector2(58,252)
         camera_controls_panel.add_theme_stylebox_override("panel",_art05_style(
             Color(0.032,0.15,0.16,0.96),ART05_GOLD,1,12))
@@ -958,6 +967,7 @@ func _art05_install_mockup_shell() -> void:
     if camera_hint != null:
         camera_hint.position = Vector2(393,606)
         camera_hint.size = Vector2(422,24)
+        camera_hint.text = "Kéo bản đồ · Cuộn để zoom · Chạm công trình để quản lý"
 
 func _art05_activate_nav(index: int) -> void:
     _art05_active_nav = ["home","disciples","warehouse","world","hunt"][clampi(index,0,4)]
@@ -1094,6 +1104,7 @@ func _art05_refresh_district_links(destination: String) -> void:
 func _art05_collapse_dock() -> void:
     _art05_dock_collapsed = true
     _art05_refresh_sect_master_dock()
+    _art05_sync_map_chrome()
 
 func _art05_manage_selected_district() -> void:
     if _art05_dock_destination == SectMapPresentation.DEST_GATE:
@@ -1165,6 +1176,10 @@ func _art05_refresh_sect_master_dock() -> void:
         var source: Texture2D = VIS11_AB.texture_for(_art05_dock_destination,&"A")
         if source == null:
             source = VIS08_ORIGINAL_BUILDINGS.texture_for(_art05_dock_destination)
+        if source == null and SectIsometricWorldV1.MAP01_LANDMARKS.has(dest):
+            source = SectIsometricWorldV1.MAP01_LANDMARKS[dest]
+        if source == null and preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd").supported(_art05_dock_destination):
+            source = preload("res://src/presentation/uiux/sect_building_art_variant_v3.gd").texture_for(_art05_dock_destination,&"A",false)
         _art05_dock_portrait.texture = source
 
 
