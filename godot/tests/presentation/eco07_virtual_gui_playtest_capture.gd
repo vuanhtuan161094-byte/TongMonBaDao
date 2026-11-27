@@ -39,6 +39,16 @@ func _run() -> void:
     var cap := await _capture(out.path_join("00_map_1280x720.png"))
     if not cap:
         return
+    if OS.get_environment("TMB_HALL_ONLY") == "1":
+        if not await _capture_full_hall(out):
+            return
+        screen.set("runtime_ready",false)
+        screen.queue_free()
+        await process_frame
+        _cleanup()
+        print("HALL FULLSCREEN SIX_TABS_CAPTURE PASS")
+        quit(0)
+        return
     if OS.get_environment("TMB_MAP01_ONLY") == "1":
         # Two real views of the same screen; no fake resources or UI mockup.
         screen.call("_art05_focus_masterplan_district","forge",true)
@@ -76,16 +86,14 @@ func _run() -> void:
         [SectMapPresentation.DEST_ALCHEMY_HALL,"06_alchemy_1280x720.png"]
     ]
     for pair in paths:
-        screen.call("_open_building",StringName(pair[0]))
+        screen.call("_open_player_building",StringName(pair[0]))
         for _i in range(3):
             await process_frame
         if StringName(screen.get("selected_building")) != StringName(pair[0]):
             _fail("Real GUI did not select requested panel: " + str(pair[0]))
             return
         if StringName(pair[0]) == SectMapPresentation.DEST_MAIN_HALL:
-            var ledger := screen.find_child("EconomyA_RealIncome",true,false) as Label
-            if ledger == null or not ledger.text.contains("SỔ THU CHI"):
-                _fail("Rendered Hall lacks ECO06 real receipt-backed cashflow.")
+            if not _verify_full_hall():
                 return
         if StringName(pair[0]) in [
                 SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST,
@@ -149,6 +157,45 @@ func _run() -> void:
     _cleanup()
     print("ECO07 VIRTUAL_GODOT_GUI_CAPTURE PASS ",JSON.stringify(metrics))
     quit(0)
+
+func _verify_full_hall() -> bool:
+    var hall := screen.get_node_or_null("DaiDienScreenV1") as Control
+    if hall == null or not hall.is_visible_in_tree() or hall.size.distance_to(Vector2(1280,720)) > 2.0:
+        return _fail("The actual player Hall route did not open a full-screen 1280x720 Hall.")
+    var old_panel := screen.find_child("BuildingOperationPanel",true,false) as Control
+    if old_panel != null and old_panel.is_visible_in_tree():
+        return _fail("Old floating Hall panel is still visible.")
+    for index in range(6):
+        var tab := hall.find_child("HallTab_%d" % index,true,false) as Button
+        if tab == null or not tab.is_visible_in_tree():
+            return _fail("Hall navigation missing tab %d." % index)
+    var ledger := hall.find_child("HallReceiptLedger",true,false) as Label
+    if ledger == null:
+        return _fail("Receipt ledger is missing from the new Economy tab.")
+    return true
+
+func _capture_full_hall(out: String) -> bool:
+    screen.call("_open_player_building",SectMapPresentation.DEST_MAIN_HALL)
+    for _i in range(4):
+        await process_frame
+    if not _verify_full_hall():
+        return false
+    var hall := screen.get_node_or_null("DaiDienScreenV1") as Control
+    var names := ["overview","offices","upgrade","rank","economy","policies"]
+    for index in range(names.size()):
+        var button := hall.find_child("HallTab_%d" % index,true,false) as Button
+        button.pressed.emit()
+        await process_frame
+        if not await _capture(out.path_join("hall_%02d_%s.png" % [index,names[index]])):
+            return false
+    var back := hall.find_child("HallBackToMap",true,false) as Button
+    if back == null:
+        return _fail("Hall return button absent.")
+    back.pressed.emit()
+    await process_frame
+    if screen.get_node_or_null("DaiDienScreenV1") != null:
+        return _fail("Hall return failed to restore the map.")
+    return true
 
 func _capture_playbook(out: String) -> bool:
     var entry := screen.find_child("OneGamePlaybookButton",true,false) as Button

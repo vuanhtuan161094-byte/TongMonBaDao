@@ -424,7 +424,8 @@ func _build_playable_building_token(data: Dictionary) -> void:
     hit.add_theme_stylebox_override("normal", _style(Color(1, 1, 1, 0.01), Color(1, 1, 1, 0.0), 0, 14))
     hit.add_theme_stylebox_override("hover", _style(Color(1, 0.92, 0.60, 0.07), GOLD, 3, 14))
     hit.add_theme_stylebox_override("pressed", _style(Color(1, 0.85, 0.45, 0.10), GOLD, 3, 14))
-    hit.pressed.connect(Callable(self, "_open_building").bind(destination))
+    var action := "_open_player_building" if has_method("_open_player_building") else "_open_building"
+    hit.pressed.connect(Callable(self, action).bind(destination))
     holder.add_child(hit)
 
 func _add_building_block(parent: Control, pos: Vector2, block_size: Vector2, fill: Color, radius: int) -> void:

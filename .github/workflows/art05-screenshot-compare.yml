@@ -92,6 +92,23 @@ jobs:
       - name: Strict parse ECO-07 virtual GUI test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/eco07_virtual_gui_playtest_capture.gd
 
+      - name: Capture six actual full-screen Hall tabs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/hall-fullscreen-evidence"
+          LIBGL_ALWAYS_SOFTWARE=1 TMB_HALL_ONLY=1 TMB_PLAYBOOK_CAPTURE=1 xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 --fixed-fps 24 --write-movie "$RUNNER_TEMP/hall_navigation.avi" -s res://tests/presentation/eco07_virtual_gui_playtest_capture.gd -- "$GITHUB_WORKSPACE/hall-fullscreen-evidence"
+          test "$(find hall-fullscreen-evidence -name 'hall_*.png' | wc -l)" -eq 6
+          ffmpeg -y -loglevel error -i "$RUNNER_TEMP/hall_navigation.avi" -an -c:v libx264 -preset fast -pix_fmt yuv420p hall-fullscreen-evidence/hall_navigation.mp4
+          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > hall-fullscreen-evidence/source-sha.txt
+      - name: Upload exact SHA Hall screenshots and movie first
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hall-fullscreen-${{ github.sha }}
+          path: hall-fullscreen-evidence/
+          if-no-files-found: warn
+          retention-days: 14
       - name: MAP01 capture actual sect map before full-screen regression
         shell: bash
         run: |

@@ -649,7 +649,7 @@ func _gp1_guide_action() -> void:
     var model := _gp1_first_minutes_model()
     match str(model.get("action","")):
         "hall":
-            _open_building(SectMapPresentation.DEST_MAIN_HALL)
+            _open_player_building(SectMapPresentation.DEST_MAIN_HALL)
         "housing":
             _open_building(SectMapPresentation.DEST_RESIDENCE)
         "recruit":
@@ -1162,6 +1162,14 @@ func _clear_pointer_state() -> void:
     screen_pointer_dragged = false
     mouse_pointer_dragged = false
 
+# Player navigation is shared by map hits, living cues, guide and district dock.
+# The contextual operation host remains available for existing non-Hall buildings
+# and internal transaction/regression probes, but is not a visible Hall screen.
+func _open_player_building(destination: StringName, instance_id: StringName = &"") -> void:
+    _open_building(destination,instance_id)
+    if destination == SectMapPresentation.DEST_MAIN_HALL:
+        _open_dai_dien_screen_v1()
+
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     if build_mode_active:
         _leave_build_mode(false)
@@ -1309,9 +1317,7 @@ func _try_iso_map_pick(screen_point: Vector2) -> bool:
     if destination == &"":
         return false
     var building_id := StringName(picked.get("building_id",""))
-    _open_building(destination,building_id)
-    if destination == SectMapPresentation.DEST_MAIN_HALL:
-        _open_dai_dien_screen_v1()
+    _open_player_building(destination,building_id)
     get_viewport().set_input_as_handled()
     return true
 
@@ -4366,8 +4372,15 @@ func _build_main_hall_policy_controls() -> void:
     ], state.sect.equipment_policy, "_set_equipment_policy_from_building")
 
 func _open_dai_dien_screen_v1() -> void:
-    if state == null or get_node_or_null("DaiDienScreenV1") != null:
+    if state == null:
         return
+    var prior := get_node_or_null("DaiDienScreenV1")
+    if prior != null:
+        if not prior.is_queued_for_deletion():
+            return
+        remove_child(prior)
+    # Never leave the old floating management card on screen under the new view.
+    _hide_building_operation_panel()
     var screen := DaiDienScreenV1.new()
     screen.name = "DaiDienScreenV1"
     screen.attach_state(state)
@@ -8266,7 +8279,7 @@ func _on_living_cue_pressed(cue: Dictionary) -> void:
     if target_kind == LivingCueResolver.TARGET_DISCIPLE:
         _open_disciple(target_id)
     elif target_kind == LivingCueResolver.TARGET_BUILDING:
-        _open_building(target_id)
+        _open_player_building(target_id)
 
 func _build_disciple_summary_panel() -> void:
     disciple_summary_panel = Panel.new()

@@ -227,7 +227,9 @@ func _economy_page() -> Control:
 	var page := _surface("HallEconomy")
 	var content := _stack(page,12)
 	content.add_child(UI.section_heading("Kinh tế tông môn","resource",UI.GOLD))
-	content.add_child(UI.label(str(_vm.get("cashflow","Chưa có sổ thu chi.")),15,UI.TEXT,false))
+	var ledger := UI.label(str(_vm.get("cashflow","Chưa có sổ thu chi.")),15,UI.TEXT,false)
+	ledger.name = "HallReceiptLedger"
+	content.add_child(ledger)
 	for action in _vm.get("economy_actions",[]):
 		_add_action(content,action)
 	var workers: Array = _vm.get("vein_workers",[])
