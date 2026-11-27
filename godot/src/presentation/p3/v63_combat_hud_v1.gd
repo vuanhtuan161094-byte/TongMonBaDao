@@ -23,7 +23,7 @@ var _gate_button: Button
 var _vfx: Control
 
 func _ready() -> void:
-    add_theme_stylebox_override("panel", _panel_style(Color("eee6d2"), Color("74694f")))
+    add_theme_stylebox_override("panel", _panel_style(Color("0b242a"), Color("c6a873")))
     var column := VBoxContainer.new()
     column.name = "CombatHudColumn"
     column.add_theme_constant_override("separation", 5)
@@ -31,18 +31,22 @@ func _ready() -> void:
     var head := HBoxContainer.new()
     column.add_child(head)
     var title := Label.new()
-    title.text = "V6.5 · COMBAT V2"
+    title.text = "ĐỘI SĂN"
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    title.add_theme_color_override("font_color", Color("183d35"))
+    title.add_theme_color_override("font_color", Color("e6ce94"))
     title.add_theme_font_size_override("font_size", 16)
     head.add_child(title)
     _gate_button = Button.new()
     _gate_button.custom_minimum_size = Vector2(104, 30)
+    _gate_button.tooltip_text = "Bật hoặc tắt chế độ thử nghiệm kỹ năng nâng cao. Không tự mở khóa hay học kỹ năng."
+    _gate_button.add_theme_stylebox_override("normal",_panel_style(Color("183e3c"),Color("9aab83")))
+    _gate_button.add_theme_stylebox_override("hover",_panel_style(Color("28534c"),Color("e1c58f")))
+    _gate_button.add_theme_color_override("font_color",Color("f0ead7"))
     _gate_button.pressed.connect(_toggle_gate)
     head.add_child(_gate_button)
     _boss_name = Label.new()
     _boss_name.add_theme_font_size_override("font_size", 14)
-    _boss_name.add_theme_color_override("font_color", Color("791f1b"))
+    _boss_name.add_theme_color_override("font_color", Color("f1ad85"))
     column.add_child(_boss_name)
     _boss_hp = ProgressBar.new()
     _boss_hp.custom_minimum_size = Vector2(0, 12)
@@ -52,12 +56,12 @@ func _ready() -> void:
     _boss_state.custom_minimum_size = Vector2(0, 34)
     _boss_state.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     _boss_state.add_theme_font_size_override("font_size", 11)
-    _boss_state.add_theme_color_override("font_color", Color("4f3822"))
+    _boss_state.add_theme_color_override("font_color", Color("c7d6cd"))
     column.add_child(_boss_state)
     var party_title := Label.new()
     party_title.text = "ĐỘI HÌNH · chọn đệ tử để xem kỹ năng"
     party_title.add_theme_font_size_override("font_size", 11)
-    party_title.add_theme_color_override("font_color", Color("183d35"))
+    party_title.add_theme_color_override("font_color", Color("e6ce94"))
     column.add_child(party_title)
     _rows = VBoxContainer.new()
     _rows.add_theme_constant_override("separation", 1)
@@ -66,16 +70,19 @@ func _ready() -> void:
     _skills.custom_minimum_size = Vector2(0, 62)
     _skills.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     _skills.add_theme_font_size_override("font_size", 11)
-    _skills.add_theme_color_override("font_color", Color("252b25"))
+    _skills.add_theme_color_override("font_color", Color("f0ead7"))
     column.add_child(_skills)
     _event = Label.new()
     _event.custom_minimum_size = Vector2(0, 44)
     _event.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     _event.add_theme_font_size_override("font_size", 11)
-    _event.add_theme_color_override("font_color", Color("791f1b"))
+    _event.add_theme_color_override("font_color", Color("f1ad85"))
     column.add_child(_event)
     var archive := Button.new()
-    archive.text = "Mở Tàng Kinh Các · kỹ năng"
+    archive.text = "Tàng Kinh Các · Kỹ năng"
+    archive.add_theme_stylebox_override("normal",_panel_style(Color("183e3c"),Color("c6a873")))
+    archive.add_theme_stylebox_override("hover",_panel_style(Color("28534c"),Color("e1c58f")))
+    archive.add_theme_color_override("font_color",Color("f0ead7"))
     archive.custom_minimum_size = Vector2(0, 34)
     archive.pressed.connect(func() -> void: archive_requested.emit())
     column.add_child(archive)
@@ -128,8 +135,8 @@ func _render() -> void:
     party_ids.sort()
     if boss_actor.is_empty():
         _boss_name.text = "Đối thủ · %d còn sống" % battle._count_alive("monster")
-        _boss_hp.value = 0
-        _boss_state.text = "Thời gian trận %.1fs · %s" % [battle.now, battle.outcome]
+        _boss_hp.hide()
+        _boss_state.text = "Thời gian săn: %.1f giây · %s" % [battle.now,"Đang giao chiến" if battle.active else "Đã kết thúc"]
     else:
         var boss_id := str(boss_actor.get("v63_boss_id", ""))
         var definition := V63HumanSkillCombatSystem.boss_definition(boss_id)
@@ -137,6 +144,7 @@ func _render() -> void:
         if boss_display_name.is_empty():
             boss_display_name = str(definition.get("name",definition.get("display_name",boss_id))).strip_edges()
         _boss_name.text = "Boss · "+boss_display_name
+        _boss_hp.show()
         _boss_hp.max_value = maxf(1.0, float(boss_actor.get("max_hp", 1.0)))
         _boss_hp.value = maxf(0.0, float(boss_actor.get("hp", 0.0)))
         var phase := int(boss_actor.get("v63_boss_phase", 1))
@@ -147,7 +155,7 @@ func _render() -> void:
         _boss_state.text = "HP %.0f / %.0f · Phase %d%s · %.1fs" % [
             _boss_hp.value, _boss_hp.max_value, phase, counter, battle.now]
     var visible_row_count := mini(6, party_ids.size())
-    if selected_actor_id.is_empty():
+    if not party_ids.has(selected_actor_id):
         selected_actor_id = party_ids[0] if not party_ids.is_empty() else ""
     for row_index in range(_party_rows.size()):
         var row := _party_rows[row_index]
@@ -185,7 +193,10 @@ func _ensure_party_rows() -> void:
         var row := Button.new()
         row.custom_minimum_size = Vector2(0, 25)
         row.alignment = HORIZONTAL_ALIGNMENT_LEFT
-        row.add_theme_font_size_override("font_size", 10)
+        row.add_theme_font_size_override("font_size", 12)
+        row.add_theme_stylebox_override("normal",_panel_style(Color("153b3c"),Color("54766a")))
+        row.add_theme_stylebox_override("hover",_panel_style(Color("28534c"),Color("c6a873")))
+        row.add_theme_stylebox_override("pressed",_panel_style(Color("28534c"),Color("e1c58f")))
         row.pressed.connect(_select_party_row.bind(row_index))
         _rows.add_child(row)
         _party_rows.append(row)
@@ -209,7 +220,10 @@ func _render_skills() -> void:
         return
     var actor: Dictionary = battle.actors[selected_actor_id]
     var loadout: Array = actor.get("v63_skill_loadout", [])
-    var lines: Array[String] = ["Kỹ năng Combat V2 · %s" % selected_actor_id]
+    var display_name := selected_actor_id
+    if state != null and state.disciples.has(StringName(selected_actor_id)):
+        display_name = state.disciples[StringName(selected_actor_id)].display_name
+    var lines: Array[String] = ["Kỹ năng · %s" % display_name]
     for raw_id in loadout.slice(0, 5):
         var skill_id := str(raw_id)
         var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
@@ -217,7 +231,7 @@ func _render_skills() -> void:
         var ready := float(actor.get("v63_skill_ready", {}).get(skill_id, 0.0))
         lines.append("• %s%s" % [name, " · hồi %.1fs" % maxf(0.0, ready - battle.now) if ready > battle.now else " · sẵn sàng"])
     if lines.size() == 1:
-        lines.append("Chưa có kỹ năng cá nhân được học/trang bị.")
+        lines.append("Chưa trang bị kỹ năng nâng cao. Đệ tử vẫn đánh thường.")
     _skills.text = "\n".join(lines)
 
 func _latest_event_text() -> String:
@@ -236,7 +250,7 @@ func _latest_event_text() -> String:
             return "KỸ NĂNG THẬT · %s" % str(event.get("skill_id", "Combat V2"))
         if kind == "status_applied":
             return "HIỆU ỨNG · %s → %s" % [str(event.get("status", "")), str(event.get("target", ""))]
-    return "Combat V2 · actions %d · %s" % [battle.actions, battle.outcome]
+    return "Đang săn quái · %d đòn đã thực hiện" % battle.actions if battle.active else "Phiên săn đã kết thúc"
 
 func _panel_style(fill: Color, border: Color) -> StyleBoxFlat:
     var style := StyleBoxFlat.new()

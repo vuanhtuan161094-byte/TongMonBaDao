@@ -27,12 +27,8 @@ func _run_test() -> void:
         "24 original authored poses")
     _check(LAB.GROUND.size() == 8, "8 grounded pressure-fracture poses")
     _check(LAB.FIST_REVISION == "R10_TURBULENT_PLASMA", "raster atlas revision")
-    _check(LAB.PAINTED_HERO.get_size() == Vector2(1280.0, 960.0),
-        "12 independent painted hero frames")
-    _check(LAB.PAINTED_CHARGE.get_size() == Vector2(1280.0, 640.0),
-        "8 painted charge frames")
-    _check(LAB.PAINTED_IMPACT.get_size() == Vector2(1280.0, 640.0),
-        "8 painted contact frames")
+    # The source manifest remains separate from the runnable fallback.
+    # A missing raster must never be reported as an approved painted asset.
     for sprite in LAB.CHARGE + LAB.FLIGHT + LAB.IMPACT:
         _check(sprite.get_size() == Vector2(320.0, 320.0), "valid imported sprite")
     var content := FileAccess.get_file_as_string(
@@ -44,6 +40,17 @@ func _run_test() -> void:
     root.add_child(lab)
     await process_frame
     _check(lab._glow != null, "radial light loaded")
+    if lab.painted_ready:
+        _check(lab.painted_hero.get_size() == Vector2(1280.0,960.0),"12 independent painted hero frames")
+        _check(lab.painted_charge.get_size() == Vector2(1280.0,640.0),"8 painted charge frames")
+        _check(lab.painted_impact.get_size() == Vector2(1280.0,640.0),"8 painted contact frames")
+    else:
+        var available := 0
+        for path in LAB.PAINTED_PATHS:
+            if ResourceLoader.exists(path,"Texture2D"):
+                available += 1
+        _check(available < 3,"complete raster inputs must not silently fallback")
+        print("VFX_FIST01_PAINTED_ART=HOLD_SOURCE_MISSING original_svg_fallback_only")
     print("VFX_FIST01_FOCUSED_RESULT=" + ("PASS" if failures == 0 else "FAIL") +
         " failures=" + str(failures))
     lab.queue_free()

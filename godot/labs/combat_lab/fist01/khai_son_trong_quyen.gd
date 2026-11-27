@@ -20,9 +20,15 @@ const IMPACT_END := 1.17
 const FADE_END := 1.63
 const LOOP_SECONDS := 2.30
 const FIST_REVISION := "R10_TURBULENT_PLASMA"
-const PAINTED_CHARGE: Texture2D = preload("res://labs/combat_lab/fist01/assets/painted_r9/fist_charge_r9.png")
-const PAINTED_HERO: Texture2D = preload("res://labs/combat_lab/fist01/assets/painted_r9/fist_hero_r9.png")
-const PAINTED_IMPACT: Texture2D = preload("res://labs/combat_lab/fist01/assets/painted_r9/fist_impact_r9.png")
+const PAINTED_PATHS := [
+    "res://labs/combat_lab/fist01/assets/painted_r9/fist_charge_r9.png",
+    "res://labs/combat_lab/fist01/assets/painted_r9/fist_hero_r9.png",
+    "res://labs/combat_lab/fist01/assets/painted_r9/fist_impact_r9.png"
+]
+var painted_charge: Texture2D
+var painted_hero: Texture2D
+var painted_impact: Texture2D
+var painted_ready := false
 const BG: Texture2D = preload("res://labs/combat_lab/poison05/remake_r6/assets/immortal_valley.svg")
 const ACTOR: Texture2D = preload("res://labs/character_family/assets/nu_doc_tu_v4_candidate/idle_4dir_APPROVED_UNCHANGED.png")
 const CHARGE = [
@@ -114,9 +120,16 @@ func _ready() -> void:
     custom_minimum_size = Vector2(1280.0, 720.0)
     mouse_filter = Control.MOUSE_FILTER_IGNORE
     _glow = _radial()
+    # The painted revision is not present in the canonical repository.
+    # Keep the actual authored SVG flipbooks usable; never label them R9.
+    if ResourceLoader.exists(PAINTED_PATHS[0],"Texture2D") and ResourceLoader.exists(PAINTED_PATHS[1],"Texture2D") and ResourceLoader.exists(PAINTED_PATHS[2],"Texture2D"):
+        painted_charge = load(PAINTED_PATHS[0]) as Texture2D
+        painted_hero = load(PAINTED_PATHS[1]) as Texture2D
+        painted_impact = load(PAINTED_PATHS[2]) as Texture2D
+        painted_ready = painted_charge != null and painted_hero != null and painted_impact != null
     set_process(true)
     queue_redraw()
-    print("VFX_FIST01_READY | ", SKILL_ID, " | painted_sprite_frames=28 | no_rig=true | gameplay=false")
+    print("VFX_FIST01_READY | ", SKILL_ID, " | art=", "R10_PAINTED" if painted_ready else "ORIGINAL_SVG_FALLBACK_R9_SOURCE_HOLD", " | no_rig=true | gameplay=false")
 
 func _radial() -> Texture2D:
     var img := Image.create(80, 80, false, Image.FORMAT_RGBA8)
@@ -206,7 +219,10 @@ func _draw() -> void:
     if flight:
         var tip := (HAND + Vector2(caster_shift(RELEASE_END), 0.0)).lerp(CONTACT, q)
         var frame := clampi(int(floor(q * 12.0)), 0, 11)
-        _paint_raster_atlas(PAINTED_HERO, frame, tip, 0.91, 0.91, Vector2(282.0, 160.0))
+        if painted_ready:
+            _paint_raster_atlas(painted_hero, frame, tip, 0.91, 0.91, Vector2(282.0, 160.0))
+        else:
+            _paint(FLIGHT[clampi(int(q*8.0),0,7)],tip,0.91,0.91,Vector2(282.0,160.0))
         for j in range(4):
             var old := t - 0.034 * float(j + 1)
             if old <= RELEASE_END:
@@ -220,7 +236,10 @@ func _draw() -> void:
         var frame := clampi(int(floor((t - CONTACT_AT) / (FADE_END - CONTACT_AT) *
             8.0)), 0, 7)
         var spread := 0.87 + 0.25 * smoothstep(CONTACT_AT, IMPACT_END, t)
-        _paint_raster_atlas(PAINTED_IMPACT, frame, CONTACT, spread, hit * 0.93)
+        if painted_ready:
+            _paint_raster_atlas(painted_impact, frame, CONTACT, spread, hit * 0.93)
+        else:
+            _paint(IMPACT[frame],CONTACT,spread,hit*0.93)
         var fade_q := clampf((t - CONTACT_AT) / (FADE_END - CONTACT_AT), 0.0, 1.0)
         for j in range(9):
             var a := float(j) * 2.399
@@ -237,12 +256,14 @@ func _draw() -> void:
         _halo(CONTACT + Vector2(7.0, 0.0), 12.0, Color("ffffff", local_burst * 0.36))
     if ch > 0.005:
         var frame := clampi(int(floor(t / CAST_END * 8.0)), 0, 7)
-        _paint_raster_atlas(PAINTED_CHARGE, frame,
-            HAND + Vector2(caster_shift(t), 0.0), 0.62, ch * 0.96)
+        if painted_ready:
+            _paint_raster_atlas(painted_charge, frame,HAND + Vector2(caster_shift(t), 0.0),0.62,ch*0.96)
+        else:
+            _paint(CHARGE[frame],HAND+Vector2(caster_shift(t),0.0),0.62,ch*0.96)
     draw_string(ThemeDB.fallback_font, Vector2(29, 36), "KHAI SON TRONG QUYEN / BA QUYEN",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 25, Color("fff0d5"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 62),
-        "FIST01 R10 | TURBULENT RASTER HERO / 28 ALPHA FRAMES | ONE TARGET",
+        "FIST01 R10 | TURBULENT RASTER HERO / 28 ALPHA FRAMES | ONE TARGET" if painted_ready else "FIST01 | ORIGINAL SVG FLIPBOOK | R9 SOURCE MISSING / ART HOLD",
         HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("e8c1a2"))
     draw_string(ThemeDB.fallback_font, Vector2(29, 683),
         "GODOT 4.7.2 COMPATIBILITY | LAB VISUAL ONLY | NO DAMAGE / V63 OFF",

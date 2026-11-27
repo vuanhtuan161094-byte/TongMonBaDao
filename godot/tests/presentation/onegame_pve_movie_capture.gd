@@ -106,6 +106,7 @@ func _run() -> void:
     var observed_hit := false
     var observed_cast := false
     var hit_receipts := {}
+    var hunter_hits := {}
     var captured_hit := false
     var elapsed_ticks := 0
     for tick in range(45):
@@ -146,21 +147,24 @@ func _run() -> void:
                 if not receipt.is_empty():
                     hit_receipts[receipt] = true
                 observed_hit = true
-        for _frame in range(12):
+                if str(event.get("attacker","")) in [str(ids[0]),str(ids[1])] and not receipt.is_empty():
+                    hunter_hits[receipt] = true
+        for _frame in range(24):
             await process_frame
         if observed_hit and not captured_hit:
             captured_hit = await _capture("02_live_positive_hit.png")
-        if hit_receipts.size() >= 4:
-            for _frame in range(24):
-                await process_frame
-            break
+        # Capture the actual evolving fight, not just the first burst of
+        # receipts. Never invent hits or keep a defeated battle advancing.
         if battle._count_alive("disciple") <= 0:
+            break
+        if elapsed_ticks >= 15 and hunter_hits.size() >= 4:
             break
     var final_frame := await _capture("03_live_world_end.png")
     var report := {
         "source_sha":OS.get_environment("GITHUB_SHA"),"new_game":true,
         "real_recruits":ids,"observed_positive_hit":observed_hit,
         "observed_skill_cast":observed_cast,"unique_hit_receipts":hit_receipts.size(),
+        "hunter_hit_receipts":hunter_hits.size(),
         "simulated_wall_ticks":elapsed_ticks,"forced_damage":false,"forced_feature_gates":false,
         "capture_kind":"actual_OneGame_scene_virtual_display"
     }
@@ -170,4 +174,4 @@ func _run() -> void:
         file.close()
     print("ONEGAME_PVE_CAPTURE "+JSON.stringify(report))
     _cleanup()
-    quit(0 if observed_hit and captured_hit and final_frame else 1)
+    quit(0 if observed_hit and not hunter_hits.is_empty() and captured_hit and final_frame else 1)
