@@ -272,7 +272,7 @@ func _run() -> void:
 	if state.to_dict() != initial_state:
 		_fail("layout/render/pick/camera changed canonical SimulationState")
 		return
-	print("MAP-D1B LAYOUT CONTRACT PASS routes=%d roads=%s terrain=%s props=%d producers=%d" % [iso.preview_routes.size(),str(road_used),str(terrain_used),iso.decoration_items.size(),shown_ids.size()])
+	print("MAP-D1B LAYOUT CONTRACT PASS routes=%d roads=%s terrain=%s props=%d producers=%d" % [iso.preview_routes.size(),str(road_used),"continuous_flagstone",iso.decoration_items.size(),shown_ids.size()])
 	quit(0)
 
 func _row_for_destination(destination: String) -> Dictionary:
