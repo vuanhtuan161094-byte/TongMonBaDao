@@ -309,13 +309,13 @@ func _verify_natural_new_game_build_gate() -> bool:
 	if not _require(str(game.get("build_mode_kind")) == "construct",
 		"Residence catalog did not enter the canonical map placement mode"):
 		return false
-	# The actual P3.2 scene is ART-05 (world layout V2): the Build Catalogue
-	# auto-selects a canonical MASTERPLAN lot. Player terrain clicks are
-	# deliberately ignored. A free-placement assertion is a stale QA contract.
+	# The actual P3.2 scene auto-selects a canonical lot for its saved
+	# masterplan version. Player terrain clicks remain deliberately ignored.
 	var target := Vector2i(game.get("build_mode_site"))
 	var confirm := _find_button(game,"ConfirmMapConstruction")
-	if not _require(int(state.sect.world_layout_version) == 2
-		and SectResidenceSiteV1.MASTERPLAN_ANNEX_SITES.has(target)
+	var layout_version: int = state.sect.world_layout_version
+	if not _require(layout_version >= 2
+		and SectResidenceSiteV1.annex_sites(layout_version).has(target)
 		and bool(SectResidenceSiteV1.check(state,target).get("ok",false))
 		and str(game.call("_residence_site_actor_conflict_reason",target)).is_empty()
 		and confirm != null and not confirm.disabled,

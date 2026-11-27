@@ -183,22 +183,22 @@ func _run() -> void:
 		return
 	# The sect now has one continuous flagstone material. Verify coverage
 	# independently from the protected route graph and original art registry.
-	for y in range(iso.STARTER.position.y,iso.STARTER.end.y):
-		for x in range(iso.STARTER.position.x,iso.STARTER.end.x):
-			if not iso.sect_paving_cell(Vector2i(x,y)):
+	var paving_bounds: Rect2i = SectResidenceSiteV1.construction_bounds(layout_version) if layout_version >= 4 else iso.STARTER
+	for y in range(paving_bounds.position.y,paving_bounds.end.y):
+		for x in range(paving_bounds.position.x,paving_bounds.end.x):
+			if not iso.sect_paving_cell(Vector2i(x,y),layout_version):
 				_fail("interior paving gap")
 				return
-	if iso.sect_paving_cell(iso.STARTER.position-Vector2i.ONE) or iso.sect_paving_cell(iso.STARTER.end):
+	if iso.sect_paving_cell(paving_bounds.position-Vector2i.ONE,layout_version) or iso.sect_paving_cell(paving_bounds.end,layout_version):
 		_fail("paving exceeds the sect boundary")
 		return
-	# The visual parallelogram must contain every canonical building cell;
-	# visual expansion must not become new construction authority.
-	for y in range(iso.STARTER.position.y,iso.STARTER.end.y):
-		for x in range(iso.STARTER.position.x,iso.STARTER.end.x):
-			if layout_version < 4 and iso.sect_estate_distance(iso.project(Vector2(x,y))) > 0.0:
+	# Test actual layout-specific perimeter, not the obsolete V3 screen shape.
+	for y in range(paving_bounds.position.y,paving_bounds.end.y):
+		for x in range(paving_bounds.position.x,paving_bounds.end.x):
+			if iso.sect_estate_distance(iso.project(Vector2(x,y)),layout_version) > 0.001:
 				_fail("visual perimeter clips canonical lot")
 				return
-	if iso.sect_estate_distance(Vector2(0,-1000)) <= 0.0:
+	if iso.sect_estate_distance(Vector2(0,-1000),layout_version) <= 0.0:
 		_fail("visual estate boundary unbounded")
 		return
 	var road_used: Dictionary = {}

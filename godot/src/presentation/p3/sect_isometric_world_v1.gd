@@ -1482,7 +1482,9 @@ const SECT_ESTATE_HALF_WIDTH := SectResidenceSiteV1.ESTATE_HALF_WIDTH
 const SECT_ESTATE_HALF_HEIGHT := SectResidenceSiteV1.ESTATE_HALF_HEIGHT
 const SECT_ESTATE_SHEAR := SectResidenceSiteV1.ESTATE_SHEAR
 
-static func sect_paving_cell(cell: Vector2i) -> bool:
+static func sect_paving_cell(cell: Vector2i,version: int = 0) -> bool:
+    if version >= SectResidenceSiteV1.ISOMETRIC_LAYOUT:
+        return SectResidenceSiteV1.construction_bounds(version).has_point(cell)
     return STARTER.has_point(cell)
 
 static func sect_estate_distance(point: Vector2,version: int = SectResidenceSiteV1.APPROVED_LAYOUT) -> float:

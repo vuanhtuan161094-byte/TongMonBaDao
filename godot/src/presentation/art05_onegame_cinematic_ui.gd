@@ -818,8 +818,14 @@ func _art05_sync_map_chrome() -> void:
             var tab_style := _map01_nav_style(active)
             tab_style.bg_color = Color(0.025,0.065,0.072,0.80) if not active else Color(0.12,0.17,0.15,0.94)
             tab.add_theme_stylebox_override("normal",tab_style)
-    if gp1_guide_panel != null and (modal or _art05_dock_destination != &"main_hall" or _art05_dock_collapsed):
-        gp1_guide_panel.visible = false
+    if gp1_guide_panel != null:
+        # Collapsing a district card must not disable actionable onboarding.
+        # The canonical guide handles its own progression, dismissal and modals.
+        _refresh_gp1_first_minutes_guide()
+        if modal:
+            gp1_guide_panel.visible = false
+        elif state != null and int(state.sect.world_layout_version) >= SectResidenceSiteV1.APPROVED_LAYOUT:
+            gp1_guide_panel.position = Vector2(1000,82) if _art05_dock_collapsed else Vector2(144,82)
 
 func _add_dim() -> void:
     super._add_dim()
