@@ -34,6 +34,12 @@ func _run() -> void:
 		# Regression for the 720p overflow reported in the real Residence screenshot.
 		# These primary actions must remain fully visible, not merely present in the tree.
 		if screen_name == "residence":
+			var management_tab := screen.find_child("ResidenceTab_1",true,false) as Button
+			if management_tab == null:
+				_fail("Residence does not expose a dedicated construction tab.")
+				return
+			management_tab.pressed.emit()
+			await process_frame
 			var footer := screen.find_child("ResidenceStickyActions", true, false) as Control
 			var manage := screen.find_child("ManageResidenceRooms", true, false) as Button
 			var assign := screen.find_child("AssignResidenceRoom", true, false) as Button

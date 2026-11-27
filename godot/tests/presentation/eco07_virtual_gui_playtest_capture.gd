@@ -206,6 +206,14 @@ func _capture_all_facilities(out: String) -> bool:
             return _fail("Specialized facility did not replace floating panel: "+str(special[1]))
         if not await _capture(out.path_join("facility_%s_0.png" % str(special[1]))):
             return false
+        if str(special[1]) == "residence":
+            var building_tab := full_screen.find_child("ResidenceTab_1",true,false) as Button
+            if building_tab == null:
+                return _fail("Residence has no separated build/assignment tab.")
+            building_tab.pressed.emit()
+            await process_frame
+            if not await _capture(out.path_join("facility_residence_1.png")):
+                return false
     return true
 
 func _verify_full_hall() -> bool:

@@ -11,6 +11,10 @@ signal closed
 const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
 const FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 var _vm: Dictionary = {}
+var _active_residence_tab := 0
+var _rooms_page: Control
+var _sites_page: Control
+var _residence_tabs: Array[Button] = []
 
 func bind_view_model(view_model: Dictionary) -> void:
 	_vm = view_model.duplicate(true)
@@ -29,19 +33,45 @@ func _rebuild() -> void:
 	add_child(background)
 	var shell := _make_shell()
 	add_child(shell)
+	# One full-screen facility, two distinct tasks. No page-level scroll;
+	# large house lists scroll only inside their own section.
+	var column := shell.get_child(0) as VBoxContainer
+	var tabs := HBoxContainer.new()
+	tabs.name = "ResidencePrimaryTabs"
+	tabs.add_theme_constant_override("separation",12)
+	column.add_child(tabs)
+	_residence_tabs.clear()
+	for index in range(2):
+		var button := UI.button(["KHU CƯ TRÚ","QUẢN LÝ & XÂY DỰNG"][index],false,UI.GOLD)
+		button.name = "ResidenceTab_%d" % index
+		button.custom_minimum_size = Vector2(235,44)
+		button.add_theme_font_size_override("font_size",15)
+		button.pressed.connect(_set_residence_tab.bind(index))
+		tabs.add_child(button)
+		_residence_tabs.append(button)
 	var body := HBoxContainer.new()
+	body.name = "ResidenceFullscreenContent"
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 14)
-	var body_scroll := ScrollContainer.new()
-	body_scroll.name = "ResidenceBodyScroll"
-	body_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	body_scroll.add_child(body)
-	shell.get_child(0).add_child(body_scroll)
-	body.add_child(_build_rooms_panel())
-	body.add_child(_build_sites_panel())
+	column.add_child(body)
+	_rooms_page = _build_rooms_panel()
+	_rooms_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_rooms_page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(_rooms_page)
+	_sites_page = _build_sites_panel()
+	body.add_child(_sites_page)
+	_set_residence_tab(_active_residence_tab)
+
+func _set_residence_tab(index: int) -> void:
+	_active_residence_tab = clampi(index,0,1)
+	if _rooms_page != null:
+		_rooms_page.visible = _active_residence_tab == 0
+	if _sites_page != null:
+		_sites_page.visible = _active_residence_tab == 1
+	for i in range(_residence_tabs.size()):
+		var selected := _active_residence_tab == i
+		_residence_tabs[i].add_theme_stylebox_override("normal",UI._button_style(selected,UI.GOLD if selected else UI.BORDER,0.90))
+		_residence_tabs[i].add_theme_color_override("font_color",UI.INK if selected else UI.PAPER)
 
 func _make_shell() -> MarginContainer:
 	var margin := MarginContainer.new()
@@ -59,7 +89,7 @@ func _make_shell() -> MarginContainer:
 	stack.add_child(UI.label("ĐỆ TỬ XÁ", 25, UI.PAPER, true))
 	stack.add_child(UI.label(str(_vm.get("residence_type_summary","1 loại công trình · có thể xây nhiều căn.")), 12, UI.MUTED, false))
 	header.add_child(stack)
-	var close_button := UI.button("ĐÓNG", false, UI.GOLD)
+	var close_button := UI.button("‹  VỀ BẢN ĐỒ", false, UI.GOLD)
 	close_button.pressed.connect(func(): closed.emit())
 	header.add_child(close_button)
 	column.add_child(header)
@@ -130,6 +160,32 @@ func _build_rooms_panel() -> Control:
 		beds.add_child(_bed_slot(bed))
 	bed_scroll.add_child(beds)
 	content.add_child(bed_scroll)
+	# Divide one screen into art/capacity and bed occupancy columns.
+	# This is presentation-only; bed ownership and placement remain canonical.
+	var old_parts := content.get_children()
+	var split := HBoxContainer.new()
+	split.name = "ResidenceOverviewColumns"
+	split.add_theme_constant_override("separation",18)
+	var illustration := VBoxContainer.new()
+	illustration.custom_minimum_size.x = 420
+	illustration.size_flags_horizontal = Control.SIZE_FILL
+	illustration.add_theme_constant_override("separation",10)
+	var occupancy := VBoxContainer.new()
+	occupancy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	occupancy.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	occupancy.add_theme_constant_override("separation",10)
+	for index in range(old_parts.size()):
+		var part: Control = old_parts[index] as Control
+		content.remove_child(part)
+		if index < 4:
+			illustration.add_child(part)
+		else:
+			occupancy.add_child(part)
+	content.add_child(split)
+	split.add_child(illustration)
+	split.add_child(occupancy)
+	beds.columns = 6
+	bed_scroll.custom_minimum_size.y = 340
 	return card
 
 func _bed_slot(bed: Dictionary) -> Control:
