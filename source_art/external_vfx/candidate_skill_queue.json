@@ -1,0 +1,2790 @@
+[
+  {
+    "skill_id": "tmb.skill.poison.basic.human",
+    "school": "poison",
+    "name": "Độc Châm Thường Thức",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.co_doc.active_01.human",
+    "school": "poison",
+    "name": "Phụ Cốt Cổ",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.co_doc.active_02.human",
+    "school": "poison",
+    "name": "Xà Ảnh Quấn Mạch",
+    "effect": "poison",
+    "shape": "single_target",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.co_doc.active_03.human",
+    "school": "poison",
+    "name": "Cổ Vụ Mê Tung",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.co_doc.active_04.human",
+    "school": "poison",
+    "name": "Tán Cổ Diễn Nhiễm",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.co_doc.ultimate.human",
+    "school": "poison",
+    "name": "Vạn Cổ Phệ Giới",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.doc_cham.active_01.human",
+    "school": "poison",
+    "name": "Xuyên Cốt Độc Châm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "4",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.doc_cham.active_02.human",
+    "school": "poison",
+    "name": "Phệ Mạch Độc Thích",
+    "effect": "poison",
+    "shape": "single_target",
+    "existing_lab_count": "4",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.doc_cham.active_03.human",
+    "school": "poison",
+    "name": "Bách Độc Tán Châm",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.doc_cham.active_04.human",
+    "school": "poison",
+    "name": "Độc Khí Phệ Tâm",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.doc_cham.ultimate.human",
+    "school": "poison",
+    "name": "Vạn Độc Xuyên Tâm",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.duoc_doc.active_01.human",
+    "school": "poison",
+    "name": "Tẩy Mạch Linh Dược",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.duoc_doc.active_02.human",
+    "school": "poison",
+    "name": "Giải Độc Hộ Tâm",
+    "effect": "heal",
+    "shape": "single_target",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.duoc_doc.active_03.human",
+    "school": "poison",
+    "name": "Nghịch Độc Phản Chế",
+    "effect": "cleanse",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.duoc_doc.active_04.human",
+    "school": "poison",
+    "name": "Hóa Độc Tán",
+    "effect": "poison",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+    "school": "poison",
+    "name": "Vạn Linh Giải Ách",
+    "effect": "heal",
+    "shape": "circle",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.poison.mobility.human",
+    "school": "poison",
+    "name": "Yểm Ảnh Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "dark_mist",
+      "spit",
+      "spark_green"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.basic.human",
+    "school": "talisman",
+    "name": "Phù Tâm Dẫn Khí",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.hoa_phu.active_01.human",
+    "school": "talisman",
+    "name": "Xích Diệm Khai Văn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.hoa_phu.active_02.human",
+    "school": "talisman",
+    "name": "Liên Diệm Phần Giới",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.hoa_phu.active_03.human",
+    "school": "talisman",
+    "name": "Hỏa Tâm Ngưng Phù",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.hoa_phu.active_04.human",
+    "school": "talisman",
+    "name": "Chu Tước Hồi Hoàn",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.hoa_phu.ultimate.human",
+    "school": "talisman",
+    "name": "Vạn Phù Phần Thiên",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.loi_phu.active_01.human",
+    "school": "talisman",
+    "name": "Điện Quang Khai Phù",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.loi_phu.active_02.human",
+    "school": "talisman",
+    "name": "Thiên Lôi Dẫn Nét",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.loi_phu.active_03.human",
+    "school": "talisman",
+    "name": "Lôi Văn Truy Ấn",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.loi_phu.active_04.human",
+    "school": "talisman",
+    "name": "Cửu Tiêu Phá Vân",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.loi_phu.ultimate.human",
+    "school": "talisman",
+    "name": "Cửu Thiên Vạn Lôi Phù",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.mobility.human",
+    "school": "talisman",
+    "name": "Phi Phù Hoán Vị",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.phong_an_phu.active_01.human",
+    "school": "talisman",
+    "name": "Phong Giới Truy Dấu",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.phong_an_phu.active_02.human",
+    "school": "talisman",
+    "name": "Thái Huyền Khép Ấn",
+    "effect": "mark",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.phong_an_phu.active_03.human",
+    "school": "talisman",
+    "name": "Tẩy Trần Giải Phù",
+    "effect": "cleanse",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.phong_an_phu.active_04.human",
+    "school": "talisman",
+    "name": "Hộ Mệnh Lưu Văn",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.talisman.phong_an_phu.ultimate.human",
+    "school": "talisman",
+    "name": "Thái Huyền Phong Giới Phù",
+    "effect": "mark",
+    "shape": "circle",
+    "existing_lab_count": "3",
+    "suggestions": [
+      "runes",
+      "lightning",
+      "thunderstrike",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.basic.human",
+    "school": "sword",
+    "name": "Tâm Kiếm Nhập Môn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ho_kiem.active_01.human",
+    "school": "sword",
+    "name": "Kiếm Bích Hộ Thân",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ho_kiem.active_02.human",
+    "school": "sword",
+    "name": "Hồi Kiếm Phản Thế",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ho_kiem.active_03.human",
+    "school": "sword",
+    "name": "Liên Tâm Kiếm Thuẫn",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ho_kiem.active_04.human",
+    "school": "sword",
+    "name": "Thiên Cương Hộ Mệnh",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ho_kiem.ultimate.human",
+    "school": "sword",
+    "name": "Thiên Cương Kiếm Giới",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.mobility.human",
+    "school": "sword",
+    "name": "Đạp Kiếm Tầm Phong",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ngu_kiem.active_01.human",
+    "school": "sword",
+    "name": "Phi Kiếm Truy Ảnh",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ngu_kiem.active_02.human",
+    "school": "sword",
+    "name": "Kiếm Vũ Hồi Phong",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ngu_kiem.active_03.human",
+    "school": "sword",
+    "name": "Tứ Phương Phi Nhận",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ngu_kiem.active_04.human",
+    "school": "sword",
+    "name": "Kiếm Quang Hồi Chủ",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.ngu_kiem.ultimate.human",
+    "school": "sword",
+    "name": "Vạn Kiếm Quy Tông",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.sat_kiem.active_01.human",
+    "school": "sword",
+    "name": "Trảm Ảnh Nhất Tuyến",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.sat_kiem.active_02.human",
+    "school": "sword",
+    "name": "Phá Vân Trực Trảm",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.sat_kiem.active_03.human",
+    "school": "sword",
+    "name": "Đoạn Thủy Kiếm Mang",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.sat_kiem.active_04.human",
+    "school": "sword",
+    "name": "Tàng Phong Đột Thứ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.sword.sat_kiem.ultimate.human",
+    "school": "sword",
+    "name": "Nhất Kiếm Đoạn Thiên",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "spark_blue"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.basic.human",
+    "school": "bow",
+    "name": "Tiễn Thức Căn Bản",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.liep_anh.active_01.human",
+    "school": "bow",
+    "name": "Xuyên Tâm Tiễn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.liep_anh.active_02.human",
+    "school": "bow",
+    "name": "Truy Ảnh Tiễn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.liep_anh.active_03.human",
+    "school": "bow",
+    "name": "Phá Giới Trọng Tiễn",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.liep_anh.active_04.human",
+    "school": "bow",
+    "name": "Phân Ảnh Tiễn",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.liep_anh.ultimate.human",
+    "school": "bow",
+    "name": "Nhất Tiễn Phá Tinh",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.linh_tien.active_01.human",
+    "school": "bow",
+    "name": "Linh Tiễn Xuyên Quang",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.linh_tien.active_02.human",
+    "school": "bow",
+    "name": "Tam Tinh Linh Xạ",
+    "effect": "heal",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.linh_tien.active_03.human",
+    "school": "bow",
+    "name": "Linh Vũ Tiễn",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.linh_tien.active_04.human",
+    "school": "bow",
+    "name": "Tụ Linh Tiễn Tâm",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.linh_tien.ultimate.human",
+    "school": "bow",
+    "name": "Tam Hành Phá Không",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.mobility.human",
+    "school": "bow",
+    "name": "Thu Vũ Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.thien_vu.active_01.human",
+    "school": "bow",
+    "name": "Liên Châu Tiễn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.thien_vu.active_02.human",
+    "school": "bow",
+    "name": "Tán Tiễn Phong Vũ",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.thien_vu.active_03.human",
+    "school": "bow",
+    "name": "Mạn Thiên Tiễn Vũ",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.thien_vu.active_04.human",
+    "school": "bow",
+    "name": "Tụ Phong Dẫn Tiễn",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.bow.thien_vu.ultimate.human",
+    "school": "bow",
+    "name": "Thiên Vũ Phúc Thiên",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "arrows",
+      "arrow_stuck"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.ba_quyen.active_01.human",
+    "school": "fist",
+    "name": "Khai Sơn Trọng Quyền",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.ba_quyen.active_02.human",
+    "school": "fist",
+    "name": "Phi Thân Liên Cước",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.ba_quyen.active_03.human",
+    "school": "fist",
+    "name": "Lôi Đình Chấn Quyền",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.ba_quyen.active_04.human",
+    "school": "fist",
+    "name": "Địa Mạch Liên Chấn",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.ba_quyen.ultimate.human",
+    "school": "fist",
+    "name": "Sơn Hà Chấn Thiên",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.basic.human",
+    "school": "fist",
+    "name": "Quyền Thức Căn Bản",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.huyet_quyen.active_01.human",
+    "school": "fist",
+    "name": "Huyết Liệt Quyền",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.huyet_quyen.active_02.human",
+    "school": "fist",
+    "name": "Đoạn Mạch Liên Quyền",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "4",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+    "school": "fist",
+    "name": "Huyết Khí Hồi Lưu",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.huyet_quyen.active_04.human",
+    "school": "fist",
+    "name": "Liệp Huyết Truy Đả",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "7",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+    "school": "fist",
+    "name": "Huyết Hải Quyền Vực",
+    "effect": "consume_poison",
+    "shape": "circle",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.kim_cang.active_01.human",
+    "school": "fist",
+    "name": "Trấn Địa Quyền",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.kim_cang.active_02.human",
+    "school": "fist",
+    "name": "Kim Cang Hộ Thể",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.kim_cang.active_03.human",
+    "school": "fist",
+    "name": "Phản Chấn Quyền",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.kim_cang.active_04.human",
+    "school": "fist",
+    "name": "Trấn Sơn Hộ Đồng",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.kim_cang.ultimate.human",
+    "school": "fist",
+    "name": "Bất Động Kim Chung",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.fist.mobility.human",
+    "school": "fist",
+    "name": "Bộ Kình Xung",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "quake",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.basic.human",
+    "school": "blade",
+    "name": "Đao Pháp Nhập Môn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.cuong_dao.active_01.human",
+    "school": "blade",
+    "name": "Phá Vây Khai Sơn · Nhân Giai",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.cuong_dao.active_02.human",
+    "school": "blade",
+    "name": "Liên Sơn Trảm · Nhân Giai",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.cuong_dao.active_03.human",
+    "school": "blade",
+    "name": "Cửu Trùng Hồi Đao · Nhân Giai",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.cuong_dao.active_04.human",
+    "school": "blade",
+    "name": "Cuồng Đao Phá Vây · Nhân Giai",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.cuong_dao.ultimate.human",
+    "school": "blade",
+    "name": "Cửu Trùng Cuồng Đao",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.mobility.human",
+    "school": "blade",
+    "name": "Thiết Mã Đạp Quan",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tram_phach_dao.active_01.human",
+    "school": "blade",
+    "name": "Trảm Phách Nhất Tuyến · Nhân Giai",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tram_phach_dao.active_02.human",
+    "school": "blade",
+    "name": "Vân Giáp Trảm · Nhân Giai",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tram_phach_dao.active_03.human",
+    "school": "blade",
+    "name": "Phách Ấn · Nhân Giai",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tram_phach_dao.active_04.human",
+    "school": "blade",
+    "name": "Đoạn Thiên Tầm Kích · Nhân Giai",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tram_phach_dao.ultimate.human",
+    "school": "blade",
+    "name": "Trảm Phách Đoạn Thiên",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tran_dao.active_01.human",
+    "school": "blade",
+    "name": "Thiết Quan Hộ Thể · Nhân Giai",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tran_dao.active_02.human",
+    "school": "blade",
+    "name": "Sơn Môn Trảm · Nhân Giai",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tran_dao.active_03.human",
+    "school": "blade",
+    "name": "Hồi Sơn Chấn Đao · Nhân Giai",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tran_dao.active_04.human",
+    "school": "blade",
+    "name": "Định Quan Trảm · Nhân Giai",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.blade.tran_dao.ultimate.human",
+    "school": "blade",
+    "name": "Thiên Sơn Trấn Đao",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_axe"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.anh_nhan.active_01.human",
+    "school": "dual_blade",
+    "name": "Vô Tung Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.anh_nhan.active_02.human",
+    "school": "dual_blade",
+    "name": "Song Nhận Đoạt Ảnh",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.anh_nhan.active_03.human",
+    "school": "dual_blade",
+    "name": "Hư Ảnh Giao Phong",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.anh_nhan.active_04.human",
+    "school": "dual_blade",
+    "name": "Phản Chiếu Trảm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.anh_nhan.ultimate.human",
+    "school": "dual_blade",
+    "name": "Thiên Ảnh Phân Sát",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.basic.human",
+    "school": "dual_blade",
+    "name": "Tâm Nhận Song Hành",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.huyet_nguyet.active_01.human",
+    "school": "dual_blade",
+    "name": "Tàn Nguyệt Khai Nhận",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.huyet_nguyet.active_02.human",
+    "school": "dual_blade",
+    "name": "Huyết Khế Đoạt Phong",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.huyet_nguyet.active_03.human",
+    "school": "dual_blade",
+    "name": "Nguyệt Khuyết Hồi Thủ",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.huyet_nguyet.active_04.human",
+    "school": "dual_blade",
+    "name": "Viên Nguyệt Phá Tâm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.huyet_nguyet.ultimate.human",
+    "school": "dual_blade",
+    "name": "Huyết Nguyệt Táng Thiên",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.lien_hoan.active_01.human",
+    "school": "dual_blade",
+    "name": "Nối Thức Khai Đao",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.lien_hoan.active_02.human",
+    "school": "dual_blade",
+    "name": "Tam Liên Hợp Trảm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.lien_hoan.active_03.human",
+    "school": "dual_blade",
+    "name": "Thất Bộ Liên Hoàn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.lien_hoan.active_04.human",
+    "school": "dual_blade",
+    "name": "Đoạn Thức Thu Đao",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.lien_hoan.ultimate.human",
+    "school": "dual_blade",
+    "name": "Thập Nhị Liên Hoàn Trảm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.dual_blade.mobility.human",
+    "school": "dual_blade",
+    "name": "Bộ Pháp Lưỡng Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "cleave",
+      "throw_knife"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.basic.human",
+    "school": "spear",
+    "name": "Thương Thức Khai Môn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.ho_quan_thuong.active_01.human",
+    "school": "spear",
+    "name": "Liên Trận Hộ Tâm",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.ho_quan_thuong.active_02.human",
+    "school": "spear",
+    "name": "Hồi Thương Thủ Vị",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.ho_quan_thuong.active_03.human",
+    "school": "spear",
+    "name": "Trấn Tuyến Khai Môn",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.ho_quan_thuong.active_04.human",
+    "school": "spear",
+    "name": "Tả Hữu Tương Y",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.ho_quan_thuong.ultimate.human",
+    "school": "spear",
+    "name": "Vạn Quân Thương Bích",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.long_thuong.active_01.human",
+    "school": "spear",
+    "name": "Vân Long Điểm Thủy",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.long_thuong.active_02.human",
+    "school": "spear",
+    "name": "Long Ảnh Xuyên Vân",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.long_thuong.active_03.human",
+    "school": "spear",
+    "name": "Lưu Thủy Hồi Phong",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.long_thuong.active_04.human",
+    "school": "spear",
+    "name": "Thương Hải Quy Nhất",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.long_thuong.ultimate.human",
+    "school": "spear",
+    "name": "Cửu Long Liệt Không",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.mobility.human",
+    "school": "spear",
+    "name": "Bộ Pháp Tầm Phong",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.pha_tran_thuong.active_01.human",
+    "school": "spear",
+    "name": "Khai Lộ Xuyên Trận",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.pha_tran_thuong.active_02.human",
+    "school": "spear",
+    "name": "Thiết Mạch Phá Giáp",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.pha_tran_thuong.active_03.human",
+    "school": "spear",
+    "name": "Trường Phong Đoạt Tiêu",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.pha_tran_thuong.active_04.human",
+    "school": "spear",
+    "name": "Hồi Mã Chấn Quan",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.spear.pha_tran_thuong.ultimate.human",
+    "school": "spear",
+    "name": "Nhất Thương Phá Vạn Quân",
+    "effect": "damage",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "spear",
+      "rupture"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.basic.human",
+    "school": "palm",
+    "name": "Hành Vân Chưởng",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_01.human",
+    "school": "palm",
+    "name": "Hàn Ngọc Chấn Mạch",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "2",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_02.human",
+    "school": "palm",
+    "name": "Băng Tâm Chưởng Ấn",
+    "effect": "slow",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_03.human",
+    "school": "palm",
+    "name": "Hàn Tuyền Hồi Lưu",
+    "effect": "slow",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.han_ngoc_chuong.active_04.human",
+    "school": "palm",
+    "name": "Nguyệt Ảnh Phong Lộ",
+    "effect": "slow",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.han_ngoc_chuong.ultimate.human",
+    "school": "palm",
+    "name": "Cửu Hàn Phong Nguyệt",
+    "effect": "slow",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_01.human",
+    "school": "palm",
+    "name": "Thanh Phong Hồi Khí",
+    "effect": "heal",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_02.human",
+    "school": "palm",
+    "name": "Thái Thanh Dưỡng Mạch",
+    "effect": "heal",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_03.human",
+    "school": "palm",
+    "name": "Thanh Phong Giải Uế",
+    "effect": "cleanse",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.hoi_phong_chuong.active_04.human",
+    "school": "palm",
+    "name": "Hộ Tâm Hồi Phong",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.hoi_phong_chuong.ultimate.human",
+    "school": "palm",
+    "name": "Thái Thanh Hồi Thiên Chưởng",
+    "effect": "heal",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.liet_duong_chuong.active_01.human",
+    "school": "palm",
+    "name": "Diệm Dương Khai Chưởng",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.liet_duong_chuong.active_02.human",
+    "school": "palm",
+    "name": "Xích Nhật Phá Vân",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.liet_duong_chuong.active_03.human",
+    "school": "palm",
+    "name": "Kim Ô Truy Ảnh",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.liet_duong_chuong.active_04.human",
+    "school": "palm",
+    "name": "Dương Ấn Khai Sơn",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.liet_duong_chuong.ultimate.human",
+    "school": "palm",
+    "name": "Thái Dương Phần Thiên",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.palm.mobility.human",
+    "school": "palm",
+    "name": "Tầm Khí Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "blast",
+      "freeze",
+      "heal",
+      "fireball"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.basic.human",
+    "school": "curse",
+    "name": "Chú Âm Phá Vọng",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.ho_menh_chu.active_01.human",
+    "school": "curse",
+    "name": "Hộ Mạch Nhất Ngôn",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.ho_menh_chu.active_02.human",
+    "school": "curse",
+    "name": "Thanh Tâm Phục Khí",
+    "effect": "heal",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.ho_menh_chu.active_03.human",
+    "school": "curse",
+    "name": "Giải Nguy Cứu Mệnh",
+    "effect": "cleanse",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.ho_menh_chu.active_04.human",
+    "school": "curse",
+    "name": "Chính Ngôn Phản Kích",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.ho_menh_chu.ultimate.human",
+    "school": "curse",
+    "name": "Thái Thượng Hộ Mệnh Chú",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.mobility.human",
+    "school": "curse",
+    "name": "Tĩnh Bộ Hoán Khí",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.phe_linh_chu.active_01.human",
+    "school": "curse",
+    "name": "Tán Linh Chỉ Nguyền",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.phe_linh_chu.active_02.human",
+    "school": "curse",
+    "name": "Phệ Vân Truy Ấn",
+    "effect": "mark",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.phe_linh_chu.active_03.human",
+    "school": "curse",
+    "name": "Lạc Khí Hồi Âm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.phe_linh_chu.active_04.human",
+    "school": "curse",
+    "name": "Vạn Hồn Dẫn Chú",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.phe_linh_chu.ultimate.human",
+    "school": "curse",
+    "name": "Vạn Hồn Phệ Linh",
+    "effect": "mark",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.tran_hon_chu.active_01.human",
+    "school": "curse",
+    "name": "Trấn Tâm Nhất Tự",
+    "effect": "slow",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.tran_hon_chu.active_02.human",
+    "school": "curse",
+    "name": "Huyền Văn Áp Hồn",
+    "effect": "slow",
+    "shape": "line",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.tran_hon_chu.active_03.human",
+    "school": "curse",
+    "name": "Cửu Âm Khóa Mạch",
+    "effect": "mark",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.tran_hon_chu.active_04.human",
+    "school": "curse",
+    "name": "Vọng Niệm Tĩnh Tâm",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.curse.tran_hon_chu.ultimate.human",
+    "school": "curse",
+    "name": "Cửu U Trấn Hồn Đại Chú",
+    "effect": "slow",
+    "shape": "circle",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "dark_mist",
+      "runes",
+      "channel"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.basic.human",
+    "school": "formation",
+    "name": "Định Tinh Hạ Trận",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.mobility.human",
+    "school": "formation",
+    "name": "Cửu Cung Du Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.phong_toa_tran.active_01.human",
+    "school": "formation",
+    "name": "Cửu Cung Tỏa Lộ",
+    "effect": "slow",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.phong_toa_tran.active_02.human",
+    "school": "formation",
+    "name": "Bát Môn Phong Hành",
+    "effect": "slow",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.phong_toa_tran.active_03.human",
+    "school": "formation",
+    "name": "Huyền Thạch Trấn Vị",
+    "effect": "slow",
+    "shape": "single_target",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.phong_toa_tran.active_04.human",
+    "school": "formation",
+    "name": "Tứ Tượng Hãm Trận",
+    "effect": "slow",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.phong_toa_tran.ultimate.human",
+    "school": "formation",
+    "name": "Cửu Cung Phong Tuyệt Trận",
+    "effect": "slow",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.sat_phat_tran.active_01.human",
+    "school": "formation",
+    "name": "Liệt Địa Sát Văn",
+    "effect": "formation_zone",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.sat_phat_tran.active_02.human",
+    "school": "formation",
+    "name": "Thiên La Địa Võng",
+    "effect": "formation_zone",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.sat_phat_tran.active_03.human",
+    "school": "formation",
+    "name": "Thất Tinh Đoạt Mạch",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.sat_phat_tran.active_04.human",
+    "school": "formation",
+    "name": "Địa Hỏa Phục Sát",
+    "effect": "formation_zone",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.sat_phat_tran.ultimate.human",
+    "school": "formation",
+    "name": "Vạn Tượng Tru Tiên Trận",
+    "effect": "formation_zone",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.tu_linh_tran.active_01.human",
+    "school": "formation",
+    "name": "Thổ Mạch Dẫn Khí",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.tu_linh_tran.active_02.human",
+    "school": "formation",
+    "name": "Tinh Bàn Hộ Tâm",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.tu_linh_tran.active_03.human",
+    "school": "formation",
+    "name": "Địa Tàng Liên Trận",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.tu_linh_tran.active_04.human",
+    "school": "formation",
+    "name": "Thái Sơ Tĩnh Vực",
+    "effect": "damage",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.formation.tu_linh_tran.ultimate.human",
+    "school": "formation",
+    "name": "Thái Sơ Vạn Linh Trận",
+    "effect": "guard",
+    "shape": "circle",
+    "existing_lab_count": "1",
+    "suggestions": [
+      "runes",
+      "spikes",
+      "caltrops"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.basic.human",
+    "school": "summon",
+    "name": "Hợp Khế Linh Tức",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_01.human",
+    "school": "summon",
+    "name": "Khôi Lỗi Nhận Khế",
+    "effect": "summon",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_02.human",
+    "school": "summon",
+    "name": "Thiên Cơ Châm Kích",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_03.human",
+    "school": "summon",
+    "name": "Cơ Giáp Hộ Thân",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.active_04.human",
+    "school": "summon",
+    "name": "Hộ Pháp Chấn Kình",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.khoi_loi_ho_phap.ultimate.human",
+    "school": "summon",
+    "name": "Đại Thiên Cơ Hộ Pháp",
+    "effect": "summon",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.kiem_linh.active_01.human",
+    "school": "summon",
+    "name": "Kiếm Linh Thỉnh Kiếm",
+    "effect": "summon",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.kiem_linh.active_02.human",
+    "school": "summon",
+    "name": "Ngự Kiếm Hồi Ảnh",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.kiem_linh.active_03.human",
+    "school": "summon",
+    "name": "Thần Kiếm Đồng Tâm",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.kiem_linh.active_04.human",
+    "school": "summon",
+    "name": "Linh Kiếm Phá Không",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.kiem_linh.ultimate.human",
+    "school": "summon",
+    "name": "Thần Kiếm Linh Hợp Nhất",
+    "effect": "summon",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.linh_thu.active_01.human",
+    "school": "summon",
+    "name": "Hữu Tín Thỉnh Thú",
+    "effect": "summon",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.linh_thu.active_02.human",
+    "school": "summon",
+    "name": "Sơn Linh Truy Ảnh",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.linh_thu.active_03.human",
+    "school": "summon",
+    "name": "Thú Tâm Hộ Chủ",
+    "effect": "guard",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.linh_thu.active_04.human",
+    "school": "summon",
+    "name": "Bách Mạch Nha Kích",
+    "effect": "damage",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.linh_thu.ultimate.human",
+    "school": "summon",
+    "name": "Vạn Thú Linh Khế",
+    "effect": "summon",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  },
+  {
+    "skill_id": "tmb.skill.summon.mobility.human",
+    "school": "summon",
+    "name": "Ngự Linh Du Bộ",
+    "effect": "mobility",
+    "shape": "single_target",
+    "existing_lab_count": "0",
+    "suggestions": [
+      "channel",
+      "sparkle"
+    ],
+    "status": "CANDIDATE_ONLY_REQUIRES_SEMANTIC_AND_NATIVE_REVIEW"
+  }
+]

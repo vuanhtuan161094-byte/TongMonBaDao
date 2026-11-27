@@ -1,0 +1,18 @@
+[
+  {
+    "id": "mikodrak",
+    "status": "ACQUIRED",
+    "license": "CC0",
+    "source": "https://lpc.opengameart.org/content/2d-spell-effects",
+    "sha256": "8d0c09487ab0337867e90333e9c26e455760b31414bf503bedcde94b0cddbc30",
+    "image_members": 242
+  },
+  {
+    "id": "cethiel",
+    "status": "ACQUIRED",
+    "license": "CC0",
+    "source": "https://opengameart.org/content/light-magic-effect",
+    "sha256": "8b8cda8bcbd8b143bea75c5bf9107547204fb05b2fc4d28b9ce9823eea6d5c4b",
+    "image_members": 26
+  }
+]
