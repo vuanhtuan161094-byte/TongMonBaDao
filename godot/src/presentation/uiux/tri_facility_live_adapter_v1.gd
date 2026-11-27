@@ -150,6 +150,29 @@ func _hall_model() -> Dictionary:
                 "disciple_name":name_value, "office_rank":mastery_value,
                 "can_dismiss":not holder_id.is_empty()
             })
+    # Every role uses the single authority: unlock levels, completed mastery
+    # and effective bonus are read-only, not synthetic UI rewards.
+    for index in range(offices.size()):
+        var office: Dictionary = offices[index]
+        var role_id := str(office.get("id",""))
+        var unlock := int(SectHallSystemV1.OFFICE_UNLOCK.get(role_id,1))
+        var active := SectHallSystemV1.holder_id(_state,role_id)
+        office["unlocked"] = hall.level >= unlock
+        office["unlock_level"] = unlock
+        office["unlock_label"] = "Mở tại Đại Điện Lv%d" % unlock if hall.level < unlock else "Đã mở"
+        if not active.is_empty() and _state.disciples.has(StringName(active)):
+            var mastery := SectHallSystemV1.mastery(_state,role_id,active)
+            var level := int(mastery.get("level",1))
+            var xp := int(mastery.get("xp",0))
+            var needed := SectHallSystemV1.required_xp(level) if level < SectHallSystemV1.MAX_MASTERY else 0
+            office["mastery_detail"] = "Tinh thông %d/10 · %d/%d EXP" % [level,xp,needed] if needed > 0 else "Tinh thông 10/10 · tối đa"
+            var effective := SectHallSystemV1.role_effect(_state,role_id)
+            office["effect_label"] = ("Hiệu lực +%.0f" % effective) if role_id == SectHallSystemV1.OFFICE_GUIDE else ("Hiệu lực +%.1f%%" % (100.0 * effective))
+        else:
+            office["mastery_detail"] = "Chưa có người giữ chức"
+            office["effect_label"] = "Chưa có hiệu lực"
+        office["can_dismiss"] = bool(office.get("can_dismiss",false)) and hall.level >= unlock
+        offices[index] = office
     var rank_check: Dictionary = SectHallSystemV1.promotion_requirements(_state)
     var rank := SectHallSystemV1.rank_index(_state)
     var blockers: Array = rank_check.get("blockers", [])
@@ -194,6 +217,9 @@ func _hall_model() -> Dictionary:
         "treasury":str(_state.sect.treasury),
         "rank_rows":rank_rows if rank < 27 else [],
         "promotion_costs":_cost_rows(rank_check.get("cost",{})),
+        "rank_capacity":SectHallSystemV1.rank_population_limit(_state),
+        "next_rank_capacity":int(SectHallSystemV1.RANK_LIMITS[mini(rank,26)]),
+        "upgrade_unlocks":_hall_upcoming_unlocks(hall.level),
         "upgrade_status":("Đang nâng cấp · %.0f / %.0f" % [hall.upgrade_progress,hall.upgrade_required_work]) if hall.is_upgrading() else ("Đã đạt tối đa" if hall.level >= hall.max_level else "Thời gian: %.0f nhịp" % BuildingSystem.new().upgrade_required_work(hall)),
         "population_label":"%d / %d" % [_state.disciples.size(),SectResidenceSystemV1.current_limit(_state)],
         "spirit_stones":str(_state.sect.spirit_stones),
@@ -205,6 +231,14 @@ func _hall_model() -> Dictionary:
     }
     model.merge(extra,true)
     return model
+
+func _hall_upcoming_unlocks(level: int) -> Array[String]:
+    var list: Array[String] = []
+    for role_id in SectHallSystemV1.OFFICES:
+        var needed := int(SectHallSystemV1.OFFICE_UNLOCK.get(role_id,1))
+        if needed > level and needed <= level+1:
+            list.append(SectHallSystemV1.label(role_id))
+    return list
 
 func _hall_extra_model() -> Dictionary:
     var owner := _host.get_parent()

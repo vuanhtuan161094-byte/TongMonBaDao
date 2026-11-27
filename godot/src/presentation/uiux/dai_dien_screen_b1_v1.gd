@@ -187,6 +187,8 @@ func _upgrade_page() -> Control:
 	content.add_child(UI.label("Lv%d  →  Lv%d / 100" % [int(_vm.get("building_level",1)),mini(100,int(_vm.get("building_level",1))+1)],30,UI.PAPER,true))
 	content.add_child(UI.label(str(_vm.get("upgrade_status","")),15,UI.MUTED,false))
 	content.add_child(UI.label("Nguyên liệu · Có / Cần",16,UI.PAPER,true))
+	for unlocked in _vm.get("upgrade_unlocks",[]):
+		content.add_child(UI.label("Sẽ mở chức vụ: "+str(unlocked),14,UI.JADE,false))
 	for cost in _vm.get("upgrade_costs",[]):
 		content.add_child(UI.resource_item(str(cost.get("name","")),str(cost.get("available","—"))+" / "+str(cost.get("amount","")),str(cost.get("icon","resource"))))
 	var button := UI.button("NÂNG CẤP",true,UI.JADE)
@@ -212,6 +214,7 @@ func _rank_page() -> Control:
 		steps.add_child(tick)
 	content.add_child(steps)
 	content.add_child(UI.label(str(_vm.get("rank_requirement","—")),14,UI.MUTED,false))
+	content.add_child(UI.label("Sức chứa theo bậc: %d → %d" % [int(_vm.get("rank_capacity",0)),int(_vm.get("next_rank_capacity",0))],14,UI.JADE,false))
 	for requirement in _vm.get("rank_rows",[]):
 		content.add_child(UI.resource_item(str(requirement.get("name","")),str(requirement.get("value","")),"rank"))
 	for cost in _vm.get("promotion_costs",[]):
@@ -300,7 +303,7 @@ func _build_offices_panel() -> Control:
 
 func _office_card(role_id: String, office: Dictionary) -> Control:
 	var card := UI.panel("Office_%s" % role_id, UI.BORDER, UI.SURFACE_LIGHT)
-	card.custom_minimum_size = Vector2(245, 104)
+	card.custom_minimum_size = Vector2(245, 115)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)
@@ -311,13 +314,25 @@ func _office_card(role_id: String, office: Dictionary) -> Control:
 	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 14, UI.PAPER, true))
 	var disciple_name := str(office.get("disciple_name", "Chưa bổ nhiệm"))
 	details.add_child(UI.label(disciple_name, 13, UI.TEXT, false))
-	details.add_child(UI.label(str(office.get("office_rank", "—")), 11, UI.MUTED, false))
+	var unlocked := bool(office.get("unlocked",true))
+	var status := str(office.get("unlock_label",""))
+	if not unlocked:
+		var lock_note := UI.label(status,11,UI.RED,false)
+		lock_note.tooltip_text = status
+		details.add_child(lock_note)
+	else:
+		details.add_child(UI.label(str(office.get("mastery_detail",office.get("office_rank","—"))),11,UI.MUTED,false))
+		var effect := UI.label(str(office.get("effect_label","")),11,UI.JADE,false)
+		effect.tooltip_text = "Hiệu lực đang có từ SectHallSystem, không phải phần thưởng chưa mở."
+		details.add_child(effect)
 	row.add_child(details)
 	var actions := VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 4)
 	var choose := UI.button("BỔ NHIỆM", false, UI.JADE)
 	choose.name = "ChooseOffice"
 	choose.custom_minimum_size = Vector2(90, 34)
+	choose.disabled = not unlocked
+	choose.tooltip_text = status if not unlocked else "Chỉ chọn đệ tử đủ điều kiện."
 	choose.pressed.connect(_request_office_selection.bind(role_id))
 	actions.add_child(choose)
 	var dismiss := UI.button("MIỄN NHIỆM", false, UI.RED)
