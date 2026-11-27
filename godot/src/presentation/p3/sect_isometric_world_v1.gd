@@ -1533,7 +1533,7 @@ func _draw_sect_civic_axis() -> void:
         return
     draw_rect(Rect2(center_x-49,top,98,bottom-top),Color(0.82,0.77,0.65,0.20))
     for side in [-1.0,1.0]:
-        var x := center_x+side*49.0
+        var x: float = center_x+float(side)*49.0
         draw_line(Vector2(x,top),Vector2(x,bottom),Color("b9aa87"),2.0,true)
     var court := project(Vector2(ROADS_JUNCTION))
     draw_circle(court,34.0,Color(0.36,0.43,0.39,0.28))
