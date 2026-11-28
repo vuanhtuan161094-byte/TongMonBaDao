@@ -1875,6 +1875,7 @@ func _draw() -> void:
         pve_r2_formation.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
         pve_r2_factory.draw_on(self,pve_render_positions,Callable(self,"_a3_project"))
         _draw_pve_damage_feedback()
+        _draw_pve_nameplates()
         return
     _draw_masterplan_lots()
     # District navigation already names each area. Avoid duplicate labels
@@ -2102,14 +2103,14 @@ func _draw_pve_actor(data: Dictionary) -> void:
     if side == "disciple" and row.has("aschar_school"):
         drawn = PveASCharFrameRendererV1.draw_actor(self,
             str(row.get("aschar_school","")),str(row.get("aschar_sex","male")),
-            action,foot,project(facing),age,0.22,maxf(0.0,float(visual.get("until",pve_clock))-float(visual.get("started",pve_clock))))
+            action,foot,project(facing),age,0.145,maxf(0.0,float(visual.get("until",pve_clock))-float(visual.get("started",pve_clock))))
     # Source A remains available for monsters/Bosses, never for disciples.
     if not drawn and side != "disciple":
         var actor_key := str(row.get("source_a_visual_key",""))
         drawn = not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
         if drawn:
             drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-                age,pve_actor_draw_scale())
+                age,pve_actor_draw_scale()*(1.35 if str(actor.get("tier","normal")) == "boss" else (1.18 if str(actor.get("tier","normal")) == "elite" else 1.12)))
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
@@ -2118,19 +2119,6 @@ func _draw_pve_actor(data: Dictionary) -> void:
         if ring_radius_screen > 0.0:
             draw_arc(foot,ring_radius_screen/camera.zoom.x,0.0,TAU,20,
                 Color("ffe08a"),1.5/camera.zoom.x,true)
-    # World-space HP/name anchors belong above the chibi head, not beneath
-    # the feet (which obscured movement and made the fight look unfinished).
-    # Camera2D already scales the Node2D drawing: do not multiply zoom twice.
-    var tier := str(actor.get("tier","normal"))
-    var bar_width := 56.0 if tier == "boss" else 44.0
-    var hp_ratio := clampf(float(actor.get("hp",0.0))/maxf(1.0,float(actor.get("max_hp",1.0))),0.0,1.0)
-    var bar_at := foot+Vector2(-bar_width*0.5,-82.0)
-    # Readable 30-hunter view: hide full-health ordinary monster bars and dead bars.
-    if alive and (side == "disciple" or tier in ["boss","elite"] or hp_ratio < 0.999):
-        draw_rect(Rect2(bar_at,Vector2(bar_width,5.0)),Color(0.04,0.07,0.05,0.9))
-        draw_rect(Rect2(bar_at,Vector2(bar_width*hp_ratio,5.0)),Color("85d884") if side == "disciple" else Color("e88372"))
-        if tier == "boss":
-            draw_rect(Rect2(bar_at-Vector2(1,1),Vector2(bar_width+2,7)),Color("e7bb72"),false,1.0)
     # Persistent guard/poison cues are driven only by the live actor status.
     # Keep distant ordinary mobs uncluttered; approved spell sprites still
     # own the cast/release/contact phases.
@@ -2145,12 +2133,6 @@ func _draw_pve_actor(data: Dictionary) -> void:
             draw_arc(foot+Vector2(0,3),15.0,0.0,TAU,24,Color(0.66,0.87,0.30,0.75),1.6,true)
         if float(actor.get("learned_guard_until",-1.0)) > pve_battle.now:
             draw_arc(foot+Vector2(0,3),20.0,0.0,TAU,24,Color(0.43,0.83,0.98,0.78),1.6,true)
-    if side == "disciple" and pve_selected_actor_ids.size() == 1 and pve_selected_actor_ids.has(id):
-        var font := ThemeDB.fallback_font
-        if font != null:
-            var name := str(row.get("display_name",id))
-            draw_string_outline(font,foot+Vector2(-40.0,-93.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,2,Color(0.02,0.04,0.03,0.94))
-            draw_string(font,foot+Vector2(-40.0,-93.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f4f1dd"))
 
 
 # One label per real authoritative hit/heal, never per derived skill_hit/pilot_impact.
@@ -2211,10 +2193,66 @@ func _draw_pve_damage_feedback() -> void:
         var opacity := 1.0-smoothstep(0.55,1.0,age)
         var color: Color = item["color"]
         color.a = opacity
-        var at := foot+Vector2((float(item["lane"])-1.0)*24.0,-100.0-age*36.0)
+        var at := foot+Vector2((float(item["lane"])-1.0)*35.0,-120.0-age*36.0)
         var label := str(item["label"])
-        draw_string_outline(font,at-Vector2(48,0),label,HORIZONTAL_ALIGNMENT_CENTER,96,17,3,Color(0.03,0.035,0.02,opacity))
-        draw_string(font,at-Vector2(48,0),label,HORIZONTAL_ALIGNMENT_CENTER,96,17,color)
+        draw_string_outline(font,at-Vector2(48,0),label,HORIZONTAL_ALIGNMENT_CENTER,96,14,2,Color(0.03,0.035,0.02,opacity))
+        draw_string(font,at-Vector2(48,0),label,HORIZONTAL_ALIGNMENT_CENTER,96,14,color)
+
+# Screen-stable nameplates are drawn after world sprites and effects.
+func _draw_pve_nameplates() -> void:
+    if pve_battle == null or camera == null:
+        return
+    var font := ThemeDB.fallback_font
+    var zoom := maxf(camera.zoom.x,0.01)
+    var ids: Array = pve_battle.actors.keys()
+    ids.sort_custom(func(a: Variant,b: Variant) -> bool:
+        return int(pve_selected_actor_ids.has(str(a))) > int(pve_selected_actor_ids.has(str(b))))
+    var occupied: Array[Rect2] = []
+    for raw_id in ids:
+        var id := str(raw_id)
+        var actor: Dictionary = pve_battle.actors[id]
+        var hp := float(actor.get("hp",0.0))
+        if hp <= 0.0:
+            continue
+        var ally := str(actor.get("side","")) == "disciple"
+        var tier := str(actor.get("tier","normal"))
+        var selected := pve_selected_actor_ids.has(id)
+        var ratio := clampf(hp/maxf(1.0,float(actor.get("max_hp",1.0))),0.0,1.0)
+        if not selected and tier not in ["boss","elite"] and ratio >= 0.999:
+            continue
+        var foot := project(pve_render_positions.get(id,actor.get("position",Vector2.ZERO)))
+        if not _visible_world(foot):
+            continue
+        var width := 38.0 if tier == "boss" else 28.0
+        var height := 3.0
+        var offset := 62.0 if ally else (94.0 if tier == "boss" else 68.0)
+        var at := foot*zoom+Vector2(-width*0.5,-offset*zoom)
+        var show_name := selected and pve_selected_actor_ids.size() == 1 and font != null
+        var bounds := Rect2(at-Vector2(2,15 if show_name else 2),Vector2(width+4,20 if show_name else 7))
+        var name := str((pve_view_rows.get(id,{}) as Dictionary).get("display_name",id))
+        if show_name:
+            var text_width := font.get_string_size(name,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x
+            bounds = bounds.merge(Rect2(at+Vector2((width-text_width)*0.5,-15),Vector2(text_width,14)))
+        var overlaps := false
+        for used in occupied:
+            if used.intersects(bounds):
+                overlaps = true
+                break
+        if overlaps:
+            continue
+        occupied.append(bounds)
+        draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE/zoom)
+        draw_rect(Rect2(at-Vector2(1,1),Vector2(width+2,height+2)),Color("182021"))
+        draw_rect(Rect2(at,Vector2(width,height)),Color("433e3a"))
+        draw_rect(Rect2(at,Vector2(width*ratio,height)),Color("71cba5") if ally else Color("d66b57"))
+        if tier == "boss":
+            draw_rect(Rect2(at-Vector2(1,1),Vector2(width+2,height+2)),Color("d6b16a"),false,1.0)
+        if show_name:
+            var text_width := font.get_string_size(name,HORIZONTAL_ALIGNMENT_LEFT,-1,11).x
+            var baseline := at+Vector2((width-text_width)*0.5,-4)
+            draw_string_outline(font,baseline,name,HORIZONTAL_ALIGNMENT_LEFT,-1,11,2,Color("182021"))
+            draw_string(font,baseline,name,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("f7eed9"))
+        draw_set_transform(Vector2.ZERO)
 
 func _visible_world(point: Vector2) -> bool:
     if camera == null:
