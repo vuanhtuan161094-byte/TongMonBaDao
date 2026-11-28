@@ -241,6 +241,7 @@ func _refresh_building_operation_content(rebuild_management_controls: bool = tru
             building_operation_body.text = "TRUNG TÂM QUẢN TRỊ TÔNG MÔN\nNâng cấp, điều hành và đặt chính sách phát triển." + ("\n" + building_management_feedback if not building_management_feedback.is_empty() else "")
         _art05_reflow()
         _art05_tint()
+        _facility_apply_light_controls(building_operation_panel)
         _facility_update()
 
 func _refresh_building_operation_metrics() -> void:
@@ -422,6 +423,36 @@ func _art05_reflow() -> void:
 # Common full-viewport facility shell for all ordinary worksite destinations.
 # Preserves the actual live actor, action buttons, resources and Save writers:
 # the surface switches views but never duplicates or reimplements mutations.
+
+# Only the full-screen facility subtree is restyled. The accepted map HUD
+# and combat renderer keep their separate art direction.
+func _facility_apply_light_controls(node: Node) -> void:
+    for child in node.get_children():
+        if child is Label:
+            var label := child as Label
+            label.add_theme_color_override("font_color",SECT_UI_THEME.GOLD if label == building_operation_title else SECT_UI_THEME.TEXT)
+            label.add_theme_constant_override("outline_size",0)
+        elif child is Button:
+            var button := child as Button
+            button.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
+            button.add_theme_color_override("font_hover_color",SECT_UI_THEME.TEXT)
+            button.add_theme_color_override("font_pressed_color",SECT_UI_THEME.TEXT)
+            button.add_theme_color_override("font_disabled_color",SECT_UI_THEME.MUTED)
+            for style in ["normal","hover","pressed","disabled"]:
+                button.add_theme_stylebox_override(style,SECT_UI_THEME._button_style(false,SECT_UI_THEME.BORDER,1.0 if style == "hover" else 0.8))
+            button.add_theme_font_size_override("font_size",maxi(14,button.get_theme_font_size("font_size")))
+        elif child is PanelContainer:
+            var card := child as PanelContainer
+            var style := card.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+            if style != null:
+                style.bg_color = SECT_UI_THEME.SURFACE
+                style.border_color = SECT_UI_THEME.BORDER
+                style.set_border_width_all(1)
+                style.shadow_size = 0
+                card.add_theme_stylebox_override("panel",style)
+        if child != null:
+            _facility_apply_light_controls(child)
+
 func _facility_make_shell() -> void:
     if building_operation_panel == null or building_operation_panel.has_node("FacilityStandardNav"):
         return
@@ -430,7 +461,7 @@ func _facility_make_shell() -> void:
     scenery.texture = FACILITY_SCENERY
     scenery.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
     scenery.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-    scenery.modulate = Color(0.57,0.72,0.67,0.12)
+    scenery.modulate = Color(0.9,0.85,0.73,0.20)
     scenery.mouse_filter = Control.MOUSE_FILTER_IGNORE
     scenery.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     building_operation_panel.add_child(scenery)
@@ -447,33 +478,33 @@ func _facility_make_shell() -> void:
     for index in range(3):
         var button := Button.new()
         button.name = "FacilityTab_%d" % index
-        button.text = ["TỔNG QUAN","ĐIỀU HÀNH","TÌNH TRẠNG"][index]
+        button.text = ["Tổng quan","Điều hành","Tình trạng"][index]
         button.custom_minimum_size = Vector2(155,48)
         button.alignment = HORIZONTAL_ALIGNMENT_LEFT
         button.add_theme_font_size_override("font_size",14)
-        button.add_theme_color_override("font_color",ART05_WHITE)
-        button.add_theme_stylebox_override("normal",_art05_style(Color(0.045,0.135,0.147),Color(0.38,0.52,0.48,0.5),1,7))
-        button.add_theme_stylebox_override("hover",_art05_style(Color(0.12,0.27,0.28),ART05_GOLD,1,7))
+        button.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
+        button.add_theme_stylebox_override("normal",_art05_style(SECT_UI_THEME.SURFACE,SECT_UI_THEME.BORDER,1,7))
+        button.add_theme_stylebox_override("hover",_art05_style(SECT_UI_THEME.SURFACE_LIGHT,SECT_UI_THEME.GOLD,1,7))
         button.pressed.connect(_facility_set_tab.bind(index))
         nav.add_child(button)
     var title := Label.new()
     title.name = "FacilitySectionTitle"
     title.add_theme_font_size_override("font_size",19)
-    title.add_theme_color_override("font_color",ART05_GOLD)
+    title.add_theme_color_override("font_color",SECT_UI_THEME.GOLD)
     title.mouse_filter = Control.MOUSE_FILTER_IGNORE
     building_operation_panel.add_child(title)
     var caption := Label.new()
     caption.name = "FacilityArtworkCaption"
     caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     caption.add_theme_font_size_override("font_size",15)
-    caption.add_theme_color_override("font_color",ART05_GOLD)
+    caption.add_theme_color_override("font_color",SECT_UI_THEME.GOLD)
     caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
     building_operation_panel.add_child(caption)
     var note := Label.new()
     note.name = "FacilitySectionHint"
     note.text = "Dữ liệu từ hoạt động thực tế · Chọn chức năng ở thanh trái"
     note.add_theme_font_size_override("font_size",12)
-    note.add_theme_color_override("font_color",ART05_MUTE)
+    note.add_theme_color_override("font_color",SECT_UI_THEME.MUTED)
     note.mouse_filter = Control.MOUSE_FILTER_IGNORE
     building_operation_panel.add_child(note)
 
@@ -491,9 +522,9 @@ func _facility_apply_tab() -> void:
         var button := nav.get_child(index) as Button
         var active := index == _facility_tab_index
         button.add_theme_stylebox_override("normal",_art05_style(
-            Color(0.18,0.31,0.30) if active else Color(0.045,0.135,0.147),
-            ART05_GOLD if active else Color(0.38,0.52,0.48,0.5),1,7))
-        button.add_theme_color_override("font_color",ART05_GOLD if active else ART05_WHITE)
+            Color(0.80,0.85,0.76) if active else SECT_UI_THEME.SURFACE,
+            SECT_UI_THEME.GOLD if active else SECT_UI_THEME.BORDER,1,7))
+        button.add_theme_color_override("font_color",SECT_UI_THEME.GOLD if active else SECT_UI_THEME.TEXT)
     var overview := _facility_tab_index == 0
     var actions := _facility_tab_index == 1
     building_operation_body.visible = overview
@@ -512,9 +543,9 @@ func _facility_apply_tab() -> void:
     if title != null:
         var label := _building_name(selected_building)
         match _facility_tab_index:
-            0: title.text = "KHÁI QUÁT · " + label.to_upper()
-            1: title.text = "ĐIỀU HÀNH · " + label.to_upper()
-            2: title.text = "TÌNH TRẠNG · " + label.to_upper()
+            0: title.text = "Tổng quan"
+            1: title.text = "Điều hành"
+            2: title.text = "Tình trạng"
 
 func _facility_update() -> void:
     if building_operation_panel == null or selected_building == &"":
@@ -534,14 +565,14 @@ func _facility_fullscreen_reflow() -> void:
     building_operation_panel.position = Vector2.ZERO
     building_operation_panel.size = Vector2(1280,720)
     building_operation_panel.add_theme_stylebox_override("panel",_art05_style(
-        Color(0.025,0.086,0.102,1.0),_art05_accent(),1,0))
+        SECT_UI_THEME.DEEP,_art05_accent(),1,0))
     var ornament := building_operation_panel.get_node_or_null("Art05PremiumJadeFrame")
     if ornament != null:
         ornament.visible = false
     building_operation_title.position = Vector2(30,13)
     building_operation_title.size = Vector2(980,42)
     building_operation_title.add_theme_font_size_override("font_size",26)
-    building_operation_title.add_theme_color_override("font_color",ART05_GOLD)
+    building_operation_title.add_theme_color_override("font_color",SECT_UI_THEME.GOLD)
     for child in building_operation_panel.get_children():
         if child is Label and child not in [
             building_operation_title,building_operation_body,
@@ -553,6 +584,7 @@ func _facility_fullscreen_reflow() -> void:
         ]:
             child.position = Vector2(30,57)
             child.size = Vector2(920,18)
+            child.add_theme_color_override("font_color",SECT_UI_THEME.MUTED)
     var rule := building_operation_panel.get_node_or_null("FacilityHeaderRule") as ColorRect
     if rule != null:
         rule.position = Vector2(24,82)
@@ -563,6 +595,8 @@ func _facility_fullscreen_reflow() -> void:
         close.position = Vector2(1060,18)
         close.size = Vector2(190,44)
         close.add_theme_font_size_override("font_size",15)
+        close.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
+        close.add_theme_stylebox_override("normal",SECT_UI_THEME._button_style(false,SECT_UI_THEME.BORDER,1.0))
     var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as VBoxContainer
     if nav != null:
         nav.position = Vector2(23,192)
@@ -581,7 +615,7 @@ func _facility_fullscreen_reflow() -> void:
         art.position = Vector2(205,208)
         art.size = Vector2(421,352)
         art.add_theme_stylebox_override("panel",_art05_style(
-            Color(0.04,0.125,0.14),_art05_accent(),1,10))
+            SECT_UI_THEME.SURFACE_LIGHT,_art05_accent(),1,10))
     var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
     if caption != null:
         caption.position = Vector2(211,572)
@@ -596,7 +630,8 @@ func _facility_fullscreen_reflow() -> void:
         hint.size = Vector2(560,25)
     building_operation_body.position = Vector2(660,258)
     building_operation_body.size = Vector2(558,335)
-    building_operation_body.add_theme_font_size_override("font_size",17)
+    building_operation_body.add_theme_font_size_override("font_size",16)
+    building_operation_body.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     var picker := building_operation_panel.get_node_or_null("MineOreHero") as HBoxContainer
     var has_picker := selected_building in [
@@ -617,7 +652,7 @@ func _facility_fullscreen_reflow() -> void:
         building_operation_live_panel.position = Vector2(655,244)
         building_operation_live_panel.size = Vector2(579,379)
         building_operation_live_panel.add_theme_stylebox_override("panel",_art05_style(
-            Color(0.043,0.14,0.152),Color(0.40,0.60,0.54,0.6),1,10))
+            SECT_UI_THEME.SURFACE,SECT_UI_THEME.BORDER,1,10))
     if building_operation_live_scroll != null:
         building_operation_live_scroll.position = Vector2(12,12)
         building_operation_live_scroll.size = Vector2(551,354)

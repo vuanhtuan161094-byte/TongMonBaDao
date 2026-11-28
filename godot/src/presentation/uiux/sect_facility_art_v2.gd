@@ -62,7 +62,7 @@ func _draw() -> void:
         return
     if _art != null and (VIS11_AB.texture_for(StringName(facility_kind),&"A") != null or VIS08_ORIGINAL_BUILDINGS.texture_for(StringName(facility_kind)) != null):
         # Native PNGs keep full alpha and aspect; no cropped architecture.
-        draw_rect(Rect2(Vector2.ZERO, size), Color(0.115, 0.205, 0.205, 1.0))
+        draw_rect(Rect2(Vector2.ZERO, size), Color(0.93,0.92,0.87,1.0))
         var source_size := Vector2(_art.get_width(), _art.get_height())
         var scale_value: float = minf(size.x * 0.92 / source_size.x, size.y * 0.92 / source_size.y)
         var fitted_size: Vector2 = source_size * scale_value

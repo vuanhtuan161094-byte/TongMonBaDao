@@ -39,9 +39,12 @@ func set_tab_index(index: int) -> void:
 		_pages[i].visible = i == _tab_index
 	for i in range(_nav.size()):
 		_nav[i].button_pressed = i == _tab_index
+		_nav[i].add_theme_color_override("font_color",UI.INK if i == _tab_index else UI.TEXT)
+		_nav[i].add_theme_color_override("font_pressed_color",UI.INK)
+		_nav[i].add_theme_stylebox_override("normal",UI._button_style(i == _tab_index,UI.JADE,1.0))
 
 func _surface(node_name: String) -> PanelContainer:
-	var panel := UI.panel(node_name,UI.BORDER,Color(0.075,0.15,0.155,0.94))
+	var panel := UI.panel(node_name,UI.BORDER,UI.SURFACE)
 	var style := panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
 	style.set_border_width_all(1)
 	style.shadow_size = 0
@@ -65,7 +68,7 @@ func _rebuild() -> void:
 	_pages.clear()
 	_nav.clear()
 	var bg := ColorRect.new()
-	bg.color = Color(0.045,0.095,0.105)
+	bg.color = UI.DEEP
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(bg)
@@ -82,7 +85,7 @@ func _rebuild() -> void:
 	back.name = "HallBackToMap"
 	back.pressed.connect(func(): closed.emit())
 	header.add_child(back)
-	var title := UI.label("ĐẠI ĐIỆN",25,UI.PAPER,true)
+	var title := UI.label("Đại Điện",27,UI.PAPER,true)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	if _vm.has("spirit_stones"):
@@ -95,6 +98,10 @@ func _rebuild() -> void:
 	body.add_theme_constant_override("separation",18)
 	root.add_child(body)
 	var sidebar := _surface("HallNavigation")
+	var nav_style := sidebar.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	nav_style.bg_color = UI.DEEP
+	nav_style.set_border_width_all(0)
+	sidebar.add_theme_stylebox_override("panel",nav_style)
 	sidebar.custom_minimum_size.x = 158
 	sidebar.size_flags_horizontal = Control.SIZE_FILL
 	body.add_child(sidebar)
@@ -133,22 +140,24 @@ func _overview() -> Control:
 	hero.add_theme_constant_override("separation",18)
 	column.add_child(hero)
 	var scene := _surface("HallArtworkStage")
-	scene.size_flags_stretch_ratio = 1.8
+	scene.size_flags_stretch_ratio = 1.15
 	hero.add_child(scene)
 	var left := _stack(scene,6)
 	var art: Control = FACILITY_ART.new()
 	art.name = "HallSourceAArtwork"
 	art.set("facility_kind","hall")
-	art.custom_minimum_size = Vector2(340,260)
-	art.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	art.custom_minimum_size = Vector2(300,190)
+	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	left.alignment = BoxContainer.ALIGNMENT_CENTER
 	left.add_child(art)
-	var level := UI.label("Đại Điện · Lv%d" % int(_vm.get("building_level",1)),22,UI.PAPER,true)
+	var level := UI.label("Đại Điện · Lv%d" % int(_vm.get("building_level",1)),20,UI.PAPER,true)
 	level.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(level)
 	var info := _surface("HallSectSummary")
 	info.custom_minimum_size.x = 290
 	hero.add_child(info)
-	var facts := _stack(info,15)
+	var facts := _stack(info,18)
+	facts.alignment = BoxContainer.ALIGNMENT_CENTER
 	facts.add_child(UI.section_heading("Tông môn","rank",UI.GOLD))
 	var count := 0
 	for office in _vm.get("offices",[]):
@@ -183,6 +192,20 @@ func _overview() -> Control:
 func _upgrade_page() -> Control:
 	var card := _surface("HallProgress")
 	var content := _stack(card,15)
+	var center := HBoxContainer.new()
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	center.add_theme_constant_override("separation",24)
+	content.add_child(center)
+	var art_panel := _surface("HallUpgradeArtwork")
+	art_panel.size_flags_stretch_ratio = 0.8
+	center.add_child(art_panel)
+	var art: Control = FACILITY_ART.new()
+	art.set("facility_kind","hall")
+	art.custom_minimum_size = Vector2(285,180)
+	art_panel.add_child(art)
+	var form := _stack(center,12)
+	form.size_flags_stretch_ratio = 1.4
+	content = form
 	content.add_child(UI.section_heading("Nâng cấp Đại Điện","upgrade",UI.GOLD))
 	content.add_child(UI.label("Lv%d  →  Lv%d / 100" % [int(_vm.get("building_level",1)),mini(100,int(_vm.get("building_level",1))+1)],30,UI.PAPER,true))
 	content.add_child(UI.label(str(_vm.get("upgrade_status","")),15,UI.MUTED,false))
@@ -191,7 +214,7 @@ func _upgrade_page() -> Control:
 		content.add_child(UI.label("Sẽ mở chức vụ: "+str(unlocked),14,UI.JADE,false))
 	for cost in _vm.get("upgrade_costs",[]):
 		content.add_child(UI.resource_item(str(cost.get("name","")),str(cost.get("available","—"))+" / "+str(cost.get("amount","")),str(cost.get("icon","resource"))))
-	var button := UI.button("NÂNG CẤP",true,UI.JADE)
+	var button := UI.button("Nâng cấp",true,UI.JADE)
 	button.name = "UpgradeHall"
 	button.disabled = not bool(_vm.get("can_upgrade",false))
 	button.pressed.connect(func(): hall_upgrade_requested.emit())
@@ -219,7 +242,7 @@ func _rank_page() -> Control:
 		content.add_child(UI.resource_item(str(requirement.get("name","")),str(requirement.get("value","")),"rank"))
 	for cost in _vm.get("promotion_costs",[]):
 		content.add_child(UI.resource_item(str(cost.get("name","")),str(cost.get("amount","")),str(cost.get("icon","resource"))))
-	var promotion := UI.button("THĂNG BẬC",true,UI.GOLD)
+	var promotion := UI.button("Thăng bậc",true,UI.GOLD)
 	promotion.name = "PromoteRank"
 	promotion.disabled = not bool(_vm.get("can_promote",false))
 	promotion.pressed.connect(func(): promotion_requested.emit())
@@ -328,14 +351,14 @@ func _office_card(role_id: String, office: Dictionary) -> Control:
 	row.add_child(details)
 	var actions := VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 4)
-	var choose := UI.button("BỔ NHIỆM", false, UI.JADE)
+	var choose := UI.button("Bổ nhiệm", false, UI.JADE)
 	choose.name = "ChooseOffice"
 	choose.custom_minimum_size = Vector2(90, 34)
 	choose.disabled = not unlocked
 	choose.tooltip_text = status if not unlocked else "Chỉ chọn đệ tử đủ điều kiện."
 	choose.pressed.connect(_request_office_selection.bind(role_id))
 	actions.add_child(choose)
-	var dismiss := UI.button("MIỄN NHIỆM", false, UI.RED)
+	var dismiss := UI.button("Miễn nhiệm", false, UI.RED)
 	dismiss.name = "DismissOffice"
 	dismiss.custom_minimum_size = Vector2(90, 34)
 	dismiss.disabled = not bool(office.get("can_dismiss", false))

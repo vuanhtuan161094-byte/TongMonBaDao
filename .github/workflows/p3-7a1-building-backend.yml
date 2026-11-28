@@ -127,6 +127,15 @@ jobs:
             test -s "godot/labs/combat_lab/fist01/assets/painted_r9/$name.png"
           done
 
+      - name: Restore generated FIST02 atlas dependencies for cumulative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 tools/vfx/generate_fist02_spirit_v4.py
+          for name in spirit_cast spirit_guard spirit_embers; do
+            test -s "godot/labs/combat_lab/fist02/assets/v4/generated/$name.png"
+          done
+
       - name: Run latest P3.7 fast backend gate
         shell: pwsh
         run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien.ps1 -GodotBin /usr/local/bin/godot

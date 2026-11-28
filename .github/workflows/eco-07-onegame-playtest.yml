@@ -60,6 +60,18 @@ jobs:
           command -v xvfb-run
           command -v glxinfo >/dev/null || true
 
+      - name: Restore generated FIST01 and FIST02 atlas dependencies for cumulative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq python3-pil python3-numpy
+          /usr/bin/python3 tools/vfx/generate_fist01_painted_atlas.py
+          /usr/bin/python3 tools/vfx/generate_fist02_spirit_v4.py
+          for name in spirit_cast spirit_guard spirit_embers; do
+            test -s "godot/labs/combat_lab/fist02/assets/v4/generated/$name.png"
+          done
+
       - name: Import canonical Godot project
         run: godot --headless --path godot --import
 

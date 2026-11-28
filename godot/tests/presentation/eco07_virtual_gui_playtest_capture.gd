@@ -311,16 +311,23 @@ func _capture(path: String) -> bool:
     var image := root.get_texture().get_image()
     if image == null or image.is_empty() or image.get_size() != Vector2i(1280,720):
         return _fail("Virtual GL viewport missing/incorrect 1280x720 pixels: " + path)
-    var colors := {}
-    for yy in range(1,8):
-        for xx in range(1,12):
-            var key := image.get_pixel(xx*100,yy*90).to_html()
-            colors[key] = true
-    if colors.size() < 7:
-        return _fail("Screenshot is suspiciously blank, distinct samples="+str(colors.size()))
+    # Save the original raster first even if the visual gate fails. Sample
+    # densely so a quiet, mostly flat UI with real text is not rejected
+    # merely because the old 100px lattice missed all glyphs.
     var error := image.save_png(path)
     if error != OK:
         return _fail("Could not save Virtual GL rendered PNG: "+path+" "+str(error))
+    var colors := {}
+    var contrast_samples := 0
+    var baseline := image.get_pixel(0,0)
+    for yy in range(0,720,5):
+        for xx in range(0,1280,5):
+            var pixel := image.get_pixel(xx,yy)
+            colors[pixel.to_html()] = true
+            if absf(pixel.r-baseline.r)+absf(pixel.g-baseline.g)+absf(pixel.b-baseline.b) > 0.18:
+                contrast_samples += 1
+    if colors.size() < 7 or contrast_samples < 100:
+        return _fail("Screenshot is suspiciously blank: "+path+" colors="+str(colors.size())+" contrast="+str(contrast_samples))
     print("ECO07 VIRTUAL_GODOT_SCREENSHOT_OK ",path," distinct_samples=",colors.size())
     if OS.get_environment("TMB_PLAYBOOK_CAPTURE") == "1":
         for _i in range(24):
