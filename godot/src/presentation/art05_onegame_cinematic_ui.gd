@@ -1791,6 +1791,9 @@ func _gameplay_playbook_snapshot() -> Dictionary:
 func _art05_open_playbook() -> void:
     if state == null or popup_layer == null or _pve_hunt_overlay_is_open():
         return
+    _dismiss_facility_screens()
+    if build_mode_active:
+        _leave_build_mode(false)
     _close_building_operation_panel(true)
     _close_disciple_summary(true)
     _clear_popup()
@@ -1833,6 +1836,7 @@ func _art05_open_playbook() -> void:
     close.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,8))
     close.pressed.connect(_clear_popup)
     panel.add_child(close)
+    var transmission_ready := V63HumanSkillCombatSystem.is_enabled(state,V63FeatureGates.persisted_preview_overrides(state)) and state.sect.v63_learning_opt_in
     var cards := [
         ["DẪN TIÊN ĐÀI","Chiêu mộ và chọn ứng viên.","recruit"],
         ["ĐỆ TỬ XÁ","Nơi ở, sức chứa và sinh hoạt.","residence"],
@@ -1848,7 +1852,8 @@ func _art05_open_playbook() -> void:
         ["KHO TÔNG MÔN","Xem vật tư và trang bị.","warehouse"],
         ["LUYỆN ĐAN","Chuyển nguyên liệu thành đan.","craft"],
         ["LUYỆN KHÍ","Chế tạo và quản lý trang bị.","forge"],
-        ["CỔNG TÔNG MÔN","Mở điều phối xuất chinh.","gate"]
+        ["CỔNG TÔNG MÔN","Mở điều phối xuất chinh.","gate"],
+        ["TRUYỀN THỪA","Đã bật · chọn môn phái và học." if transmission_ready else "Bật chế độ học nâng cao tự chọn.","transmission"]
     ]
     for i in range(cards.size()):
         var item: Array = cards[i]
@@ -1871,6 +1876,8 @@ func _art05_open_playbook() -> void:
         button.text = "TUYỂN TRƯỚC" if recruit_first else "MỞ"
         if action == "hunt" and int(snapshot["hunting"]) > 0:
             button.text = "TIẾP TỤC"
+        if action == "transmission" and not transmission_ready:
+            button.text = "BẬT"
         button.position = Vector2(145,76)
         button.size = Vector2(121,28)
         button.add_theme_color_override("font_color",ART05_DEEP)
@@ -1883,6 +1890,28 @@ func _art05_open_playbook() -> void:
 
 func _art05_playbook_action(action: String) -> void:
     if state == null:
+        return
+    if action == "transmission":
+        if V63HumanSkillCombatSystem.is_enabled(state,V63FeatureGates.persisted_preview_overrides(state)) and state.sect.v63_learning_opt_in:
+            _art05_playbook_action("school")
+            return
+        var button := popup_layer.find_child("OneGamePlaybook_transmission",true,false) as Button
+        if button == null or button.disabled:
+            return
+        if runtime_session == null or runtime_session.owner == null or runtime_session.owner.runtime_write_blocked:
+            button.text = "CHƯA SẴN SÀNG"
+            return
+        if not state.sect.v2_pve_active_runs.is_empty() or not state.sect.b3_hunt.is_empty():
+            button.text = "DỪNG SĂN TRƯỚC"
+            return
+        button.disabled = true
+        button.text = "ĐANG LƯU"
+        var enabled := await _set_v63_preview_gate(true,true,true)
+        if enabled:
+            _art05_open_playbook()
+        elif is_instance_valid(button):
+            button.disabled = false
+            button.text = "THỬ LẠI"
         return
     _clear_popup()
     var snapshot := _gameplay_playbook_snapshot()
