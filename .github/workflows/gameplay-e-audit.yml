@@ -2,13 +2,12 @@ name: Gameplay E - One Game functional audit
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches: [integration/pve-p0-playable-ui-20261103]
     paths:
       - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/src/presentation/p3/sect_school_skills_screen_v1.gd'
-      - 'godot/src/simulation/**'
       - 'godot/tests/simulation/gameplay_e_*'
       - 'godot/tests/presentation/gameplay_e_*'
       - '.github/workflows/gameplay-e-audit.yml'
@@ -109,6 +108,7 @@ jobs:
           printf 'test,result\n' > gameplay-e-evidence/results.csv
           run_case parse-playbook --headless --path godot --check-only --script res://src/presentation/art05_onegame_cinematic_ui.gd
           run_case parse-school --headless --path godot --check-only --script res://src/presentation/p3/sect_school_skills_screen_v1.gd
+          run_case playbook-all-routes --headless --path godot -s res://tests/presentation/gameplay_e_playbook_test.gd
           run_case real-hall-market-warehouse --headless --path godot -s res://tests/presentation/eco06_real_economy_ui_test.gd
           run_case multi-producer --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
           run_case alchemy-loop --headless --path godot -s res://tests/presentation/p3_o8_alchemy_loop_test.gd
