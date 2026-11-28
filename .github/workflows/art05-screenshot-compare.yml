@@ -98,6 +98,37 @@ jobs:
       - name: Import canonical Godot project
         run: godot --headless --path godot --import
 
+      - name: Capture actual New Game open-world PvE movie
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/onegame-pve-evidence"
+          export LIBGL_ALWAYS_SOFTWARE=1
+          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/onegame_pve_movie_capture.gd
+          # Retain raster evidence and movie on an organic-combat failure.
+          set +e
+          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
+            --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 \
+            --fixed-fps 24 --write-movie "$RUNNER_TEMP/onegame_pve.avi" \
+            -s res://tests/presentation/onegame_pve_movie_capture.gd \
+            -- "$GITHUB_WORKSPACE/onegame-pve-evidence"
+          capture_status=$?
+          set -e
+          if test -s "$RUNNER_TEMP/onegame_pve.avi"; then
+            ffmpeg -y -loglevel error -i "$RUNNER_TEMP/onegame_pve.avi" -an -c:v libx264 -preset fast -pix_fmt yuv420p "$GITHUB_WORKSPACE/onegame-pve-evidence/onegame_pve.mp4"
+          fi
+          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > onegame-pve-evidence/source-sha.txt
+          exit "$capture_status"
+      - name: Upload native PvE evidence before long regressions
+        id: pve_upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: onegame-pve-movie-${{ github.sha }}
+          path: onegame-pve-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Strict parse ECO-07 virtual GUI test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/eco07_virtual_gui_playtest_capture.gd
 
@@ -199,36 +230,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Capture actual New Game open-world PvE movie
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$GITHUB_WORKSPACE/onegame-pve-evidence"
-          export LIBGL_ALWAYS_SOFTWARE=1
-          bash tools/qa/run_godot_strict.sh --headless --path godot --check-only --script res://tests/presentation/onegame_pve_movie_capture.gd
-          # Retain raster evidence and movie on an organic-combat failure.
-          set +e
-          xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh \
-            --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 \
-            --fixed-fps 24 --write-movie "$RUNNER_TEMP/onegame_pve.avi" \
-            -s res://tests/presentation/onegame_pve_movie_capture.gd \
-            -- "$GITHUB_WORKSPACE/onegame-pve-evidence"
-          capture_status=$?
-          set -e
-          if test -s "$RUNNER_TEMP/onegame_pve.avi"; then
-            ffmpeg -y -loglevel error -i "$RUNNER_TEMP/onegame_pve.avi" -an -c:v libx264 -preset fast -pix_fmt yuv420p "$GITHUB_WORKSPACE/onegame-pve-evidence/onegame_pve.mp4"
-          fi
-          printf 'source_sha=%s\n' "$(git rev-parse HEAD)" > onegame-pve-evidence/source-sha.txt
-          exit "$capture_status"
-      - name: Upload native PvE evidence before long regressions
-        id: pve_upload
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: onegame-pve-movie-${{ github.sha }}
-          path: onegame-pve-evidence/
-          if-no-files-found: warn
-          retention-days: 14
       - name: Publish exact-SHA visual evidence links
         if: always()
         env:

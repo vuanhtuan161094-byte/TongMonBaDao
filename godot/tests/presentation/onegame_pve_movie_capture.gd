@@ -98,8 +98,11 @@ func _run() -> void:
         return
     var selected: Array[String] = [str(ids[0])]
     view.selected_actor_ids = selected
-    view.camera_zoom = 1.12
+    view.camera_zoom = PveSectWorldViewV1.MAX_ZOOM
+    view._clamp_camera()
     await ui.call("_on_p0_hunt_policy_ordered",selected,"auto")
+    view.camera_zoom = PveSectWorldViewV1.MAX_ZOOM
+    view._clamp_camera()
     if not await _capture("01_live_world_entry.png"):
         _fail("World entry frame missing")
         return
@@ -139,6 +142,8 @@ func _run() -> void:
             view.camera_center = actor.get("position",view.camera_center)
             view._clamp_camera()
         ui.call("_refresh_multicamp_hunt_panel")
+        view.camera_zoom = PveSectWorldViewV1.MAX_ZOOM
+        view._clamp_camera()
         for event in battle.events:
             if str(event.get("type","")) == "skill_cast" and str(event.get("caster","")) in [str(ids[0]),str(ids[1])]:
                 observed_cast = true
@@ -166,7 +171,8 @@ func _run() -> void:
         "observed_skill_cast":observed_cast,"unique_hit_receipts":hit_receipts.size(),
         "hunter_hit_receipts":hunter_hits.size(),
         "simulated_wall_ticks":elapsed_ticks,"forced_damage":false,"forced_feature_gates":false,
-        "capture_kind":"actual_OneGame_scene_virtual_display"
+        "camera_zoom":view.camera_zoom,"camera_max_zoom":PveSectWorldViewV1.MAX_ZOOM,
+        "capture_kind":"actual_OneGame_scene_virtual_display_max_native_zoom"
     }
     var file := FileAccess.open(out.path_join("pve_capture_report.json"),FileAccess.WRITE)
     if file != null:
