@@ -186,7 +186,7 @@ func refresh() -> void:
     right.add_theme_stylebox_override("panel",_style(JADE,Color(0.37,0.63,0.60)))
     add_child(right)
     _label(right,"KỸ NĂNG CỦA ĐỆ TỬ",Vector2(15,12),Vector2(475,30),17,GOLD)
-    var v63_live := V63HumanSkillCombatSystem.is_enabled(_state)
+    var v63_live := V63HumanSkillCombatSystem.is_enabled(_state,V63FeatureGates.persisted_preview_overrides(_state))
     _label(right,("Công pháp · nguồn học, chi phí và thành thạo" if _skill_page == "method" else "Kỹ năng P2 đang chơi dùng được trong PvE") if _skill_page != "v63"
         else ("Học và trang bị theo quyền V6.3" if v63_live
             else "Kỹ năng nâng cao đang khóa · tra cứu trước khi mở"),
@@ -323,7 +323,7 @@ func _append_techniques(stack: VBoxContainer,d: DiscipleState) -> int:
     var count := 0
     if DiscipleRealmProgressV2.owns_v2_progression(d):
         var learner := V63LearningSystem.new()
-        var live := V63LearningSystem.is_enabled(_state)
+        var live := V63LearningSystem.is_enabled(_state,V63FeatureGates.persisted_preview_overrides(_state))
         if not live:
             var locked := Label.new()
             locked.text = "Công pháp V6.3 đang khóa phát hành. Chỉ tra cứu; không trừ tài nguyên."
@@ -338,7 +338,7 @@ func _append_techniques(stack: VBoxContainer,d: DiscipleState) -> int:
             var id := str(definition.get("id",""))
             var cost: Dictionary = definition.get("cost",{})
             var known := d.known_techniques.has(id)
-            var check := learner.can_start_study(_state,d,StringName(id))
+            var check := learner.can_start_study(_state,d,StringName(id),V63FeatureGates.persisted_preview_overrides(_state))
             var equipped := str(d.active_technique_main) == id
             var detail := str(definition.get("name",id))+"\n"+("%d cống hiến · %d linh thạch · %d nhịp" % [int(cost.get("contribution",0)),int(cost.get("spirit_stones",0)),int(definition.get("study_ticks",0))])
             var row := _method_row(stack,detail)
