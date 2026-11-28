@@ -111,10 +111,8 @@ func _build_rooms_panel() -> Control:
 	content.add_theme_constant_override("separation", 9)
 	card.add_child(content)
 	content.add_child(UI.section_heading("Khu cư trú", "bed", UI.GOLD))
-	var residence_art: Control = FACILITY_ART.new()
+	var residence_art: Control = UI.scene_picture("residence",Vector2(360,208))
 	residence_art.name = "ResidenceSourceAArtwork"
-	residence_art.set("facility_kind", "residence")
-	residence_art.custom_minimum_size = Vector2(360, 208)
 	residence_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(residence_art)
 	var metrics := HBoxContainer.new()
@@ -134,7 +132,7 @@ func _build_rooms_panel() -> Control:
 	var occupied_legend := HBoxContainer.new()
 	occupied_legend.add_theme_constant_override("separation", 4)
 	occupied_legend.add_child(UI.icon("person", 18, UI.JADE))
-	var occupied_label := UI.label("Đang ở", 10, UI.MUTED, false)
+	var occupied_label := UI.label("Đang ở", 13, UI.MUTED, false)
 	occupied_label.custom_minimum_size.x = 58
 	occupied_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	occupied_legend.add_child(occupied_label)
@@ -142,7 +140,7 @@ func _build_rooms_panel() -> Control:
 	var empty_bed_legend := HBoxContainer.new()
 	empty_bed_legend.add_theme_constant_override("separation", 4)
 	empty_bed_legend.add_child(UI.icon("bed", 18, UI.GOLD))
-	var empty_bed_label := UI.label("Giường trống", 10, UI.MUTED, false)
+	var empty_bed_label := UI.label("Giường trống", 13, UI.MUTED, false)
 	empty_bed_label.custom_minimum_size.x = 88
 	empty_bed_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	empty_bed_legend.add_child(empty_bed_label)
@@ -202,7 +200,7 @@ func _bed_slot(bed: Dictionary) -> Control:
 	icon.tint = UI.JADE if resident else UI.MUTED
 	icon.custom_minimum_size = Vector2(22, 22)
 	content.add_child(icon)
-	var resident_label := UI.label(str(bed.get("disciple_short_name", "Trống")), 11, UI.TEXT if resident else UI.MUTED, false)
+	var resident_label := UI.label(str(bed.get("disciple_short_name", "Trống")), 13, UI.TEXT if resident else UI.MUTED, false)
 	resident_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	resident_label.custom_minimum_size.y = 28
 	resident_label.tooltip_text = str(bed.get("disciple_short_name", "Trống"))

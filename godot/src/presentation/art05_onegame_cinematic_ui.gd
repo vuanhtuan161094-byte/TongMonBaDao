@@ -58,6 +58,21 @@ func _refresh_building_operation_art() -> void:
     super._refresh_building_operation_art()
     if building_operation_panel == null:
         return
+    var premium := SECT_UI_THEME.facility_texture(str(selected_building))
+    if premium != null:
+        var stage := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
+        if stage != null:
+            var scene := stage.get_node_or_null("PremiumScenePicture") as TextureRect
+            for old_layer in stage.get_children():
+                if old_layer is CanvasItem and old_layer != scene:
+                    old_layer.visible = false
+            if scene == null:
+                scene = SECT_UI_THEME.scene_picture(str(selected_building),Vector2.ZERO)
+                stage.add_child(scene)
+                scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+            scene.texture = premium
+            scene.show()
+            return
     var current_site := _selected_operation_building()
     var op_direction: StringName = &"B" if current_site != null and current_site.instance_index % 2 == 0 and selected_building != SectMapPresentation.DEST_MAIN_HALL else &"A"
     var override_texture: Texture2D = VIS11_AB.texture_for(selected_building,op_direction)
@@ -531,10 +546,9 @@ func _facility_apply_tab() -> void:
     for index in range(nav.get_child_count()):
         var button := nav.get_child(index) as Button
         var active := index == _facility_tab_index
-        button.add_theme_stylebox_override("normal",_art05_style(
-            Color(0.80,0.85,0.76) if active else SECT_UI_THEME.SURFACE,
-            SECT_UI_THEME.GOLD if active else SECT_UI_THEME.BORDER,1,7))
-        button.add_theme_color_override("font_color",SECT_UI_THEME.GOLD if active else SECT_UI_THEME.TEXT)
+        button.add_theme_stylebox_override("normal",SECT_UI_THEME.primary_button_skin(Color.WHITE,"jade" if active else "ivory"))
+        button.add_theme_color_override("font_color",SECT_UI_THEME.INK if active else SECT_UI_THEME.TEXT)
+        button.add_theme_font_override("font",SECT_UI_THEME.font_face("strong"))
     var overview := _facility_tab_index == 0
     var actions := _facility_tab_index == 1
     building_operation_body.visible = overview
@@ -560,6 +574,11 @@ func _facility_apply_tab() -> void:
 func _facility_update() -> void:
     if building_operation_panel == null or selected_building == &"":
         return
+    var scenery := building_operation_panel.get_node_or_null("FacilityStandardScenery") as TextureRect
+    if scenery != null:
+        var texture := SECT_UI_THEME.facility_texture(str(selected_building))
+        scenery.texture = texture if texture != null else FACILITY_SCENERY
+        scenery.modulate = Color(1,1,1,0.16)
     var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
     if caption != null:
         var building := _selected_operation_building()
@@ -574,6 +593,7 @@ func _facility_fullscreen_reflow() -> void:
     building_operation_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
     building_operation_panel.position = Vector2.ZERO
     building_operation_panel.size = Vector2(1280,720)
+    building_operation_panel.z_index = 90
     building_operation_panel.add_theme_stylebox_override("panel",_art05_style(
         SECT_UI_THEME.DEEP,_art05_accent(),1,0))
     var ornament := building_operation_panel.get_node_or_null("Art05PremiumJadeFrame")
@@ -584,7 +604,7 @@ func _facility_fullscreen_reflow() -> void:
         old_frame.visible = false
     building_operation_title.position = Vector2(30,13)
     building_operation_title.size = Vector2(980,42)
-    building_operation_title.add_theme_font_size_override("font_size",26)
+    building_operation_title.add_theme_font_size_override("font_size",32)
     building_operation_title.add_theme_color_override("font_color",SECT_UI_THEME.GOLD)
     for child in building_operation_panel.get_children():
         if child is Label and child not in [
@@ -1163,7 +1183,7 @@ func _refresh_all() -> void:
 # CanvasItem z_index changes rendering, not Control input order. A map
 # shortcut added after the popup used to intercept real clicks on profiles.
 func _art05_sync_map_chrome() -> void:
-    var modal := _popup_is_open() or _pve_hunt_overlay_is_open() or _art05_facility_modal_open()
+    var modal := _popup_is_open() or _pve_hunt_overlay_is_open() or _art05_facility_modal_open() or _building_operation_is_open()
     for entry in MASTERPLAN_DISTRICT_TABS:
         var tab := get_node_or_null("MasterplanDistrict_"+str(entry["key"])) as Button
         if tab != null:
@@ -1517,6 +1537,7 @@ func _open_building(destination: StringName, instance_id: StringName = &"") -> v
     if gp1_guide_panel != null:
         gp1_guide_panel.visible = false
     _art05_refresh_sect_master_dock()
+    _art05_sync_map_chrome()
 
 func _art05_refresh_sect_master_dock() -> void:
     if _art05_dock_panel == null or state == null:

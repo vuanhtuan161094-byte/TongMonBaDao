@@ -42,10 +42,36 @@ static func font_face(role: String = "body") -> Font:
 const PREMIUM_FRAME = preload("res://art/uiux/premium/panel_jade_gold.webp")
 
 const PREMIUM_JADE_BUTTON = preload("res://art/uiux/premium/button_jade.webp")
+const PREMIUM_GOLD_BUTTON = preload("res://art/uiux/premium/button_gold.webp")
+const PREMIUM_IVORY_BUTTON = preload("res://art/uiux/premium/button_ivory.webp")
+static var _scenes: Dictionary = {}
 
-static func primary_button_skin(tint: Color = Color.WHITE) -> StyleBoxTexture:
+static func facility_texture(key: String) -> Texture2D:
+	var resolved := str({"main_hall":"hall","ren_than_duong":"training","alchemy_hall":"alchemy","linh_forest":"forest","spirit_field":"field","gate":"hall"}.get(key,key))
+	if _scenes.has(resolved):
+		return _scenes[resolved] as Texture2D
+	var path := "res://art/uiux/premium/%s_scene.webp" % resolved
+	if not ResourceLoader.exists(path,"Texture2D"):
+		return null
+	var tex := ResourceLoader.load(path,"Texture2D") as Texture2D
+	if tex != null:
+		_scenes[resolved] = tex
+	return tex
+
+static func scene_picture(key: String, min_size: Vector2) -> TextureRect:
+	var picture := TextureRect.new()
+	picture.name = "PremiumScenePicture"
+	picture.texture = facility_texture(key)
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	picture.custom_minimum_size = min_size
+	picture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return picture
+
+static func primary_button_skin(tint: Color = Color.WHITE, material: String = "jade") -> StyleBoxTexture:
 	var skin := StyleBoxTexture.new()
-	skin.texture = PREMIUM_JADE_BUTTON
+	skin.texture = PREMIUM_GOLD_BUTTON if material == "gold" else (PREMIUM_IVORY_BUTTON if material == "ivory" else PREMIUM_JADE_BUTTON)
 	skin.modulate_color = tint
 	skin.set_texture_margin(SIDE_LEFT,19.0)
 	skin.set_texture_margin(SIDE_RIGHT,19.0)
@@ -60,12 +86,14 @@ static func primary_button_skin(tint: Color = Color.WHITE) -> StyleBoxTexture:
 # Facility illustrations are optional presentation-only assets. Never block
 # the existing game when an artwork has not yet been staged/imported.
 static func add_facility_backdrop(parent: Control, key: String) -> void:
-	var path := "res://art/uiux/premium/%s_scene.webp" % key
-	if not ResourceLoader.exists(path,"Texture2D"):
+	var texture := facility_texture(key)
+	if texture == null:
 		return
 	var art := TextureRect.new()
 	art.name = "PremiumFacilityBackdrop"
-	art.texture = ResourceLoader.load(path,"Texture2D") as Texture2D
+	art.texture = texture
+	# Preserve contrast behind the live forms while focal scene art stays vivid.
+	art.modulate = Color(1,1,1,0.26)
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -115,7 +143,7 @@ static func button(text_value: String, primary: bool, accent: Color) -> Button:
 	result.text = text_value
 	result.custom_minimum_size = Vector2(52, 48)
 	result.focus_mode = Control.FOCUS_ALL
-	result.add_theme_font_size_override("font_size", 15)
+	result.add_theme_font_size_override("font_size", 16)
 	result.add_theme_font_override("font",font_face("strong" if primary else "body"))
 	result.add_theme_color_override("font_color", INK if primary else TEXT)
 	result.add_theme_color_override("font_hover_color", INK if primary else PAPER)
@@ -130,6 +158,9 @@ static func button(text_value: String, primary: bool, accent: Color) -> Button:
 		result.add_theme_stylebox_override("normal",primary_button_skin())
 		result.add_theme_stylebox_override("hover",primary_button_skin(Color(1.12,1.12,1.12)))
 		result.add_theme_stylebox_override("pressed",primary_button_skin(Color(0.77,0.84,0.80)))
+	else:
+		result.add_theme_stylebox_override("normal",primary_button_skin(Color.WHITE,"ivory"))
+		result.add_theme_stylebox_override("hover",primary_button_skin(Color(1.0,0.96,0.83),"ivory"))
 	return result
 
 static func section_heading(title: String, icon_kind: String, accent: Color) -> HBoxContainer:

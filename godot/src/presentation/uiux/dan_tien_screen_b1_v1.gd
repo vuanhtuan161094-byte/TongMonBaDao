@@ -75,10 +75,9 @@ func _make_shell() -> MarginContainer:
 	margin.add_child(column)
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 10)
-	var building_art: Control = FACILITY_ART.new()
+	var building_art: Control = UI.scene_picture("guidance",Vector2(132,74))
 	building_art.name = "GuidanceFacilityArt"
-	building_art.set("facility_kind", "guidance")
-	building_art.custom_minimum_size = Vector2(108, 74)
+	building_art.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	building_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	header.add_child(building_art)
 	var stack := VBoxContainer.new()

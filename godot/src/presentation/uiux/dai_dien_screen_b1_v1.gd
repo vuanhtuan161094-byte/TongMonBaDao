@@ -151,10 +151,8 @@ func _overview() -> Control:
 	scene.add_theme_stylebox_override("panel",stage_style)
 	hero.add_child(scene)
 	var left := _stack(scene,8)
-	var art: Control = FACILITY_ART.new()
+	var art: Control = UI.scene_picture("hall",Vector2(350,300))
 	art.name = "HallSourceAArtwork"
-	art.set("facility_kind","hall")
-	art.custom_minimum_size = Vector2(350,280)
 	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	left.alignment = BoxContainer.ALIGNMENT_CENTER
 	var stage_heading := UI.label("Tông môn · Đại Điện",25,UI.PAPER,true)
@@ -166,6 +164,7 @@ func _overview() -> Control:
 	left.add_child(level)
 	var info := _surface("HallSectSummary")
 	UI.apply_premium_frame(info)
+	info.size_flags_stretch_ratio = 0.75
 	info.custom_minimum_size.x = 290
 	hero.add_child(info)
 	var facts := _stack(info,14)
@@ -213,7 +212,7 @@ func _overview() -> Control:
 	growth.add_child(row)
 	for entry in [["Nâng cấp Đại Điện","Lv%d → Lv%d" % [int(_vm.get("building_level",1)),mini(100,int(_vm.get("building_level",1))+1)],2],["Thăng bậc tông môn",str(_vm.get("rank_requirement","—")),3]]:
 		var box := _stack(row,6)
-		box.add_child(UI.label(str(entry[0]),16,UI.PAPER,true))
+		box.add_child(UI.label(str(entry[0]),18,UI.PAPER,true))
 		var desc := UI.label(str(entry[1]),13,UI.MUTED,false)
 		desc.custom_minimum_size.y = 30
 		box.add_child(desc)
@@ -234,9 +233,7 @@ func _upgrade_page() -> Control:
 	var art_panel := _surface("HallUpgradeArtwork")
 	art_panel.size_flags_stretch_ratio = 0.8
 	center.add_child(art_panel)
-	var art: Control = FACILITY_ART.new()
-	art.set("facility_kind","hall")
-	art.custom_minimum_size = Vector2(285,180)
+	var art: Control = UI.scene_picture("hall",Vector2(285,180))
 	art_panel.add_child(art)
 	var form := _stack(center,12)
 	form.size_flags_stretch_ratio = 1.4

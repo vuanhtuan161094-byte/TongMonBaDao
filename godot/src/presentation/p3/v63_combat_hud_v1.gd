@@ -5,6 +5,7 @@ signal archive_requested
 signal preview_gate_toggled(enabled: bool)
 
 const VFX_SCRIPT = preload("res://src/presentation/p3/v63_original_combat_vfx_v1.gd")
+const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
 const VIS_QUALITY = preload("res://src/presentation/uiux/sect_quality_visual_v1.gd")
 
 var state: SimulationState
@@ -34,12 +35,14 @@ func _ready() -> void:
     title.text = "ĐỘI SĂN"
     title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     title.add_theme_color_override("font_color", Color("e6ce94"))
-    title.add_theme_font_size_override("font_size", 16)
+    title.add_theme_font_size_override("font_size", 19)
+    title.add_theme_font_override("font",UI.font_face("title"))
     head.add_child(title)
     _gate_button = Button.new()
     _gate_button.custom_minimum_size = Vector2(104, 30)
     _gate_button.tooltip_text = "Bật hoặc tắt chế độ thử nghiệm kỹ năng nâng cao. Không tự mở khóa hay học kỹ năng."
-    _gate_button.add_theme_stylebox_override("normal",_panel_style(Color("183e3c"),Color("9aab83")))
+    _gate_button.add_theme_stylebox_override("normal",UI.primary_button_skin())
+    _gate_button.add_theme_font_override("font",UI.font_face("strong"))
     _gate_button.add_theme_stylebox_override("hover",_panel_style(Color("28534c"),Color("e1c58f")))
     _gate_button.add_theme_color_override("font_color",Color("f0ead7"))
     _gate_button.pressed.connect(_toggle_gate)
@@ -80,7 +83,8 @@ func _ready() -> void:
     column.add_child(_event)
     var archive := Button.new()
     archive.text = "Tàng Kinh Các · Kỹ năng"
-    archive.add_theme_stylebox_override("normal",_panel_style(Color("183e3c"),Color("c6a873")))
+    archive.add_theme_stylebox_override("normal",UI.primary_button_skin())
+    archive.add_theme_font_override("font",UI.font_face("strong"))
     archive.add_theme_stylebox_override("hover",_panel_style(Color("28534c"),Color("e1c58f")))
     archive.add_theme_color_override("font_color",Color("f0ead7"))
     archive.custom_minimum_size = Vector2(0, 34)
@@ -175,6 +179,11 @@ func _render() -> void:
         var max_hp := maxf(1.0, float(actor.get("max_hp", 1.0)))
         var injury_text := " · Injury %d" % actor_state.injury_level if actor_state != null and actor_state.injury_level > 0 else ""
         row.text = "%s   HP %.0f/%.0f%s" % [display_name, hp, max_hp, injury_text]
+        row.icon = SectASCharCandidateBridgeV1.preview_texture_for_disciple(actor_state) if actor_state != null else null
+        var health := row.get_node_or_null("LiveHP") as ProgressBar
+        if health != null:
+            health.max_value = max_hp
+            health.value = clampf(hp,0.0,max_hp)
         # VIS-03: canonical source-only quality in the existing combat HUD.
         if actor_state != null:
             VIS_QUALITY.apply_button(row, str(actor_state.disciple_quality))
@@ -191,7 +200,21 @@ func _ensure_party_rows() -> void:
     while _party_rows.size() < 6:
         var row_index := _party_rows.size()
         var row := Button.new()
-        row.custom_minimum_size = Vector2(0, 25)
+        row.custom_minimum_size = Vector2(0, 29)
+        row.add_theme_constant_override("icon_max_width",25)
+        row.add_theme_font_override("font",UI.font_face("body"))
+        var health := ProgressBar.new()
+        health.name = "LiveHP"
+        health.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        health.show_percentage = false
+        row.add_child(health)
+        health.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+        health.offset_left = 34
+        health.offset_right = -5
+        health.offset_top = -4
+        health.offset_bottom = -1
+        health.add_theme_stylebox_override("background",_panel_style(Color("4b453d"),Color("4b453d")))
+        health.add_theme_stylebox_override("fill",_panel_style(Color("5eab61"),Color("86c378")))
         row.alignment = HORIZONTAL_ALIGNMENT_LEFT
         row.add_theme_font_size_override("font_size", 12)
         row.add_theme_stylebox_override("normal",_panel_style(Color("153b3c"),Color("54766a")))
