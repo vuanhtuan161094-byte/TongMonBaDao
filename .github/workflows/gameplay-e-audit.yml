@@ -1,0 +1,131 @@
+name: Gameplay E - One Game functional audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/presentation/p3/sect_school_skills_screen_v1.gd'
+      - 'godot/src/simulation/**'
+      - 'godot/tests/simulation/gameplay_e_*'
+      - 'godot/tests/presentation/gameplay_e_*'
+      - '.github/workflows/gameplay-e-audit.yml'
+
+concurrency:
+  group: gameplay-e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gameplay-e:
+    name: Godot 4.7.2 gameplay E exact head runtime
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout actual PR head, not synthetic merge
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Install virtual display and Mesa software GL
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb xauth libgl1-mesa-dri libgl1
+          command -v xvfb-run
+          command -v glxinfo >/dev/null || true
+
+      - name: Restore generated FIST01 and FIST02 atlas dependencies for cumulative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq python3-pil python3-numpy
+          /usr/bin/python3 tools/vfx/generate_fist01_painted_atlas.py
+          /usr/bin/python3 tools/vfx/generate_fist02_spirit_v4.py
+          for name in spirit_cast spirit_guard spirit_embers; do
+            test -s "godot/labs/combat_lab/fist02/assets/v4/generated/$name.png"
+          done
+
+      - name: Stage Vietnamese facility fonts (Noto, system package)
+        shell: bash
+        run: bash tools/ui/stage_facility_fonts.sh
+
+      - name: Import canonical Godot project
+        run: godot --headless --path godot --import
+
+      - name: Exact tested source
+        run: |
+          mkdir -p gameplay-e-evidence
+          git rev-parse HEAD | tee gameplay-e-evidence/source_sha.txt
+
+      - name: E1 - runtime checks independently recorded
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -uo pipefail
+          export GITHUB_SHA="$(git rev-parse HEAD)"
+          failed=0
+          run_case() {
+            local label="$1"
+            shift
+            if timeout 1200 bash tools/qa/run_godot_strict.sh "$@" 2>&1 | tee "gameplay-e-evidence/$label.log"; then
+              printf '%s,PASS\n' "$label" >> gameplay-e-evidence/results.csv
+            else
+              printf '%s,FAIL\n' "$label" >> gameplay-e-evidence/results.csv
+              failed=1
+            fi
+          }
+          printf 'test,result\n' > gameplay-e-evidence/results.csv
+          run_case parse-playbook --headless --path godot --check-only --script res://src/presentation/art05_onegame_cinematic_ui.gd
+          run_case parse-school --headless --path godot --check-only --script res://src/presentation/p3/sect_school_skills_screen_v1.gd
+          run_case real-hall-market-warehouse --headless --path godot -s res://tests/presentation/eco06_real_economy_ui_test.gd
+          run_case multi-producer --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+          run_case alchemy-loop --headless --path godot -s res://tests/presentation/p3_o8_alchemy_loop_test.gd
+          run_case player-pve-entry --headless --path godot -s res://tests/presentation/pve_p0_ui_player_entry_test.gd
+          run_case single-save-create --headless --path godot -s res://tests/simulation/one_game_r3_continuous_save_test.gd -- create
+          run_case single-save-continue --headless --path godot -s res://tests/simulation/one_game_r3_continuous_save_test.gd -- continue
+          run_case single-save-verify --headless --path godot -s res://tests/simulation/one_game_r3_continuous_save_test.gd -- verify
+          run_case long-term-100h --headless --path godot -s res://tests/simulation/gameplay_e_longitudinal_test.gd
+          run_case all36-human-boss --headless --path godot -s res://tests/simulation/gameplay_e_all36_human_boss_test.gd
+          cat gameplay-e-evidence/results.csv >> "$GITHUB_STEP_SUMMARY"
+          exit "$failed"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-e-${{ github.event.pull_request.head.sha || github.sha }}
+          path: gameplay-e-evidence/
+          if-no-files-found: warn
+          retention-days: 14
