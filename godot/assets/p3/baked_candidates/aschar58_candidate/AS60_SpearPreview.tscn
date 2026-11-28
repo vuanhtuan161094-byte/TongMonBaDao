@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="SpriteFrames" path="res://assets/p3/baked_candidates/aschar58_candidate/AS60_PALM_CLIPS_CANDIDATE.tres" id="1"]
-[ext_resource type="SpriteFrames" path="res://assets/p3/baked_candidates/aschar59_candidate/AS61_PALM_CLIPS_CANDIDATE.tres" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/p3/baked_candidates/aschar60_candidate/AS60_PALM_CLIPS_CANDIDATE.tres" id="1"]
+[ext_resource type="SpriteFrames" path="res://assets/p3/baked_candidates/aschar61_candidate/AS61_PALM_CLIPS_CANDIDATE.tres" id="2"]
 
 [node name="PalmCandidatePreview" type="Control"]
 layout_mode = 3
