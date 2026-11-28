@@ -87,7 +87,7 @@ func _rebuild() -> void:
 	back.name = "HallBackToMap"
 	back.pressed.connect(func(): closed.emit())
 	header.add_child(back)
-	var title := UI.label("Đại Điện",27,UI.PAPER,true)
+	var title := UI.label("Đại Điện",32,UI.PAPER,true)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	for entry in [["spirit_stones","Linh Thạch","gold"],["treasury","Ngân khố","resource"]]:
@@ -105,7 +105,7 @@ func _rebuild() -> void:
 	nav_style.bg_color = UI.DEEP
 	nav_style.set_border_width_all(0)
 	sidebar.add_theme_stylebox_override("panel",nav_style)
-	sidebar.custom_minimum_size.x = 158
+	sidebar.custom_minimum_size.x = 172
 	sidebar.size_flags_horizontal = Control.SIZE_FILL
 	body.add_child(sidebar)
 	var rail := _stack(sidebar,7)
@@ -115,9 +115,9 @@ func _rebuild() -> void:
 		button.name = "HallTab_%d" % i
 		button.toggle_mode = true
 		button.button_group = group
-		button.custom_minimum_size = Vector2(134,46)
+		button.custom_minimum_size = Vector2(148,52)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.add_theme_font_size_override("font_size",15)
+		button.add_theme_font_size_override("font_size",17)
 		button.add_theme_stylebox_override("pressed",UI._button_style(true,UI.GOLD,0.75))
 		button.pressed.connect(set_tab_index.bind(i))
 		rail.add_child(button)
@@ -153,10 +153,10 @@ func _overview() -> Control:
 	var art: Control = FACILITY_ART.new()
 	art.name = "HallSourceAArtwork"
 	art.set("facility_kind","hall")
-	art.custom_minimum_size = Vector2(350,250)
+	art.custom_minimum_size = Vector2(350,280)
 	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	left.alignment = BoxContainer.ALIGNMENT_CENTER
-	var stage_heading := UI.label("Tông môn · Đại Điện",22,UI.PAPER,true)
+	var stage_heading := UI.label("Tông môn · Đại Điện",25,UI.PAPER,true)
 	stage_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(stage_heading)
 	left.add_child(art)
@@ -248,6 +248,8 @@ func _upgrade_page() -> Control:
 		content.add_child(UI.resource_item(str(cost.get("name","")),str(cost.get("available","—"))+" / "+str(cost.get("amount","")),str(cost.get("icon","resource"))))
 	var button := UI.button("Nâng cấp",true,UI.JADE)
 	button.name = "UpgradeHall"
+	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	button.custom_minimum_size = Vector2(220,48)
 	button.disabled = not bool(_vm.get("can_upgrade",false))
 	button.pressed.connect(func(): hall_upgrade_requested.emit())
 	content.add_child(button)
@@ -276,6 +278,8 @@ func _rank_page() -> Control:
 		content.add_child(UI.resource_item(str(cost.get("name","")),str(cost.get("amount","")),str(cost.get("icon","resource"))))
 	var promotion := UI.button("Thăng bậc",true,UI.GOLD)
 	promotion.name = "PromoteRank"
+	promotion.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	promotion.custom_minimum_size = Vector2(220,48)
 	promotion.disabled = not bool(_vm.get("can_promote",false))
 	promotion.pressed.connect(func(): promotion_requested.emit())
 	content.add_child(promotion)
@@ -285,9 +289,12 @@ func _economy_page() -> Control:
 	var page := _surface("HallEconomy")
 	var content := _stack(page,12)
 	content.add_child(UI.section_heading("Kinh tế tông môn","resource",UI.GOLD))
-	var ledger := UI.label(str(_vm.get("cashflow","Chưa có sổ thu chi.")),15,UI.TEXT,false)
+	var ledger_panel := UI.panel("HallLedgerSurface",UI.BORDER,UI.SURFACE_LIGHT)
+	content.add_child(ledger_panel)
+	var ledger := UI.label(str(_vm.get("cashflow","Chưa có sổ thu chi.")),17,UI.TEXT,false)
+	ledger.add_theme_constant_override("line_spacing",6)
 	ledger.name = "HallReceiptLedger"
-	content.add_child(ledger)
+	ledger_panel.add_child(ledger)
 	for action in _vm.get("economy_actions",[]):
 		_add_action(content,action)
 	var workers: Array = _vm.get("vein_workers",[])
@@ -296,9 +303,15 @@ func _economy_page() -> Control:
 		for worker in workers:
 			choose.add_item(str(worker.get("name","")))
 			choose.set_item_metadata(choose.item_count-1,str(worker.get("id","")))
+		choose.custom_minimum_size = Vector2(300,48)
+		choose.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		choose.add_theme_font_override("font",UI.font_face("body"))
+		choose.add_theme_font_size_override("font_size",16)
 		content.add_child(choose)
 		var start := UI.button("Khai thác Linh Mạch",false,UI.JADE)
 		start.name = "HallOriginVeinStart"
+		start.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		start.custom_minimum_size = Vector2(240,48)
 		start.pressed.connect(func(): hall_action_requested.emit("vein_start",str(choose.get_item_metadata(choose.selected))))
 		content.add_child(start)
 	return page
@@ -325,7 +338,8 @@ func _policy_page() -> Control:
 func _add_action(parent: Control,action: Dictionary) -> void:
 	var button := UI.button(str(action.get("label","")),false,UI.JADE)
 	button.disabled = bool(action.get("disabled",false))
-	button.custom_minimum_size.y = 38
+	button.custom_minimum_size = Vector2(300,48)
+	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	button.pressed.connect(_emit_action.bind(str(action.get("action","")),str(action.get("value",""))))
 	parent.add_child(button)
 
