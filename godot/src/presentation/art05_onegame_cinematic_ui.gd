@@ -532,7 +532,7 @@ func _facility_make_shell() -> void:
     building_operation_panel.add_child(caption)
     var note := Label.new()
     note.name = "FacilitySectionHint"
-    note.text = "Dữ liệu từ hoạt động thực tế · Chọn chức năng ở thanh trái"
+    note.text = "Chọn phân hệ ở thanh điều hướng phía trên"
     note.add_theme_font_size_override("font_size",12)
     note.add_theme_color_override("font_color",SECT_UI_THEME.MUTED)
     note.mouse_filter = Control.MOUSE_FILTER_IGNORE

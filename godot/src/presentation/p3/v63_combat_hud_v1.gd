@@ -19,7 +19,7 @@ var _boss_name: Label
 var _boss_hp: ProgressBar
 var _boss_state: Label
 var _skills: Label
-var _skill_strip: HBoxContainer
+var _skill_strip: GridContainer
 var _skill_slots: Array[Label] = []
 var _event: Label
 var _gate_button: Button
@@ -56,6 +56,8 @@ func _ready() -> void:
     _boss_hp = ProgressBar.new()
     _boss_hp.custom_minimum_size = Vector2(0, 12)
     _boss_hp.show_percentage = false
+    _boss_hp.add_theme_stylebox_override("background",_health_style(Color("4b453d")))
+    _boss_hp.add_theme_stylebox_override("fill",_health_style(Color("bb5349")))
     column.add_child(_boss_hp)
     _boss_state = Label.new()
     _boss_state.custom_minimum_size = Vector2(0, 34)
@@ -78,21 +80,28 @@ func _ready() -> void:
     _skills.add_theme_color_override("font_color", Color("f0ead7"))
     column.add_child(_skills)
     # Status display only: the combat engine still owns all casts.
-    _skill_strip = HBoxContainer.new()
+    _skill_strip = GridContainer.new()
+    _skill_strip.columns = 2
     _skill_strip.name = "LiveSkillCooldowns"
-    _skill_strip.add_theme_constant_override("separation",3)
+    _skill_strip.add_theme_constant_override("h_separation",4)
+    _skill_strip.add_theme_constant_override("v_separation",4)
     column.add_child(_skill_strip)
     for i in range(5):
         var slot := PanelContainer.new()
         slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-        slot.custom_minimum_size = Vector2(0,42)
-        slot.add_theme_stylebox_override("panel",UI.primary_button_skin(Color.WHITE,"ivory"))
+        slot.custom_minimum_size = Vector2(0,38)
+        var skin := UI.primary_button_skin(Color.WHITE,"ivory")
+        skin.set_content_margin(SIDE_LEFT,6)
+        skin.set_content_margin(SIDE_RIGHT,6)
+        skin.set_content_margin(SIDE_TOP,3)
+        skin.set_content_margin(SIDE_BOTTOM,3)
+        slot.add_theme_stylebox_override("panel",skin)
         var info := Label.new()
         info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
         info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         info.clip_text = true
-        info.add_theme_font_size_override("font_size",11)
+        info.add_theme_font_size_override("font_size",12)
         info.add_theme_color_override("font_color",UI.TEXT)
         info.add_theme_font_override("font",UI.font_face("strong"))
         slot.add_child(info)
@@ -126,7 +135,7 @@ func set_authority(authoritative_state: SimulationState, snapshot: MapBattleV2,
     state = authoritative_state
     battle = snapshot
     gate_enabled = preview_enabled
-    _gate_button.text = "V6.5: ON" if gate_enabled else "V6.5: OFF"
+    _gate_button.text = "Kỹ năng: Bật" if gate_enabled else "Kỹ năng: Tắt"
     _render()
     if _vfx != null:
         _vfx.call("consume_battle_events", snapshot)
@@ -203,7 +212,7 @@ func _render() -> void:
             display_name = actor_state.display_name
         var hp := float(actor.get("hp", 0.0))
         var max_hp := maxf(1.0, float(actor.get("max_hp", 1.0)))
-        var injury_text := " · Injury %d" % actor_state.injury_level if actor_state != null and actor_state.injury_level > 0 else ""
+        var injury_text := " · Thương %d" % actor_state.injury_level if actor_state != null and actor_state.injury_level > 0 else ""
         row.text = "%s   HP %.0f/%.0f%s" % [display_name, hp, max_hp, injury_text]
         row.icon = SectASCharCandidateBridgeV1.preview_texture_for_disciple(actor_state) if actor_state != null else null
         var health := row.get_node_or_null("LiveHP") as ProgressBar
@@ -226,7 +235,10 @@ func _ensure_party_rows() -> void:
     while _party_rows.size() < 6:
         var row_index := _party_rows.size()
         var row := Button.new()
-        row.custom_minimum_size = Vector2(0, 29)
+        row.custom_minimum_size = Vector2(0, 36)
+        row.toggle_mode = true
+        row.clip_text = true
+        row.clip_contents = true
         row.add_theme_constant_override("icon_max_width",25)
         row.add_theme_font_override("font",UI.font_face("body"))
         var health := ProgressBar.new()
@@ -237,15 +249,18 @@ func _ensure_party_rows() -> void:
         health.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
         health.offset_left = 34
         health.offset_right = -5
-        health.offset_top = -4
-        health.offset_bottom = -1
-        health.add_theme_stylebox_override("background",_panel_style(Color("4b453d"),Color("4b453d")))
-        health.add_theme_stylebox_override("fill",_panel_style(Color("5eab61"),Color("86c378")))
+        health.offset_top = -8
+        health.offset_bottom = -3
+        health.add_theme_stylebox_override("background",_health_style(Color("4b453d")))
+        health.add_theme_stylebox_override("fill",_health_style(Color("5eab61")))
         row.alignment = HORIZONTAL_ALIGNMENT_LEFT
         row.add_theme_font_size_override("font_size", 12)
-        row.add_theme_stylebox_override("normal",_panel_style(Color("153b3c"),Color("54766a")))
-        row.add_theme_stylebox_override("hover",_panel_style(Color("28534c"),Color("c6a873")))
-        row.add_theme_stylebox_override("pressed",_panel_style(Color("28534c"),Color("e1c58f")))
+        for style_name in ["normal","hover","pressed"]:
+            var selected := style_name != "normal"
+            var row_style := _panel_style(Color("28534c") if selected else Color("153b3c"),Color("c6a873") if selected else Color("54766a"))
+            row_style.content_margin_top = 2
+            row_style.content_margin_bottom = 10
+            row.add_theme_stylebox_override(style_name,row_style)
         row.pressed.connect(_select_party_row.bind(row_index))
         _rows.add_child(row)
         _party_rows.append(row)
@@ -314,6 +329,14 @@ func _latest_event_text() -> String:
         if kind == "status_applied":
             return "HIỆU ỨNG · %s → %s" % [str(event.get("status", "")), str(event.get("target", ""))]
     return "Đang săn quái · %d đòn đã thực hiện" % battle.actions if battle.active else "Phiên săn đã kết thúc"
+
+func _health_style(fill: Color) -> StyleBoxFlat:
+    var style := StyleBoxFlat.new()
+    style.bg_color = fill
+    style.set_corner_radius_all(2)
+    for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:
+        style.set_content_margin(side,0)
+    return style
 
 func _panel_style(fill: Color, border: Color) -> StyleBoxFlat:
     var style := StyleBoxFlat.new()
