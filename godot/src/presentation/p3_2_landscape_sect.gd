@@ -9869,6 +9869,7 @@ func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: Str
         return
     var ok := false
     var reason := "không đủ điều kiện"
+    var overrides := _current_v63_preview_overrides()
     var writable := runtime_session != null and runtime_session.owner != null and not runtime_session.owner.runtime_write_blocked
     if not writable:
         reason = "Phiên chơi chưa cho phép ghi dữ liệu"
@@ -9890,19 +9891,19 @@ func _aschar_skill_action(disciple_id: StringName, skill_id: String, action: Str
         var request := "v9:"+str(state.sect.v63_learning_event_count)+":"+str(disciple_id).sha256_text().substr(0,16)+":"+action+":"+skill_id.sha256_text().substr(0,16)
         var result: Dictionary = {}
         match action:
-            "study_method": result = learner.start_study(state,disciple,StringName(skill_id),request)
-            "equip_method": result = learner.equip_slot(state,disciple,"main",StringName(skill_id))
-            "cancel_method": result = learner.cancel_study(state,disciple,request,skill_id)
+            "study_method": result = learner.start_study(state,disciple,StringName(skill_id),request,overrides)
+            "equip_method": result = learner.equip_slot(state,disciple,"main",StringName(skill_id),overrides)
+            "cancel_method": result = learner.cancel_study(state,disciple,request,skill_id,overrides)
         ok = bool(result.get("ok",false))
         reason = str(result.get("reason","không đủ điều kiện"))
-    elif action in ["learn","equip"] and V63HumanSkillCombatSystem.is_enabled(state):
+    elif action in ["learn","equip"] and V63HumanSkillCombatSystem.is_enabled(state,overrides):
         var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
         var school := SectASCharCandidateBridgeV1.school_for_disciple(disciple)
         var branch := str(definition.get("branch",""))
         if school.is_empty() or str(definition.get("school","")) != school or (not branch.is_empty() and branch != str(disciple.v63_combat_branch_id)):
             reason = "Kỹ năng không thuộc môn phái hoặc nhánh đã chọn"
         else:
-            var result := V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id) if action == "learn" else V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id)
+            var result := V63HumanSkillCombatSystem.learn_skill(state,disciple,skill_id,overrides) if action == "learn" else V63HumanSkillCombatSystem.equip_skill(state,disciple,skill_id,overrides)
             ok = bool(result.get("ok",false))
             reason = str(result.get("reason","không đủ điều kiện"))
     var screen := popup_layer.find_child("SectSchoolSkillsScreenV1",true,false) as SectSchoolSkillsScreenV1
