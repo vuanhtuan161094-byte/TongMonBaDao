@@ -11,6 +11,7 @@ on:
       - '!godot/outputs/**'
       - 'wiki/**'
       - 'tools/wiki/tests/**'
+      - 'tools/ui/optimize_premium_web_imports.py'
       - 'tools/vfx/stage_vfx_web_review.py'
       - 'tools/vfx/build_native_video_review.py'
       - 'tools/vfx/build_sword_batch9.py'
@@ -135,6 +136,8 @@ jobs:
           test -s godot/scenes/p3/p3_2_landscape_sect.tscn
           mkdir -p "$RUNNER_TEMP/one-game-export-proof"
           "$GODOT" --headless --path godot --editor --import 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/import.log"
+          python3 tools/ui/optimize_premium_web_imports.py godot | tee "$RUNNER_TEMP/one-game-export-proof/premium-import-policy.log"
+          "$GODOT" --headless --path godot --editor --import 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/premium-reimport.log"
           "$GODOT" --headless --path godot --export-release "Web" "$GITHUB_WORKSPACE/_site/play/index.html" 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/export.log"
           test -s _site/play/index.html
           test -s _site/play/index.js
