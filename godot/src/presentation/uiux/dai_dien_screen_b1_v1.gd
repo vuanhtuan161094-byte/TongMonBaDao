@@ -42,7 +42,7 @@ func set_tab_index(index: int) -> void:
 		_nav[i].add_theme_color_override("font_color",UI.INK if i == _tab_index else UI.TEXT)
 		_nav[i].add_theme_color_override("font_pressed_color",UI.INK)
 		_nav[i].add_theme_color_override("font_hover_color",UI.INK if i == _tab_index else UI.TEXT)
-		_nav[i].add_theme_stylebox_override("normal",UI.primary_button_skin() if i == _tab_index else UI._button_style(false,UI.JADE,1.0))
+		_nav[i].add_theme_stylebox_override("normal",UI.primary_button_skin() if i == _tab_index else UI.primary_button_skin(Color.WHITE,"ivory"))
 		_nav[i].add_theme_stylebox_override("pressed",UI.primary_button_skin(Color(0.83,0.88,0.84)))
 
 func _surface(node_name: String) -> PanelContainer:
@@ -154,7 +154,7 @@ func _overview() -> Control:
 	var art: Control = UI.scene_picture("hall",Vector2(350,300))
 	art.name = "HallSourceAArtwork"
 	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	left.alignment = BoxContainer.ALIGNMENT_CENTER
+	left.alignment = BoxContainer.ALIGNMENT_BEGIN
 	var stage_heading := UI.label("Tông môn · Đại Điện",25,UI.PAPER,true)
 	stage_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(stage_heading)
@@ -168,7 +168,7 @@ func _overview() -> Control:
 	info.custom_minimum_size.x = 290
 	hero.add_child(info)
 	var facts := _stack(info,14)
-	facts.alignment = BoxContainer.ALIGNMENT_CENTER
+	facts.alignment = BoxContainer.ALIGNMENT_BEGIN
 	facts.add_child(UI.section_heading("Tông môn","rank",UI.GOLD))
 	for office in _vm.get("offices",[]):
 		if str(office.get("id","")) != "master":
@@ -255,47 +255,76 @@ func _upgrade_page() -> Control:
 	content.add_child(button)
 	return card
 
+# Two independent columns keep progression, costs and actions readable.
 func _rank_page() -> Control:
-	var card := _surface("HallRank")
-	UI.apply_premium_frame(card)
-	var content := _stack(card,13)
-	content.add_child(UI.section_heading("Thăng bậc tông môn","rank",UI.GOLD))
-	content.add_child(UI.label(str(_vm.get("rank_label","Bậc"))+" · %d / 27" % int(_vm.get("rank_step",1)),24,UI.PAPER,true))
+	var page := HBoxContainer.new()
+	page.add_theme_constant_override("separation",14)
+	var progress := _surface("HallRank")
+	progress.size_flags_stretch_ratio = 0.9
+	page.add_child(progress)
+	var left := _stack(progress,12)
+	left.add_child(UI.section_heading("Thăng bậc tông môn","rank",UI.GOLD))
+	left.add_child(UI.scene_picture("hall",Vector2(280,210)))
+	left.add_child(UI.label(str(_vm.get("rank_label","Bậc")),28,UI.PAPER,true))
+	left.add_child(UI.label("Bậc %d / 27" % int(_vm.get("rank_step",1)),18,UI.JADE,true))
 	var steps := GridContainer.new()
 	steps.name = "RankSteps"
 	steps.columns = 27
-	steps.add_theme_constant_override("h_separation",5)
+	steps.add_theme_constant_override("h_separation",2)
 	for i in range(27):
 		var tick := ColorRect.new()
-		tick.custom_minimum_size = Vector2(18,9)
+		tick.custom_minimum_size = Vector2(8,10)
+		tick.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		tick.color = UI.GOLD if i < int(_vm.get("rank_step",1)) else UI.BORDER
 		steps.add_child(tick)
-	content.add_child(steps)
-	content.add_child(UI.label(str(_vm.get("rank_requirement","—")),14,UI.MUTED,false))
-	content.add_child(UI.label("Sức chứa theo bậc: %d → %d" % [int(_vm.get("rank_capacity",0)),int(_vm.get("next_rank_capacity",0))],14,UI.JADE,false))
+	left.add_child(steps)
+	left.add_child(UI.metric_card("Sức chứa theo bậc","%d → %d" % [int(_vm.get("rank_capacity",0)),int(_vm.get("next_rank_capacity",0))],"person",UI.JADE))
+	var requirements := _surface("HallRankRequirements")
+	requirements.size_flags_stretch_ratio = 1.1
+	page.add_child(requirements)
+	var content := _stack(requirements,10)
+	content.add_child(UI.section_heading("Điều kiện thăng bậc","upgrade",UI.GOLD))
+	content.add_child(UI.label(str(_vm.get("rank_requirement","—")),15,UI.MUTED,false))
 	for requirement in _vm.get("rank_rows",[]):
 		content.add_child(UI.resource_item(str(requirement.get("name","")),str(requirement.get("value","")),"rank"))
+	if not _vm.get("promotion_costs",[]).is_empty():
+		content.add_child(HSeparator.new())
+		content.add_child(UI.label("Chi phí thăng bậc",17,UI.PAPER,true))
 	for cost in _vm.get("promotion_costs",[]):
 		content.add_child(UI.resource_item(str(cost.get("name","")),str(cost.get("amount","")),str(cost.get("icon","resource"))))
 	var promotion := UI.button("Thăng bậc",true,UI.GOLD)
 	promotion.name = "PromoteRank"
-	promotion.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	promotion.custom_minimum_size = Vector2(220,48)
+	promotion.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	promotion.disabled = not bool(_vm.get("can_promote",false))
 	promotion.pressed.connect(func(): promotion_requested.emit())
 	content.add_child(promotion)
-	return card
+	return page
 
 func _economy_page() -> Control:
-	var page := _surface("HallEconomy")
-	var content := _stack(page,12)
-	content.add_child(UI.section_heading("Kinh tế tông môn","resource",UI.GOLD))
-	var ledger_panel := UI.panel("HallLedgerSurface",UI.BORDER,UI.SURFACE_LIGHT)
-	content.add_child(ledger_panel)
-	var ledger := UI.label(str(_vm.get("cashflow","Chưa có sổ thu chi.")),17,UI.TEXT,false)
-	ledger.add_theme_constant_override("line_spacing",6)
+	var page := HBoxContainer.new()
+	page.add_theme_constant_override("separation",14)
+	var ledger_panel := _surface("HallLedgerSurface")
+	ledger_panel.size_flags_stretch_ratio = 1.15
+	page.add_child(ledger_panel)
+	var left := _stack(ledger_panel,12)
+	left.add_child(UI.section_heading("Sổ thu chi","resource",UI.GOLD))
+	var metrics := HBoxContainer.new()
+	metrics.add_theme_constant_override("separation",8)
+	left.add_child(metrics)
+	for entry in [["Linh Thạch","spirit_stones"],["Ngân khố","treasury"]]:
+		var metric := UI.metric_card(str(entry[0]),str(_vm.get(entry[1],"—")),"resource",UI.GOLD)
+		metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		metrics.add_child(metric)
+	var ledger := UI.label(str(_vm.get("cashflow","Chưa có sổ thu chi.")),16,UI.TEXT,false)
+	ledger.add_theme_constant_override("line_spacing",7)
 	ledger.name = "HallReceiptLedger"
-	ledger_panel.add_child(ledger)
+	left.add_child(ledger)
+	var operations := _surface("HallEconomy")
+	operations.size_flags_stretch_ratio = 0.85
+	page.add_child(operations)
+	var content := _stack(operations,10)
+	content.add_child(UI.section_heading("Điều hành kinh tế","resource",UI.GOLD))
+	content.add_child(UI.scene_picture("hall",Vector2(220,150)))
 	for action in _vm.get("economy_actions",[]):
 		_add_action(content,action)
 	var workers: Array = _vm.get("vein_workers",[])
@@ -304,43 +333,52 @@ func _economy_page() -> Control:
 		for worker in workers:
 			choose.add_item(str(worker.get("name","")))
 			choose.set_item_metadata(choose.item_count-1,str(worker.get("id","")))
-		choose.custom_minimum_size = Vector2(300,48)
-		choose.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		choose.custom_minimum_size.y = 48
 		choose.add_theme_font_override("font",UI.font_face("body"))
 		choose.add_theme_font_size_override("font_size",16)
 		content.add_child(choose)
-		var start := UI.button("Khai thác Linh Mạch",false,UI.JADE)
+		var start := UI.button("Khai thác Linh Mạch",true,UI.JADE)
 		start.name = "HallOriginVeinStart"
-		start.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		start.custom_minimum_size = Vector2(240,48)
 		start.pressed.connect(func(): hall_action_requested.emit("vein_start",str(choose.get_item_metadata(choose.selected))))
 		content.add_child(start)
 	return page
 
 func _policy_page() -> Control:
-	var page := _surface("HallPolicies")
-	var content := _stack(page,12)
+	var page := HBoxContainer.new()
+	page.add_theme_constant_override("separation",14)
+	var settings := _surface("HallPolicies")
+	settings.size_flags_stretch_ratio = 1.2
+	page.add_child(settings)
+	var content := _stack(settings,12)
 	content.add_child(UI.section_heading("Chính sách vận hành","office",UI.GOLD))
 	for policy in _vm.get("policy_groups",[]):
-		content.add_child(UI.label(str(policy.get("name","")),16,UI.PAPER,true))
+		var group := UI.panel("PolicyGroup",UI.BORDER,UI.SURFACE_LIGHT)
+		content.add_child(group)
+		var stack := _stack(group,8)
+		stack.add_child(UI.label(str(policy.get("name","")),18,UI.PAPER,true))
 		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation",8)
-		content.add_child(row)
+		row.add_theme_constant_override("separation",6)
+		stack.add_child(row)
 		for choice in policy.get("choices",[]):
 			var button := UI.button(str(choice.get("name","")),str(choice.get("value","")) == str(policy.get("current","")),UI.JADE)
 			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			button.custom_minimum_size.y = 40
 			button.pressed.connect(_emit_action.bind(str(policy.get("action","")),str(choice.get("value",""))))
 			row.add_child(button)
+	var auxiliary := _surface("HallPolicyServices")
+	auxiliary.size_flags_stretch_ratio = 0.8
+	page.add_child(auxiliary)
+	var actions := _stack(auxiliary,10)
+	actions.add_child(UI.section_heading("Dịch vụ tông môn","office",UI.GOLD))
+	actions.add_child(UI.scene_picture("hall",Vector2(220,160)))
 	for action in _vm.get("policy_actions",[]):
-		_add_action(content,action)
+		_add_action(actions,action)
 	return page
 
 func _add_action(parent: Control,action: Dictionary) -> void:
 	var button := UI.button(str(action.get("label","")),false,UI.JADE)
 	button.disabled = bool(action.get("disabled",false))
-	button.custom_minimum_size = Vector2(300,48)
-	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	button.custom_minimum_size = Vector2(0,48)
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.pressed.connect(_emit_action.bind(str(action.get("action","")),str(action.get("value",""))))
 	parent.add_child(button)
 

@@ -73,7 +73,7 @@ func _capture() -> void:
         if relative.is_empty() or texture == null or expected == null \
                 or texture.resource_path != expected.resource_path \
                 or texture.get_size() != expected.get_size():
-            _fail("P3.2 map did not bind the actual VIS-11 A texture for %s." % kind)
+            _fail("P3.2 map did not bind the actual Premium scene texture for %s." % kind)
             return
         if target_size.x <= 0.0 or target_size.y <= 0.0:
             _fail("P3.2 map has no renderable texture/size for %s." % kind)
@@ -281,14 +281,14 @@ func _open_from_map(kind: String, destination: StringName, button_name: String, 
             or facility_art.get_global_rect().size.y < 2.0:
         _fail("Live B1 %s has no visible facility art control." % kind)
         return false
-    var ui_texture: Texture2D = facility_art.get("_art") as Texture2D
-    var approved_source: Texture2D = VIS11_AB.texture_for(StringName(kind),&"A")
+    var ui_texture: Texture2D = (facility_art as TextureRect).texture if facility_art is TextureRect else facility_art.get("_art") as Texture2D
+    var approved_source: Texture2D = load("res://art/uiux/premium/%s_scene.webp" % kind) as Texture2D
     if ui_texture == null or approved_source == null \
             or ui_texture.resource_path != approved_source.resource_path \
             or ui_texture.get_size() != approved_source.get_size():
         _fail("Live B1 %s did not bind the actual VIS-11 A texture in its visible panel." % kind)
         return false
-    print("TRI02_B1_VIS11_TEXTURE_PASS kind=%s path=%s size=%s" % [
+    print("TRI02_B1_PREMIUM_TEXTURE_PASS kind=%s path=%s size=%s" % [
         kind,ui_texture.resource_path,str(ui_texture.get_size())])
     if kind == "guidance":
         var has_approved_portrait := screen.find_child("ASCharCandidatePreview",true,false) != null
@@ -321,10 +321,8 @@ func _open_from_map(kind: String, destination: StringName, button_name: String, 
     return true
 
 func _find_facility_art(node: Node, kind: String) -> Control:
-    var script := node.get_script() as Script
-    if script != null and script.resource_path == "res://src/presentation/uiux/sect_facility_art_v2.gd":
-        if str(node.get("facility_kind")) == kind:
-            return node as Control
+    if node is TextureRect and str(node.get_meta("premium_facility_kind","")) == kind and node.is_visible_in_tree():
+        return node as Control
     for child in node.get_children():
         var found := _find_facility_art(child,kind)
         if found != null:

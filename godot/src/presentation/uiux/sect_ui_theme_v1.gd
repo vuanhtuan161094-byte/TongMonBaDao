@@ -61,6 +61,7 @@ static func facility_texture(key: String) -> Texture2D:
 static func scene_picture(key: String, min_size: Vector2) -> TextureRect:
 	var picture := TextureRect.new()
 	picture.name = "PremiumScenePicture"
+	picture.set_meta("premium_facility_kind",key)
 	picture.texture = facility_texture(key)
 	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
