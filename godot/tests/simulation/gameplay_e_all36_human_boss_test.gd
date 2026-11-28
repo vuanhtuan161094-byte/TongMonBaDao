@@ -192,7 +192,31 @@ func _sect_instruction_matrix(branches: Dictionary) -> int:
         var actor := {"id":str(restored.id)}
         var attached := V63HumanSkillCombatSystem.attach_disciple_loadout(state,actor,overrides)
         _check(bool(attached.get("ok",false)) and actor.get("v63_skill_loadout",[]).has(active) and bool(actor.get("v63_"+school+"_combat_enabled",false)),"canonical loadout "+branch_id)
-        print("GAMEPLAY_E3_INSTRUCTION "+JSON.stringify({"branch":branch_id,"basic":basic,"active":active,"attached":attached.get("attached",false)}))
+        # Explicit boundary fixture (not earned XP): prove predecessor/realm
+        # gates and the authoritative derived loadout for both higher tiers.
+        var immortal := "tmb.skill.%s.%s.active_01.immortal.a" % [school,branch_id]
+        var divine := "tmb.skill.%s.%s.active_01.divine.a" % [school,branch_id]
+        var wrong_lineage := "tmb.skill.%s.%s.active_01.divine.b" % [school,branch_id]
+        _check(not bool(V63HumanSkillCombatSystem.learn_skill(state,restored,immortal,overrides).get("ok",false)),"immortal unlocked at legacy floor "+branch_id)
+        var provenance := CandidateState.new({"id":str(restored.id),"generated_index":1000001,"profile_seed":SEED,"recruitment_source":"founder"})
+        restored.v2_birth_profile = DiscipleBirthRollV2.populate(DiscipleBirthProfileV2.create_envelope(provenance),provenance)
+        var initialized := DiscipleRealmProgressV2.initialize(restored,11,1,1,1)
+        _check(bool(initialized.get("ok",false)),"E4 boundary fixture "+branch_id)
+        if bool(initialized.get("ok",false)):
+            _check(bool(V63HumanSkillCombatSystem.learn_skill(state,restored,immortal,overrides).get("ok",false)),"immortal instruction "+branch_id)
+            _check(bool(V63HumanSkillCombatSystem.equip_skill(state,restored,immortal,overrides).get("ok",false)),"immortal equip "+branch_id)
+            _check(V63HumanSkillCombatSystem.is_derived_equipped_move(restored,"tmb.skill.%s.mobility.immortal.base" % school),"immortal mobility provenance "+branch_id)
+            _check(not bool(V63HumanSkillCombatSystem.learn_skill(state,restored,divine,overrides).get("ok",false)),"divine unlocked before realm 21 "+branch_id)
+            restored.v2_realm_progress["cultivation"]["realm"] = 21
+            _check(not bool(V63HumanSkillCombatSystem.learn_skill(state,restored,wrong_lineage,overrides).get("ok",false)),"wrong divine predecessor "+branch_id)
+            _check(bool(V63HumanSkillCombatSystem.learn_skill(state,restored,divine,overrides).get("ok",false)),"divine instruction "+branch_id)
+            _check(bool(V63HumanSkillCombatSystem.equip_skill(state,restored,divine,overrides).get("ok",false)),"divine equip "+branch_id)
+            _check(V63HumanSkillCombatSystem.is_derived_equipped_move(restored,"tmb.skill.%s.basic.divine.base" % school),"divine basic provenance "+branch_id)
+            _check(not V63HumanSkillCombatSystem.is_derived_equipped_move(restored,"tmb.skill.%s.basic.immortal.base" % school),"obsolete derived move "+branch_id)
+            var roundtrip := DiscipleState.from_dict(restored.to_dict())
+            state.disciples[restored.id] = roundtrip
+            _check(V63HumanSkillCombatSystem.validate_state(state).is_empty(),"E4 high-tier Save validation "+branch_id)
+        print("GAMEPLAY_E3_INSTRUCTION "+JSON.stringify({"branch":branch_id,"basic":basic,"active":active,"attached":attached.get("attached",false),"e4_boundary_fixture":initialized.get("ok",false)}))
         count += 1
     return count
 

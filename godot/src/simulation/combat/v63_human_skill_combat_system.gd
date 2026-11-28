@@ -2022,6 +2022,7 @@ static func install_boss_spawn(spawn_data: Dictionary, boss_id: String, scale_to
                 escort_stats[stat] = float(escort_stats[stat])*float(spec[channel])
             escort["hp"] = float(escort_stats["max_hp"])
             updated[i] = escort
+    if scale_to_tier:
         result["v63_boss_scale_version"] = 1
     result["monsters"] = updated
     result["has_boss"] = true

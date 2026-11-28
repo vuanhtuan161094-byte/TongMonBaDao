@@ -173,7 +173,8 @@ static func preview_body_guarantee(state: SimulationState, spawn_data: Dictionar
         return {"linh_tuy":1}
     return {}
 
-static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2) -> Dictionary:
+static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2,
+        preview_overrides: Dictionary = {}) -> Dictionary:
     if not state.sect.p3_7_resources_enabled or battle == null or battle.active:
         return {"ok":false,"reason":"not_final_or_warehouse_disabled"}
     if battle.outcome != "win" or not bool(spawn_data.get("ok",false)):
@@ -187,6 +188,9 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
     var guaranteed := preview_body_guarantee(state,spawn_data)
     for item_id in guaranteed.keys():
         items[item_id] = int(items.get(item_id,0))+int(guaranteed[item_id])
+    var codex_items := V63SectArchiveSystem.boss_victory_manual(state,spawn_data,battle,preview_overrides)
+    for item_id in codex_items:
+        items[item_id] = int(items.get(item_id,0))+int(codex_items[item_id])
     var registry := ResourceRegistry.new()
     var warehouse := WarehouseSystem.new()
     # Preflight ALL items before mutation: all-or-nothing, no partial payout.
@@ -205,6 +209,12 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
             state.sect.warehouse_resources = old_items
             state.sect.warehouse_event_count = old_events
             return {"ok":false,"reason":"warehouse_commit_failed"}
+    if not codex_items.is_empty():
+        var receipt := V63SectArchiveSystem.record_victory_codex_receipt(state,encounter_id,codex_items,preview_overrides)
+        if not bool(receipt.get("ok",false)):
+            state.sect.warehouse_resources = old_items
+            state.sect.warehouse_event_count = old_events
+            return {"ok":false,"reason":"boss_codex_receipt_failed","detail":receipt}
     # Counter advances only after the entire real victorious warehouse claim.
     if str(spawn_data.get("region_id","")) == "thanh_truc_lam":
         var progress := clampi(int(state.sect.v2_body_material_progress.get(

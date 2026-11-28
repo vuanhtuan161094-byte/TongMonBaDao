@@ -799,7 +799,7 @@ func claim() -> Dictionary:
     var settled := _settle_terminal()
     if not bool(settled.get("ok",false)):
         return settled
-    var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle)
+    var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle,v63_preview_overrides)
     if bool(result.get("ok",false)):
         owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id)
         if mode == "multicamp" and owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):

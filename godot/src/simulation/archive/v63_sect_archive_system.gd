@@ -252,6 +252,67 @@ static func restore_manual_from_fragments(state: SimulationState, codex_id: Stri
     return {"ok":true,"reason":"manual_restored","receipt":receipt.duplicate(true),
         "manual_quantity":warehouse.quantity(state,manual_id)}
 
+# E4: one real registered manual per completed tier-scaled Boss challenge.
+# Prefer an unarchived, unowned manual usable by the victorious roster; no
+# arbitrary resource IDs and no reward merely for entering or killing summons.
+static func boss_victory_manual(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2,
+        preview_overrides: Dictionary = {}) -> Dictionary:
+    if state == null or battle == null or battle.active or battle.outcome != "win" \
+            or not state.sect.v63_learning_opt_in or not is_enabled(state,preview_overrides) \
+            or int(spawn_data.get("v63_boss_scale_version",0)) != 1:
+        return {}
+    var boss_id := str(spawn_data.get("v63_boss_id",""))
+    var boss := V63HumanSkillCombatSystem.boss_definition(boss_id)
+    var generation := str(boss.get("tier_band",""))
+    if generation not in ["human","immortal","divine"]:
+        return {}
+    var defeated := false
+    var schools: Dictionary = {}
+    var branches: Dictionary = {}
+    var catalogue := V63HumanSkillCombatSystem.branch_definitions()
+    for actor_value in battle.actors.values():
+        var actor: Dictionary = actor_value
+        if str(actor.get("v63_boss_id","")) == boss_id and float(actor.get("hp",1.0)) <= 0.0:
+            defeated = true
+        if str(actor.get("side","")) != "disciple":
+            continue
+        var member: DiscipleState = state.disciples.get(StringName(str(actor.get("id",""))),null)
+        if member == null:
+            continue
+        var branch := str(member.v63_combat_branch_id)
+        branches[branch] = true
+        var row: Dictionary = catalogue.get(branch,{})
+        schools[str(row.get("school",""))] = true
+    if not defeated:
+        return {}
+    var warehouse := WarehouseSystem.new()
+    var candidates: Array[Dictionary] = []
+    var best := -1
+    for codex in codices():
+        if str(codex.get("generation","")) != generation or not bool(codex.get("archivable",false)):
+            continue
+        var item_id := StringName(str(codex.get("manual_item_id","")))
+        if item_id.is_empty() or not ResourceRegistry.new().has(item_id):
+            continue
+        var score := 0
+        if not bool(state.sect.v63_archived_codices.get(str(codex.get("id","")),false)) and warehouse.quantity(state,item_id) == 0:
+            score += 4
+        if schools.has(str(codex.get("school",""))):
+            score += 2
+        if not str(codex.get("branch","")).is_empty() and branches.has(str(codex.get("branch",""))):
+            score += 1
+        if score > best:
+            candidates.clear()
+            best = score
+        if score == best:
+            candidates.append(codex)
+    if candidates.is_empty():
+        return {}
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return str(a["id"]) < str(b["id"]))
+    var rng := GameRng.new(int(spawn_data.get("reward_seed",0))+48119)
+    var selected: Dictionary = candidates[rng.randi_range(0,candidates.size()-1)]
+    return {str(selected["manual_item_id"]):1}
+
 static func encounter_reward_items(state: SimulationState, spawn_data: Dictionary,
         preview_overrides: Dictionary = {}) -> Dictionary:
     return _validated_reward_items(state,spawn_data.get("v63_codex_rewards",{}),preview_overrides)
