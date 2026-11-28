@@ -1888,15 +1888,15 @@ func _art05_playbook_action(action: String) -> void:
     var snapshot := _gameplay_playbook_snapshot()
     var target_id: StringName = snapshot["candidate"]
     if state.disciples.is_empty() and action in ["school","cultivation","hunt"]:
-        _open_building(SectMapPresentation.DEST_GUIDANCE)
+        _open_player_building(SectMapPresentation.DEST_GUIDANCE)
         return
     match action:
         "recruit":
-            _open_building(SectMapPresentation.DEST_GUIDANCE)
+            _open_player_building(SectMapPresentation.DEST_GUIDANCE)
         "residence":
-            _open_building(SectMapPresentation.DEST_RESIDENCE)
+            _open_player_building(SectMapPresentation.DEST_RESIDENCE)
         "hall":
-            _open_building(SectMapPresentation.DEST_MAIN_HALL)
+            _open_player_building(SectMapPresentation.DEST_MAIN_HALL)
         "school":
             var unassigned: StringName = snapshot["unassigned"]
             if unassigned != &"":
@@ -1904,7 +1904,7 @@ func _art05_playbook_action(action: String) -> void:
             if target_id != &"":
                 _aschar_open_school_skills(target_id)
             else:
-                _open_building(SectMapPresentation.DEST_RESIDENCE)
+                _open_player_building(SectMapPresentation.DEST_RESIDENCE)
         "production":
             _open_building(SectMapPresentation.DEST_MINE)
         "forest":
