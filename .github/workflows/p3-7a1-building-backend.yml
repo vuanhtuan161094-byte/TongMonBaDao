@@ -77,6 +77,7 @@ on:
       - 'godot/tests/simulation/p3_7a2_spirit_field_test.gd'
       - 'godot/tests/simulation/p3_7b1_warehouse_test.gd'
       - 'godot/tests/simulation/p3_7c1_foundation_guidance_test.gd'
+      - 'tools/godot/Verify-P0.ps1'
       - 'tools/godot/Verify-P3-7A1-Building-Authority.ps1'
       - 'tools/godot/Verify-P3-7A2-Spirit-Field.ps1'
       - 'tools/godot/Verify-P3-7B1-Warehouse.ps1'

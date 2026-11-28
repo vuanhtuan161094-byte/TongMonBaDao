@@ -91,6 +91,10 @@ jobs:
           command -v xvfb-run
           command -v glxinfo >/dev/null || true
 
+      - name: Stage Vietnamese facility fonts (Noto, system package)
+        shell: bash
+        run: bash tools/ui/stage_facility_fonts.sh
+
       - name: Import canonical Godot project
         run: godot --headless --path godot --import
 

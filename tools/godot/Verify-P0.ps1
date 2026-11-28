@@ -191,7 +191,13 @@ Write-Host "[1/9] Import"
 Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "--import") -TimeoutSeconds 120 -Label "Godot import"
 
 Write-Host "[2/9] Parse project scripts"
-$Scripts = @(Get-ChildItem -Path (Join-Path $Project "src"), (Join-Path $Project "tests") -Recurse -Filter *.gd | Sort-Object FullName)
+# Standalone art labs require their own source-to-atlas build steps and
+# have separate native VFX workflows. Do not make an unrelated gameplay
+# foundation gate parse their ungenerated test assets. All product src and
+# simulation/presentation tests remain in this gate.
+$AllScripts = @(Get-ChildItem -Path (Join-Path $Project "src"), (Join-Path $Project "tests") -Recurse -Filter *.gd | Sort-Object FullName)
+$Scripts = @($AllScripts | Where-Object { $_.FullName -notmatch '[/\\]tests[/\\]labs[/\\]' })
+Write-Host ("[scope] Product scripts: {0}; isolated lab tests: {1} (dedicated native VFX workflows)" -f $Scripts.Count,($AllScripts.Count-$Scripts.Count))
 $ScriptIndex = 0
 foreach ($Script in $Scripts) {
     $ScriptIndex += 1

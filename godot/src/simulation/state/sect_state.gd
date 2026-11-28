@@ -388,6 +388,16 @@ static func from_dict(data: Dictionary) -> SectState:
     var saved_economy_receipts = data.get("economy_a_receipts", {})
     if saved_economy_receipts is Dictionary:
         state.economy_a_receipts = saved_economy_receipts.duplicate(true)
+        # JSON numbers without the float64 envelope are integer fields in
+        # field_seed receipts. Rehydrate their authored types, not amounts.
+        # This makes a newly produced receipt and a cold-loaded one identical.
+        for receipt_id in state.economy_a_receipts:
+            var receipt: Variant = state.economy_a_receipts[receipt_id]
+            if not receipt is Dictionary or str(receipt.get("kind","")) != "field_seed":
+                continue
+            for field in ["cost","wage_due_estimate","day","tick"]:
+                if receipt.has(field) and receipt[field] is float and is_finite(receipt[field]) and receipt[field] == float(int(receipt[field])):
+                    receipt[field] = int(receipt[field])
     state.economy_a_market_day = int(data.get("economy_a_market_day", -1))
     state.economy_a_market_units_sold = maxi(int(data.get("economy_a_market_units_sold", 0)), 0)
     state.economy_a_market_units_bought = maxi(int(data.get("economy_a_market_units_bought", 0)), 0)

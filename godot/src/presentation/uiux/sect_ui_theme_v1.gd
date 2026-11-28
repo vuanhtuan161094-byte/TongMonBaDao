@@ -18,6 +18,25 @@ const BORDER := Color(0.72,0.67,0.56,0.70)
 const ICON_SCRIPT = preload("res://src/presentation/uiux/sect_ui_icon_v1.gd")
 const ILLUSTRATION_SCRIPT = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 
+# A bundled, Vietnamese-capable font family is staged for native evidence
+# and the Web export. Local checkout without the staged assets remains usable.
+static var _fonts: Dictionary = {}
+static func font_face(role: String = "body") -> Font:
+	if _fonts.has(role):
+		return _fonts[role]
+	var file := "NotoSerif-Regular.ttf" if role == "title" else ("NotoSans-Bold.ttf" if role == "strong" else "NotoSans-Regular.ttf")
+	var path := "res://art/uiux/fonts/" + file
+	var face: Font
+	if ResourceLoader.exists(path,"FontFile"):
+		face = ResourceLoader.load(path,"FontFile") as Font
+	if face == null:
+		var fallback := SystemFont.new()
+		fallback.font_names = PackedStringArray(["Noto Serif","Georgia","Noto Sans"] if role == "title" else ["Noto Sans","Arial","DejaVu Sans"])
+		fallback.font_weight = 700 if role == "strong" else 400
+		face = fallback
+	_fonts[role] = face
+	return face
+
 static func panel(node_name: String, accent: Color, tone: Color) -> PanelContainer:
 	var result := PanelContainer.new()
 	result.name = node_name
@@ -27,7 +46,7 @@ static func panel(node_name: String, accent: Color, tone: Color) -> PanelContain
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(8)
 	style.shadow_color = Color(0.27,0.23,0.16,0.12)
-	style.shadow_size = 2
+	style.shadow_size = 0
 	style.shadow_offset = Vector2(0, 3)
 	style.content_margin_left = 12
 	style.content_margin_right = 12
@@ -41,11 +60,7 @@ static func label(text_value: String, font_size: int, color: Color, bold: bool) 
 	result.text = text_value
 	result.add_theme_font_size_override("font_size", font_size)
 	result.add_theme_color_override("font_color", color)
-	if bold:
-		var font := FontVariation.new()
-		font.base_font = ThemeDB.fallback_font
-		font.variation_embolden = 0.32
-		result.add_theme_font_override("font",font)
+	result.add_theme_font_override("font",font_face("title" if font_size >= 24 and bold else ("strong" if bold else "body")))
 	result.add_theme_constant_override("outline_size",0)
 	result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return result
@@ -56,6 +71,7 @@ static func button(text_value: String, primary: bool, accent: Color) -> Button:
 	result.custom_minimum_size = Vector2(52, 48)
 	result.focus_mode = Control.FOCUS_ALL
 	result.add_theme_font_size_override("font_size", 15)
+	result.add_theme_font_override("font",font_face("strong" if primary else "body"))
 	result.add_theme_color_override("font_color", INK if primary else TEXT)
 	result.add_theme_color_override("font_hover_color", INK if primary else PAPER)
 	result.add_theme_color_override("font_pressed_color", INK if primary else PAPER)
@@ -122,8 +138,8 @@ static func portrait_slot(display_name: String, texture_value: Variant, size: Ve
 	else:
 		# Do not render the repeated first letter of "Chưa bổ nhiệm" as a fake portrait.
 		# A neutral silhouette is used only when the host supplies no real texture.
-		var silhouette_size := int(clampf(minf(size.x, size.y) * 0.42, 32.0, 72.0))
-		var placeholder := icon("person", silhouette_size, MUTED if display_name.is_empty() or display_name == "Chưa bổ nhiệm" else GOLD)
+		var placeholder := label("—",20,MUTED,false)
+		placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		placeholder.name = "UnassignedPortraitGlyph"
 		placeholder.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		placeholder.size_flags_vertical = Control.SIZE_SHRINK_CENTER

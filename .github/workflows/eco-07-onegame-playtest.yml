@@ -72,6 +72,10 @@ jobs:
             test -s "godot/labs/combat_lab/fist02/assets/v4/generated/$name.png"
           done
 
+      - name: Stage Vietnamese facility fonts (Noto, system package)
+        shell: bash
+        run: bash tools/ui/stage_facility_fonts.sh
+
       - name: Import canonical Godot project
         run: godot --headless --path godot --import
 

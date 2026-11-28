@@ -92,12 +92,25 @@ func _run() -> void:
         return
     action.pressed.emit()
     await process_frame
-    var detail := scene.find_child("BuildingOperationPanel",true,false) as Control
-    if detail == null or not detail.visible:
-        _fail("dock management button did not open real Hall gameplay panel")
+    var detail := scene.get_node_or_null("DaiDienScreenV1") as Control
+    var old_detail := scene.find_child("BuildingOperationPanel",true,false) as Control
+    if detail == null or not detail.is_visible_in_tree() or detail.size.distance_to(Vector2(1280,720)) > 2.0 or (old_detail != null and old_detail.is_visible_in_tree()):
+        _fail("dock management must open only the actual full-screen Hall")
         return
-    scene.call("_close_building_operation_panel",true)
+    for index in range(6):
+        var tab := detail.find_child("HallTab_%d" % index,true,false) as Button
+        if tab == null or not tab.is_visible_in_tree():
+            _fail("Hall navigation missing "+str(index))
+            return
+    var back := detail.find_child("HallBackToMap",true,false) as Button
+    if back == null:
+        _fail("Hall back-to-map missing")
+        return
+    back.pressed.emit()
     await process_frame
+    if scene.get_node_or_null("DaiDienScreenV1") != null:
+        _fail("Hall back-to-map did not close")
+        return
     # Entering the actual warehouse must show category groups and only
     # source-backed quantities; it may never alter the saved state.
     scene.call("_open_building",SectMapPresentation.DEST_WAREHOUSE)

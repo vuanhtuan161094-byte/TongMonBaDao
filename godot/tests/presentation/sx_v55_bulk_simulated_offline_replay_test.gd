@@ -126,6 +126,7 @@ func _run_crop(crop_id: StringName, offline_minutes: int) -> bool:
         for receipt_id in before_retry_receipts:
             if not again.sect.economy_a_receipts.has(receipt_id) or again.sect.economy_a_receipts[receipt_id] != before_retry_receipts[receipt_id]:
                 changed_receipts.append(str(receipt_id))
+                print("SX_V55_RECEIPT_DETAIL id=",receipt_id," before=",str(before_retry_receipts[receipt_id])," after=",str(again.sect.economy_a_receipts.get(receipt_id,{})))
         print("SX_V55_REPLAY_DIFF crop=",str(crop_id), " tick=",before_retry_tick,"/",again.tick,
             " stock=",after_stock,"/",warehouse.quantity(again,crop_id),
             " xp=",after_xp,"/",float((again.disciples[chosen.id] as DiscipleState).profession_xp.get("herbalism",0.0)),

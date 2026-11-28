@@ -41,7 +41,9 @@ func set_tab_index(index: int) -> void:
 		_nav[i].button_pressed = i == _tab_index
 		_nav[i].add_theme_color_override("font_color",UI.INK if i == _tab_index else UI.TEXT)
 		_nav[i].add_theme_color_override("font_pressed_color",UI.INK)
+		_nav[i].add_theme_color_override("font_hover_color",UI.INK if i == _tab_index else UI.TEXT)
 		_nav[i].add_theme_stylebox_override("normal",UI._button_style(i == _tab_index,UI.JADE,1.0))
+		_nav[i].add_theme_stylebox_override("pressed",UI._button_style(true,UI.JADE,1.0))
 
 func _surface(node_name: String) -> PanelContainer:
 	var panel := UI.panel(node_name,UI.BORDER,UI.SURFACE)
@@ -88,10 +90,11 @@ func _rebuild() -> void:
 	var title := UI.label("Đại Điện",27,UI.PAPER,true)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
-	if _vm.has("spirit_stones"):
-		header.add_child(UI.resource_item("Linh Thạch",str(_vm["spirit_stones"]),"gold"))
-	if _vm.has("treasury"):
-		header.add_child(UI.resource_item("Ngân khố",str(_vm["treasury"]),"resource"))
+	for entry in [["spirit_stones","Linh Thạch","gold"],["treasury","Ngân khố","resource"]]:
+		if _vm.has(entry[0]):
+			var token := UI.resource_item(str(entry[1]),str(_vm[entry[0]]),str(entry[2]))
+			token.custom_minimum_size.x = 176
+			header.add_child(token)
 	root.add_child(HSeparator.new())
 	var body := HBoxContainer.new()
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -140,15 +143,22 @@ func _overview() -> Control:
 	hero.add_theme_constant_override("separation",18)
 	column.add_child(hero)
 	var scene := _surface("HallArtworkStage")
-	scene.size_flags_stretch_ratio = 1.15
+	scene.size_flags_stretch_ratio = 1.0
+	var stage_style := scene.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	stage_style.bg_color = UI.SURFACE_LIGHT
+	stage_style.set_border_width_all(0)
+	scene.add_theme_stylebox_override("panel",stage_style)
 	hero.add_child(scene)
-	var left := _stack(scene,6)
+	var left := _stack(scene,8)
 	var art: Control = FACILITY_ART.new()
 	art.name = "HallSourceAArtwork"
 	art.set("facility_kind","hall")
-	art.custom_minimum_size = Vector2(300,190)
+	art.custom_minimum_size = Vector2(350,250)
 	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	left.alignment = BoxContainer.ALIGNMENT_CENTER
+	var stage_heading := UI.label("Tông môn · Đại Điện",22,UI.PAPER,true)
+	stage_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	left.add_child(stage_heading)
 	left.add_child(art)
 	var level := UI.label("Đại Điện · Lv%d" % int(_vm.get("building_level",1)),20,UI.PAPER,true)
 	level.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -156,7 +166,7 @@ func _overview() -> Control:
 	var info := _surface("HallSectSummary")
 	info.custom_minimum_size.x = 290
 	hero.add_child(info)
-	var facts := _stack(info,18)
+	var facts := _stack(info,14)
 	facts.alignment = BoxContainer.ALIGNMENT_CENTER
 	facts.add_child(UI.section_heading("Tông môn","rank",UI.GOLD))
 	for office in _vm.get("offices",[]):
@@ -177,13 +187,20 @@ func _overview() -> Control:
 	for office in _vm.get("offices",[]):
 		if bool(office.get("can_dismiss",false)):
 			count += 1
+	var metrics := GridContainer.new()
+	metrics.columns = 2
+	metrics.add_theme_constant_override("h_separation",10)
+	metrics.add_theme_constant_override("v_separation",10)
+	facts.add_child(metrics)
 	for entry in [
 		["Bậc tông môn",str(_vm.get("rank_label",str(_vm.get("rank_step","—"))+" / 27")),"rank"],
 		["Đệ tử",str(_vm.get("population_label","—")),"person"],
 		["Chức vụ","%d / 7" % count,"office"],
 		["Uy danh",str(_vm.get("prestige","—")),"rank"]
 	]:
-		facts.add_child(UI.resource_item(str(entry[0]),str(entry[1]),str(entry[2])))
+		var metric := UI.metric_card(str(entry[0]),str(entry[1]),str(entry[2]),UI.BORDER)
+		metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		metrics.add_child(metric)
 	var growth := _surface("HallGrowth")
 	growth.custom_minimum_size.y = 116
 	growth.size_flags_vertical = Control.SIZE_FILL
@@ -197,8 +214,9 @@ func _overview() -> Control:
 		var desc := UI.label(str(entry[1]),13,UI.MUTED,false)
 		desc.custom_minimum_size.y = 30
 		box.add_child(desc)
-		var see := UI.button("Xem điều kiện",false,UI.JADE)
-		see.custom_minimum_size.y = 35
+		var see := UI.button("Nâng cấp" if int(entry[2]) == 2 else "Thăng bậc",true,UI.JADE)
+		see.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		see.custom_minimum_size = Vector2(148,40)
 		see.pressed.connect(set_tab_index.bind(int(entry[2])))
 		box.add_child(see)
 	return column
@@ -340,12 +358,13 @@ func _build_offices_panel() -> Control:
 
 func _office_card(role_id: String, office: Dictionary) -> Control:
 	var card := UI.panel("Office_%s" % role_id, UI.BORDER, UI.SURFACE_LIGHT)
-	card.custom_minimum_size = Vector2(245, 115)
+	card.custom_minimum_size = Vector2(245, 105)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)
 	card.add_child(row)
-	row.add_child(UI.portrait_slot(str(office.get("disciple_name", "")), office.get("portrait"), Vector2(54, 54)))
+	if office.get("portrait") is Texture2D:
+		row.add_child(UI.portrait_slot(str(office.get("disciple_name","")),office.get("portrait"),Vector2(60,60)))
 	var details := VBoxContainer.new()
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 14, UI.PAPER, true))
@@ -369,6 +388,7 @@ func _office_card(role_id: String, office: Dictionary) -> Control:
 	choose.name = "ChooseOffice"
 	choose.custom_minimum_size = Vector2(90, 34)
 	choose.disabled = not unlocked
+	choose.visible = unlocked
 	choose.tooltip_text = status if not unlocked else "Chỉ chọn đệ tử đủ điều kiện."
 	choose.pressed.connect(_request_office_selection.bind(role_id))
 	actions.add_child(choose)
@@ -376,6 +396,7 @@ func _office_card(role_id: String, office: Dictionary) -> Control:
 	dismiss.name = "DismissOffice"
 	dismiss.custom_minimum_size = Vector2(90, 34)
 	dismiss.disabled = not bool(office.get("can_dismiss", false))
+	dismiss.visible = not dismiss.disabled
 	dismiss.pressed.connect(func(): office_dismissal_requested.emit(role_id))
 	actions.add_child(dismiss)
 	row.add_child(actions)

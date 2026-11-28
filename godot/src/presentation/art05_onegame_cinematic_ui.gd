@@ -19,6 +19,12 @@ const VIS08_ORIGINAL_BUILDINGS = preload("res://src/presentation/p3/tmb_original
 const VIS09_HANDPAINT = preload("res://src/presentation/p3/tmb_handpaint_building_art_v6.gd")
 const VIS11_AB = preload("res://src/presentation/p3/tmb_building_art_ab_v7.gd")
 const FACILITY_SCENERY = preload("res://art/onegame_world_r2/map01_meadow.svg")
+const FACILITY_MAP_ART = {
+    SectMapPresentation.DEST_CULTIVATION:preload("res://art/onegame_world_r2/map01_final_cultivation.svg"),
+    SectMapPresentation.DEST_BODY_TRAINING:preload("res://art/onegame_world_r2/map01_final_training.svg"),
+    SectMapPresentation.DEST_MEDICINE:preload("res://art/onegame_world_r2/map01_final_medicine.svg"),
+    SectMapPresentation.DEST_GATE:preload("res://art/onegame_world_r2/map01_final_gate.svg")
+}
 var _facility_tab_index := 0
 
 func _ready() -> void:
@@ -59,6 +65,8 @@ func _refresh_building_operation_art() -> void:
         override_texture = VIS08_ORIGINAL_BUILDINGS.texture_for(selected_building)
     if override_texture == null and selected_building == SectMapPresentation.DEST_MINE:
         override_texture = VIS09_HANDPAINT.texture_for(&"mine")
+    if override_texture == null:
+        override_texture = FACILITY_MAP_ART.get(selected_building) as Texture2D
     if override_texture != null:
         var override_host := building_operation_panel.get_node_or_null("BuildingOperationArtFrame/BuildingOperationArt") as Control
         if override_host != null:
@@ -432,6 +440,7 @@ func _facility_apply_light_controls(node: Node) -> void:
             var label := child as Label
             label.add_theme_color_override("font_color",SECT_UI_THEME.GOLD if label == building_operation_title else SECT_UI_THEME.TEXT)
             label.add_theme_constant_override("outline_size",0)
+            label.add_theme_font_override("font",SECT_UI_THEME.font_face("title" if label == building_operation_title else ("strong" if label.get_theme_font_size("font_size") >= 19 else "body")))
         elif child is Button:
             var button := child as Button
             button.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
@@ -441,6 +450,7 @@ func _facility_apply_light_controls(node: Node) -> void:
             for style in ["normal","hover","pressed","disabled"]:
                 button.add_theme_stylebox_override(style,SECT_UI_THEME._button_style(false,SECT_UI_THEME.BORDER,1.0 if style == "hover" else 0.8))
             button.add_theme_font_size_override("font_size",maxi(14,button.get_theme_font_size("font_size")))
+            button.add_theme_font_override("font",SECT_UI_THEME.font_face("body"))
         elif child is PanelContainer:
             var card := child as PanelContainer
             var style := card.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
@@ -569,6 +579,9 @@ func _facility_fullscreen_reflow() -> void:
     var ornament := building_operation_panel.get_node_or_null("Art05PremiumJadeFrame")
     if ornament != null:
         ornament.visible = false
+    var old_frame := building_operation_panel.get_node_or_null("Art04CultivationFrame") as Control
+    if old_frame != null:
+        old_frame.visible = false
     building_operation_title.position = Vector2(30,13)
     building_operation_title.size = Vector2(980,42)
     building_operation_title.add_theme_font_size_override("font_size",26)

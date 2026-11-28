@@ -122,6 +122,10 @@ jobs:
             test -s "$HOME/.local/share/godot/export_templates/4.7.2.stable/web_nothreads_${variant}.zip"
           done
 
+      - name: Stage Vietnamese facility fonts (Noto, system package)
+        shell: bash
+        run: bash tools/ui/stage_facility_fonts.sh
+
       - name: Import and export the CURRENT Godot main game to Web
         shell: bash
         run: |
