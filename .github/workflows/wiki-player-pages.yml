@@ -138,7 +138,17 @@ jobs:
           "$GODOT" --headless --path godot --editor --import 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/import.log"
           python3 tools/ui/optimize_premium_web_imports.py godot | tee "$RUNNER_TEMP/one-game-export-proof/premium-import-policy.log"
           "$GODOT" --headless --path godot --editor --import 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/premium-reimport.log"
+          # Godot can exit 0 despite script parse errors. Do not publish a broken canonical game.
+          "$GODOT" --headless --path godot --check-only --script res://src/presentation/art05_onegame_cinematic_ui.gd 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/main-strict-parse.log"
+          if grep -E 'SCRIPT ERROR:|(^|[[:space:]])ERROR:|FATAL:|Compilation failed' "$RUNNER_TEMP/one-game-export-proof/main-strict-parse.log"; then
+            echo "Canonical game script validation failed" >&2
+            exit 1
+          fi
           "$GODOT" --headless --path godot --export-release "Web" "$GITHUB_WORKSPACE/_site/play/index.html" 2>&1 | tee "$RUNNER_TEMP/one-game-export-proof/export.log"
+          if grep -E 'SCRIPT ERROR:|(^|[[:space:]])ERROR:|FATAL:|Compilation failed' "$RUNNER_TEMP/one-game-export-proof/export.log"; then
+            echo "Canonical game export emitted engine errors" >&2
+            exit 1
+          fi
           test -s _site/play/index.html
           test -s _site/play/index.js
           test -s _site/play/index.wasm

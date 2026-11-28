@@ -11,10 +11,16 @@ on:
       - 'godot/src/presentation/p3/sect_production_worksite_cue.gd'
       - 'godot/scenes/p3/p3_2_landscape_sect.tscn'
       - 'godot/src/presentation/art05_onegame_cinematic_ui.gd'
+      - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
+      - 'godot/src/presentation/p3/v63_combat_hud_v1.gd'
+      - 'godot/src/presentation/p3/pve_sect_world_view_v1.gd'
       - 'godot/src/presentation/uiux/sect_premium_panel_v1.gd'
       - 'godot/tests/presentation/art05_real_gui_layout_test.gd'
       - 'godot/tests/presentation/art02_onegame_visual_contract_test.gd'
       - '.github/workflows/art02-godot-focused.yml'
+concurrency:
+  group: art02-visual-${{ github.ref }}
+  cancel-in-progress: false
 permissions:
   contents: read
 jobs:
