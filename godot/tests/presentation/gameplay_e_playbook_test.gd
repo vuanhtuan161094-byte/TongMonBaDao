@@ -64,6 +64,30 @@ func _run() -> void:
         if ui.find_child("OneGamePlaybook_"+str(action),true,false) as Button == null:
             _fail("missing action "+str(action))
             return
+    var progress_button := ui.find_child("OneGameProgressButton",true,false) as Button
+    if progress_button == null:
+        _fail("missing progression entry")
+        return
+    progress_button.pressed.emit()
+    await process_frame
+    var goals: Array = ui.call("_gameplay_e2_goal_rows")
+    if goals.size() != 8:
+        _fail("expected eight derived milestones")
+        return
+    for i in range(goals.size()):
+        if ui.find_child("OneGameGoal_"+str(i),true,false) == null:
+            _fail("missing milestone action "+str(i))
+            return
+    var progress: Dictionary = ui.call("_gameplay_e2_progress_snapshot")
+    if int(progress.get("disciples",-1)) != state.disciples.size():
+        _fail("progress not tied to roster")
+        return
+    var back := ui.find_child("OneGameProgressBack",true,false) as Button
+    if back == null:
+        _fail("missing progress back route")
+        return
+    back.pressed.emit()
+    await process_frame
     var snapshot: Dictionary = ui.call("_gameplay_playbook_snapshot")
     if int(snapshot.get("ready",-1)) < 0 or int(snapshot.get("ready",-1)) > state.disciples.size():
         _fail("invalid live readiness count")

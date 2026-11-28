@@ -1793,7 +1793,7 @@ func _gameplay_playbook_snapshot() -> Dictionary:
 func _gameplay_e2_progress_snapshot() -> Dictionary:
     var out := {"disciples":state.disciples.size(),"schools":0,"advanced":0,
         "armed":0,"cultivation_floor":0,"body_floor":0,"production_sites":0,
-        "production_batches":0,"houses":0,"hall":0,"pve_wins":0,"boss_wins":0}
+        "production_batches":0,"houses":0,"hall":0,"pve_wins":0,"pve_kills":0,"boss_wins":0}
     for raw in state.disciples.values():
         var d: DiscipleState = raw
         if not str(d.v63_combat_branch_id).is_empty():
@@ -1821,10 +1821,17 @@ func _gameplay_e2_progress_snapshot() -> Dictionary:
                 out["production_sites"] = int(out["production_sites"])+1
     for id in state.sect.v2_pve_settlement_receipts:
         var receipt: Dictionary = state.sect.v2_pve_settlement_receipts[id]
+        out["pve_kills"] = int(out["pve_kills"])+maxi(0,int(receipt.get("kills",0)))
         if str(receipt.get("outcome","")) == "win":
             out["pve_wins"] = int(out["pve_wins"])+1
             if str(id).begins_with("pve:v63_boss:"):
                 out["boss_wins"] = int(out["boss_wins"])+1
+    for id in state.sect.v2_pve_active_runs:
+        if state.sect.v2_pve_settlement_receipts.has(id):
+            continue
+        var run: Dictionary = state.sect.v2_pve_active_runs[id]
+        var population: Dictionary = run.get("camp_population",{})
+        out["pve_kills"] = int(out["pve_kills"])+maxi(0,int(population.get("world_total_kills",0)))
     return out
 
 func _gameplay_e2_goal_rows() -> Array:
@@ -1833,7 +1840,7 @@ func _gameplay_e2_goal_rows() -> Array:
         ["01  KHỞI LẬP","Có sáu đệ tử và một Đệ Tử Xá hoạt động.", "%d/6 đệ tử · %d nhà" % [p["disciples"],p["houses"]],int(p["disciples"]) >= 6 and int(p["houses"]) >= 1,"residence"],
         ["02  ĐẶT NỀN MÓNG","Hoàn thành sản xuất tại ba cơ sở.", "%d/3 cơ sở · %d lô" % [p["production_sites"],p["production_batches"]],int(p["production_sites"]) >= 3,"production"],
         ["03  TRUYỀN THỪA","Chọn nhánh cho sáu đệ tử, học kỹ năng chiến đấu.", "%d/6 chọn nhánh · %d/6 có kỹ năng" % [p["schools"],p["armed"]],int(p["schools"]) >= 6 and int(p["armed"]) >= 6,"school"],
-        ["04  LỊCH LUYỆN","Thắng một encounter PvE đã quyết toán.", "%d trận thắng đã lưu" % p["pve_wins"],int(p["pve_wins"]) >= 1,"hunt"],
+        ["04  LỊCH LUYỆN","Hạ yêu thú trong thế giới săn hoặc thắng một trận PvE.", "%d yêu thú · %d trận thắng" % [p["pve_kills"],p["pve_wins"]],int(p["pve_kills"]) >= 1 or int(p["pve_wins"]) >= 1,"hunt"],
         ["05  HƯNG THỊNH","Đại Điện cấp 2 và có hai Đệ Tử Xá hoạt động.", "Đại Điện Lv%d · %d/2 nhà" % [p["hall"],p["houses"]],int(p["hall"]) >= 2 and int(p["houses"]) >= 2,"hall"],
         ["06  TIÊN ĐỒ","Có đệ tử đạt đại cảnh giới 2 ở cả hai hướng phát triển (có thể khác người).", "Tu Vi tầng %d/11 · Thể tầng %d/11" % [p["cultivation_floor"],p["body_floor"]],int(p["cultivation_floor"]) >= 11 and int(p["body_floor"]) >= 11,"cultivation"],
         ["07  THÁCH ĐẤU","Thắng một Boss có biên nhận kết thúc trận.", "%d trận Boss thắng" % p["boss_wins"],int(p["boss_wins"]) >= 1,"hunt"],

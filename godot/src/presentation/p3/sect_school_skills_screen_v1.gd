@@ -175,10 +175,14 @@ func refresh() -> void:
         Vector2(13,311),Vector2(232,42),true)
     confirm.name = "SchoolConfirmBranch"
     confirm.disabled = not assigned.is_empty() or current_preview.is_empty() \
-        or d.region_id != &"sect" or not d.active_pve_encounter_id.is_empty()
+        or not _can_change_loadout(d)
     confirm.pressed.connect(Callable(self,"_ask_branch").bind(current_preview))
-    _label(mid,"Xem kỹ năng trước khi chọn. Bái môn chỉ một lần."
-        if assigned.is_empty() else "Đã bái môn. Các nhánh khác chỉ được tra cứu.",
+    var branch_hint := "Đã bái môn. Các nhánh khác chỉ được tra cứu."
+    if assigned.is_empty():
+        branch_hint = "Chọn một lần. Kỹ năng nâng cao cần bí kíp."
+        if _school not in ["bow","fist","poison"]:
+            branch_hint = "Chọn một lần. Kỹ năng riêng đang chờ nguồn; dùng kỹ năng P2 trước."
+    _label(mid,branch_hint,
         Vector2(15,363),Vector2(231,62),12,SOFT)
     var right := Panel.new()
     right.position = Vector2(654,81)
@@ -296,10 +300,26 @@ func refresh() -> void:
             action.custom_minimum_size = Vector2(118,42)
             action.text = "ĐÃ DÙNG" if equipped else ("TRANG BỊ" if known else "HỌC")
             var own_branch := _school == selected_school and (str(definition.get("branch","")).is_empty() or str(definition.get("branch","")) == assigned)
-            action.disabled = not v63_live or assigned.is_empty() or not own_branch or equipped or not bool(definition.get("archivable",false))
-            if not own_branch:
+            var reason := ""
+            if not own_branch or assigned.is_empty():
+                reason = "Chỉ học kỹ năng thuộc môn phái và nhánh đã chọn."
                 action.text = "TRA CỨU"
-            action.tooltip_text = "V6.3 chưa được phép phát hành" if not v63_live else id
+            elif equipped:
+                reason = "Đã trang bị."
+            elif not _can_change_loadout(d):
+                reason = "Đệ tử phải khỏe mạnh và ở tông môn."
+                action.text = "ĐANG BẬN"
+            elif not v63_live:
+                reason = "Bật Truyền thừa trong Lộ trình tông chủ."
+                action.text = "CHƯA MỞ"
+            elif not bool(definition.get("archivable",false)):
+                reason = "Chưa có nguồn học trực tiếp được duyệt cho kỹ năng này."
+                action.text = "CHƯA MỞ"
+            elif not known and not V63SectArchiveSystem.transmission_available_for_disciple(_state,d.id,str(definition.get("source_codex_id","")),V63FeatureGates.persisted_preview_overrides(_state)):
+                reason = "Cần bí kíp đã lưu tại Tàng Kinh Các và đủ quyền truyền thừa."
+                action.text = "THIẾU BÍ KÍP"
+            action.disabled = not reason.is_empty()
+            action.tooltip_text = id if reason.is_empty() else reason
             action.pressed.connect(Callable(self,"_ask_skill").bind(id,
                 "equip" if known else "learn"))
             row.add_child(action)

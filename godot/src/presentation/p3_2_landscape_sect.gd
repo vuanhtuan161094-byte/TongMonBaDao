@@ -1890,22 +1890,39 @@ func _current_v63_preview_overrides() -> Dictionary:
 func _populate_v63_boss_selector() -> void:
     if pve_party_picker_boss_selector == null:
         return
-    pve_party_picker_boss_selector.clear()
-    var loaded := V63HumanSkillCombatSystem.load_catalogue()
-    if not bool(loaded.get("ok",false)):
-        return
-    var rows: Array[Dictionary] = []
-    for boss in loaded.get("data",{}).get("bosses",[]):
-        if boss is Dictionary:
-            rows.append(boss.duplicate(true))
-    rows.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
-        return str(a.get("id","")) < str(b.get("id","")))
-    for row in rows:
-        var boss_id := str(row.get("id",""))
-        var display := str(row.get("name_vi",row.get("display_name",boss_id)))
-        pve_party_picker_boss_selector.add_item("%s · %s" % [display,boss_id])
-        pve_party_picker_boss_selector.set_item_metadata(
-            pve_party_picker_boss_selector.item_count-1,boss_id)
+    var selector := pve_party_picker_boss_selector
+    var previous := str(selector.get_selected_metadata()) if selector.selected >= 0 else ""
+    selector.clear()
+    var sources := [V63HumanSkillCombatSystem.load_catalogue(),
+        V63ImmortalSkillCombatSystem.load_catalogue(),V63DivineSkillCombatSystem.load_catalogue()]
+    var seen: Dictionary = {}
+    var first_available := -1
+    var restore_index := -1
+    for source in sources:
+        if not bool(source.get("ok",false)):
+            continue
+        for raw in source.get("data",{}).get("bosses",[]):
+            if not (raw is Dictionary):
+                continue
+            var row: Dictionary = raw
+            var boss_id := str(row.get("id",""))
+            if boss_id.is_empty() or seen.has(boss_id):
+                continue
+            seen[boss_id] = true
+            var tier := str(row.get("tier_band","human"))
+            var tier_label := "Nhân" if tier == "human" else ("Tiên" if tier == "immortal" else "Thần")
+            var display := str(row.get("name",row.get("name_vi",row.get("display_name",boss_id))))
+            # Live route remains bound to Thanh Truc Lam (realm 1).
+            var playable := tier == "human" and not bool(row.get("candidate_only",false))
+            selector.add_item("%s · %s%s" % [display,tier_label,"" if playable else " · Chưa mở"])
+            var index := selector.item_count-1
+            selector.set_item_metadata(index,boss_id)
+            selector.set_item_disabled(index,not playable)
+            if playable and first_available < 0:
+                first_available = index
+            if playable and boss_id == previous:
+                restore_index = index
+    selector.select(restore_index if restore_index >= 0 else first_available)
 
 
 func _on_v63_preview_gate_toggled(enabled: bool) -> void:
@@ -1983,9 +2000,13 @@ func _start_v63_boss_for_picked_party() -> void:
             or not state.sect.b3_hunt.is_empty() or not state.sect.v2_pve_active_runs.is_empty():
         pve_party_picker_feedback.text = "Runtime chưa sẵn sàng hoặc đang có một trận PvE khác."
         return
+    if pve_party_picker_boss_selector.selected < 0 or pve_party_picker_boss_selector.is_item_disabled(pve_party_picker_boss_selector.selected):
+        pve_party_picker_feedback.text = "Boss chưa được mở tại bản đồ hiện tại."
+        return
     var boss_id := str(pve_party_picker_boss_selector.get_selected_metadata())
-    if V63HumanSkillCombatSystem.boss_definition(boss_id).is_empty():
-        pve_party_picker_feedback.text = "Danh mục Boss chưa hợp lệ: %s" % boss_id
+    var boss_definition := V63HumanSkillCombatSystem.boss_definition(boss_id)
+    if boss_definition.is_empty() or str(boss_definition.get("tier_band","")) != "human" or bool(boss_definition.get("candidate_only",false)):
+        pve_party_picker_feedback.text = "Boss chưa đủ điều kiện xuất hiện tại Thanh Trúc Lâm."
         return
     var party := _multicamp_party_for_ids(pve_party_selected_ids)
     if party.size() != 6:

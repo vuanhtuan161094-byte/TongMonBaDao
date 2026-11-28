@@ -29,7 +29,26 @@ func _snapshot(state: SimulationState) -> Dictionary:
             employed += 1
         for value in disciple.profession_xp.values():
             xp += float(value)
+    var economy := EconomySystem.new()
+    var cash := economy.daily_market_cashflow(state)
+    var production_batches := 0
+    var max_cultivation := 0
+    var max_body := 0
+    for raw in state.buildings.values():
+        var building: BuildingState = raw
+        production_batches += int(building.metrics.get("production_batches",0))
+    for raw in state.disciples.values():
+        var d: DiscipleState = raw
+        var current := DiscipleRealmProgressV2.current(d)
+        if bool(current.get("ok",false)):
+            max_cultivation = maxi(max_cultivation,int(current["cultivation_global_floor"]))
+            max_body = maxi(max_body,int(current["body_global_floor"]))
     return {"tick":state.tick,"disciples":state.disciples.size(),"buildings":state.buildings.size(),
+        "production_batches":production_batches,"max_cultivation":max_cultivation,"max_body":max_body,
+        "wage_arrears":int(economy.unpaid_work_wages(state).get("total",0)),
+        "daily_net_recorded":int(cash.get("net_recorded",0)),
+        "daily_income":int(cash.get("income",0))+int(cash.get("origin_income",0)),
+        "daily_wages":int(cash.get("wages",0)),
         "employed":employed,"stones":state.sect.spirit_stones,"treasury":state.sect.treasury,
         "iron":warehouse.quantity(state,&"thanh_thiet"),"wood":warehouse.quantity(state,&"linh_moc"),
         "economy_receipts":state.sect.economy_a_receipts.size(),"profession_xp":xp}
