@@ -31,6 +31,7 @@ func _rebuild() -> void:
 	background.color = UI.DEEP
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
+	UI.add_facility_backdrop(self,"residence")
 	var shell := _make_shell()
 	add_child(shell)
 	# One full-screen facility, two distinct tasks. No page-level scroll;

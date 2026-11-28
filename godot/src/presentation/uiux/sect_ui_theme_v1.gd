@@ -41,6 +41,37 @@ static func font_face(role: String = "body") -> Font:
 # Use only on focal surfaces; repeated items deliberately keep clean flat backgrounds.
 const PREMIUM_FRAME = preload("res://art/uiux/premium/panel_jade_gold.webp")
 
+const PREMIUM_JADE_BUTTON = preload("res://art/uiux/premium/button_jade.webp")
+
+static func primary_button_skin(tint: Color = Color.WHITE) -> StyleBoxTexture:
+	var skin := StyleBoxTexture.new()
+	skin.texture = PREMIUM_JADE_BUTTON
+	skin.modulate_color = tint
+	skin.set_texture_margin(SIDE_LEFT,19.0)
+	skin.set_texture_margin(SIDE_RIGHT,19.0)
+	skin.set_texture_margin(SIDE_TOP,10.0)
+	skin.set_texture_margin(SIDE_BOTTOM,10.0)
+	skin.set_content_margin(SIDE_LEFT,22.0)
+	skin.set_content_margin(SIDE_RIGHT,22.0)
+	skin.set_content_margin(SIDE_TOP,8.0)
+	skin.set_content_margin(SIDE_BOTTOM,8.0)
+	return skin
+
+# Facility illustrations are optional presentation-only assets. Never block
+# the existing game when an artwork has not yet been staged/imported.
+static func add_facility_backdrop(parent: Control, key: String) -> void:
+	var path := "res://art/uiux/premium/%s_scene.webp" % key
+	if not ResourceLoader.exists(path,"Texture2D"):
+		return
+	var art := TextureRect.new()
+	art.name = "PremiumFacilityBackdrop"
+	art.texture = ResourceLoader.load(path,"Texture2D") as Texture2D
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	parent.add_child(art)
+
 static func apply_premium_frame(target: PanelContainer) -> void:
 	var frame := StyleBoxTexture.new()
 	frame.texture = PREMIUM_FRAME
@@ -95,6 +126,10 @@ static func button(text_value: String, primary: bool, accent: Color) -> Button:
 	result.add_theme_stylebox_override("hover", _button_style(primary, accent, 0.98))
 	result.add_theme_stylebox_override("pressed", _button_style(primary, accent, 0.60))
 	result.add_theme_stylebox_override("disabled", _button_style(false, BORDER, 0.35))
+	if primary:
+		result.add_theme_stylebox_override("normal",primary_button_skin())
+		result.add_theme_stylebox_override("hover",primary_button_skin(Color(1.12,1.12,1.12)))
+		result.add_theme_stylebox_override("pressed",primary_button_skin(Color(0.77,0.84,0.80)))
 	return result
 
 static func section_heading(title: String, icon_kind: String, accent: Color) -> HBoxContainer:

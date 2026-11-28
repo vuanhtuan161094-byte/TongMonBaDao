@@ -267,7 +267,7 @@ jobs:
       - name: ART05 strict real OneGame layout and input navigation test
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/art05_real_gui_layout_test.gd
       - name: Sect Master mockup shell, true inventory and contextual map dock
-        run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sect_master_mockup_shell_test.gd
+        run: LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 1280x720x24" bash tools/qa/run_godot_strict.sh --path godot --rendering-method gl_compatibility --audio-driver Dummy --resolution 1280x720 -s res://tests/presentation/sect_master_mockup_shell_test.gd
       - name: MASTERPLAN fixed district layout, routes, paid building IDs and input
         run: bash tools/qa/run_godot_strict.sh --headless --path godot -s res://tests/presentation/sect_map_d1b_layout_contract_test.gd
       - name: AS-BUILD-V3 all twelve real source-backed site sprite imports and job rules

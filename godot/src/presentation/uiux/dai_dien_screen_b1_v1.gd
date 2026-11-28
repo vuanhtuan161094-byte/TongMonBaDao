@@ -42,8 +42,8 @@ func set_tab_index(index: int) -> void:
 		_nav[i].add_theme_color_override("font_color",UI.INK if i == _tab_index else UI.TEXT)
 		_nav[i].add_theme_color_override("font_pressed_color",UI.INK)
 		_nav[i].add_theme_color_override("font_hover_color",UI.INK if i == _tab_index else UI.TEXT)
-		_nav[i].add_theme_stylebox_override("normal",UI._button_style(i == _tab_index,UI.JADE,1.0))
-		_nav[i].add_theme_stylebox_override("pressed",UI._button_style(true,UI.JADE,1.0))
+		_nav[i].add_theme_stylebox_override("normal",UI.primary_button_skin() if i == _tab_index else UI._button_style(false,UI.JADE,1.0))
+		_nav[i].add_theme_stylebox_override("pressed",UI.primary_button_skin(Color(0.83,0.88,0.84)))
 
 func _surface(node_name: String) -> PanelContainer:
 	var panel := UI.panel(node_name,UI.BORDER,UI.SURFACE)
@@ -74,6 +74,7 @@ func _rebuild() -> void:
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(bg)
+	UI.add_facility_backdrop(self,"hall")
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for edge in ["margin_left","margin_right","margin_top","margin_bottom"]:

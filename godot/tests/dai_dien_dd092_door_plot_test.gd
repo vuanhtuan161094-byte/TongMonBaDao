@@ -100,7 +100,13 @@ func _run() -> void:
     root.add_child(panel)
     panel._tab(5)
     var chooser := panel.find_child("ResidencePlotSelector",true,false) as OptionButton
-    var third_site := Vector2i(110,114)
+    # Use the current canonical layout catalogue rather than a fixed legacy-map coordinate.
+    var legal_plots := SectResidenceSiteV1.available_plots(state)
+    if not _require(not legal_plots.is_empty(), "no available third house plot in current layout"):
+        return
+    var third_site: Vector2i = legal_plots[int(legal_plots.size()/2.0)]
+    if not _require(bool(SectResidenceSiteV1.check(state,third_site).get("ok",false)), "current plot catalogue returned invalid site"):
+        return
     var selector_index := panel._residence_site_options.find(third_site)
     if not _require(chooser != null and selector_index >= 0,
             "native plot selector missing available non-overlapping lot"):

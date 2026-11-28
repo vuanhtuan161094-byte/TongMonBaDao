@@ -91,9 +91,11 @@ func _run() -> void:
         _fail("Sect Master dock lacks real management action")
         return
     action.pressed.emit()
-    await process_frame
+    for _layout_frame in range(3):
+        await process_frame
     var detail := scene.get_node_or_null("DaiDienScreenV1") as Control
     var old_detail := scene.find_child("BuildingOperationPanel",true,false) as Control
+    print("HALL_FULLSCREEN_DIAGNOSTIC viewport=",scene.get_viewport_rect().size," scene=",scene.size," detail=",detail.size if detail != null else Vector2.ZERO," legacy_visible=",old_detail != null and old_detail.is_visible_in_tree()," destination=",scene.get("selected_building"))
     if detail == null or not detail.is_visible_in_tree() or detail.size.distance_to(Vector2(1280,720)) > 2.0 or (old_detail != null and old_detail.is_visible_in_tree()):
         _fail("dock management must open only the actual full-screen Hall")
         return
