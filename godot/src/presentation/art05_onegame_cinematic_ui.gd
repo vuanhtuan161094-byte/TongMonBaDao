@@ -1251,7 +1251,7 @@ func _art05_install_mockup_shell() -> void:
         time_label.add_theme_color_override("font_color",ART05_MUTE)
         var playbook := Button.new()
         playbook.name = "OneGamePlaybookButton"
-        playbook.text = "Hướng dẫn"
+        playbook.text = "Lộ trình"
         playbook.tooltip_text = "Mở lộ trình phát triển tông môn bất cứ lúc nào"
         playbook.position = Vector2(709,18)
         playbook.size = Vector2(114,36)
@@ -1757,6 +1757,37 @@ func _aschar_skill_action(disciple_id: StringName,skill_id: String,action: Strin
 
 # PRODUCT-UX: a reopenable player guide, not a second simulation or fake rewards.
 # Every card invokes the existing authoritative OneGame navigation.
+func _gameplay_playbook_snapshot() -> Dictionary:
+    var ready := 0
+    var employed := 0
+    var assigned_school := 0
+    var injured := 0
+    var hunting := 0
+    var candidate_id: StringName = &""
+    var unassigned_id: StringName = &""
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.injury_level != 0 or disciple.hp <= 0.0:
+            injured += 1
+        if not disciple.active_pve_encounter_id.is_empty():
+            hunting += 1
+        if not disciple.worksite_building_id.is_empty():
+            employed += 1
+        if not str(disciple.v63_combat_branch_id).is_empty():
+            assigned_school += 1
+        if _multicamp_member_eligibility_reason(disciple).is_empty():
+            ready += 1
+        if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty() or disciple.injury_level != 0 or disciple.hp <= 0.0:
+            continue
+        if candidate_id == &"" or disciple.id == selected_id:
+            candidate_id = disciple.id
+        if str(disciple.v63_combat_branch_id).is_empty() and unassigned_id == &"":
+            unassigned_id = disciple.id
+    return {"ready":ready,"employed":employed,"school":assigned_school,"injured":injured,
+        "hunting":hunting,"candidate":candidate_id,"unassigned":unassigned_id}
+
 func _art05_open_playbook() -> void:
     if state == null or popup_layer == null or _pve_hunt_overlay_is_open():
         return
@@ -1764,60 +1795,84 @@ func _art05_open_playbook() -> void:
     _close_disciple_summary(true)
     _clear_popup()
     _add_dim()
+    var snapshot := _gameplay_playbook_snapshot()
+    var count := state.disciples.size()
     var panel := Panel.new()
     panel.name = "OneGamePlaybook"
-    panel.position = Vector2(170,98)
-    panel.size = Vector2(940,520)
+    panel.position = Vector2(46,80)
+    panel.size = Vector2(1188,620)
     panel.z_index = 45
     panel.mouse_filter = Control.MOUSE_FILTER_STOP
     panel.add_theme_stylebox_override("panel",_art05_style(ART05_DEEP,ART05_GOLD,2,18))
     popup_layer.add_child(panel)
-    var heading := _art05_dock_label(panel,"LỘ TRÌNH TÔNG CHỦ",Vector2(24,16),Vector2(760,42),26,ART05_GOLD)
-    heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-    var intro := _art05_dock_label(panel,"Chọn một mục để mở đúng màn hình trong game. Không cần hoàn thành theo thứ tự cứng.",Vector2(25,58),Vector2(875,34),14,ART05_MUTE)
-    intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+    _art05_dock_label(panel,"LỘ TRÌNH TÔNG CHỦ",Vector2(20,12),Vector2(790,36),25,ART05_GOLD)
+    var next_step := "Phân công sản xuất, tu luyện và mở rộng tông môn."
+    if count == 0:
+        next_step = "Bắt đầu: tuyển đệ tử tại Dẫn Tiên Đài."
+    elif count >= state.sect.disciple_capacity:
+        next_step = "Đã đạt giới hạn đệ tử. Kiểm tra Đại Điện và Đệ Tử Xá."
+    elif int(snapshot["injured"]) > 0:
+        next_step = "Có đệ tử bị thương. Kiểm tra Dược Phòng trước khi xuất chinh."
+    elif int(snapshot["school"]) < count:
+        next_step = "Chọn môn phái cho đệ tử chưa có truyền thừa."
+    elif int(snapshot["employed"]) == 0:
+        next_step = "Phân công người sản xuất để tạo nguồn vật tư."
+    elif int(snapshot["ready"]) > 0:
+        next_step = "Có đệ tử đủ điều kiện lịch luyện. Chọn bãi săn hoặc Boss."
+    _art05_dock_label(panel,next_step,Vector2(20,51),Vector2(1130,25),15,ART05_WHITE)
+    var summary := "Đệ tử %d/%d  |  Chiêu mộ lệnh %d  |  Đủ điều kiện săn %d  |  Có nơi làm việc %d  |  Đang săn %d  |  Bị thương/gục %d" % [
+        count,state.sect.disciple_capacity,state.sect.disciple_recruitment_tokens,int(snapshot["ready"]),
+        int(snapshot["employed"]),int(snapshot["hunting"]),int(snapshot["injured"])]
+    _art05_dock_label(panel,summary,Vector2(20,80),Vector2(1148,24),14,ART05_MUTE)
     var close := Button.new()
     close.name = "OneGamePlaybookClose"
     close.text = "Đóng"
-    close.position = Vector2(828,20)
-    close.size = Vector2(88,36)
+    close.position = Vector2(1072,14)
+    close.size = Vector2(96,36)
     close.add_theme_color_override("font_color",ART05_WHITE)
     close.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,8))
     close.pressed.connect(_clear_popup)
     panel.add_child(close)
     var cards := [
-        ["01  TUYỂN ĐỆ TỬ","Xem phẩm chất và chỗ ở trước khi chiêu mộ. Mỗi lần nhận người dùng điều kiện thật.","recruit"],
-        ["02  MÔN PHÁI & KỸ NĂNG","Xem linh căn, chọn nhánh một lần. Học và trang bị kỹ năng đủ điều kiện.","school"],
-        ["03  SẢN XUẤT","Chọn người rảnh, phân công Mỏ, Linh Lâm hoặc Linh Điền. Theo dõi sản lượng và ETA.","production"],
-        ["04  TU LUYỆN","Xem công pháp, tu vi, luyện thể và điều kiện đột phá trong hồ sơ đệ tử.","cultivation"],
-        ["05  LỊCH LUYỆN","Lập đội đệ tử đủ sức khỏe. Chọn bãi săn, theo dõi giao chiến và chiến lợi phẩm.","hunt"],
-        ["06  ĐAN DƯỢC & TRANG BỊ","Dùng vật liệu thực trong kho để luyện đan, luyện khí và mở rộng tông môn.","craft"]
+        ["DẪN TIÊN ĐÀI","Chiêu mộ và chọn ứng viên.","recruit"],
+        ["ĐỆ TỬ XÁ","Nơi ở, sức chứa và sinh hoạt.","residence"],
+        ["ĐẠI ĐIỆN","Giới hạn, quản trị và chính sách.","hall"],
+        ["MÔN PHÁI","%d/%d đệ tử đã chọn nhánh." % [int(snapshot["school"]),count],"school"],
+        ["TU LUYỆN","Công pháp, tu vi, đột phá.","cultivation"],
+        ["RÈN THÂN ĐƯỜNG","Phân công rèn thân, luyện thể.","body"],
+        ["DƯỢC PHÒNG","Theo dõi sức khỏe, hồi phục.","medicine"],
+        ["LỊCH LUYỆN","%d người đủ điều kiện săn." % int(snapshot["ready"]),"hunt"],
+        ["MỎ KHOÁNG","Phân công và khai thác khoáng.","production"],
+        ["LINH LÂM","Thu hoạch linh mộc.","forest"],
+        ["LINH ĐIỀN","Chọn cây, chăm sóc, thu hoạch.","field"],
+        ["KHO TÔNG MÔN","Xem vật tư và trang bị.","warehouse"],
+        ["LUYỆN ĐAN","Chuyển nguyên liệu thành đan.","craft"],
+        ["LUYỆN KHÍ","Chế tạo và quản lý trang bị.","forge"],
+        ["CỔNG TÔNG MÔN","Mở điều phối xuất chinh.","gate"]
     ]
     for i in range(cards.size()):
         var item: Array = cards[i]
+        var action := str(item[2])
         var tile := Panel.new()
-        tile.position = Vector2(24+(i%2)*454,104+floori(float(i)/2.0)*132)
-        tile.size = Vector2(438,120)
+        tile.position = Vector2(20+(i%4)*290,113+floori(float(i)/4.0)*123)
+        tile.size = Vector2(278,112)
         tile.add_theme_stylebox_override("panel",_art05_style(ART05_JADE,Color(0.32,0.49,0.42),1,12))
         panel.add_child(tile)
-        var title := _art05_dock_label(tile,str(item[0]),Vector2(13,9),Vector2(409,29),17,ART05_GOLD)
-        title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-        var action := str(item[2])
-        var needs_disciple := action in ["school","cultivation","hunt"]
-        var recruit_first := needs_disciple and state.disciples.is_empty()
+        _art05_dock_label(tile,str(item[0]),Vector2(11,7),Vector2(256,26),17,ART05_GOLD)
         var hint := str(item[1])
+        var recruit_first := count == 0 and action in ["school","cultivation","hunt"]
         if recruit_first:
-            hint = "Chưa có đệ tử. Hãy chiêu mộ tại Dẫn Tiên Đài trước khi sử dụng chức năng này."
-        elif action == "recruit":
-            hint = "Đệ tử %d/%d • Chiêu mộ lệnh: %d. Xem ứng viên tại Dẫn Tiên Đài." % [state.disciples.size(),state.sect.disciple_capacity,state.sect.disciple_recruitment_tokens]
-        var description := _art05_dock_label(tile,hint,Vector2(13,39),Vector2(409,41),13,ART05_WHITE)
-        description.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+            hint = "Cần chiêu mộ đệ tử trước."
+        elif action == "school" and snapshot["candidate"] == &"":
+            hint = "Chưa có đệ tử khỏe tại tông môn."
+        _art05_dock_label(tile,hint,Vector2(11,33),Vector2(256,39),14,ART05_WHITE)
         var button := Button.new()
-        button.name = "OneGamePlaybook_"+str(item[2])
-        var action_labels := {"recruit":"CHIÊU MỘ","school":"MÔN PHÁI","production":"SẢN XUẤT","cultivation":"HỒ SƠ","hunt":"SĂN YÊU","craft":"LUYỆN ĐAN"}
-        button.text = "TUYỂN TRƯỚC" if recruit_first else str(action_labels.get(action,"MỞ"))
-        button.position = Vector2(264,82)
-        button.size = Vector2(159,30)
+        button.name = "OneGamePlaybook_"+action
+        button.text = "TUYỂN TRƯỚC" if recruit_first else "MỞ"
+        if action == "hunt" and int(snapshot["hunting"]) > 0:
+            button.text = "TIẾP TỤC"
+        button.position = Vector2(145,76)
+        button.size = Vector2(121,28)
         button.add_theme_color_override("font_color",ART05_DEEP)
         button.add_theme_stylebox_override("normal",_art05_style(ART05_GOLD,ART05_GOLD,1,7))
         button.pressed.connect(_art05_playbook_action.bind("recruit" if recruit_first else action))
@@ -1830,35 +1885,51 @@ func _art05_playbook_action(action: String) -> void:
     if state == null:
         return
     _clear_popup()
-    var ids: Array = state.disciples.keys()
-    ids.sort()
-    var target_id: StringName = &""
-    for raw_id in ids:
-        var disciple: DiscipleState = state.disciples[raw_id]
-        if disciple.region_id == &"sect" and disciple.active_pve_encounter_id.is_empty() and disciple.injury_level == 0 and disciple.hp > 0.0:
-            target_id = disciple.id
-            if str(disciple.v63_combat_branch_id).is_empty():
-                break
-    if target_id == &"" and not ids.is_empty():
-        target_id = StringName(ids[0])
-    if ids.is_empty() and action in ["school","cultivation","hunt"]:
+    var snapshot := _gameplay_playbook_snapshot()
+    var target_id: StringName = snapshot["candidate"]
+    if state.disciples.is_empty() and action in ["school","cultivation","hunt"]:
         _open_building(SectMapPresentation.DEST_GUIDANCE)
         return
     match action:
         "recruit":
             _open_building(SectMapPresentation.DEST_GUIDANCE)
+        "residence":
+            _open_building(SectMapPresentation.DEST_RESIDENCE)
+        "hall":
+            _open_building(SectMapPresentation.DEST_MAIN_HALL)
         "school":
+            var unassigned: StringName = snapshot["unassigned"]
+            if unassigned != &"":
+                target_id = unassigned
             if target_id != &"":
                 _aschar_open_school_skills(target_id)
+            else:
+                _open_building(SectMapPresentation.DEST_RESIDENCE)
         "production":
             _open_building(SectMapPresentation.DEST_MINE)
+        "forest":
+            _open_building(SectMapPresentation.DEST_LINH_FOREST)
+        "field":
+            _open_building(SectMapPresentation.DEST_SPIRIT_FIELD)
         "cultivation":
             if target_id != &"":
                 _open_disciple_deep_screen(target_id,"Công pháp")
+            else:
+                _open_building(SectMapPresentation.DEST_CULTIVATION)
+        "body":
+            _open_building(SectMapPresentation.DEST_BODY_TRAINING)
+        "medicine":
+            _open_building(SectMapPresentation.DEST_MEDICINE)
         "hunt":
             _open_pve_party_picker()
         "craft":
             _open_building(SectMapPresentation.DEST_ALCHEMY_HALL)
+        "forge":
+            _open_building(SectMapPresentation.DEST_FORGE)
+        "warehouse":
+            _open_building(SectMapPresentation.DEST_WAREHOUSE)
+        "gate":
+            _open_building(SectMapPresentation.DEST_GATE)
 
 func _r2_operation_caption(node_name: String, caption: String, at: Vector2, dimensions: Vector2) -> void:
     var label := building_operation_panel.get_node_or_null(node_name) as Label
