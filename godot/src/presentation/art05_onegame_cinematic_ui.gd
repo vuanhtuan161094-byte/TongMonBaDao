@@ -491,6 +491,11 @@ func _facility_make_shell() -> void:
     scenery.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     building_operation_panel.add_child(scenery)
     building_operation_panel.move_child(scenery,0)
+    var reading_surface := Panel.new()
+    reading_surface.name = "FacilityReadingSurface"
+    reading_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_panel.add_child(reading_surface)
+    building_operation_panel.move_child(reading_surface,1)
     var line := ColorRect.new()
     line.name = "FacilityHeaderRule"
     line.color = Color(0.92,0.75,0.43,0.35)
@@ -578,7 +583,7 @@ func _facility_update() -> void:
     if scenery != null:
         var texture := SECT_UI_THEME.facility_texture(str(selected_building))
         scenery.texture = texture if texture != null else FACILITY_SCENERY
-        scenery.modulate = Color(1,1,1,0.16)
+        scenery.modulate = Color(1,1,1,0.08)
     var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
     if caption != null:
         var building := _selected_operation_building()
@@ -643,27 +648,37 @@ func _facility_fullscreen_reflow() -> void:
         for metric in building_operation_metrics.get_children():
             if metric is Control:
                 metric.custom_minimum_size.x = width
+    var reading_surface := building_operation_panel.get_node_or_null("FacilityReadingSurface") as Panel
+    if reading_surface != null:
+        reading_surface.position = Vector2(646,190)
+        reading_surface.size = Vector2(602,478)
+        reading_surface.add_theme_stylebox_override("panel",_art05_style(SECT_UI_THEME.SURFACE,SECT_UI_THEME.BORDER,1,12))
     var art := building_operation_panel.get_node_or_null("BuildingOperationArtFrame") as Panel
     if art != null:
-        art.position = Vector2(205,208)
-        art.size = Vector2(421,352)
+        art.position = Vector2(203,190)
+        art.size = Vector2(432,376)
         art.add_theme_stylebox_override("panel",_art05_style(
             SECT_UI_THEME.SURFACE_LIGHT,_art05_accent(),1,10))
     var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
     if caption != null:
-        caption.position = Vector2(211,572)
-        caption.size = Vector2(410,32)
+        caption.position = Vector2(203,578)
+        caption.size = Vector2(432,42)
+        caption.add_theme_font_size_override("font_size",19)
+        caption.add_theme_font_override("font",SECT_UI_THEME.font_face("strong"))
     var section := building_operation_panel.get_node_or_null("FacilitySectionTitle") as Label
     if section != null:
-        section.position = Vector2(659,205)
-        section.size = Vector2(565,30)
+        section.position = Vector2(665,205)
+        section.size = Vector2(565,35)
+        section.add_theme_font_size_override("font_size",23)
+        section.add_theme_font_override("font",SECT_UI_THEME.font_face("title"))
     var hint := building_operation_panel.get_node_or_null("FacilitySectionHint") as Label
     if hint != null:
         hint.position = Vector2(659,642)
         hint.size = Vector2(560,25)
     building_operation_body.position = Vector2(660,258)
     building_operation_body.size = Vector2(558,335)
-    building_operation_body.add_theme_font_size_override("font_size",16)
+    building_operation_body.add_theme_font_size_override("font_size",18)
+    building_operation_body.add_theme_constant_override("line_spacing",6)
     building_operation_body.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     var picker := building_operation_panel.get_node_or_null("MineOreHero") as HBoxContainer

@@ -19,6 +19,8 @@ var _boss_name: Label
 var _boss_hp: ProgressBar
 var _boss_state: Label
 var _skills: Label
+var _skill_strip: HBoxContainer
+var _skill_slots: Array[Label] = []
 var _event: Label
 var _gate_button: Button
 var _vfx: Control
@@ -75,6 +77,28 @@ func _ready() -> void:
     _skills.add_theme_font_size_override("font_size", 11)
     _skills.add_theme_color_override("font_color", Color("f0ead7"))
     column.add_child(_skills)
+    # Status display only: the combat engine still owns all casts.
+    _skill_strip = HBoxContainer.new()
+    _skill_strip.name = "LiveSkillCooldowns"
+    _skill_strip.add_theme_constant_override("separation",3)
+    column.add_child(_skill_strip)
+    for i in range(5):
+        var slot := PanelContainer.new()
+        slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        slot.custom_minimum_size = Vector2(0,42)
+        slot.add_theme_stylebox_override("panel",UI.primary_button_skin(Color.WHITE,"ivory"))
+        var info := Label.new()
+        info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        info.clip_text = true
+        info.add_theme_font_size_override("font_size",11)
+        info.add_theme_color_override("font_color",UI.TEXT)
+        info.add_theme_font_override("font",UI.font_face("strong"))
+        slot.add_child(info)
+        _skill_strip.add_child(slot)
+        _skill_slots.append(info)
+    _skill_strip.hide()
     _event = Label.new()
     _event.custom_minimum_size = Vector2(0, 44)
     _event.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -126,6 +150,8 @@ func _render() -> void:
         _boss_hp.value = 0
         _boss_state.text = "Boss, phase và telegraph sẽ đọc từ trận đã lưu."
         _skills.text = "Chưa có snapshot chiến đấu."
+        _skills.show()
+        _skill_strip.hide()
         _event.text = ""
         return
     var boss_actor: Dictionary = {}
@@ -238,6 +264,10 @@ func _select_party_row(row_index: int) -> void:
         _select_actor(actor_id)
 
 func _render_skills() -> void:
+    _skills.show()
+    _skill_strip.hide()
+    for info in _skill_slots:
+        info.get_parent().hide()
     if battle == null or not battle.actors.has(selected_actor_id):
         _skills.text = "Chọn thành viên để xem kỹ năng / mastery."
         return
@@ -247,15 +277,25 @@ func _render_skills() -> void:
     if state != null and state.disciples.has(StringName(selected_actor_id)):
         display_name = state.disciples[StringName(selected_actor_id)].display_name
     var lines: Array[String] = ["Kỹ năng · %s" % display_name]
+    var slot_index := 0
     for raw_id in loadout.slice(0, 5):
         var skill_id := str(raw_id)
         var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
         var name := str(definition.get("name_vi", definition.get("display_name", skill_id)))
         var ready := float(actor.get("v63_skill_ready", {}).get(skill_id, 0.0))
         lines.append("• %s%s" % [name, " · hồi %.1fs" % maxf(0.0, ready - battle.now) if ready > battle.now else " · sẵn sàng"])
+        var info := _skill_slots[slot_index]
+        var cooldown := maxf(0.0,ready-battle.now)
+        info.text = name+"\n"+("%.1fs" % cooldown if cooldown > 0.0 else "Sẵn sàng")
+        info.tooltip_text = name+" · "+("Hồi %.1fs" % cooldown if cooldown > 0.0 else "Sẵn sàng")
+        info.get_parent().show()
+        slot_index += 1
     if lines.size() == 1:
         lines.append("Chưa trang bị kỹ năng nâng cao. Đệ tử vẫn đánh thường.")
     _skills.text = "\n".join(lines)
+    if slot_index > 0:
+        _skills.hide()
+        _skill_strip.show()
 
 func _latest_event_text() -> String:
     if battle == null:
