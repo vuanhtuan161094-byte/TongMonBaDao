@@ -82,7 +82,7 @@ func _make_shell() -> MarginContainer:
 	header.add_child(building_art)
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stack.add_child(UI.label("DẪN TIÊN ĐÀI", 25, UI.PAPER, true))
+	stack.add_child(UI.label("Dẫn Tiên Đài", 32, UI.PAPER, true))
 	stack.add_child(UI.label("Ứng viên • Tam Căn / Tứ Tính • tiếp dẫn", 12, UI.MUTED, false))
 	header.add_child(stack)
 	var reduce := UI.button("VFX: %s" % VIS_QUALITY.mode_label(), false, UI.JADE)
@@ -228,6 +228,8 @@ func _build_candidate_panel() -> Control:
 	search.name = "CandidateSearch"
 	search.placeholder_text = "Tìm tên ứng viên"
 	search.text = _search_text
+	search.add_theme_font_override("font",UI.font_face("body"))
+	search.add_theme_font_size_override("font_size",16)
 	search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	search.text_submitted.connect(_apply_candidate_search)
 	search_row.add_child(search)
@@ -536,6 +538,7 @@ func _submit_assistant_selection(list: VBoxContainer) -> void:
 func _build_radar_panel() -> Control:
 	var candidate := _candidate()
 	var card := UI.panel("CandidateStats", UI.JADE, UI.SURFACE)
+	UI.apply_premium_frame(card)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 7)

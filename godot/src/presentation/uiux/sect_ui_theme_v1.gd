@@ -24,7 +24,7 @@ static var _fonts: Dictionary = {}
 static func font_face(role: String = "body") -> Font:
 	if _fonts.has(role):
 		return _fonts[role]
-	var file := "NotoSerif-Regular.ttf" if role == "title" else ("NotoSans-Bold.ttf" if role == "strong" else "NotoSans-Regular.ttf")
+	var file := "NotoSerif-Bold.ttf" if role == "title" else ("NotoSans-Bold.ttf" if role == "strong" else "NotoSans-Regular.ttf")
 	var path := "res://art/uiux/fonts/" + file
 	var face: Font
 	if ResourceLoader.exists(path,"FontFile"):
@@ -32,10 +32,24 @@ static func font_face(role: String = "body") -> Font:
 	if face == null:
 		var fallback := SystemFont.new()
 		fallback.font_names = PackedStringArray(["Noto Serif","Georgia","Noto Sans"] if role == "title" else ["Noto Sans","Arial","DejaVu Sans"])
-		fallback.font_weight = 700 if role == "strong" else 400
+		fallback.font_weight = 700 if role in ["strong","title"] else 400
 		face = fallback
 	_fonts[role] = face
 	return face
+
+# A dedicated rendered frame, with no baked text or gameplay values.
+# Use only on focal surfaces; repeated items deliberately keep clean flat backgrounds.
+const PREMIUM_FRAME = preload("res://art/uiux/premium/panel_jade_gold.webp")
+
+static func apply_premium_frame(target: PanelContainer) -> void:
+	var frame := StyleBoxTexture.new()
+	frame.texture = PREMIUM_FRAME
+	for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:
+		frame.set_texture_margin(side,18.0)
+		frame.set_content_margin(side,16.0)
+	frame.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	frame.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_STRETCH
+	target.add_theme_stylebox_override("panel",frame)
 
 static func panel(node_name: String, accent: Color, tone: Color) -> PanelContainer:
 	var result := PanelContainer.new()
@@ -87,7 +101,7 @@ static func section_heading(title: String, icon_kind: String, accent: Color) -> 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
 	row.add_child(icon(icon_kind, 26, accent))
-	var title_label := label(title, 17, PAPER, true)
+	var title_label := label(title, 19, PAPER, true)
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(title_label)
 	return row

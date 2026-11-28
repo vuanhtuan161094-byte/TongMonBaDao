@@ -164,6 +164,7 @@ func _overview() -> Control:
 	level.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(level)
 	var info := _surface("HallSectSummary")
+	UI.apply_premium_frame(info)
 	info.custom_minimum_size.x = 290
 	hero.add_child(info)
 	var facts := _stack(info,14)
@@ -202,6 +203,7 @@ func _overview() -> Control:
 		metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		metrics.add_child(metric)
 	var growth := _surface("HallGrowth")
+	UI.apply_premium_frame(growth)
 	growth.custom_minimum_size.y = 116
 	growth.size_flags_vertical = Control.SIZE_FILL
 	column.add_child(growth)
@@ -257,6 +259,7 @@ func _upgrade_page() -> Control:
 
 func _rank_page() -> Control:
 	var card := _surface("HallRank")
+	UI.apply_premium_frame(card)
 	var content := _stack(card,13)
 	content.add_child(UI.section_heading("Thăng bậc tông môn","rank",UI.GOLD))
 	content.add_child(UI.label(str(_vm.get("rank_label","Bậc"))+" · %d / 27" % int(_vm.get("rank_step",1)),24,UI.PAPER,true))

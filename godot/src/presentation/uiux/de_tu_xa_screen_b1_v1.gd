@@ -44,8 +44,8 @@ func _rebuild() -> void:
 	for index in range(2):
 		var button := UI.button(["KHU CƯ TRÚ","QUẢN LÝ & XÂY DỰNG"][index],false,UI.GOLD)
 		button.name = "ResidenceTab_%d" % index
-		button.custom_minimum_size = Vector2(235,44)
-		button.add_theme_font_size_override("font_size",15)
+		button.custom_minimum_size = Vector2(235,48)
+		button.add_theme_font_size_override("font_size",16)
 		button.pressed.connect(_set_residence_tab.bind(index))
 		tabs.add_child(button)
 		_residence_tabs.append(button)
@@ -86,7 +86,7 @@ func _make_shell() -> MarginContainer:
 	var header := HBoxContainer.new()
 	var stack := VBoxContainer.new()
 	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stack.add_child(UI.label("ĐỆ TỬ XÁ", 25, UI.PAPER, true))
+	stack.add_child(UI.label("Đệ Tử Xá", 32, UI.PAPER, true))
 	stack.add_child(UI.label(str(_vm.get("residence_type_summary","1 loại công trình · có thể xây nhiều căn.")), 12, UI.MUTED, false))
 	header.add_child(stack)
 	var close_button := UI.button("‹  VỀ BẢN ĐỒ", false, UI.GOLD)
@@ -104,6 +104,7 @@ func _make_shell() -> MarginContainer:
 
 func _build_rooms_panel() -> Control:
 	var card := UI.panel("ResidenceRooms", UI.GOLD, UI.SURFACE)
+	UI.apply_premium_frame(card)
 	card.custom_minimum_size.x = 430
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 9)
@@ -112,7 +113,7 @@ func _build_rooms_panel() -> Control:
 	var residence_art: Control = FACILITY_ART.new()
 	residence_art.name = "ResidenceSourceAArtwork"
 	residence_art.set("facility_kind", "residence")
-	residence_art.custom_minimum_size = Vector2(360, 164)
+	residence_art.custom_minimum_size = Vector2(360, 208)
 	residence_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(residence_art)
 	var metrics := HBoxContainer.new()
