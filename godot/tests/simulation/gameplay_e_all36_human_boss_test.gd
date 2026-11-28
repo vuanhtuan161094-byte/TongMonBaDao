@@ -147,8 +147,59 @@ func _boss_matrix() -> int:
             print("GAMEPLAY_E_BOSS_SPAWN "+JSON.stringify({"boss":id,"skill_count":definitions.size(),"hp":actor.get("hp",0),"tier":boss.get("tier_band",""),"fixture":"canonical spawn only; not Boss victory or production UI acceptance"}))
     return seen.size()
 
+# A real personal learned/equipped record and Save serialization for each
+# candidate branch. No injected resources, XP, mastery or fake archive manual.
+func _sect_instruction_matrix(branches: Dictionary) -> int:
+    var count := 0
+    var ids: Array = branches.keys()
+    ids.sort()
+    for raw_id in ids:
+        var branch: Dictionary = branches[raw_id]
+        var school := str(branch.get("school",""))
+        if school not in V63HumanSkillCombatSystem.SECT_TRAINING_SCHOOLS:
+            continue
+        var branch_id := str(branch.get("id",raw_id))
+        var state := P37Factory.create_state(SEED)
+        var disciple: DiscipleState = state.disciples.values()[0]
+        var selected := SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
+        _check(bool(selected.get("ok",false)),"branch assignment "+branch_id)
+        if not bool(selected.get("ok",false)):
+            continue
+        var basic := "tmb.skill.%s.basic.human" % school
+        var active := "tmb.skill.%s.%s.active_01.human" % [school,branch_id]
+        var rejected := V63HumanSkillCombatSystem.learn_skill(state,disciple,basic)
+        _check(not bool(rejected.get("ok",false)),"default gate leaked "+branch_id)
+        state.sect.v63_archive_opt_in = true
+        state.sect.v63_skill_combat_opt_in = true
+        state.sect.v63_learning_opt_in = true
+        var overrides := V63FeatureGates.persisted_preview_overrides(state)
+        var before := state.sect.spirit_stones
+        var contribution := disciple.contribution_points
+        for id in [basic,active]:
+            var learned := V63HumanSkillCombatSystem.learn_skill(state,disciple,id,overrides)
+            _check(bool(learned.get("ok",false)),"learn "+id+" "+str(learned))
+            var duplicate := V63HumanSkillCombatSystem.learn_skill(state,disciple,id,overrides)
+            _check(bool(duplicate.get("duplicate",false)),"learn replay "+id)
+            var equipped := V63HumanSkillCombatSystem.equip_skill(state,disciple,id,overrides)
+            _check(bool(equipped.get("ok",false)),"equip "+id+" "+str(equipped))
+        _check(state.sect.spirit_stones == before and disciple.contribution_points == contribution,"free instruction mutated currency "+branch_id)
+        var cross := V63HumanSkillCombatSystem.learn_skill(state,disciple,"tmb.skill.poison.basic.human",overrides)
+        # Cross-school legacy learning must not have a valid archived manual in New Game.
+        _check(not bool(cross.get("ok",false)),"foreign skill learned "+branch_id)
+        var restored := DiscipleState.from_dict(disciple.to_dict())
+        state.disciples[disciple.id] = restored
+        _check(V63HumanSkillCombatSystem.validate_state(state).is_empty(),"personal Save validation "+branch_id)
+        var actor := {"id":str(restored.id)}
+        var attached := V63HumanSkillCombatSystem.attach_disciple_loadout(state,actor,overrides)
+        _check(bool(attached.get("ok",false)) and actor.get("v63_skill_loadout",[]).has(active) and bool(actor.get("v63_"+school+"_combat_enabled",false)),"canonical loadout "+branch_id)
+        print("GAMEPLAY_E3_INSTRUCTION "+JSON.stringify({"branch":branch_id,"basic":basic,"active":active,"attached":attached.get("attached",false)}))
+        count += 1
+    return count
+
 func _run() -> void:
     var branches := V63HumanSkillCombatSystem.branch_definitions()
+    var instructed := _sect_instruction_matrix(branches)
+    _check(instructed == 27,"expected 27 local instruction branches")
     var branch_ids: Array = branches.keys()
     branch_ids.sort()
     var schools: Dictionary = {}
@@ -169,6 +220,6 @@ func _run() -> void:
     for record in rows:
         print("GAMEPLAY_E_COMBAT_PROFILE "+JSON.stringify(record))
     print("GAMEPLAY_E_COMBAT_SUMMARY "+JSON.stringify({"schools":schools.size(),"branches":branches.size(),"profiles":profiles,
-        "trials":trials,"boss_spawns":bosses,"failures":failures,"source_sha":OS.get_environment("GITHUB_SHA"),
+        "trials":trials,"instruction_branches":instructed,"boss_spawns":bosses,"failures":failures,"source_sha":OS.get_environment("GITHUB_SHA"),
         "label":"NORMALIZED HUMAN COMBAT FIXTURE; BOSS SPAWN CONTRACT; NOT LIVE PLAYER ACCEPTANCE"}))
     quit(0 if failures == 0 else 1)
