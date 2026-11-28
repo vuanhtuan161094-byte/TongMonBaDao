@@ -20,7 +20,8 @@ const DEFAULT_FLAGS := {
     "talisman_skill_combat": false,
     "curse_skill_combat": false,
     "formation_skill_combat": false,
-    "summon_skill_combat": false
+    "summon_skill_combat": false,
+    "sect_school_training": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:
@@ -33,7 +34,7 @@ static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> b
 static func persisted_preview_overrides(state: SimulationState) -> Dictionary:
     if state == null or not state.sect.v63_archive_opt_in or not state.sect.v63_skill_combat_opt_in:
         return {}
-    return {
+    var overrides := {
         "sect_codex": true,
         "technique_learning": true,
         "human_skill_combat": true,
@@ -42,6 +43,13 @@ static func persisted_preview_overrides(state: SimulationState) -> Dictionary:
         "skill_successors": true,
         "boss_encounters": true
     }
+    # A player must explicitly opt into transmission at the sect; merely
+    # opening the Boss preview is not consent to enable candidate schools.
+    if state.sect.v63_learning_opt_in:
+        overrides["sect_school_training"] = true
+        for school in ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]:
+            overrides[school+"_skill_combat"] = true
+    return overrides
 
 static func all_disabled() -> bool:
     for key in DEFAULT_FLAGS.keys():

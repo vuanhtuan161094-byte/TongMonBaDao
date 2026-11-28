@@ -133,11 +133,13 @@ func _boss_matrix() -> int:
             _check(not id.is_empty() and not seen.has(id),"duplicate boss "+id)
             seen[id] = true
             var spawn := HuntingMapV2.spawn("thanh_truc_lam",1,"gameplay_e_boss_"+id,SEED)
-            var installed := V63HumanSkillCombatSystem.install_boss_spawn(spawn,id)
+            var installed := V63HumanSkillCombatSystem.install_boss_spawn(spawn,id,true)
             _check(bool(installed.get("ok",false)),"boss spawn "+id+" "+str(installed))
             if not bool(installed.get("ok",false)):
                 continue
             var actor: Dictionary = installed["boss_actor"]
+            var coords := V63HumanSkillCombatSystem.boss_challenge_coordinates(boss)
+            _check(int(actor.get("realm_index",0)) == coords.x and int(actor.get("floor_index",0)) == coords.y,"boss tier coordinates "+id)
             var definitions := V63HumanSkillCombatSystem.boss_skill_definitions(id)
             _check(str(actor.get("v63_boss_id","")) == id and str(actor.get("tier","")) == "boss","boss identity "+id)
             for skill_id in boss.get("skill_ids",[]):

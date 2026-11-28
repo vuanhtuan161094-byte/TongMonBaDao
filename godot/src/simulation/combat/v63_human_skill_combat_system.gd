@@ -252,12 +252,72 @@ static func boss_skill_definitions(boss_id: String) -> Dictionary:
         result[str(row.id)] = row.duplicate(true)
     return result
 
+# E3: local sect instruction for the nine previously source-pending schools.
+# This is an explicit original gameplay rule, not an archived external codex.
+const SECT_TRAINING_SCHOOLS := ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]
+
+static func is_sect_training_skill(definition: Dictionary) -> bool:
+    return str(definition.get("school","")) in SECT_TRAINING_SCHOOLS \
+        and str(definition.get("generation","")) == "human" \
+        and str(definition.get("slot","")) in ["basic","mobility","active","ultimate","passive"]
+
+static func sect_training_required_floor(definition: Dictionary) -> int:
+    if not is_sect_training_skill(definition):
+        return 0
+    var slot := str(definition.get("slot",""))
+    if slot == "basic":
+        return 1
+    if slot == "mobility":
+        return 2
+    if slot == "ultimate":
+        return 10
+    var parts := str(definition.get("id","")).split(".")
+    for part in parts:
+        if str(part).begins_with(slot+"_"):
+            var ordinal := int(str(part).get_slice("_",1))
+            return clampi(ordinal*2-1 if slot == "active" else ordinal*2,1,10)
+    return 10
+
+static func sect_training_offer(state: SimulationState, disciple: DiscipleState, definition: Dictionary, overrides: Dictionary = {}) -> Dictionary:
+    if not is_sect_training_skill(definition):
+        return _failure("not_sect_training_skill")
+    if not is_enabled(state,overrides) or not state.sect.v63_learning_opt_in or not V63FeatureGates.is_enabled("sect_school_training",overrides):
+        return _failure("sect_training_opt_in_required")
+    if disciple == null or not state.disciples.has(disciple.id):
+        return _failure("unknown_disciple")
+    var branch: Dictionary = branch_definitions().get(str(disciple.v63_combat_branch_id),{})
+    var selected := str(disciple.v63_combat_branch_id)
+    var owner_branch := str(definition.get("branch",""))
+    if selected.is_empty() or str(branch.get("school","")) != str(definition.get("school","")) or (not owner_branch.is_empty() and owner_branch != selected):
+        return _failure("skill_belongs_to_other_branch")
+    if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty() or disciple.injury_level != 0 or disciple.hp <= 0.0:
+        return _failure("disciple_not_available")
+    var required := sect_training_required_floor(definition)
+    var progress := DiscipleRealmProgressV2.current(disciple)
+    var floor_index := 1
+    if bool(progress.get("ok",false)):
+        floor_index = int(progress.get("cultivation_global_floor",1))
+    # Legacy founders may learn the initial moves; do not invent V2 progression.
+    if floor_index < required and not disciple.v63_learned_skill_nodes.has(str(definition.get("id",""))):
+        return {"ok":false,"reason":"sect_training_floor_required","required_floor":required,"current_floor":floor_index}
+    return {"ok":true,"required_floor":required,"current_floor":floor_index}
+
 static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_id: String, preview_overrides: Dictionary = {}) -> Dictionary:
     if not is_enabled(state,preview_overrides):
         return _failure("human_skill_combat_disabled")
     if disciple == null or not state.disciples.has(disciple.id):
         return _failure("unknown_disciple")
     var definition := skill_definition(skill_id)
+    if is_sect_training_skill(definition) and V63FeatureGates.is_enabled("sect_school_training",preview_overrides):
+        var offer := sect_training_offer(state,disciple,definition,preview_overrides)
+        if not bool(offer.get("ok",false)):
+            return offer
+        if disciple.v63_learned_skill_nodes.has(skill_id):
+            return {"ok":true,"duplicate":true,"skill_id":skill_id}
+        disciple.v63_learned_skill_nodes[skill_id] = {"source_kind":"sect_training_e3",
+            "source_codex_id":"","learned_tick":maxi(state.tick,0),"mastery_xp":0.0,"level":1,
+            "branch_id":str(definition.get("branch",""))}
+        return {"ok":true,"skill_id":skill_id,"source_kind":"sect_training_e3"}
     if str(definition.get("school", "")) == "sword":
         return V63SwordSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "blade":
@@ -306,7 +366,13 @@ static func equip_skill(state: SimulationState, disciple: DiscipleState, skill_i
     if disciple == null or not state.disciples.has(disciple.id):
         return _failure("unknown_disciple")
     var definition := skill_definition(skill_id)
-    if definition.is_empty() or not bool(definition.get("archivable",false)) or not disciple.v63_learned_skill_nodes.has(skill_id):
+    if definition.is_empty() or not disciple.v63_learned_skill_nodes.has(skill_id):
+        return _failure("skill_not_personally_learned")
+    if is_sect_training_skill(definition):
+        var offer := sect_training_offer(state,disciple,definition,preview_overrides)
+        if not bool(offer.get("ok",false)):
+            return offer
+    elif not bool(definition.get("archivable",false)):
         return _failure("skill_not_personally_learned")
     if disciple.v63_equipped_skill_ids.has(skill_id):
         return {"ok":true,"duplicate":true,"skill_id":skill_id}
@@ -366,6 +432,8 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     for raw_id in disciple.v63_equipped_skill_ids:
         var skill_id := str(raw_id)
         if disciple.v63_learned_skill_nodes.has(skill_id) and definitions.has(skill_id):
+            if is_sect_training_skill(definitions[skill_id]) and not V63FeatureGates.is_enabled("sect_school_training",preview_overrides):
+                continue
             if str(definitions[skill_id].get("generation", "")) == "divine":
                 if not V63FeatureGates.is_enabled("divine_skill_combat", preview_overrides):
                     continue
@@ -1866,7 +1934,16 @@ static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_befor
         battle._event("v63_boss_phase",{"boss_id":str(actor.v63_boss_id),"actor_id":str(actor.id),"phase":phase,
             "threshold":float(thresholds[phase-2]),"hp_before":hp_before,"hp_after":float(actor.hp),"hp_ratio":hp_ratio})
 
-static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dictionary:
+# Explicit scaled challenge rule: tier bands match the canonical 30 realms.
+# Legacy snapshots retain their original realm-1 spawn provenance.
+static func boss_challenge_coordinates(boss: Dictionary) -> Vector2i:
+    match str(boss.get("tier_band","")):
+        "human": return Vector2i(1,1)
+        "immortal": return Vector2i(11,1)
+        "divine": return Vector2i(int(boss.get("zone_realm_index",30)),int(boss.get("zone_floor_index",10)))
+        _: return Vector2i.ZERO
+
+static func install_boss_spawn(spawn_data: Dictionary, boss_id: String, scale_to_tier: bool = false) -> Dictionary:
     var boss := boss_definition(boss_id)
     var monsters = spawn_data.get("monsters",null)
     if boss.is_empty() or not bool(spawn_data.get("ok",false)) or not (monsters is Array) or monsters.is_empty():
@@ -1877,7 +1954,10 @@ static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dicti
         return _failure("boss_spawn_map_identity_invalid")
     var region: Dictionary = HuntingMapV2.REGION_CONTENT[region_id]
     var row: Dictionary = monsters[0]
-    var origin := MonsterCatalogueV2.create_actor(str(boss.origin_species_id),int(region.realm),int(region.floor),str(spawn_data.encounter_id)+"/v63_boss")
+    var coords := Vector2i(int(region.realm),int(region.floor))
+    if scale_to_tier and str(boss.get("tier_band","")) != "human":
+        coords = boss_challenge_coordinates(boss)
+    var origin := MonsterCatalogueV2.create_actor(str(boss.origin_species_id),coords.x,coords.y,str(spawn_data.encounter_id)+"/v63_boss")
     if not bool(origin.get("ok",false)):
         return origin
     var spec: Dictionary = HuntingMapV2.LEVELS[level]
@@ -1906,6 +1986,22 @@ static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dicti
     var result: Dictionary = spawn_data.duplicate(true)
     var updated: Array = monsters.duplicate(true)
     updated[0] = origin
+    if scale_to_tier and str(boss.get("tier_band","")) != "human":
+        # Rebuild every escort with its original species and spawn identity.
+        for i in range(1,updated.size()):
+            var prior: Dictionary = updated[i]
+            var escort := MonsterCatalogueV2.create_actor(str(prior["species_id"]),coords.x,coords.y,str(prior["encounter_id"]))
+            if not bool(escort.get("ok",false)):
+                return escort
+            for key in ["id","position","region_id","difficulty_level"]:
+                escort[key] = prior[key]
+            var escort_stats: Dictionary = escort["stats"]
+            for stat in ["max_hp","attack","defense"]:
+                var channel := "hp" if stat == "max_hp" else str(stat)
+                escort_stats[stat] = float(escort_stats[stat])*float(spec[channel])
+            escort["hp"] = float(escort_stats["max_hp"])
+            updated[i] = escort
+        result["v63_boss_scale_version"] = 1
     result["monsters"] = updated
     result["has_boss"] = true
     result["v63_boss_id"] = boss_id
@@ -1997,7 +2093,17 @@ static func validate_state(state: SimulationState) -> Array[String]:
             var id := str(raw_id)
             var record = disciple.v63_learned_skill_nodes[raw_id]
             var skill: Dictionary = definitions.get(id,{})
-            if skill.is_empty() or not bool(skill.get("archivable",false)) or not (record is Dictionary) or str(record.get("source_codex_id","")) != str(skill.get("source_codex_id","")) or int(record.get("learned_tick",-1)) < 0 or float(record.get("mastery_xp",-1.0)) < 0.0:
+            var valid_source := false
+            if record is Dictionary and not skill.is_empty():
+                if is_sect_training_skill(skill):
+                    var own: Dictionary = branches.get(branch_id,{})
+                    var skill_branch := str(skill.get("branch",""))
+                    valid_source = str(record.get("source_kind","")) == "sect_training_e3" and str(record.get("source_codex_id","")).is_empty() \
+                        and not branch_id.is_empty() and str(own.get("school","")) == str(skill.get("school","")) \
+                        and (skill_branch.is_empty() or skill_branch == branch_id)
+                else:
+                    valid_source = bool(skill.get("archivable",false)) and str(record.get("source_codex_id","")) == str(skill.get("source_codex_id",""))
+            if not valid_source or int(record.get("learned_tick",-1)) < 0 or float(record.get("mastery_xp",-1.0)) < 0.0:
                 errors.append("%s has invalid Human skill knowledge %s." % [disciple.display_name,id])
         var seen: Dictionary = {}
         var seen_families: Dictionary = {}

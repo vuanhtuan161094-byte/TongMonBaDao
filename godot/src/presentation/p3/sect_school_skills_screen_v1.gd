@@ -181,7 +181,7 @@ func refresh() -> void:
     if assigned.is_empty():
         branch_hint = "Chọn một lần. Kỹ năng nâng cao cần bí kíp."
         if _school not in ["bow","fist","poison"]:
-            branch_hint = "Chọn một lần. Kỹ năng riêng đang chờ nguồn; dùng kỹ năng P2 trước."
+            branch_hint = "Chọn một lần. Nhân giai học tại tông môn theo tầng Tu Vi."
     _label(mid,branch_hint,
         Vector2(15,363),Vector2(231,62),12,SOFT)
     var right := Panel.new()
@@ -312,8 +312,17 @@ func refresh() -> void:
             elif not v63_live:
                 reason = "Bật Truyền thừa trong Lộ trình tông chủ."
                 action.text = "CHƯA MỞ"
+            elif V63HumanSkillCombatSystem.is_sect_training_skill(definition):
+                var offer := V63HumanSkillCombatSystem.sect_training_offer(_state,d,definition,V63FeatureGates.persisted_preview_overrides(_state))
+                if not bool(offer.get("ok",false)):
+                    reason = "Bật Truyền thừa và đạt tầng Tu Vi yêu cầu."
+                    if str(offer.get("reason","")) == "sect_training_floor_required":
+                        reason = "Cần tầng Tu Vi %d · hiện %d." % [int(offer.get("required_floor",0)),int(offer.get("current_floor",0))]
+                        action.text = "TẦNG %d" % int(offer.get("required_floor",0))
+                    else:
+                        action.text = "CHƯA MỞ"
             elif not bool(definition.get("archivable",false)):
-                reason = "Chưa có nguồn học trực tiếp được duyệt cho kỹ năng này."
+                reason = "Cần nguồn học cấp cao được duyệt."
                 action.text = "CHƯA MỞ"
             elif not known and not V63SectArchiveSystem.transmission_available_for_disciple(_state,d.id,str(definition.get("source_codex_id","")),V63FeatureGates.persisted_preview_overrides(_state)):
                 reason = "Cần bí kíp đã lưu tại Tàng Kinh Các và đủ quyền truyền thừa."

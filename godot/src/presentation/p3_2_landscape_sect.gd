@@ -1913,8 +1913,9 @@ func _populate_v63_boss_selector() -> void:
             var tier_label := "Nhân" if tier == "human" else ("Tiên" if tier == "immortal" else "Thần")
             var display := str(row.get("name",row.get("name_vi",row.get("display_name",boss_id))))
             # Live route remains bound to Thanh Truc Lam (realm 1).
-            var playable := tier == "human" and not bool(row.get("candidate_only",false))
-            selector.add_item("%s · %s%s" % [display,tier_label,"" if playable else " · Chưa mở"])
+            var coords := V63HumanSkillCombatSystem.boss_challenge_coordinates(row)
+            var playable := coords.x > 0
+            selector.add_item("%s · %s · %d-%d" % [display,tier_label,coords.x,coords.y])
             var index := selector.item_count-1
             selector.set_item_metadata(index,boss_id)
             selector.set_item_disabled(index,not playable)
@@ -2005,14 +2006,22 @@ func _start_v63_boss_for_picked_party() -> void:
         return
     var boss_id := str(pve_party_picker_boss_selector.get_selected_metadata())
     var boss_definition := V63HumanSkillCombatSystem.boss_definition(boss_id)
-    if boss_definition.is_empty() or str(boss_definition.get("tier_band","")) != "human" or bool(boss_definition.get("candidate_only",false)):
-        pve_party_picker_feedback.text = "Boss chưa đủ điều kiện xuất hiện tại Thanh Trúc Lâm."
+    if boss_definition.is_empty():
+        pve_party_picker_feedback.text = "Boss không có trong danh mục."
         return
     var party := _multicamp_party_for_ids(pve_party_selected_ids)
     if party.size() != 6:
         pve_party_picker_feedback.text = "Đội vừa thay đổi trạng thái; làm mới lựa chọn trước khi thách Boss."
         _populate_pve_party_picker()
         return
+    var coords := V63HumanSkillCombatSystem.boss_challenge_coordinates(boss_definition)
+    var required := DiscipleRealmProgressV2.global_floor(coords.x,coords.y)
+    for member in party:
+        var best := maxi(DiscipleRealmProgressV2.global_floor(int(member["realm"]),int(member["floor"])),
+            DiscipleRealmProgressV2.global_floor(int(member["body_realm"]),int(member["body_floor"])))
+        if best < required:
+            pve_party_picker_feedback.text = "Cả sáu đệ tử cần đạt cảnh %d tầng %d (Tu Vi hoặc Luyện Thể)." % [coords.x,coords.y]
+            return
     var selected_level := HuntingMapV2.selected_level(state,"thanh_truc_lam")
     var map_choice := HuntingMapV2.choose_level(state,"thanh_truc_lam",selected_level)
     if not bool(map_choice.get("ok",false)):
@@ -2026,7 +2035,7 @@ func _start_v63_boss_for_picked_party() -> void:
         boss_id.validate_node_name(),state.seed,state.sect.v2_pve_settlement_receipts.size()]
     var session := HuntingPveRunV2.new()
     var result := session.begin(state,"thanh_truc_lam",encounter_id,
-        state.seed ^ state.tick ^ boss_id.hash(),party,boss_id,_current_v63_preview_overrides())
+        state.seed ^ state.tick ^ boss_id.hash(),party,boss_id,_current_v63_preview_overrides(),true)
     if not bool(result.get("ok",false)):
         pve_party_picker_feedback.text = "Chưa thể vào trận Boss: %s" % str(result.get("reason","không đủ điều kiện"))
         return

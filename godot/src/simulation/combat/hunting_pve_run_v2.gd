@@ -22,7 +22,7 @@ var performance_checkpoint_usec_max := 0
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
-    party_members: Array, v63_boss_id: String = "", preview_overrides: Dictionary = {}
+    party_members: Array, v63_boss_id: String = "", preview_overrides: Dictionary = {}, scale_boss_to_tier: bool = false
 ) -> Dictionary:
     if battle != null or state == null or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
@@ -85,6 +85,12 @@ func begin(
             floor_index = int(c["floor"])
             body_realm = int(b["realm"])
             body_floor = int(b["floor"])
+        if scale_boss_to_tier and not v63_boss_id.is_empty():
+            var required := V63HumanSkillCombatSystem.boss_challenge_coordinates(V63HumanSkillCombatSystem.boss_definition(v63_boss_id))
+            var required_global := DiscipleRealmProgressV2.global_floor(required.x,required.y)
+            var best_global := maxi(DiscipleRealmProgressV2.global_floor(realm,floor_index),DiscipleRealmProgressV2.global_floor(body_realm,body_floor))
+            if required_global <= 0 or best_global < required_global:
+                return {"ok":false,"reason":"boss_party_realm_required","required_floor":required_global,"disciple_id":disciple_id}
         var role := str(record.get("role","frontline"))
         var party_id := str(record.get("party_id","solo:"+disciple_id))
         var position: Vector2 = record.get("position",Vector2(8.0,9.0))
@@ -105,7 +111,7 @@ func begin(
     if not bool(spawned.get("ok",false)):
         return spawned
     if not v63_boss_id.is_empty():
-        var installed_boss := V63HumanSkillCombatSystem.install_boss_spawn(spawned,v63_boss_id)
+        var installed_boss := V63HumanSkillCombatSystem.install_boss_spawn(spawned,v63_boss_id,scale_boss_to_tier)
         if not bool(installed_boss.get("ok",false)):
             return installed_boss
         spawned = installed_boss["spawn_data"]
@@ -1055,6 +1061,8 @@ func save_state() -> Dictionary:
     var saved_boss_id := str(spawn_data.get("v63_boss_id",""))
     if not saved_boss_id.is_empty():
         saved["v63_boss_id"] = saved_boss_id
+        if int(spawn_data.get("v63_boss_scale_version",0)) == 1:
+            saved["v63_boss_scale_version"] = 1
     for reward_field in ["v63_codex_rewards","v63_codex_drop_table"]:
         var reward_data = spawn_data.get(reward_field,{})
         if reward_data is Dictionary and not reward_data.is_empty():
@@ -1114,7 +1122,7 @@ static func restore_state(state: SimulationState, saved: Dictionary, preview_ove
         return spawned
     var saved_boss_id := str(saved.get("v63_boss_id",""))
     if not saved_boss_id.is_empty():
-        var installed_boss := V63HumanSkillCombatSystem.install_boss_spawn(spawned,saved_boss_id)
+        var installed_boss := V63HumanSkillCombatSystem.install_boss_spawn(spawned,saved_boss_id,int(saved.get("v63_boss_scale_version",0)) == 1)
         if not bool(installed_boss.get("ok",false)):
             return installed_boss
         spawned = installed_boss["spawn_data"]

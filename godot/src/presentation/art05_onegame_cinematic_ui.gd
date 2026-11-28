@@ -1957,6 +1957,15 @@ func _art05_open_playbook() -> void:
     goals.text = "TIẾN TRÌNH"
     goals.position = Vector2(901,14)
     goals.size = Vector2(155,36)
+    var archive := Button.new()
+    archive.name = "OneGameSectArchive"
+    archive.text = "TÀNG KINH CÁC"
+    archive.position = Vector2(704,14)
+    archive.size = Vector2(181,36)
+    archive.disabled = not state.sect.v63_learning_opt_in or not state.sect.v2_pve_active_runs.is_empty() or not state.sect.b3_hunt.is_empty()
+    archive.tooltip_text = "Bật Truyền thừa và kết thúc PvE trước khi quản lý bí kíp."
+    archive.pressed.connect(_gameplay_e3_open_archive)
+    panel.add_child(archive)
     goals.pressed.connect(_gameplay_e2_progress_screen)
     panel.add_child(goals)
     var transmission_ready := V63HumanSkillCombatSystem.is_enabled(state,V63FeatureGates.persisted_preview_overrides(state)) and state.sect.v63_learning_opt_in
@@ -2010,6 +2019,34 @@ func _art05_open_playbook() -> void:
     if gp1_guide_panel != null:
         gp1_guide_panel.visible = false
     _art05_refresh_sect_master_dock()
+
+func _gameplay_e3_open_archive() -> void:
+    if state == null or not state.sect.v63_learning_opt_in or not state.sect.v2_pve_active_runs.is_empty() or not state.sect.b3_hunt.is_empty():
+        return
+    if runtime_session == null or runtime_session.owner == null or runtime_session.owner.runtime_write_blocked:
+        return
+    var packed := load("res://scenes/p2/p2_3_techniques.tscn") as PackedScene
+    if packed == null:
+        return
+    _clear_popup()
+    _add_dim()
+    var screen := packed.instantiate() as Control
+    if screen == null:
+        return
+    var overrides := _current_v63_preview_overrides()
+    screen.set("initial_state_override",state)
+    screen.set("external_scheduler_mode",true)
+    screen.set("archive_preview_overrides",overrides)
+    screen.set("learning_preview_overrides",overrides)
+    screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    screen.z_index = 50
+    screen.connect("close_requested",Callable(self,"_gameplay_e3_close_archive"))
+    popup_layer.add_child(screen)
+
+func _gameplay_e3_close_archive() -> void:
+    _clear_popup()
+    _autosave_runtime()
+    _art05_open_playbook()
 
 func _art05_playbook_action(action: String) -> void:
     if state == null:

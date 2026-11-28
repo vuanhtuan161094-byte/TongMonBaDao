@@ -73,6 +73,30 @@ func _run() -> void:
             return
         var state := resumed.state()
         var current := _snapshot(state)
+        # Simulate one conservative owner sale at each checkpoint, using only
+        # stock above the starting reserve and the actual market quote.
+        var economy := EconomySystem.new()
+        var warehouse := WarehouseSystem.new()
+        for resource in [&"thanh_thiet",&"linh_moc"]:
+            var starting := int(initial["iron"] if resource == &"thanh_thiet" else initial["wood"])
+            if warehouse.quantity(state,resource) <= starting:
+                continue
+            var quote := economy.sell_quote_v1(state,resource,1)
+            if not bool(quote.get("ok",false)):
+                continue
+            var before_stones := state.sect.spirit_stones
+            var before_stock := warehouse.quantity(state,resource)
+            var request := "gameplay_e3_sale_%d_%s" % [int(hour),str(resource)]
+            var paid := economy.sell_to_npc_v1(state,resource,1,request)
+            if not bool(paid.get("ok",false)) or state.sect.spirit_stones != before_stones+int(quote["earned"]) or warehouse.quantity(state,resource) != before_stock-1:
+                _fail("market sale mismatch "+request)
+                return
+            var repeated := economy.sell_to_npc_v1(state,resource,1,request)
+            if not bool(repeated.get("already_settled",false)) or state.sect.spirit_stones != before_stones+int(quote["earned"]):
+                _fail("duplicate market sale "+request)
+                return
+            print("GAMEPLAY_E3_MARKET "+JSON.stringify({"hour":hour,"resource":str(resource),"earned":quote["earned"]}))
+        current = _snapshot(state)
         var expected_steps := (int(hour)-previous_hour)*60
         if int(result.get("catch_up_steps",-1)) != expected_steps or state.tick != previous_tick+expected_steps:
             _fail("clock mismatch at "+str(hour)+" "+str(result))
