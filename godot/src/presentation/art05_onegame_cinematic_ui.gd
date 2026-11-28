@@ -1788,6 +1788,113 @@ func _gameplay_playbook_snapshot() -> Dictionary:
     return {"ready":ready,"employed":employed,"school":assigned_school,"injured":injured,
         "hunting":hunting,"candidate":candidate_id,"unassigned":unassigned_id}
 
+# E2: derived milestones only. No parallel quest ledger, fake rewards,
+# progression migration or new Save fields. Each milestone can be revisited.
+func _gameplay_e2_progress_snapshot() -> Dictionary:
+    var out := {"disciples":state.disciples.size(),"schools":0,"advanced":0,
+        "armed":0,"cultivation_floor":0,"body_floor":0,"production_sites":0,
+        "production_batches":0,"houses":0,"hall":0,"pve_wins":0,"boss_wins":0}
+    for raw in state.disciples.values():
+        var d: DiscipleState = raw
+        if not str(d.v63_combat_branch_id).is_empty():
+            out["schools"] = int(out["schools"])+1
+        if not d.v63_equipped_skill_ids.is_empty():
+            out["advanced"] = int(out["advanced"])+1
+        if not d.learned_combat_skills.is_empty() or not d.v63_equipped_skill_ids.is_empty():
+            out["armed"] = int(out["armed"])+1
+        var progress := DiscipleRealmProgressV2.current(d)
+        if bool(progress.get("ok",false)):
+            out["cultivation_floor"] = maxi(int(out["cultivation_floor"]),int(progress["cultivation_global_floor"]))
+            out["body_floor"] = maxi(int(out["body_floor"]),int(progress["body_global_floor"]))
+    for raw in state.buildings.values():
+        var building: BuildingState = raw
+        if building.status != BuildingSystem.STATUS_ACTIVE:
+            continue
+        if building.building_type == BuildingSystem.TYPE_MAIN_HALL:
+            out["hall"] = maxi(int(out["hall"]),building.level)
+        elif building.building_type == BuildingSystem.TYPE_RESIDENCE:
+            out["houses"] = int(out["houses"])+1
+        elif building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST,BuildingSystem.TYPE_SPIRIT_FIELD,BuildingSystem.TYPE_ALCHEMY_HALL]:
+            var batches := int(building.metrics.get("production_batches",0))
+            out["production_batches"] = int(out["production_batches"])+batches
+            if batches > 0:
+                out["production_sites"] = int(out["production_sites"])+1
+    for id in state.sect.v2_pve_settlement_receipts:
+        var receipt: Dictionary = state.sect.v2_pve_settlement_receipts[id]
+        if str(receipt.get("outcome","")) == "win":
+            out["pve_wins"] = int(out["pve_wins"])+1
+            if str(id).begins_with("pve:v63_boss:"):
+                out["boss_wins"] = int(out["boss_wins"])+1
+    return out
+
+func _gameplay_e2_goal_rows() -> Array:
+    var p := _gameplay_e2_progress_snapshot()
+    return [
+        ["01  KHỞI LẬP","Có sáu đệ tử và một Đệ Tử Xá hoạt động.", "%d/6 đệ tử · %d nhà" % [p["disciples"],p["houses"]],int(p["disciples"]) >= 6 and int(p["houses"]) >= 1,"residence"],
+        ["02  ĐẶT NỀN MÓNG","Hoàn thành sản xuất tại ba cơ sở.", "%d/3 cơ sở · %d lô" % [p["production_sites"],p["production_batches"]],int(p["production_sites"]) >= 3,"production"],
+        ["03  TRUYỀN THỪA","Chọn nhánh cho sáu đệ tử, học kỹ năng chiến đấu.", "%d/6 chọn nhánh · %d/6 có kỹ năng" % [p["schools"],p["armed"]],int(p["schools"]) >= 6 and int(p["armed"]) >= 6,"school"],
+        ["04  LỊCH LUYỆN","Thắng một encounter PvE đã quyết toán.", "%d trận thắng đã lưu" % p["pve_wins"],int(p["pve_wins"]) >= 1,"hunt"],
+        ["05  HƯNG THỊNH","Đại Điện cấp 2 và có hai Đệ Tử Xá hoạt động.", "Đại Điện Lv%d · %d/2 nhà" % [p["hall"],p["houses"]],int(p["hall"]) >= 2 and int(p["houses"]) >= 2,"hall"],
+        ["06  TIÊN ĐỒ","Có đệ tử đạt đại cảnh giới 2 ở cả hai hướng phát triển (có thể khác người).", "Tu Vi tầng %d/11 · Thể tầng %d/11" % [p["cultivation_floor"],p["body_floor"]],int(p["cultivation_floor"]) >= 11 and int(p["body_floor"]) >= 11,"cultivation"],
+        ["07  THÁCH ĐẤU","Thắng một Boss có biên nhận kết thúc trận.", "%d trận Boss thắng" % p["boss_wins"],int(p["boss_wins"]) >= 1,"hunt"],
+        ["08  ĐẠI TÔNG MÔN","Mở rộng tới 30 đệ tử và truyền thừa nâng cao.", "%d/30 đệ tử · %d có kỹ năng nâng cao" % [p["disciples"],p["advanced"]],int(p["disciples"]) >= 30 and int(p["advanced"]) >= 6,"hall"]
+    ]
+
+func _gameplay_e2_progress_screen() -> void:
+    if state == null or popup_layer == null or _pve_hunt_overlay_is_open():
+        return
+    _clear_popup()
+    _add_dim()
+    var panel := Panel.new()
+    panel.name = "OneGameProgression"
+    panel.position = Vector2(46,80)
+    panel.size = Vector2(1188,620)
+    panel.z_index = 45
+    panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    panel.add_theme_stylebox_override("panel",_art05_style(ART05_DEEP,ART05_GOLD,2,18))
+    popup_layer.add_child(panel)
+    var rows := _gameplay_e2_goal_rows()
+    var completed := 0
+    for row in rows:
+        if bool(row[3]):
+            completed += 1
+    _art05_dock_label(panel,"TIẾN TRÌNH TÔNG MÔN   %d/%d" % [completed,rows.size()],Vector2(20,12),Vector2(850,35),25,ART05_GOLD)
+    _art05_dock_label(panel,"Mục tiêu tự chọn · đọc trực tiếp Save hiện tại · không phát thưởng hoặc khóa chức năng.",Vector2(20,49),Vector2(1040,25),14,ART05_MUTE)
+    var back := Button.new()
+    back.name = "OneGameProgressBack"
+    back.text = "Lộ trình"
+    back.position = Vector2(1055,14)
+    back.size = Vector2(112,36)
+    back.pressed.connect(_art05_open_playbook)
+    panel.add_child(back)
+    var economy := EconomySystem.new()
+    var cash := economy.daily_market_cashflow(state)
+    var arrears := int(economy.unpaid_work_wages(state).get("total",0))
+    var warehouse := WarehouseSystem.new()
+    var finances := "Linh thạch %s  |  Thanh Thiết %s  |  Linh Mộc %s  |  Thu chi ghi nhận hôm nay %+d LT  |  Nợ lương %d LT" % [
+        _compact_number(state.sect.spirit_stones),_compact_number(warehouse.quantity(state,&"thanh_thiet")),
+        _compact_number(warehouse.quantity(state,&"linh_moc")),int(cash.get("net_recorded",0)),arrears]
+    _art05_dock_label(panel,finances,Vector2(20,82),Vector2(1145,26),15,ART05_WHITE)
+    for i in range(rows.size()):
+        var item: Array = rows[i]
+        var tile := Panel.new()
+        tile.position = Vector2(20+(i%2)*577,119+floori(float(i)/2.0)*122)
+        tile.size = Vector2(561,112)
+        var done := bool(item[3])
+        tile.add_theme_stylebox_override("panel",_art05_style(ART05_JADE,Color(0.42,0.65,0.46) if done else Color(0.32,0.49,0.42),1,12))
+        panel.add_child(tile)
+        _art05_dock_label(tile,str(item[0]),Vector2(12,7),Vector2(370,26),17,ART05_GOLD)
+        _art05_dock_label(tile,"ĐẠT" if done else "ĐANG PHÁT TRIỂN",Vector2(397,9),Vector2(150,23),12,Color(0.66,0.92,0.69) if done else ART05_MUTE)
+        _art05_dock_label(tile,str(item[1]),Vector2(12,34),Vector2(530,38),14,ART05_WHITE)
+        _art05_dock_label(tile,str(item[2]),Vector2(12,77),Vector2(395,28),14,ART05_MUTE)
+        var action := Button.new()
+        action.name = "OneGameGoal_"+str(i)
+        action.text = "QUẢN LÝ"
+        action.position = Vector2(426,76)
+        action.size = Vector2(122,28)
+        action.pressed.connect(_art05_playbook_action.bind(str(item[4])))
+        tile.add_child(action)
+
 func _art05_open_playbook() -> void:
     if state == null or popup_layer == null or _pve_hunt_overlay_is_open():
         return
@@ -1812,8 +1919,6 @@ func _art05_open_playbook() -> void:
     var next_step := "Phân công sản xuất, tu luyện và mở rộng tông môn."
     if count == 0:
         next_step = "Bắt đầu: tuyển đệ tử tại Dẫn Tiên Đài."
-    elif count >= state.sect.disciple_capacity:
-        next_step = "Đã đạt giới hạn đệ tử. Kiểm tra Đại Điện và Đệ Tử Xá."
     elif int(snapshot["injured"]) > 0:
         next_step = "Có đệ tử bị thương. Kiểm tra Dược Phòng trước khi xuất chinh."
     elif int(snapshot["school"]) < count:
@@ -1822,6 +1927,10 @@ func _art05_open_playbook() -> void:
         next_step = "Phân công người sản xuất để tạo nguồn vật tư."
     elif int(snapshot["ready"]) > 0:
         next_step = "Có đệ tử đủ điều kiện lịch luyện. Chọn bãi săn hoặc Boss."
+    elif count >= state.sect.disciple_capacity:
+        next_step = "Đã đạt giới hạn đệ tử. Kiểm tra Đại Điện và Đệ Tử Xá."
+    else:
+        next_step = "Đệ tử đang bận. Kiểm tra phân công hoặc chờ hoàn tất công việc."
     _art05_dock_label(panel,next_step,Vector2(20,51),Vector2(1130,25),15,ART05_WHITE)
     var summary := "Đệ tử %d/%d  |  Chiêu mộ lệnh %d  |  Đủ điều kiện săn %d  |  Có nơi làm việc %d  |  Đang săn %d  |  Bị thương/gục %d" % [
         count,state.sect.disciple_capacity,state.sect.disciple_recruitment_tokens,int(snapshot["ready"]),
@@ -1836,6 +1945,13 @@ func _art05_open_playbook() -> void:
     close.add_theme_stylebox_override("normal",_art05_style(ART05_JADE,ART05_GOLD,1,8))
     close.pressed.connect(_clear_popup)
     panel.add_child(close)
+    var goals := Button.new()
+    goals.name = "OneGameProgressButton"
+    goals.text = "TIẾN TRÌNH"
+    goals.position = Vector2(901,14)
+    goals.size = Vector2(155,36)
+    goals.pressed.connect(_gameplay_e2_progress_screen)
+    panel.add_child(goals)
     var transmission_ready := V63HumanSkillCombatSystem.is_enabled(state,V63FeatureGates.persisted_preview_overrides(state)) and state.sect.v63_learning_opt_in
     var cards := [
         ["DẪN TIÊN ĐÀI","Chiêu mộ và chọn ứng viên.","recruit"],
