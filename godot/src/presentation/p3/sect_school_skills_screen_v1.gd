@@ -319,6 +319,10 @@ func refresh() -> void:
                     if str(offer.get("reason","")) == "sect_training_floor_required":
                         reason = "Cần tầng Tu Vi %d · hiện %d." % [int(offer.get("required_floor",0)),int(offer.get("current_floor",0))]
                         action.text = "TẦNG %d" % int(offer.get("required_floor",0))
+                    elif str(offer.get("reason","")) == "sect_training_predecessor_required":
+                        var parent := V63HumanSkillCombatSystem.skill_definition(str(offer.get("parent_skill_id","")))
+                        reason = "Cần học chiêu tiền thân: "+str(parent.get("name",offer.get("parent_skill_id","")))
+                        action.text = "TIỀN THÂN"
                     else:
                         action.text = "CHƯA MỞ"
             elif not bool(definition.get("archivable",false)):

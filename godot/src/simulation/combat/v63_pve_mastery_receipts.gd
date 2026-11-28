@@ -70,9 +70,14 @@ static func settle(state: SimulationState, battle: MapBattleV2) -> Dictionary:
             var skill_id := str(payload.get("skill_id", ""))
             var xp_delta := float(payload.get("xp_delta", 0.0))
             var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
-            if definition.is_empty() or not loadout.has(skill_id) or not known.has(skill_id) \
+            if definition.is_empty() or not loadout.has(skill_id) \
                     or not is_finite(xp_delta) or xp_delta < 1.0 or xp_delta > 1.3:
                 return {"ok": false, "reason": "invalid_pending_mastery_skill_or_xp"}
+            if not known.has(skill_id):
+                if not V63HumanSkillCombatSystem.is_derived_equipped_move(disciple,skill_id):
+                    return {"ok":false,"reason":"invalid_pending_mastery_skill_or_xp"}
+                acknowledged += 1
+                continue
             if not (known[skill_id] is Dictionary):
                 return {"ok": false, "reason": "invalid_pending_mastery_knowledge"}
             var record: Dictionary = known[skill_id].duplicate(true)

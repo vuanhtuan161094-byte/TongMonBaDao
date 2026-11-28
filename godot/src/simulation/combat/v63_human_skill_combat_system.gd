@@ -257,14 +257,25 @@ static func boss_skill_definitions(boss_id: String) -> Dictionary:
 const SECT_TRAINING_SCHOOLS := ["sword","blade","spear","dual_blade","palm","talisman","curse","formation","summon"]
 
 static func is_sect_training_skill(definition: Dictionary) -> bool:
-    return str(definition.get("school","")) in SECT_TRAINING_SCHOOLS \
-        and str(definition.get("generation","")) == "human" \
-        and str(definition.get("slot","")) in ["basic","mobility","active","ultimate","passive"]
+    if str(definition.get("school","")) not in SECT_TRAINING_SCHOOLS or bool(definition.get("archivable",false)):
+        return false
+    var generation := str(definition.get("generation",""))
+    var slot := str(definition.get("slot",""))
+    if generation == "human":
+        return slot in ["basic","mobility","active","ultimate","passive"]
+    # E4: ordinary authored successors only; rare and derived moves stay locked.
+    return generation in ["immortal","divine"] and slot in ["active","ultimate","passive"] \
+        and str(definition.get("variant_type","")) == "successor" \
+        and str(definition.get("lineage","")) in ["a","b"] \
+        and not str(definition.get("parent_skill_id","")).is_empty()
 
 static func sect_training_required_floor(definition: Dictionary) -> int:
     if not is_sect_training_skill(definition):
         return 0
     var slot := str(definition.get("slot",""))
+    match str(definition.get("generation","")):
+        "immortal": return 101
+        "divine": return 201
     if slot == "basic":
         return 1
     if slot == "mobility":
@@ -300,6 +311,15 @@ static func sect_training_offer(state: SimulationState, disciple: DiscipleState,
     # Legacy founders may learn the initial moves; do not invent V2 progression.
     if floor_index < required and not disciple.v63_learned_skill_nodes.has(str(definition.get("id",""))):
         return {"ok":false,"reason":"sect_training_floor_required","required_floor":required,"current_floor":floor_index}
+    var generation := str(definition.get("generation","human"))
+    if generation != "human":
+        var parent_id := str(definition.get("parent_skill_id",""))
+        var parent := skill_definition(parent_id)
+        if parent.is_empty() or str(parent.get("family_id","")) != str(definition.get("family_id","")) \
+                or not disciple.v63_learned_skill_nodes.has(parent_id):
+            return {"ok":false,"reason":"sect_training_predecessor_required","parent_skill_id":parent_id}
+        if generation == "divine" and not V63FeatureGates.is_enabled("divine_skill_combat",overrides):
+            return _failure("divine_skill_combat_disabled")
     return {"ok":true,"required_floor":required,"current_floor":floor_index}
 
 static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_id: String, preview_overrides: Dictionary = {}) -> Dictionary:
@@ -314,10 +334,11 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
             return offer
         if disciple.v63_learned_skill_nodes.has(skill_id):
             return {"ok":true,"duplicate":true,"skill_id":skill_id}
-        disciple.v63_learned_skill_nodes[skill_id] = {"source_kind":"sect_training_e3",
+        var source_kind := "sect_training_e3" if str(definition.get("generation","")) == "human" else "sect_training_e4"
+        disciple.v63_learned_skill_nodes[skill_id] = {"source_kind":source_kind,
             "source_codex_id":"","learned_tick":maxi(state.tick,0),"mastery_xp":0.0,"level":1,
             "branch_id":str(definition.get("branch",""))}
-        return {"ok":true,"skill_id":skill_id,"source_kind":"sect_training_e3"}
+        return {"ok":true,"skill_id":skill_id,"source_kind":source_kind}
     if str(definition.get("school", "")) == "sword":
         return V63SwordSkillCombatSystem.can_learn(definition)
     if str(definition.get("school", "")) == "blade":
@@ -2074,6 +2095,32 @@ static func validate_battle(battle: MapBattleV2, expected_boss_id: String = "") 
         errors.append("v63_boss_identity_mismatch")
     return errors
 
+# Derived basic/movement nodes inherit the equipped lineage, not personal XP.
+static func is_derived_equipped_move(disciple: DiscipleState, skill_id: String) -> bool:
+    if disciple == null:
+        return false
+    var definition := skill_definition(skill_id)
+    var generation := str(definition.get("generation",""))
+    var slot := str(definition.get("slot",""))
+    var school := str(definition.get("school",""))
+    var own: Dictionary = branch_definitions().get(str(disciple.v63_combat_branch_id),{})
+    if generation not in ["immortal","divine"] or slot not in ["basic","mobility"] \
+        or str(own.get("school","")) != school or skill_id != "tmb.skill.%s.%s.%s.base" % [school,slot,generation]:
+        return false
+    var best := ""
+    for raw_id in disciple.v63_equipped_skill_ids:
+        var id := str(raw_id)
+        if not disciple.v63_learned_skill_nodes.has(id):
+            continue
+        var equipped := skill_definition(id)
+        if str(equipped.get("branch","")) != str(disciple.v63_combat_branch_id) or str(equipped.get("lineage","")) not in ["a","b"]:
+            continue
+        if str(equipped.get("generation","")) == "divine":
+            best = "divine"
+        elif str(equipped.get("generation","")) == "immortal" and best.is_empty():
+            best = "immortal"
+    return best == generation
+
 static func validate_state(state: SimulationState) -> Array[String]:
     if state == null:
         return ["missing_human_combat_state"]
@@ -2098,9 +2145,16 @@ static func validate_state(state: SimulationState) -> Array[String]:
                 if is_sect_training_skill(skill):
                     var own: Dictionary = branches.get(branch_id,{})
                     var skill_branch := str(skill.get("branch",""))
-                    valid_source = str(record.get("source_kind","")) == "sect_training_e3" and str(record.get("source_codex_id","")).is_empty() \
+                    var generation := str(skill.get("generation","human"))
+                    var expected_source := "sect_training_e3" if generation == "human" else "sect_training_e4"
+                    valid_source = str(record.get("source_kind","")) == expected_source and str(record.get("source_codex_id","")).is_empty() \
                         and not branch_id.is_empty() and str(own.get("school","")) == str(skill.get("school","")) \
                         and (skill_branch.is_empty() or skill_branch == branch_id)
+                    if generation != "human":
+                        var parent_id := str(skill.get("parent_skill_id",""))
+                        var parent: Dictionary = definitions.get(parent_id,{})
+                        valid_source = valid_source and disciple.v63_learned_skill_nodes.has(parent_id) \
+                            and not parent.is_empty() and str(parent.get("family_id","")) == str(skill.get("family_id",""))
                 else:
                     valid_source = bool(skill.get("archivable",false)) and str(record.get("source_codex_id","")) == str(skill.get("source_codex_id",""))
             if not valid_source or int(record.get("learned_tick",-1)) < 0 or float(record.get("mastery_xp",-1.0)) < 0.0:

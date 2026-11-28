@@ -1798,8 +1798,11 @@ func _gameplay_e2_progress_snapshot() -> Dictionary:
         var d: DiscipleState = raw
         if not str(d.v63_combat_branch_id).is_empty():
             out["schools"] = int(out["schools"])+1
-        if not d.v63_equipped_skill_ids.is_empty():
-            out["advanced"] = int(out["advanced"])+1
+        for skill_id in d.v63_equipped_skill_ids:
+            var definition := V63HumanSkillCombatSystem.skill_definition(str(skill_id))
+            if str(definition.get("generation","")) in ["immortal","divine"]:
+                out["advanced"] = int(out["advanced"])+1
+                break
         if not d.learned_combat_skills.is_empty() or not d.v63_equipped_skill_ids.is_empty():
             out["armed"] = int(out["armed"])+1
         var progress := DiscipleRealmProgressV2.current(d)

@@ -1222,7 +1222,8 @@ static func restore_state(state: SimulationState, saved: Dictionary, preview_ove
             return {"ok":false,"reason":"invalid_saved_disciple_skill_loadout"}
         for skill_id in actor_loadout:
             var skill_key := str(skill_id)
-            if not owner_disciple.v63_equipped_skill_ids.has(skill_key) or not owner_disciple.v63_learned_skill_nodes.has(skill_key):
+            var personally_equipped := owner_disciple.v63_equipped_skill_ids.has(skill_key) and owner_disciple.v63_learned_skill_nodes.has(skill_key)
+            if not personally_equipped and not V63HumanSkillCombatSystem.is_derived_equipped_move(owner_disciple,skill_key):
                 return {"ok":false,"reason":"saved_skill_not_personally_equipped"}
     if mode_value == "multicamp":
         var p0_enabled := PveDistributedWorldV1.enabled(camp_registry)

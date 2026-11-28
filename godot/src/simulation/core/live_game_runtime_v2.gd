@@ -48,6 +48,9 @@ func start(
         return configured
 
     if created:
+        var founders := _initialize_new_game_founders(live_state)
+        if not bool(founders.get("ok",false)):
+            return founders
         SX01PillPolicy.install_new_game(live_state)
         # New Game must have an earned Stone path from its very first day.
         # Legacy saves keep their existing opt-in Economy-A contract.
@@ -121,6 +124,37 @@ func state() -> SimulationState:
 func scheduler() -> SimulationScheduler:
     return owner.scheduler
 
+# New live games only: founders receive deterministic V2 birth profiles.
+# The seed domain is independent of world RNG; historical saves stay intact.
+func _initialize_new_game_founders(live_state: SimulationState) -> Dictionary:
+    var ids: Array = live_state.disciples.keys()
+    ids.sort()
+    var ordinal := 0
+    for raw_id in ids:
+        ordinal += 1
+        var disciple: DiscipleState = live_state.disciples[raw_id]
+        if DiscipleRealmProgressV2.progression_ready(disciple):
+            continue
+        if not disciple.v2_birth_profile.is_empty() or not disciple.v2_realm_progress.is_empty():
+            return {"ok":false,"reason":"founder_partial_v2_profile","id":str(raw_id)}
+        var birth_seed := maxi(1,posmod(("%d:founder:%s" % [live_state.seed,str(raw_id)]).hash(),2147483629))
+        var provenance := CandidateState.new({
+            "id":str(raw_id),"name":disciple.display_name,
+            "generated_index":1000000+ordinal,"profile_seed":birth_seed,
+            "recruitment_source":"founder",
+            "profession_traits":disciple.profession_traits.duplicate(),
+            "profession_trait_grades":disciple.profession_trait_grades.duplicate(true)
+        })
+        var envelope := DiscipleBirthProfileV2.create_envelope(provenance)
+        var profile := DiscipleBirthRollV2.populate(envelope,provenance)
+        if not DiscipleBirthProfileV2.valid_complete_birth(profile):
+            return {"ok":false,"reason":"founder_birth_profile_invalid","id":str(raw_id)}
+        disciple.v2_birth_profile = profile
+        var started := DiscipleRealmProgressV2.initialize(disciple,1,1,1,1)
+        if not bool(started.get("ok",false)):
+            return {"ok":false,"reason":"founder_v2_progression_failed","id":str(raw_id),"detail":started}
+    return {"ok":true,"founders":ids.size()}
+
 func _configure_live_state(live_state: SimulationState) -> Dictionary:
     if live_state == null:
         return {"ok":false,"reason":"invalid_live_runtime_state"}
@@ -134,7 +168,7 @@ func _configure_live_state(live_state: SimulationState) -> Dictionary:
     live_state.sect.disciple_v2_birth_enabled = true
 
     # Activate the canonical Tu Vi source for authentic V2 disciples only.
-    # Body remains fail-closed because its real consumer is not implemented yet.
+    # Body XP remains sourced only from authorized training, production and PvE consumers.
     live_state.sect.v2_training_enabled = true
     live_state.sect.v2_training_rules = canonical_rules
     # Explicit V2-only building migration: preserve legacy P3.7 fixtures and

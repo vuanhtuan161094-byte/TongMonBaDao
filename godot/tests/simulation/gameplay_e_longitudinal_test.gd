@@ -34,6 +34,9 @@ func _snapshot(state: SimulationState) -> Dictionary:
     var production_batches := 0
     var max_cultivation := 0
     var max_body := 0
+    var v2_ready := 0
+    var cultivation_xp := 0.0
+    var body_xp := 0.0
     for raw in state.buildings.values():
         var building: BuildingState = raw
         production_batches += int(building.metrics.get("production_batches",0))
@@ -41,10 +44,13 @@ func _snapshot(state: SimulationState) -> Dictionary:
         var d: DiscipleState = raw
         var current := DiscipleRealmProgressV2.current(d)
         if bool(current.get("ok",false)):
+            v2_ready += 1
+            cultivation_xp += float(current["cultivation"]["xp"])
+            body_xp += float(current["body"]["xp"])
             max_cultivation = maxi(max_cultivation,int(current["cultivation_global_floor"]))
             max_body = maxi(max_body,int(current["body_global_floor"]))
     return {"tick":state.tick,"disciples":state.disciples.size(),"buildings":state.buildings.size(),
-        "production_batches":production_batches,"max_cultivation":max_cultivation,"max_body":max_body,
+        "production_batches":production_batches,"max_cultivation":max_cultivation,"max_body":max_body,"v2_ready":v2_ready,"cultivation_xp":cultivation_xp,"body_xp":body_xp,
         "wage_arrears":int(economy.unpaid_work_wages(state).get("total",0)),
         "daily_net_recorded":int(cash.get("net_recorded",0)),
         "daily_income":int(cash.get("income",0))+int(cash.get("origin_income",0)),
@@ -62,6 +68,9 @@ func _run() -> void:
         return
     var initial := _snapshot(runtime.state())
     print("GAMEPLAY_E_BASELINE "+JSON.stringify(initial))
+    if int(initial["v2_ready"]) != int(initial["disciples"]) or int(initial["max_cultivation"]) != 1 or int(initial["max_body"]) != 1:
+        _fail("new-game founders are not authentic realm-one V2 disciples")
+        return
     var previous_hour := 0
     var previous_tick := int(initial["tick"])
     for hour in [1,5,10,50,100]:
@@ -116,6 +125,16 @@ func _run() -> void:
         for key in current:
             if not is_equal_approx(float(current[key]),float(after.get(key,-1))):
                 _fail("same-time reload changed "+str(key)+" at "+str(hour))
+                return
+        if int(current["v2_ready"]) != int(current["disciples"]):
+            _fail("V2 identity disappeared at "+str(hour))
+            return
+        if int(hour) == 100:
+            if int(current["max_cultivation"]) <= int(initial["max_cultivation"]) and float(current["cultivation_xp"]) <= 0.0:
+                _fail("no earned cultivation growth after 100 hours")
+                return
+            if int(current["max_body"]) <= int(initial["max_body"]) and float(current["body_xp"]) <= 0.0:
+                _fail("no earned body growth after 100 hours")
                 return
         print("GAMEPLAY_E_MILESTONE "+JSON.stringify({"hours":hour,"metrics":current,"source_sha":OS.get_environment("GITHUB_SHA")}))
         previous_tick = state.tick
