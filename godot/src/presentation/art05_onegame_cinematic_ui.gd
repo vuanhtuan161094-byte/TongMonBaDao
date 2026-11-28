@@ -1163,7 +1163,7 @@ func _refresh_all() -> void:
 # CanvasItem z_index changes rendering, not Control input order. A map
 # shortcut added after the popup used to intercept real clicks on profiles.
 func _art05_sync_map_chrome() -> void:
-    var modal := _popup_is_open() or _pve_hunt_overlay_is_open()
+    var modal := _popup_is_open() or _pve_hunt_overlay_is_open() or _art05_facility_modal_open()
     for entry in MASTERPLAN_DISTRICT_TABS:
         var tab := get_node_or_null("MasterplanDistrict_"+str(entry["key"])) as Button
         if tab != null:
@@ -1492,6 +1492,20 @@ func _art05_manage_selected_district() -> void:
         return
     _open_player_building(_art05_dock_destination)
 
+# Facility overlays are modal even though their legacy authority host is a
+# direct child rather than a popup. Keep map controls out of their input path.
+func _art05_facility_modal_open() -> bool:
+    for node_name in ["DaiDienScreenV1","DanTienScreenV2","DaiDienScreenB1V1","DeTuXaScreenB1V1","DanTienScreenB1V1"]:
+        var node := get_node_or_null(node_name) as Control
+        if node != null and not node.is_queued_for_deletion() and node.is_visible_in_tree():
+            return true
+    return false
+
+func _open_player_building(destination: StringName, instance_id: StringName = &"") -> void:
+    super._open_player_building(destination,instance_id)
+    _art05_refresh_sect_master_dock()
+    _art05_sync_map_chrome()
+
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     if destination != selected_building:
         _facility_tab_index = 0
@@ -1508,7 +1522,7 @@ func _art05_refresh_sect_master_dock() -> void:
     if _art05_dock_panel == null or state == null:
         return
     _art05_dock_panel.visible = not _art05_dock_collapsed \
-        and not _building_operation_is_open() and not _popup_is_open() \
+        and not _building_operation_is_open() and not _popup_is_open() and not _art05_facility_modal_open() \
         and not (build_mode_panel != null and build_mode_panel.visible) \
         and not _disciple_summary_is_open() and not _pve_hunt_overlay_is_open()
     if not _art05_dock_panel.visible:
