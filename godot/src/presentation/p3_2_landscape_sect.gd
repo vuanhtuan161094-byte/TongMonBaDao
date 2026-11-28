@@ -1912,13 +1912,16 @@ func _on_v63_preview_gate_toggled(enabled: bool) -> void:
     await _set_v63_preview_gate(enabled,true)
 
 
-func _set_v63_preview_gate(enabled: bool,persist: bool) -> bool:
+func _set_v63_preview_gate(enabled: bool,persist: bool,include_learning: bool = false) -> bool:
     if state == null:
         return false
     var previous_archive_opt_in := state.sect.v63_archive_opt_in
     var previous_combat_opt_in := state.sect.v63_skill_combat_opt_in
+    var previous_learning_opt_in := state.sect.v63_learning_opt_in
     state.sect.v63_archive_opt_in = enabled
     state.sect.v63_skill_combat_opt_in = enabled
+    if include_learning:
+        state.sect.v63_learning_opt_in = enabled
     v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
     if runtime_session != null and runtime_session.owner != null and runtime_session.owner.scheduler != null:
         runtime_session.owner.scheduler.v63_preview_overrides = v63_preview_overrides.duplicate(true)
@@ -1929,6 +1932,7 @@ func _set_v63_preview_gate(enabled: bool,persist: bool) -> bool:
         if not bool(saved.get("ok",false)):
             state.sect.v63_archive_opt_in = previous_archive_opt_in
             state.sect.v63_skill_combat_opt_in = previous_combat_opt_in
+            state.sect.v63_learning_opt_in = previous_learning_opt_in
             v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
             if runtime_session != null and runtime_session.owner != null and runtime_session.owner.scheduler != null:
                 runtime_session.owner.scheduler.v63_preview_overrides = v63_preview_overrides.duplicate(true)
