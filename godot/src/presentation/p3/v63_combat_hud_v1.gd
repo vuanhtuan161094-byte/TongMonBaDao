@@ -256,7 +256,7 @@ func _ensure_party_rows() -> void:
         row.alignment = HORIZONTAL_ALIGNMENT_LEFT
         row.add_theme_font_size_override("font_size", 12)
         for style_name in ["normal","hover","pressed"]:
-            var selected := style_name != "normal"
+            var selected: bool = str(style_name) != "normal"
             var row_style := _panel_style(Color("28534c") if selected else Color("153b3c"),Color("c6a873") if selected else Color("54766a"))
             row_style.content_margin_top = 2
             row_style.content_margin_bottom = 10

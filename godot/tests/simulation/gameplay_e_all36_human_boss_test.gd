@@ -158,7 +158,7 @@ func _sect_instruction_matrix(branches: Dictionary) -> int:
         var school := str(branch.get("school",""))
         if school not in V63HumanSkillCombatSystem.SECT_TRAINING_SCHOOLS:
             continue
-        var branch_id := str(branch.get("id",raw_id))
+        var branch_id := str(raw_id)
         var state := P37Factory.create_state(SEED)
         var disciple: DiscipleState = state.disciples.values()[0]
         var selected := SectASCharCandidateBridgeV1.assign_branch(state,disciple,branch_id)
@@ -206,7 +206,7 @@ func _run() -> void:
     for raw_id in branch_ids:
         var row: Dictionary = branches[raw_id]
         var school := str(row.get("school",""))
-        var branch := str(row.get("id",raw_id))
+        var branch := str(raw_id)
         _check(not school.is_empty(),"missing branch school "+branch)
         schools[school] = true
         _trial(school,branch,"human","base",1)

@@ -2079,6 +2079,7 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var cell: Vector2 = data.get("cell",Vector2.ZERO)
     var foot := project(cell)
     var side := str(actor.get("side",""))
+    var tier := str(actor.get("tier","normal"))
     var alive := float(actor.get("hp",0.0)) > 0.0
     var visual: Dictionary = pve_actor_actions.get(id,{"action":"idle","started":pve_clock})
     var action := "die" if not alive else str(visual.get("action","idle"))
@@ -2110,7 +2111,7 @@ func _draw_pve_actor(data: Dictionary) -> void:
         drawn = not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
         if drawn:
             drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-                age,pve_actor_draw_scale()*(1.35 if str(actor.get("tier","normal")) == "boss" else (1.18 if str(actor.get("tier","normal")) == "elite" else 1.12)))
+                age,pve_actor_draw_scale()*(1.35 if tier == "boss" else (1.18 if tier == "elite" else 1.12)))
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
