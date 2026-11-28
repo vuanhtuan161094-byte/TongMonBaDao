@@ -96,34 +96,28 @@ func _rebuild() -> void:
 			var token := UI.resource_item(str(entry[1]),str(_vm[entry[0]]),str(entry[2]))
 			token.custom_minimum_size.x = 176
 			header.add_child(token)
-	root.add_child(HSeparator.new())
-	var body := HBoxContainer.new()
-	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation",18)
-	root.add_child(body)
-	var sidebar := _surface("HallNavigation")
-	var nav_style := sidebar.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
-	nav_style.bg_color = UI.DEEP
-	nav_style.set_border_width_all(0)
-	sidebar.add_theme_stylebox_override("panel",nav_style)
-	sidebar.custom_minimum_size.x = 172
-	sidebar.size_flags_horizontal = Control.SIZE_FILL
-	body.add_child(sidebar)
-	var rail := _stack(sidebar,7)
+	# Horizontal navigation returns the full canvas width to the actual pages.
+	var sidebar := UI.panel("HallNavigation",UI.BORDER,UI.SURFACE)
+	sidebar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.add_child(sidebar)
+	var rail := HBoxContainer.new()
+	rail.add_theme_constant_override("separation",8)
+	sidebar.add_child(rail)
 	var group := ButtonGroup.new()
 	for i in range(TABS.size()):
 		var button := UI.button(TABS[i],false,UI.BORDER)
 		button.name = "HallTab_%d" % i
 		button.toggle_mode = true
 		button.button_group = group
-		button.custom_minimum_size = Vector2(148,52)
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.custom_minimum_size = Vector2(0,46)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.add_theme_font_size_override("font_size",17)
 		button.add_theme_stylebox_override("pressed",UI._button_style(true,UI.GOLD,0.75))
 		button.pressed.connect(set_tab_index.bind(i))
 		rail.add_child(button)
 		_nav.append(button)
-	var pages := _stack(body,0)
+	var pages := _stack(root,0)
 	_pages = [_overview(),_build_offices_panel(),_upgrade_page(),_rank_page(),_economy_page(),_policy_page()]
 	for page in _pages:
 		page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -144,26 +138,26 @@ func _overview() -> Control:
 	hero.add_theme_constant_override("separation",18)
 	column.add_child(hero)
 	var scene := _surface("HallArtworkStage")
-	scene.size_flags_stretch_ratio = 1.0
+	scene.size_flags_stretch_ratio = 1.35
 	var stage_style := scene.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
-	stage_style.bg_color = UI.SURFACE_LIGHT
+	stage_style.bg_color = Color(0.10,0.19,0.17,0.92)
 	stage_style.set_border_width_all(0)
 	scene.add_theme_stylebox_override("panel",stage_style)
 	hero.add_child(scene)
 	var left := _stack(scene,8)
-	var art: Control = UI.scene_picture("hall",Vector2(350,300))
+	var art: Control = UI.scene_picture("hall",Vector2(510,285))
 	art.name = "HallSourceAArtwork"
 	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	left.alignment = BoxContainer.ALIGNMENT_BEGIN
-	var stage_heading := UI.label("Tông môn · Đại Điện",25,UI.PAPER,true)
+	var stage_heading := UI.label("Tông môn · Đại Điện",25,UI.INK,true)
 	stage_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(stage_heading)
 	left.add_child(art)
-	var level := UI.label("Đại Điện · Lv%d" % int(_vm.get("building_level",1)),20,UI.PAPER,true)
+	var level := UI.label("Đại Điện · Lv%d" % int(_vm.get("building_level",1)),20,UI.INK,true)
 	level.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(level)
 	var info := _surface("HallSectSummary")
-	UI.apply_premium_frame(info)
+	
 	info.size_flags_stretch_ratio = 0.75
 	info.custom_minimum_size.x = 290
 	hero.add_child(info)
@@ -203,7 +197,7 @@ func _overview() -> Control:
 		metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		metrics.add_child(metric)
 	var growth := _surface("HallGrowth")
-	UI.apply_premium_frame(growth)
+	
 	growth.custom_minimum_size.y = 116
 	growth.size_flags_vertical = Control.SIZE_FILL
 	column.add_child(growth)
@@ -231,9 +225,9 @@ func _upgrade_page() -> Control:
 	center.add_theme_constant_override("separation",24)
 	content.add_child(center)
 	var art_panel := _surface("HallUpgradeArtwork")
-	art_panel.size_flags_stretch_ratio = 0.8
+	art_panel.size_flags_stretch_ratio = 1.05
 	center.add_child(art_panel)
-	var art: Control = UI.scene_picture("hall",Vector2(285,180))
+	var art: Control = UI.scene_picture("hall",Vector2(420,236))
 	art_panel.add_child(art)
 	var form := _stack(center,12)
 	form.size_flags_stretch_ratio = 1.4
@@ -264,7 +258,7 @@ func _rank_page() -> Control:
 	page.add_child(progress)
 	var left := _stack(progress,12)
 	left.add_child(UI.section_heading("Thăng bậc tông môn","rank",UI.GOLD))
-	left.add_child(UI.scene_picture("hall",Vector2(280,210)))
+	left.add_child(UI.metric_card("Uy danh",str(_vm.get("prestige","—")),"rank",UI.GOLD))
 	left.add_child(UI.label(str(_vm.get("rank_label","Bậc")),28,UI.PAPER,true))
 	left.add_child(UI.label("Bậc %d / 27" % int(_vm.get("rank_step",1)),18,UI.JADE,true))
 	var steps := GridContainer.new()
@@ -324,7 +318,7 @@ func _economy_page() -> Control:
 	page.add_child(operations)
 	var content := _stack(operations,10)
 	content.add_child(UI.section_heading("Điều hành kinh tế","resource",UI.GOLD))
-	content.add_child(UI.scene_picture("hall",Vector2(220,150)))
+	content.add_child(UI.scene_picture("mine",Vector2(220,150)))
 	for action in _vm.get("economy_actions",[]):
 		_add_action(content,action)
 	var workers: Array = _vm.get("vein_workers",[])
@@ -369,7 +363,7 @@ func _policy_page() -> Control:
 	page.add_child(auxiliary)
 	var actions := _stack(auxiliary,10)
 	actions.add_child(UI.section_heading("Dịch vụ tông môn","office",UI.GOLD))
-	actions.add_child(UI.scene_picture("hall",Vector2(220,160)))
+	actions.add_child(UI.label("Thiết lập ưu tiên phát triển và dịch vụ tự động của tông môn.",16,UI.MUTED,false))
 	for action in _vm.get("policy_actions",[]):
 		_add_action(actions,action)
 	return page
@@ -392,7 +386,7 @@ func _build_offices_panel() -> Control:
 	content.add_theme_constant_override("separation", 10)
 	card.add_child(content)
 	content.add_child(UI.section_heading("Bảy chức vụ", "office", UI.JADE))
-	content.add_child(UI.label("Một đệ tử chỉ giữ một chức vụ. Chọn người đang đủ điều kiện.",11,UI.MUTED,false))
+	content.add_child(UI.label("Một đệ tử chỉ giữ một chức vụ. Chọn người đang đủ điều kiện.",14,UI.MUTED,false))
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -411,7 +405,7 @@ func _build_offices_panel() -> Control:
 
 func _office_card(role_id: String, office: Dictionary) -> Control:
 	var card := UI.panel("Office_%s" % role_id, UI.BORDER, UI.SURFACE_LIGHT)
-	card.custom_minimum_size = Vector2(245, 105)
+	card.custom_minimum_size = Vector2(245, 91)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)
@@ -420,9 +414,9 @@ func _office_card(role_id: String, office: Dictionary) -> Control:
 		row.add_child(UI.portrait_slot(str(office.get("disciple_name","")),office.get("portrait"),Vector2(60,60)))
 	var details := VBoxContainer.new()
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 14, UI.PAPER, true))
+	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 16, UI.PAPER, true))
 	var disciple_name := str(office.get("disciple_name", "Chưa bổ nhiệm"))
-	details.add_child(UI.label(disciple_name, 13, UI.TEXT, false))
+	details.add_child(UI.label(disciple_name, 15, UI.TEXT, false))
 	var unlocked := bool(office.get("unlocked",true))
 	var status := str(office.get("unlock_label",""))
 	if not unlocked:

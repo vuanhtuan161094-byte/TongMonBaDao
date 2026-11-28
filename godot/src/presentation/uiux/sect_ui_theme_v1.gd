@@ -44,19 +44,14 @@ const PREMIUM_FRAME = preload("res://art/uiux/premium/panel_jade_gold.webp")
 const PREMIUM_JADE_BUTTON = preload("res://art/uiux/premium/button_jade.webp")
 const PREMIUM_GOLD_BUTTON = preload("res://art/uiux/premium/button_gold.webp")
 const PREMIUM_IVORY_BUTTON = preload("res://art/uiux/premium/button_ivory.webp")
-static var _scenes: Dictionary = {}
 
 static func facility_texture(key: String) -> Texture2D:
 	var resolved := str({"main_hall":"hall","ren_than_duong":"training","alchemy_hall":"alchemy","linh_forest":"forest","spirit_field":"field","gate":"hall"}.get(key,key))
-	if _scenes.has(resolved):
-		return _scenes[resolved] as Texture2D
 	var path := "res://art/uiux/premium/%s_scene.webp" % resolved
 	if not ResourceLoader.exists(path,"Texture2D"):
 		return null
-	var tex := ResourceLoader.load(path,"Texture2D") as Texture2D
-	if tex != null:
-		_scenes[resolved] = tex
-	return tex
+	# ResourceLoader reuses live resources; avoid permanently pinning all twelve scenes.
+	return ResourceLoader.load(path,"Texture2D") as Texture2D
 
 static func scene_picture(key: String, min_size: Vector2) -> TextureRect:
 	var picture := TextureRect.new()
@@ -64,7 +59,7 @@ static func scene_picture(key: String, min_size: Vector2) -> TextureRect:
 	picture.set_meta("premium_facility_kind",key)
 	picture.texture = facility_texture(key)
 	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	picture.custom_minimum_size = min_size
 	picture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -94,7 +89,7 @@ static func add_facility_backdrop(parent: Control, key: String) -> void:
 	art.name = "PremiumFacilityBackdrop"
 	art.texture = texture
 	# Preserve contrast behind the live forms while focal scene art stays vivid.
-	art.modulate = Color(1,1,1,0.26)
+	art.modulate = Color(1,1,1,0.48)
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE

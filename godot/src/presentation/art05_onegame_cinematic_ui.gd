@@ -501,7 +501,7 @@ func _facility_make_shell() -> void:
     line.color = Color(0.92,0.75,0.43,0.35)
     line.mouse_filter = Control.MOUSE_FILTER_IGNORE
     building_operation_panel.add_child(line)
-    var nav := VBoxContainer.new()
+    var nav := HBoxContainer.new()
     nav.name = "FacilityStandardNav"
     nav.add_theme_constant_override("separation",10)
     building_operation_panel.add_child(nav)
@@ -509,8 +509,8 @@ func _facility_make_shell() -> void:
         var button := Button.new()
         button.name = "FacilityTab_%d" % index
         button.text = ["Tổng quan","Điều hành","Tình trạng"][index]
-        button.custom_minimum_size = Vector2(155,48)
-        button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+        button.custom_minimum_size = Vector2(150,44)
+        button.alignment = HORIZONTAL_ALIGNMENT_CENTER
         button.add_theme_font_size_override("font_size",14)
         button.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
         button.add_theme_stylebox_override("normal",_art05_style(SECT_UI_THEME.SURFACE,SECT_UI_THEME.BORDER,1,7))
@@ -545,7 +545,7 @@ func _facility_set_tab(index: int) -> void:
 func _facility_apply_tab() -> void:
     if building_operation_panel == null:
         return
-    var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as VBoxContainer
+    var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as HBoxContainer
     if nav == null:
         return
     for index in range(nav.get_child_count()):
@@ -583,7 +583,7 @@ func _facility_update() -> void:
     if scenery != null:
         var texture := SECT_UI_THEME.facility_texture(str(selected_building))
         scenery.texture = texture if texture != null else FACILITY_SCENERY
-        scenery.modulate = Color(1,1,1,0.08)
+        scenery.modulate = Color(1,1,1,0.38)
     var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
     if caption != null:
         var building := _selected_operation_building()
@@ -635,39 +635,39 @@ func _facility_fullscreen_reflow() -> void:
         close.add_theme_font_size_override("font_size",15)
         close.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
         close.add_theme_stylebox_override("normal",SECT_UI_THEME._button_style(false,SECT_UI_THEME.BORDER,1.0))
-    var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as VBoxContainer
+    var nav := building_operation_panel.get_node_or_null("FacilityStandardNav") as HBoxContainer
     if nav != null:
-        nav.position = Vector2(23,192)
-        nav.size = Vector2(165,240)
+        nav.position = Vector2(24,91)
+        nav.size = Vector2(490,44)
     if building_operation_metrics != null:
-        building_operation_metrics.position = Vector2(203,99)
-        building_operation_metrics.size = Vector2(1044,76)
+        building_operation_metrics.position = Vector2(24,145)
+        building_operation_metrics.size = Vector2(1224,76)
         building_operation_metrics.add_theme_constant_override("separation",10)
         var count := maxi(1,building_operation_metrics.get_child_count())
-        var width := floorf((1044.0-float(count-1)*10.0)/float(count))
+        var width := floorf((1224.0-float(count-1)*10.0)/float(count))
         for metric in building_operation_metrics.get_children():
             if metric is Control:
                 metric.custom_minimum_size.x = width
     var reading_surface := building_operation_panel.get_node_or_null("FacilityReadingSurface") as Panel
     if reading_surface != null:
-        reading_surface.position = Vector2(646,190)
-        reading_surface.size = Vector2(602,478)
+        reading_surface.position = Vector2(646,234)
+        reading_surface.size = Vector2(602,434)
         reading_surface.add_theme_stylebox_override("panel",_art05_style(SECT_UI_THEME.SURFACE,SECT_UI_THEME.BORDER,1,12))
     var art := building_operation_panel.get_node_or_null("BuildingOperationArtFrame") as Panel
     if art != null:
-        art.position = Vector2(203,190)
-        art.size = Vector2(432,376)
+        art.position = Vector2(24,234)
+        art.size = Vector2(610,343)
         art.add_theme_stylebox_override("panel",_art05_style(
             SECT_UI_THEME.SURFACE_LIGHT,_art05_accent(),1,10))
     var caption := building_operation_panel.get_node_or_null("FacilityArtworkCaption") as Label
     if caption != null:
-        caption.position = Vector2(203,578)
-        caption.size = Vector2(432,42)
+        caption.position = Vector2(24,588)
+        caption.size = Vector2(610,42)
         caption.add_theme_font_size_override("font_size",19)
         caption.add_theme_font_override("font",SECT_UI_THEME.font_face("strong"))
     var section := building_operation_panel.get_node_or_null("FacilitySectionTitle") as Label
     if section != null:
-        section.position = Vector2(665,205)
+        section.position = Vector2(665,244)
         section.size = Vector2(565,35)
         section.add_theme_font_size_override("font_size",23)
         section.add_theme_font_override("font",SECT_UI_THEME.font_face("title"))
@@ -675,8 +675,8 @@ func _facility_fullscreen_reflow() -> void:
     if hint != null:
         hint.position = Vector2(659,642)
         hint.size = Vector2(560,25)
-    building_operation_body.position = Vector2(660,258)
-    building_operation_body.size = Vector2(558,335)
+    building_operation_body.position = Vector2(660,291)
+    building_operation_body.size = Vector2(558,305)
     building_operation_body.add_theme_font_size_override("font_size",18)
     building_operation_body.add_theme_constant_override("line_spacing",6)
     building_operation_body.add_theme_color_override("font_color",SECT_UI_THEME.TEXT)
@@ -686,24 +686,24 @@ func _facility_fullscreen_reflow() -> void:
         SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST
     ] and picker != null and picker.get_child_count() > 0
     if picker != null:
-        picker.position = Vector2(660,248)
+        picker.position = Vector2(660,282)
         picker.size = Vector2(561,83)
     if building_operation_scroll != null:
-        building_operation_scroll.position = Vector2(658,338 if has_picker else 251)
-        building_operation_scroll.size = Vector2(570,270 if has_picker else 370)
+        building_operation_scroll.position = Vector2(658,372 if has_picker else 285)
+        building_operation_scroll.size = Vector2(570,245 if has_picker else 333)
         building_operation_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     if building_operation_content != null:
         building_operation_content.custom_minimum_size.x = 542
     if building_management_container != null:
         building_management_container.custom_minimum_size.x = 542
     if building_operation_live_panel != null:
-        building_operation_live_panel.position = Vector2(655,244)
-        building_operation_live_panel.size = Vector2(579,379)
+        building_operation_live_panel.position = Vector2(655,282)
+        building_operation_live_panel.size = Vector2(579,341)
         building_operation_live_panel.add_theme_stylebox_override("panel",_art05_style(
             SECT_UI_THEME.SURFACE,SECT_UI_THEME.BORDER,1,10))
     if building_operation_live_scroll != null:
         building_operation_live_scroll.position = Vector2(12,12)
-        building_operation_live_scroll.size = Vector2(551,354)
+        building_operation_live_scroll.size = Vector2(551,316)
     if building_operation_live_content != null:
         building_operation_live_content.custom_minimum_size.x = 521
     _facility_apply_tab()
