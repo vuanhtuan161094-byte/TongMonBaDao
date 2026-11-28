@@ -15,6 +15,7 @@ var _texture_order: Array[String] = []
 var _cues: Dictionary = {}
 var _clock := 0.0
 var _encounter := ""
+var _external_enabled := false
 
 func reset() -> void:
     _cues.clear()
@@ -22,21 +23,35 @@ func reset() -> void:
     _encounter = ""
 
 func _ensure_index() -> void:
-    if not _entries.is_empty():
+    var enabled := bool(ProjectSettings.get_setting(EXTERNAL_PREVIEW_SETTING,false))
+    if not _entries.is_empty() and _external_enabled == enabled:
         return
+    _external_enabled = enabled
+    _entries.clear()
+    _resolved.clear()
+    # A changed presentation option must never retain a disabled preview cue.
+    for key in _cues.keys():
+        if str(_cues[key].get("skill","")).is_empty():
+            continue
+        _cues.erase(key)
     var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(INDEX))
     if raw is Dictionary:
         _entries = raw.get("bindings",{}).duplicate(true)
     # Separate preview gate; never replace the existing 58 source bindings.
-    if bool(ProjectSettings.get_setting(EXTERNAL_PREVIEW_SETTING,false)):
+    if enabled:
         for index_path in [EXTERNAL_INDEX,EXTERNAL_SLASH_INDEX,EXTERNAL_ELEMENT_INDEX]:
             if not FileAccess.file_exists(index_path):
                 continue
             var external: Variant = JSON.parse_string(FileAccess.get_file_as_string(index_path))
             if external is Dictionary:
                 for id in external.get("bindings",{}):
-                    if not _entries.has(id):
-                        _entries[id] = external["bindings"][id]
+                    if _entries.has(id):
+                        continue
+                    var entry: Dictionary = external["bindings"][id]
+                    var definition := V63HumanSkillCombatSystem.skill_definition(str(id))
+                    if definition.is_empty() or str(definition.get("effect","")) != str(entry.get("effect","")) or str(definition.get("shape","")) != str(entry.get("shape","")) or int(definition.get("target_limit",0)) != int(entry.get("limit",-1)):
+                        continue
+                    _entries[id] = entry
 
 func _binding(id: String) -> Dictionary:
     if _entries.has(id):

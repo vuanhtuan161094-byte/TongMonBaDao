@@ -72,5 +72,21 @@ func _run() -> void:
             _fail("real receipt absent or mutated "+id+" "+str(events))
             return
         real_count+=1
-    print("EXTERNAL_AUX_CONTRACT_PASS candidate_bindings=19 real_casts=",real_count," default_hold=1")
+    # Exercise the same renderer instance used by OneGame when the player
+    # toggles the preview; no stale cached bindings after disabling.
+    enabled._ensure_index()
+    ProjectSettings.set_setting(FX.EXTERNAL_PREVIEW_SETTING,false)
+    enabled._ensure_index()
+    for raw_id in bindings:
+        if not enabled._binding(str(raw_id)).is_empty():
+            _fail("stale external binding after disable "+str(raw_id))
+            return
+    ProjectSettings.set_setting(FX.EXTERNAL_PREVIEW_SETTING,true)
+    enabled._ensure_index()
+    for raw_id in bindings:
+        if enabled._binding(str(raw_id)).is_empty():
+            _fail("missing external binding after re-enable "+str(raw_id))
+            return
+    ProjectSettings.set_setting(FX.EXTERNAL_PREVIEW_SETTING,false)
+    print("EXTERNAL_AUX_CONTRACT_PASS candidate_bindings=19 real_casts=",real_count," default_hold=1 hot_toggle=1")
     quit(0)

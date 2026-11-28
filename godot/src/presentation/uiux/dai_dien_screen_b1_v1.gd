@@ -159,6 +159,20 @@ func _overview() -> Control:
 	var facts := _stack(info,18)
 	facts.alignment = BoxContainer.ALIGNMENT_CENTER
 	facts.add_child(UI.section_heading("Tông môn","rank",UI.GOLD))
+	for office in _vm.get("offices",[]):
+		if str(office.get("id","")) != "master":
+			continue
+		var master_row := HBoxContainer.new()
+		master_row.add_theme_constant_override("separation",10)
+		master_row.add_child(UI.portrait_slot(str(office.get("disciple_name","")),office.get("portrait"),Vector2(72,72)))
+		var master_info := VBoxContainer.new()
+		master_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		master_info.add_child(UI.label("Chưởng Môn",13,UI.MUTED,false))
+		master_info.add_child(UI.label(str(office.get("disciple_name","Chưa bổ nhiệm")),19,UI.PAPER,true))
+		master_info.add_child(UI.label(str(office.get("mastery_detail","")),12,UI.MUTED,false))
+		master_row.add_child(master_info)
+		facts.add_child(master_row)
+		break
 	var count := 0
 	for office in _vm.get("offices",[]):
 		if bool(office.get("can_dismiss",false)):

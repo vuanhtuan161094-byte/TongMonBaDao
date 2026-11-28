@@ -1845,6 +1845,21 @@ func _build_pve_party_picker() -> void:
     _populate_v63_boss_selector()
     pve_party_picker_panel.add_child(pve_party_picker_boss_selector)
 
+    # Visual-only opt-in to the exact receipt-gated auxiliary assets.
+    # Keep the approved base renderer as the default until owner art review.
+    var extra_vfx := CheckButton.new()
+    extra_vfx.name = "PveExternalVfxPreview"
+    extra_vfx.text = "VFX mở rộng"
+    extra_vfx.position = Vector2(320,558)
+    extra_vfx.size = Vector2(176,38)
+    extra_vfx.add_theme_font_size_override("font_size",13)
+    extra_vfx.add_theme_color_override("font_color",PAPER_LIGHT)
+    extra_vfx.add_theme_color_override("font_hover_color",PAPER_LIGHT)
+    extra_vfx.button_pressed = bool(ProjectSettings.get_setting("runtime/external_auxiliary_vfx_preview",false))
+    extra_vfx.tooltip_text = "Thử VFX bổ sung từ sprite nguồn; chỉ phát khi có sự kiện chiến đấu hợp lệ. Không đổi sát thương hoặc kỹ năng."
+    extra_vfx.toggled.connect(func(enabled: bool): ProjectSettings.set_setting("runtime/external_auxiliary_vfx_preview",enabled))
+    pve_party_picker_panel.add_child(extra_vfx)
+
     pve_party_picker_start = Button.new()
     pve_party_picker_start.name = "PvePartyPickerStart"
     pve_party_picker_start.text = "Vào bãi săn"
